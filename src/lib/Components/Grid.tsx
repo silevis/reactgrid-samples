@@ -5,6 +5,7 @@ import { PaneRow } from "./PaneRow";
 import { zIndex } from "../Common/Constants";
 import { GridContext } from "../Common/GridContext";
 import { GridController } from "../Common/GridController";
+import { getVisibleCells } from "../Functions/getVisibleCells";
 
 
 interface GridProps {
@@ -42,9 +43,7 @@ export class Grid extends React.Component<GridProps, GridState> {
 
     static getDerivedStateFromProps(nextProps: GridProps, prevState: GridState) {
         return (prevState.gridElement) ?
-            getVisibleCells(prevState.gridElement, nextProps.cellMatrix)
-            :
-            prevState;
+            getVisibleCells(prevState.gridElement, nextProps.cellMatrix) : prevState;
     }
 
     componentDidMount() {

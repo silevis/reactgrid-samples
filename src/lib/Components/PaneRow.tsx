@@ -15,7 +15,7 @@ export const PaneRow: React.SFC<PaneRowProps> = (props) =>
 
     <div
         style={{
-            width: props.gridContext.cellMatrix.frozenLeftRange.width + props.matrix.scrollableRange.width + props.matrix.frozenRightRange.width,
+            width: props.gridContext.matrix.frozenLeftRange.width + props.gridContext.matrix.scrollableRange.width + props..matrix.frozenRightRange.width,
             height: props.range.height,
             display: 'flex',
             flexDirection: 'row',
