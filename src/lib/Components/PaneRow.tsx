@@ -10,7 +10,7 @@ export interface PaneRowProps {
     range: Range,
     borders: Borders,
 }
-
+//test
 export const PaneRow: React.SFC<PaneRowProps> = (props) =>
 
     <div
