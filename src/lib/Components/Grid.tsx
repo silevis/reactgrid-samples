@@ -1,6 +1,10 @@
 import * as React from "react";
 import { CellMatrix } from "../Common/CellMatrix";
 import { Behavior } from "../Common/Behavior";
+import { PaneRow } from "./PaneRow";
+import { zIndex } from "../Common/Constants";
+import { GridContext } from "../Common/GridContext";
+import { GridController } from "../Common/GridController";
 
 
 interface GridProps {
@@ -16,7 +20,7 @@ interface GridProps {
     // onContextMenu?: (selectedRanges, selectedRows) => MenuOption[];
 }
 
-class GridState {
+export class GridState {
     //cellMatrix!: CellMatrix;
     gridElement?: HTMLDivElement
     currentBehavior!: Behavior;
@@ -28,22 +32,6 @@ class GridState {
     maxScrollTop: number = -1;
     minScrollLeft: number = -1;
     maxScrollLeft: number = -1;
-}
-
-// INTERNAL
-export class GridContext {
-    constructor(private grid: Grid) { }
-    get state(): GridState { return this.grid.state }
-    setState(state: Partial<GridState>) { this.grid.setState(state as GridState) };
-    commitChanges() { this.grid.props.onValuesChanged && this.grid.props.onValuesChanged() }
-    hiddenFocusElement?: HTMLDivElement
-}
-
-// PUBLIC
-export class GridController {
-    constructor(private grid: Grid) { }
-    print(title: string) { };
-    // TODO export 
 }
 
 export class Grid extends React.Component<GridProps, GridState> {
@@ -137,24 +125,24 @@ export class Grid extends React.Component<GridProps, GridState> {
                 >
                     {matrix.frozenTopRange.height > 0 &&
                         <PaneRow
+                            gridContext={this.gridContext}
                             style={{ top: 0, position: 'sticky', zIndex: zIndex.horizontalPane }}
                             range={matrix.frozenTopRange}
                             borders={{ bottom: true }}
-                            matrix={matrix}
                         />}
                     {matrix.scrollableRange.height > 0 && this.state.visibleRange &&
                         <PaneRow
+                            gridContext={this.gridContext}
                             style={{ height: matrix.scrollableRange.height }}
                             range={matrix.scrollableRange.slice(this.state.visibleRange, 'rows')}
                             borders={{}}
-                            matrix={matrix}
                         />}
                     {matrix.frozenBottomRange.height > 0 &&
                         <PaneRow
+                            gridContext={this.gridContext}
                             style={{ bottom: 0, position: 'sticky', zIndex: zIndex.horizontalPane }}
                             range={matrix.frozenBottomRange}
                             borders={{ top: true }}
-                            matrix={matrix}
                         />}
                     <div
                         className="hiddenFocusElement"

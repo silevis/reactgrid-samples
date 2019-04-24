@@ -1,5 +1,5 @@
 
-import { GridContext } from "../Components/Grid";
+import { GridContext } from "../Common/GridContext";
 import { getVisibleCells } from "./getVisibleCells";
 
 export function refreshIfNeeded(gridContext: GridContext) {

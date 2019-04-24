@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Range } from "./Range";
-import { GridContext } from "../Components/Grid";
+import { GridContext } from "./GridContext";
 
 export interface Behavior {
     renderPanePart: (pane: Range) => React.ReactNode;

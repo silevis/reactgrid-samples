@@ -1,20 +1,21 @@
 import * as React from "react";
-import { Borders, Range } from "../Model";
-import { zIndex } from "../Common/Constants";
 import { Pane } from "./Pane";
+import { GridContext } from "../Common/GridContext";
+import { Borders } from "../Common/Model";
+import { Range } from "../Common/Range";
 
 export interface PaneRowProps {
+    gridContext: GridContext,
     style: React.CSSProperties,
     range: Range,
     borders: Borders,
-
 }
 
-export const PaneRow: React.SFC<PaneRowProps> = (props) => <>{(props.range.rows.length > 0) &&
+export const PaneRow: React.SFC<PaneRowProps> = (props) =>
 
     <div
         style={{
-            width: props.matrix.frozenLeftRange.width + props.matrix.scrollableRange.width + props.matrix.frozenRightRange.width,
+            width: props.gridContext.cellMatrix.frozenLeftRange.width + props.matrix.scrollableRange.width + props.matrix.frozenRightRange.width,
             height: props.range.height,
             display: 'flex',
             flexDirection: 'row',
@@ -43,5 +44,4 @@ export const PaneRow: React.SFC<PaneRowProps> = (props) => <>{(props.range.rows.
 )}
     </div>
 
-}</>;
-}
+
