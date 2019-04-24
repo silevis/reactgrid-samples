@@ -124,21 +124,21 @@ export class Grid extends React.Component<GridProps, GridState> {
                 >
                     {matrix.frozenTopRange.height > 0 &&
                         <PaneRow
-                            gridContext={this.gridContext}
+                            context={this.gridContext}
                             style={{ top: 0, position: 'sticky', zIndex: zIndex.horizontalPane }}
                             range={matrix.frozenTopRange}
                             borders={{ bottom: true }}
                         />}
                     {matrix.scrollableRange.height > 0 && this.state.visibleRange &&
                         <PaneRow
-                            gridContext={this.gridContext}
+                            context={this.gridContext}
                             style={{ height: matrix.scrollableRange.height }}
                             range={matrix.scrollableRange.slice(this.state.visibleRange, 'rows')}
                             borders={{}}
                         />}
                     {matrix.frozenBottomRange.height > 0 &&
                         <PaneRow
-                            gridContext={this.gridContext}
+                            context={this.gridContext}
                             style={{ bottom: 0, position: 'sticky', zIndex: zIndex.horizontalPane }}
                             range={matrix.frozenBottomRange}
                             borders={{ top: true }}
