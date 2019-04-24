@@ -8,5 +8,5 @@ export class GridContext {
     get cellMatrix(): CellMatrix { return this.grid.props.cellMatrix }
     setState(state: Partial<GridState>) { this.grid.setState(state as GridState); };
     commitChanges() { this.grid.props.onValuesChanged && this.grid.props.onValuesChanged(); }
-    hiddenFocusElement?: HTMLDivElement;
+    hiddenFocusElement!: HTMLDivElement;
 }

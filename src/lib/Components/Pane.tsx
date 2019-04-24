@@ -1,39 +1,20 @@
-import { CellMatrix } from "../CellMatrix";
-import { Borders, Range } from "../Model";
-import { Cell as Cell } from "./Cell";
+import { GridContext, Range, Borders } from "../Common";
 
 export interface PaneProps {
+    gridContext: GridContext
     style: React.CSSProperties,
     range: Range,
     borders: Borders,
-    matrix: CellMatrix
 }
 
-export const Pane: React.SFC<PaneProps> = (props) => <>{props.range.cols.length > 0 && (
+export const Pane: React.SFC<PaneProps> = (props) =>
     <div style={{ width: props.range.width, height: props.range.height, ...props.style }}>
         <div style={{ position: 'relative', width: props.range.width, height: props.range.height }}>
             {props.range.rows.map((row, ri) =>
-                <div
-                    className="row-container"
-                    key={ri}
-                    style={{ top: row.top, width: 'auto', height: row.height }}
-                >
-                    {props.range.cols.map((col, ci) =>
-                        <Cell location={row, col },
-                                        borders={
-                        top: borders.top && ri === 0,
-            left: borders.left && ci === 0,
-            bottom: borders.bottom && ri === range.rows.length - 1,
-            right: borders.right && ci === range.cols.length - 1
-        } />
-    )
-)}
-                            </div>
-                    })}
-                    {this.renderPartial(range)}
-            {this.state.currentBehavior.renderPanePart(range)}
+                <div key={ri} style={{ top: row.top, width: 'auto', height: row.height }}>
+                    {props.range.cols.map((col, ci) => props.gridContext.cellMatrix.getCell({ row, col }).render({}))}
+                </div>
+            )}
+            {props.gridContext.state.currentBehavior.renderPanePart(props.range)}
         </div>
     </div>
-)
-}</>);
-}

@@ -1,3 +1,5 @@
+import { Column, Row, Location } from "./Model";
+
 export class Range {
     readonly width: number = 0;
     readonly height: number = 0;

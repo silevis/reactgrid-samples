@@ -96,17 +96,17 @@ export const handleKeyDownCheckboxCell = (e: React.KeyboardEvent<HTMLInputElemen
     }
 };
 
-export const isItLastRowOrCol = (props: CellProps, name: string) => {
-    const lastIdx =
-        name === 'row'
-            ? props.grid.props.cellMatrix.last.row.idx.toString()
-            : props.grid.props.cellMatrix.last.col.idx.toString();
-    const selectedIdx =
-        name === 'row'
-            ? props.cellKey.substring(0, props.cellKey.indexOf('-'))
-            : props.cellKey.substring(props.cellKey.indexOf('-') + 1, props.cellKey.length);
-    if (selectedIdx === lastIdx) {
-        return true;
-    }
-    return;
+// export const isItLastRowOrCol = (props: CellProps, name: string) => {
+const lastIdx =
+    name === 'row'
+        ? props.grid.props.cellMatrix.last.row.idx.toString()
+        : props.grid.props.cellMatrix.last.col.idx.toString();
+const selectedIdx =
+    name === 'row'
+        ? props.cellKey.substring(0, props.cellKey.indexOf('-'))
+        : props.cellKey.substring(props.cellKey.indexOf('-') + 1, props.cellKey.length);
+if (selectedIdx === lastIdx) {
+    return true;
+}
+return;
 };

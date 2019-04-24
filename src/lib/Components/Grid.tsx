@@ -1,11 +1,9 @@
 import * as React from "react";
-import { CellMatrix } from "../Common/CellMatrix";
-import { Behavior } from "../Common/Behavior";
+import { GridContext, GridController, CellMatrix } from "../Common/";
+import { Behavior, Range, zIndex, Location } from "../Common/";
 import { PaneRow } from "./PaneRow";
-import { zIndex } from "../Common/Constants";
-import { GridContext } from "../Common/GridContext";
-import { GridController } from "../Common/GridController";
 import { getVisibleCells } from "../Functions/getVisibleCells";
+import { refreshIfNeeded } from "../Functions/refreshIfNeeded";
 
 
 interface GridProps {
@@ -22,8 +20,7 @@ interface GridProps {
 }
 
 export class GridState {
-    //cellMatrix!: CellMatrix;
-    gridElement?: HTMLDivElement
+    gridElement!: HTMLDivElement
     currentBehavior!: Behavior;
     selectedRanges: Range[] = [];
     focusedLocation?: Location;
@@ -116,29 +113,29 @@ export class Grid extends React.Component<GridProps, GridState> {
                 <div
                     style={{ width: matrix.contentWidth, height: matrix.contentHeight, position: 'relative' }}
                     onMouseDown={this.handleMouseDown}
-                    onTouchStart={/*this.state.focusedLocation &&*/ this.handleTouchStart}
+                    onTouchStart={this.handleTouchStart}
                     onTouchEnd={this.handleTouchEnd}
-                    onContextMenu={/*this.state.focusedLocation &&*/ this.handleContextMenu}
+                    onContextMenu={this.handleContextMenu}
                     onDoubleClick={this.handleDoubleClick}
                     onClick={this.handleClick}
                 >
                     {matrix.frozenTopRange.height > 0 &&
                         <PaneRow
-                            context={this.gridContext}
+                            gridContext={this.gridContext}
                             style={{ top: 0, position: 'sticky', zIndex: zIndex.horizontalPane }}
                             range={matrix.frozenTopRange}
                             borders={{ bottom: true }}
                         />}
                     {matrix.scrollableRange.height > 0 && this.state.visibleRange &&
                         <PaneRow
-                            context={this.gridContext}
+                            gridContext={this.gridContext}
                             style={{ height: matrix.scrollableRange.height }}
                             range={matrix.scrollableRange.slice(this.state.visibleRange, 'rows')}
                             borders={{}}
                         />}
                     {matrix.frozenBottomRange.height > 0 &&
                         <PaneRow
-                            context={this.gridContext}
+                            gridContext={this.gridContext}
                             style={{ bottom: 0, position: 'sticky', zIndex: zIndex.horizontalPane }}
                             range={matrix.frozenBottomRange}
                             borders={{ top: true }}
@@ -236,6 +233,7 @@ export class Grid extends React.Component<GridProps, GridState> {
     }
 
     private handleContextMenu = (e: any) => {
+        /*this.state.focusedLocation &&*/
         e.preventDefault();
         //changeBehavior(new DrawContextMenuBehavior(new DefaultGridBehavior(this), this, e));
         e.persist();
@@ -379,7 +377,7 @@ export class Grid extends React.Component<GridProps, GridState> {
     };
 
     private handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleTouchStart(e);
+    /*this.state.focusedLocation &&*/ this.state.currentBehavior.handleTouchStart(e);
     };
 
     private handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {

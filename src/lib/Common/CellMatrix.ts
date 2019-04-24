@@ -1,4 +1,5 @@
-import { Location, Cell, Row, Column, Range, ColProps, RowProps } from './Model';
+import { Location, Cell, Row, Column, ColProps, RowProps } from "./Model";
+import { Range } from "./Range";
 
 export interface CellMatrixProps {
     rows: RowProps[];
@@ -85,6 +86,7 @@ export class CellMatrix {
     }
 
     getLocation(rowIdx: number, colIdx: number): Location {
+        // TODO is this really needed?
         const properRowIdx = rowIdx < this.rows.length - 1 ? rowIdx : this.rows.length - 1;
         const properColIdx = colIdx < this.cols.length - 1 ? colIdx : this.cols.length - 1;
         return { row: this.rows[properRowIdx], col: this.cols[properColIdx] };

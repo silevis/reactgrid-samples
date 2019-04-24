@@ -1,8 +1,6 @@
 import * as React from "react";
 import { Pane } from "./Pane";
-import { GridContext } from "../Common/GridContext";
-import { Borders } from "../Common/Model";
-import { Range } from "../Common/Range";
+import { GridContext, Borders, Range, zIndex } from "../Common";
 
 export interface PaneRowProps {
     gridContext: GridContext,
@@ -11,37 +9,47 @@ export interface PaneRowProps {
     borders: Borders,
 }
 
-export const PaneRow: React.SFC<PaneRowProps> = (props) =>
+export const PaneRow: React.SFC<PaneRowProps> = (props) => {
+    const matrix = props.gridContext.cellMatrix;
+    const state = props.gridContext.state
+    return (
+        <div
+            style={{
+                width: matrix.frozenLeftRange.width + matrix.scrollableRange.width + matrix.frozenRightRange.width,
+                height: props.range.height,
+                display: 'flex',
+                flexDirection: 'row',
+                ...props.style
+            }}
+        >
+            {matrix.frozenLeftRange.width > 0 &&
+                <Pane
+                    gridContext={props.gridContext}
+                    style={{ left: 0, position: 'sticky', zIndex: zIndex.verticalPane }}
+                    range={matrix.frozenLeftRange.slice(props.range, 'rows')}
+                    borders={{ ...props.borders, right: true }}
+                />
+            }
+            {state.visibleRange && state.visibleRange.width > 0 &&
+                <Pane
+                    gridContext={props.gridContext}
+                    style={{ width: matrix.scrollableRange.width }}
+                    range={props.range.slice(state.visibleRange, 'columns')}
+                    borders={{ ...props.borders }}
+                />
+            }
+            {matrix.frozenRightRange.width > 0 &&
+                <Pane
+                    gridContext={props.gridContext}
+                    style={{ right: 0, position: 'sticky', zIndex: zIndex.verticalPane }}
+                    range={matrix.frozenRightRange.slice(props.range, 'rows')}
+                    borders={{ ...props.borders, left: true }}
+                />
+            }
+        </div>
+    );
 
-    <div
-        style={{
-            width: props.context.matrix.frozenLeftRange.width + props.context.matrix.scrollableRange.width + props..matrix.frozenRightRange.width,
-            height: props.range.height,
-            display: 'flex',
-            flexDirection: 'row',
-            ...props.style
-        }}
-    >
-        {props.matrix.frozenLeftRange.width > 0 &&
-            <Pane
-                style={{ left: 0, position: 'sticky', zIndex: zIndex.verticalPane }}
-                range={props.matrix.frozenLeftRange.slice(props.range, 'rows')}
-                borders={{ ...props.borders, right: true }}
-                matrix={props.matrix}
-            />
-        {this.state.visibleRange &&
-            <Pane
-            style={{ width: matrix.scrollableRange.width }}
-            range={props.range.slice(this.state.visibleRange, 'columns')}
-            borders={{ ...props.borders }}
-            matrix={props.matrix}
-        />
-        {props.matrix.frozenRightRange.width > 0 &&
-            <Pane
-                style={{ right: 0, position: 'sticky', zIndex: zIndex.verticalPane }}
-                range={{ props.matrix.frozenRightRange.slice(range, 'rows') }}
-                {...borders, left: true }
-)}
-    </div>
+}
+
 
 

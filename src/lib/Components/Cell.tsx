@@ -1,26 +1,16 @@
 import * as React from "react";
-import { Borders } from "../Model";
-import { CellMatrix } from "../CellMatrix";
+import { GridContext, Borders, Location, CellMatrix, } from "../Common";
 
 export interface CellProps {
+    gridContext: GridContext
     location: Location,
     borders: Borders,
-    matrix: CellMatrix
 }
 
 export const Cell: React.SFC<CellProps> = (props) => {
-    const cell = props.matrix.getCell(props.location);
-    const isFocused =
-        this.state.focusedLocation &&
-        (this.state.focusedLocation.col.idx === location.col.idx &&
-            this.state.focusedLocation.row.idx === location.row.idx);
-
-    let isSelected = false;
-    for (let range of this.state.selectedRanges) {
-        if (!isSelected) {
-            isSelected = range.contains(location);
-        }
-    }
+    const state = props.gridContext.state;
+    const cell = props.gridContext.cellMatrix.getCell(props.location);
+    const isFocused = state.focusedLocation && (state.focusedLocation.col.idx === props.location.col.idx && state.focusedLocation.row.idx === props.location.row.idx);
     const dynamicStyle: React.CSSProperties = isFocused
         ? {
             // marginLeft: isFirstCol ? 0 : -1, marginTop: isFirstRow ? 0 : -1,
