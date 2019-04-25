@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { Location } from '../Model'
 import { DelegateBehavior } from "./DelegateBehavior";
 import { Utilities } from '../Common/Utilities';
+import { Row, Column } from '../Common';
 
 export class CopyCutPasteBehavior extends DelegateBehavior {
 
@@ -24,17 +24,17 @@ export class CopyCutPasteBehavior extends DelegateBehavior {
 
     handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
         const activeSelectedRange = Utilities.getActiveSelectionRange(this.grid.state.selectedRanges, this.grid.state.focusedLocation)
-        const pasteContent = event.clipboardData.getData('text/plain').split('\n').map(line => line.split('\t'))
+        const pasteContent = event.clipboardData.getData('text/plain').split('\n').map((line: string) => line.split('\t'))
         const cellMatrix = this.grid.props.cellMatrix
         if (pasteContent.length === 1 && pasteContent[0].length === 1) {
-            activeSelectedRange.rows.forEach(row =>
-                activeSelectedRange.cols.forEach(col =>
+            activeSelectedRange.rows.forEach((row: Row) =>
+                activeSelectedRange.cols.forEach((col: Column) =>
                     cellMatrix.getCell({ row, col }).trySetValue(pasteContent[0][0])
                 )
             )
         } else {
             let lastLocation: Location
-            pasteContent.forEach((row, pasteRowIdx) =>
+            pasteContent.forEach((row: Row[], pasteRowIdx: number) =>
                 row.forEach((pasteValue, pasteColIdx) => {
                     const rowIdx = activeSelectedRange.rows[0].idx + pasteRowIdx
                     const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx
@@ -55,9 +55,9 @@ export class CopyCutPasteBehavior extends DelegateBehavior {
         const table = document.createElement('table')
         table.setAttribute('empty-cells', 'show')
         const activeSelectedRange = Utilities.getActiveSelectionRange(this.grid.state.selectedRanges, this.grid.state.focusedLocation)
-        activeSelectedRange.rows.forEach(row => {
+        activeSelectedRange.rows.forEach((row: Row) => {
             const tableRow = table.insertRow()
-            activeSelectedRange.cols.forEach(col => {
+            activeSelectedRange.cols.forEach((col: Column) => {
                 const tableCell = tableRow.insertCell()
                 const gridCell = this.grid.props.cellMatrix.getCell({ row, col })
                 tableCell.textContent = (gridCell.value ? gridCell.value : '')  // for undefined values

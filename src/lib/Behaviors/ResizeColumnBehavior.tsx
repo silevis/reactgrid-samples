@@ -1,8 +1,8 @@
 import { Grid } from '../Components/Gridonents/Grid'
-import { Column } from '../Model'
 import { DelegateBehavior } from "./DelegateBehavior";
 import { BasicGridBehavior } from './BasicGridBehavior'
 import { DrawExternalFocusedLocationsBehavior } from './DrawExternalFocusedLocationsBehavior';
+import { Column } from '../Common';
 
 export class ResizeColumnBehavior extends DelegateBehavior {
     private moveHandler = this.handleMove.bind(this)

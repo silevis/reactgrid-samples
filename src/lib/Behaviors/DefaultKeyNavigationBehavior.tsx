@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { DelegateBehavior } from "./DelegateBehavior";
 import { keyCodes } from '../Common/Constants';
+import { Row, Column } from '../Common';
 
 export class DefaultKeyNavigationBehavior extends DelegateBehavior {
     public handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
@@ -93,7 +94,7 @@ export class DefaultKeyNavigationBehavior extends DelegateBehavior {
                 !this.grid.state.isFocusedCellInEditMode
             ) {
                 const rowsOnScreen = this.grid.props.cellMatrix.rows.filter(
-                    r => r.top < this.grid.gridElement.clientHeight
+                    (r: Row) => r.top < this.grid.gridElement.clientHeight
                 );
                 this.focusCell(
                     focusedLocation.col.idx,
@@ -109,7 +110,7 @@ export class DefaultKeyNavigationBehavior extends DelegateBehavior {
                         this.grid.props.cellMatrix.frozenBottomRange.rows.length -
                         1
                     )
-                    .filter(r => r.top + r.height < this.grid.gridElement.clientHeight);
+                    .filter((r: Row) => r.top + r.height < this.grid.gridElement.clientHeight);
                 this.focusCell(
                     focusedLocation.col.idx,
                     focusedLocation.row.idx + rowsOnScreen.length < this.grid.props.cellMatrix.rows.length
@@ -123,8 +124,8 @@ export class DefaultKeyNavigationBehavior extends DelegateBehavior {
                 this.grid.commitChanges();
             } else if (event.keyCode === keyCodes.DELETE) {
                 this.grid.state.selectedRanges.forEach(range => {
-                    range.rows.forEach(row =>
-                        range.cols.forEach(col =>
+                    range.rows.forEach((row: Row) =>
+                        range.cols.forEach((col: Column) =>
                             this.grid.props.cellMatrix.getCell({ row, col }).trySetValue(undefined, true)
                         )
                     );

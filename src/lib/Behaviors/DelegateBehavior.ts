@@ -1,4 +1,3 @@
-
 import { Behavior } from '../Common/Behavior';
 export class DelegateBehavior implements Behavior {
     constructor(protected innerBehavior: Behavior) { }

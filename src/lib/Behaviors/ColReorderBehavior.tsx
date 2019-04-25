@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { Grid } from '../Components/Gridonents/Grid';
-import { Column } from '../Model';
 import { AutoScrollBehavior } from './AutoScrollBehavior';
 import { DelegateBehavior } from "./DelegateBehavior";
 import { BasicGridBehavior } from './BasicGridBehavior';
 import { CellMatrix } from '..';
 import { Utilities } from '../Common/Utilities';
+import { Column } from '../Common';
+import { Grid } from '../Components/Grid';
 
 export let columnIsMoving: boolean = false;
 export class ColReorderBehavior extends DelegateBehavior {
@@ -24,7 +24,7 @@ export class ColReorderBehavior extends DelegateBehavior {
             this.grid.state.focusedLocation
         );
         this.target = this.grid.props.cellMatrix.cols.filter(
-            c =>
+            (c: Column) =>
                 c.idx < activeSelectedRange.cols[0].idx ||
                 c.idx > activeSelectedRange.cols[activeSelectedRange.cols.length - 1].idx
         );
@@ -97,7 +97,7 @@ export class ColReorderBehavior extends DelegateBehavior {
             window.addEventListener('touchend', this.mouseUpAndTouchEndHandler);
             columnIsMoving = true;
         }
-        grid.gridElement.addEventListener('scroll', this.scrollHandler);
+        grid.state.gridElement.addEventListener('scroll', this.scrollHandler);
     }
 
     dispose = () => {
@@ -240,7 +240,7 @@ export class ColReorderBehavior extends DelegateBehavior {
             return this.target.some(c => c === col);
         };
         const isSelectedCol = (col: Column) => {
-            return activeSelectedRange.cols.some(c => c === col);
+            return activeSelectedRange.cols.some((c: Column) => c === col);
         };
 
         const areColumnsMovingRight = () => {

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { DelegateBehavior } from "./DelegateBehavior";
 import { keyCodes } from '../Common/Constants';
-import { Row } from '../Model';
 import { Utilities } from '../Common/Utilities';
+import { Row } from '../Common';
 
 export class ResizeSelectionWithKeysBehavior extends DelegateBehavior {
     public handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
@@ -117,7 +117,7 @@ export class ResizeSelectionWithKeysBehavior extends DelegateBehavior {
             );
         } else if (event.shiftKey && event.keyCode === keyCodes.PAGE_UP && !this.grid.state.isFocusedCellInEditMode) {
             const rowsOnScreen = this.grid.props.cellMatrix.rows.filter(
-                r => r.top < this.grid.gridElement.clientHeight
+                (r: Row) => r.top < this.grid.gridElement.clientHeight
             );
             if (activeSelectedRange.first.row.idx >= focusedCell.row.idx) {
                 this.resizeSelection(
@@ -140,7 +140,7 @@ export class ResizeSelectionWithKeysBehavior extends DelegateBehavior {
             }
         } else if (event.shiftKey && event.keyCode === keyCodes.PAGE_DOWN) {
             const rowsOnScreen = this.grid.props.cellMatrix.rows.filter(
-                r => r.top < this.grid.gridElement.clientHeight
+                (r: Row) => r.top < this.grid.gridElement.clientHeight
             );
             if (activeSelectedRange.first.row.idx >= focusedCell.row.idx) {
                 this.resizeSelection(

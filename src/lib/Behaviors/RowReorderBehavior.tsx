@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Grid } from '../Components/Gridonents/Grid';
 import { Row } from '../Model';
 import { DelegateBehavior } from "./DelegateBehavior";
 import { AutoScrollBehavior } from './AutoScrollBehavior';
@@ -27,7 +26,7 @@ export class RowReorderBehavior extends DelegateBehavior {
             this.grid.state.focusedLocation
         );
         this.target = this.grid.props.cellMatrix.rows.filter(
-            r =>
+            (r: Row) =>
                 r.idx < activeSelectedRange.rows[0].idx ||
                 r.idx > activeSelectedRange.rows[activeSelectedRange.rows.length - 1].idx
         );
@@ -235,7 +234,7 @@ export class RowReorderBehavior extends DelegateBehavior {
         }
         this.grid.commitChanges();
 
-        if (event.type === 'mouseup') {
+        if (event!.type === 'mouseup') {
             this.grid.resetToDefaultBehavior();
         }
     }
@@ -249,7 +248,7 @@ export class RowReorderBehavior extends DelegateBehavior {
             return this.target.some(r => r === row);
         };
         const isSelectedRow = (row: Row) => {
-            return activeSelectedRange.rows.some(r => r === row);
+            return activeSelectedRange.rows.some((r: Row) => r === row);
         };
         const areRowsMovingDown = () => {
             return activeSelectedRange.first.row.idx < this.rowOnScreen.idx;

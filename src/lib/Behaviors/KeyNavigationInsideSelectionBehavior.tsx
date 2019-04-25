@@ -104,24 +104,24 @@ export class KeyNavigationInsideSelectionBehavior extends DelegateBehavior {
     };
 
     moveFocusInsideSelectedRange(direction: -1 | 1 | 'up' | 'down') {
-        const selectedRange = Utilities.getActiveSelectionRange(this.state.selectedRanges, this.state.focusedLocation);
-        const selectedRangeIdx = Utilities.getActiveSelectionIdx(this.state.selectedRanges, this.state.focusedLocation);
+        const selectedRange = Utilities.getActiveSelectionRange(this.grid.state.selectedRanges, this.grid.state.focusedLocation);
+        const selectedRangeIdx = Utilities.getActiveSelectionIdx(this.grid.state.selectedRanges, this.grid.state.focusedLocation);
         const colCount = selectedRange.cols.length;
         const delta = direction === 'up' ? -colCount : direction === 'down' ? colCount : direction;
-        const focusedCell = this.state.focusedLocation;
+        const focusedCell = this.grid.state.focusedLocation;
         const currentPosInRange =
             (focusedCell.row.idx - selectedRange.first.row.idx) * colCount +
             (focusedCell.col.idx - selectedRange.first.col.idx);
         const newPosInRange = (currentPosInRange + delta) % (selectedRange.rows.length * selectedRange.cols.length);
         if (newPosInRange === 0) {
-            const nextSelectionRangeIdx = (selectedRangeIdx + 1) % this.state.selectedRanges.length;
-            const nextSelection = this.state.selectedRanges[nextSelectionRangeIdx];
-            this.focusLocation({ col: nextSelection.first.col, row: nextSelection.first.row }, false);
+            const nextSelectionRangeIdx = (selectedRangeIdx + 1) % this.grid.state.selectedRanges.length;
+            const nextSelection = this.grid.state.selectedRanges[nextSelectionRangeIdx];
+            this.grid.focusLocation({ col: nextSelection.first.col, row: nextSelection.first.row }, false);
         } else {
             const newColIdx = selectedRange.first.col.idx + (newPosInRange % colCount);
             const newRowIdx = selectedRange.first.row.idx + Math.floor(newPosInRange / colCount);
-            const location = this.props.cellMatrix.getLocation(newRowIdx, newColIdx);
-            this.focusLocation(
+            const location = this.grid.props.cellMatrix.getLocation(newRowIdx, newColIdx);
+            this.grid.focusLocation(
                 location,
                 selectedRange ? (selectedRange.cols.length > 1 || selectedRange.rows.length > 1 ? false : true) : true
             );

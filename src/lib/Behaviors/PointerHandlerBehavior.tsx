@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { Behavior } from '../Common/Behavior';
 import { DelegateBehavior } from "./DelegateBehavior";
-import { Location } from '../Model';
 import { CellSelectionBehavior, userIsMarkingGrid } from './CellSelectionBehavior';
 import { ResizeColumnBehavior } from './ResizeColumnBehavior';
 import { DrawFillHandleBehavior } from './DrawFillHandleBehavior';
 import { headerCellTouchStartTime } from '../Cells/HeaderCell';
 import { columnIsMoving } from './ColReorderBehavior';
 import { FieldTypes } from 'FlexBase/Model';
+import { Location } from '../Common';
 
 export class PointerHandlerBehavior extends DelegateBehavior {
     private touchStartTime: number = 0;

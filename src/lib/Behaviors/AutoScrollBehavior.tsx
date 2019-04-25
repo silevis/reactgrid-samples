@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { Behavior } from '../Common/Behavior';
 import { DelegateBehavior } from "./DelegateBehavior";
-import { Orientation } from '../Model';
 import { DrawExternalFocusedLocationsBehavior } from './DrawExternalFocusedLocationsBehavior';
+import { Behavior, Column, Row, Orientation } from '../Common';
 import { Utilities } from '../Common/Utilities';
 
 export class AutoScrollBehavior extends DelegateBehavior {
@@ -84,7 +83,7 @@ export class AutoScrollBehavior extends DelegateBehavior {
                         nextCol = cellMatrix.scrollableRange.last.col;
                     } else {
                         nextCol = cellMatrix.scrollableRange.cols.find(
-                            c =>
+                            (c: Column) =>
                                 c.left >=
                                 (this.scrollByLeft > 0
                                     ? rightScrollBorder
@@ -99,7 +98,7 @@ export class AutoScrollBehavior extends DelegateBehavior {
 
                 const hiddenHeight = gridElement.scrollHeight - gridElement.clientHeight;
                 const topLastVisibleRow = gridElement.scrollHeight - hiddenHeight + gridElement.scrollTop;
-                const searchedNextRow = cellMatrix.scrollableRange.rows.find(r => r.top >= topLastVisibleRow);
+                const searchedNextRow = cellMatrix.scrollableRange.rows.find((r: Row) => r.top >= topLastVisibleRow);
 
                 const nextRowTop =
                     this.scrollByTop !== 0
@@ -115,10 +114,10 @@ export class AutoScrollBehavior extends DelegateBehavior {
                                 ? cellMatrix.scrollableRange.rows
                                     .slice()
                                     .reverse()
-                                    .find(r => r.top < nextRowTop)
+                                    .find((r: Row) => r.top < nextRowTop)
                                 : secondRow
                             : nextRowTop < lastRow.top
-                                ? cellMatrix.scrollableRange.rows.find(r => r.top >= nextRowTop)
+                                ? cellMatrix.scrollableRange.rows.find((r: Row) => r.top >= nextRowTop)
                                 : lastRow
                         : undefined;
 

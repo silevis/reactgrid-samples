@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { Grid } from '../Components/Gridonents/Grid';
-import { Location, Range, Direction } from '../Model';
+import { Location, Range, Direction } from '../Common';
 import { DelegateBehavior } from "./DelegateBehavior";
 import { AutoScrollBehavior } from './AutoScrollBehavior';
 import { BasicGridBehavior } from './BasicGridBehavior';
 import { Utilities } from '../Common/Utilities';
+import { Row, Column } from '../Common';
 
 export class FillHandleBehavior extends DelegateBehavior {
     private currentLocation: Location = null;
@@ -154,11 +155,11 @@ export class FillHandleBehavior extends DelegateBehavior {
 
         switch (this.fillDirection) {
             case 'right':
-                values = activeSelectedRange.rows.map(row =>
+                values = activeSelectedRange.rows.map((row: Row) =>
                     this.grid.props.cellMatrix.getCell({ row, col: activeSelectedRange.last.col })
                 );
-                this.fillRange.rows.forEach((row, i) =>
-                    this.fillRange.cols.forEach(col => {
+                this.fillRange.rows.forEach((row: Row, i: number) =>
+                    this.fillRange.cols.forEach((col: Column) => {
                         cellMatrix.getCell({ row, col }) &&
                             cellMatrix.getCell({ row, col }).trySetValue(values[i].value);
                     })
@@ -173,12 +174,12 @@ export class FillHandleBehavior extends DelegateBehavior {
                 });
                 break;
             case 'left':
-                values = activeSelectedRange.rows.map(row =>
+                values = activeSelectedRange.rows.map((row: Row) =>
                     this.grid.props.cellMatrix.getCell({ row, col: activeSelectedRange.first.col })
                 );
-                this.fillRange.rows.forEach((row, i) =>
+                this.fillRange.rows.forEach((row: Row, i: number) =>
                     this.fillRange.cols.forEach(
-                        col =>
+                        (col: Column) =>
                             cellMatrix.getCell({ row, col }) &&
                             cellMatrix.getCell({ row, col }).trySetValue(values[i].value)
                     )
@@ -193,12 +194,12 @@ export class FillHandleBehavior extends DelegateBehavior {
                 });
                 break;
             case 'up':
-                values = activeSelectedRange.cols.map(col =>
+                values = activeSelectedRange.cols.map((col: Column) =>
                     this.grid.props.cellMatrix.getCell({ row: activeSelectedRange.first.row, col })
                 );
-                this.fillRange.rows.forEach(row =>
+                this.fillRange.rows.forEach((row: Row) =>
                     this.fillRange.cols.forEach(
-                        (col, i) =>
+                        (col: Column, i: number) =>
                             cellMatrix.getCell({ row, col }) &&
                             cellMatrix.getCell({ row, col }).trySetValue(values[i].value)
                     )
@@ -213,12 +214,12 @@ export class FillHandleBehavior extends DelegateBehavior {
                 });
                 break;
             case 'down':
-                values = activeSelectedRange.cols.map(col =>
+                values = activeSelectedRange.cols.map((col: Column) =>
                     this.grid.props.cellMatrix.getCell({ row: activeSelectedRange.last.row, col })
                 );
-                this.fillRange.rows.forEach(row =>
+                this.fillRange.rows.forEach((row: Row) =>
                     this.fillRange.cols.forEach(
-                        (col, i) =>
+                        (col: Column, i: number) =>
                             cellMatrix.getCell({ row, col }) &&
                             cellMatrix.getCell({ row, col }).trySetValue(values[i].value)
                     )

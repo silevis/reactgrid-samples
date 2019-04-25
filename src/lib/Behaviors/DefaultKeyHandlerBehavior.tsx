@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { DelegateBehavior } from "./DelegateBehavior";
-import { FieldTypes } from 'FlexBase/Model';
 import { keyCodes } from '../Common/Constants';
 
 export class DefaultKeyHandlerBehavior extends DelegateBehavior {
