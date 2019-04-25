@@ -59,6 +59,9 @@ export class PointerHandlerBehavior extends DelegateBehavior {
     };
 
     handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+
+        /*this.state.focusedLocation &&*/
+
         const location: Location = this.grid.getLocationFromClient(
             e.changedTouches[0].clientX,
             e.changedTouches[0].clientY

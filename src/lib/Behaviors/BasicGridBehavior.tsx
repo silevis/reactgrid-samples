@@ -1,9 +1,8 @@
-import * as React from 'react';
-import { GridContext, Behavior, Range } from '../Common';
+import { Behavior } from '../Common';
 
 export class BasicGridBehavior implements Behavior {
-    constructor(public gridContext: GridContext) { }
-    renderPanePart: (pane: Range) => React.ReactNode = _ => undefined;
+    constructor() { }
+    renderPanePart = () => undefined;
     dispose = () => { };
     handleCopy = () => { };
     handlePaste = () => { };

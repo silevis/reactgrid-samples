@@ -355,43 +355,43 @@ export class Grid extends React.Component<GridProps, GridState> {
     // }
 
     private handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleKeyDown(event);
+        this.state.currentBehavior.handleKeyDown(this.gridContext, event);
     };
 
     private handleKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleKeyUp(event);
+        this.state.currentBehavior.handleKeyUp(this.gridContext, event);
     };
 
     private handleCopy = (event: React.ClipboardEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleCopy(event);
+        this.state.currentBehavior.handleCopy(this.gridContext, event);
     };
 
     private handleCut = (event: React.ClipboardEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleCut(event);
+        this.state.currentBehavior.handleCut(this.gridContext, event);
     };
 
     private handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handlePaste(event);
+        this.state.currentBehavior.handlePaste(this.gridContext, event);
     };
 
     private handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleMouseDown(e);
+        this.state.currentBehavior.handleMouseDown(this.gridContext, e);
     };
 
     private handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleClick(e);
+        this.state.currentBehavior.handleClick(this.gridContext, e);
     };
 
     private handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    /*this.state.focusedLocation &&*/ this.state.currentBehavior.handleTouchStart(e);
+        this.state.currentBehavior.handleTouchStart(this.gridContext, e);
     };
 
     private handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleTouchEnd(e);
+        this.state.currentBehavior.handleTouchEnd(this.gridContext, e);
     };
 
     private handleDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleDoubleClick(e);
+        this.state.currentBehavior.handleDoubleClick(this.gridContext, e);
     };
 
     // private handleBlur = (e: React.ClipboardEvent<HTMLDivElement>) => {

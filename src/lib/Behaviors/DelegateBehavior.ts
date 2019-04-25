@@ -1,4 +1,4 @@
-import { Grid } from '../Components/Gridonents/Grid';
+
 import { Behavior } from '../Common/Behavior';
 export class DelegateBehavior implements Behavior {
     constructor(protected innerBehavior: Behavior) { }
@@ -14,5 +14,4 @@ export class DelegateBehavior implements Behavior {
     handleTouchStart = this.innerBehavior.handleTouchStart;
     handleTouchEnd = this.innerBehavior.handleTouchEnd;
     handleDoubleClick = this.innerBehavior.handleDoubleClick;
-    gridContext: GridContext = this.innerBehavior.gridContext;
 }
