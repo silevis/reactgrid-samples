@@ -3,7 +3,7 @@ import { DelegateBehavior } from "./DelegateBehavior";
 import { keyCodes } from '../Common/Constants';
 import { Utilities } from '../Common/Utilities';
 import { Row } from '../Common';
-import { scrollIntoView } from '../Functions/scrollIntoView';
+import { scrollIntoView } from '../Functions';
 
 export class ResizeSelectionWithKeysBehavior extends DelegateBehavior {
     public handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {

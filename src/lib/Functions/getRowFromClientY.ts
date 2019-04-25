@@ -1,45 +1,40 @@
-import { Column } from "../Common/Model";
 import { GridContext } from "../Common/GridContext";
+import { Row } from "../Common/Model";
 
-export function getColumnFromClientX(gridContext: GridContext, clientX: number, outOfRangeTrim: boolean = false): Column {
-    const gridElement = gridContext.state.gridElement;
+export function getRowFromClientY(gridContext: GridContext, clientY: number, outOfRangeTrim: boolean = false): Row {
     const cellMatrix = gridContext.cellMatrix;
+    const gridElement = gridContext.state.gridElement;
     const rect = gridElement.getBoundingClientRect();
-    const frozenLeftColsWidth = cellMatrix.frozenLeftRange.width;
-    const frozenRightColsWidth = cellMatrix.frozenRightRange.width;
-    const isCursorOnLeftPane = clientX < frozenLeftColsWidth + rect.left;
-    const isCursorOnRightPane = clientX > rect.width - frozenRightColsWidth;
-    let virtualPositionOfX =
-        clientX -
-        rect.left +
-        (frozenRightColsWidth && isCursorOnRightPane
-            ? cellMatrix.frozenRightRange.cols[0].left -
-            (gridElement.clientWidth - frozenRightColsWidth)
-            : clientX > rect.left + frozenLeftColsWidth
-                ? gridElement.scrollLeft
-                : 0);
-    let cols = cellMatrix.cols;
+    const frozenTopRowsHeight = cellMatrix.frozenTopRange.height;
+    const frozenBottomRowsHeight = cellMatrix.frozenBottomRange.height;
+    const isCursorOnTopPane = clientY < frozenTopRowsHeight + rect.top;
+    const isCursorOnBottomPane =
+        cellMatrix.frozenBottomRange.rows.length > 0 && clientY > rect.height - frozenBottomRowsHeight;
+    const scrollAreaHeight = gridElement.clientHeight - cellMatrix.frozenTopRange.height - cellMatrix.frozenBottomRange.height;
+    let virtualPositionOfY = clientY - rect.top;
+    let rows = cellMatrix.rows;
     if (outOfRangeTrim) {
-        if (clientX < gridElement.getBoundingClientRect().left) {
-            return cols[0];
+        if (clientY < gridElement.getBoundingClientRect().top) {
+            return rows[0];
         }
-        if (clientX > gridElement.getBoundingClientRect().right) {
-            return cols[cols.length - 1];
+        if (clientY > gridElement.getBoundingClientRect().bottom) {
+            return rows[rows.length - 1];
         }
     }
-    if (isCursorOnLeftPane) {
-        cols = cellMatrix.frozenLeftRange.cols;
-    } else if (isCursorOnRightPane) {
-        cols = cellMatrix.frozenRightRange.cols;
+    if (isCursorOnTopPane) {
+        rows = cellMatrix.frozenTopRange.rows;
+    } else if (isCursorOnBottomPane) {
+        virtualPositionOfY = virtualPositionOfY - frozenTopRowsHeight - scrollAreaHeight;
+        rows = cellMatrix.frozenBottomRange.rows;
     } else {
-        virtualPositionOfX -= frozenLeftColsWidth;
-        cols = cols.slice(
-            cellMatrix.frozenLeftRange.cols.length,
-            cols.length - cellMatrix.frozenRightRange.cols.length
+        virtualPositionOfY = virtualPositionOfY - frozenTopRowsHeight + gridElement.scrollTop;
+        rows = rows.slice(
+            cellMatrix.frozenTopRange.rows.length,
+            rows.length - cellMatrix.frozenBottomRange.rows.length
         );
     }
     return (
-        cols.find(col => col.left <= virtualPositionOfX && col.left + col.width >= virtualPositionOfX) ||
-        (virtualPositionOfX < 0 ? cols[0] : cols[cols.length - 1])
+        rows.find(row => row.top <= virtualPositionOfY && row.top + row.height >= virtualPositionOfY) ||
+        (virtualPositionOfY < 0 ? rows[0] : rows[rows.length - 1])
     );
 }

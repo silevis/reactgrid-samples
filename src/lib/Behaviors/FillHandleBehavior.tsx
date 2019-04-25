@@ -6,8 +6,7 @@ import { AutoScrollBehavior } from './AutoScrollBehavior';
 import { BasicGridBehavior } from './BasicGridBehavior';
 import { Utilities } from '../Common/Utilities';
 import { Row, Column } from '../Common';
-import { getLocationFromClient } from '../Functions/getLocationFromClient';
-import { resetToDefaultBehavior } from '../Functions/resetToDefaultBehavior';
+import { getLocationFromClient, resetToDefaultBehavior } from '../Functions';
 
 export class FillHandleBehavior extends DelegateBehavior {
     private currentLocation: Location = null;
@@ -132,7 +131,7 @@ export class FillHandleBehavior extends DelegateBehavior {
                 );
                 break;
         }
-        this.grid.forceUpdate();
+        this.gridContext.forceUpdate();
     }
 
     handleMouseUpAndTouchEnd(event: any) {
@@ -252,7 +251,7 @@ export class FillHandleBehavior extends DelegateBehavior {
             <>
                 {this.innerBehavior.renderPanePart(pane)}
                 {this.fillDirection &&
-                    this.grid.renderPartialAreaForPane(this.fillRange, pane, {
+                    this.gridContext.renderPartialAreaForPane(this.fillRange, pane, {
                         backgroundColor: '',
                         borderTop: this.fillDirection === 'down' ? '0px' : '1px dashed #616161',
                         borderBottom: this.fillDirection === 'up' ? '0px' : '1px dashed #616161',

@@ -34,7 +34,7 @@ export class CopyCutPasteBehavior extends DelegateBehavior {
             )
         } else {
             let lastLocation: Location
-            pasteContent.forEach((row: Row[], pasteRowIdx: number) => {
+            pasteContent.forEach((row, pasteRowIdx) => {
                 row.forEach((pasteValue, pasteColIdx) => {
                     const rowIdx = activeSelectedRange.rows[0].idx + pasteRowIdx
                     const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx

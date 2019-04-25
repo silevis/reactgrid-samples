@@ -3,7 +3,7 @@ import { DelegateBehavior } from "./DelegateBehavior";
 import { BasicGridBehavior } from './BasicGridBehavior'
 import { DrawExternalFocusedLocationsBehavior } from './DrawExternalFocusedLocationsBehavior';
 import { Column } from '../Common';
-import { resetToDefaultBehavior } from '../Functions/resetToDefaultBehavior';
+import { resetToDefaultBehavior } from '../Functions';
 
 export class ResizeColumnBehavior extends DelegateBehavior {
     private moveHandler = this.handleMove.bind(this)

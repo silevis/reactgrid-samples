@@ -3,9 +3,7 @@ import { DelegateBehavior } from "./DelegateBehavior";
 import { DrawExternalFocusedLocationsBehavior } from './DrawExternalFocusedLocationsBehavior';
 import { Behavior, Column, Row, Orientation } from '../Common';
 import { Utilities } from '../Common/Utilities';
-import { getColumnFromClientX } from '../Functions/getRowFromClientY';
-import { scrollIntoView } from '../Functions/scrollIntoView';
-import { getRowFromClientY } from '../Functions/getColumnFromClientX';
+import { getRowFromClientY, getColumnFromClientX, scrollIntoView } from '../Functions';
 
 export class AutoScrollBehavior extends DelegateBehavior {
     private mouseMoveHandler = this.handleMouseMove.bind(this);

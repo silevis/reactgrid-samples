@@ -6,8 +6,7 @@ import { CellMatrix } from '..';
 import { Utilities } from '../Common/Utilities';
 import { Column, GridContext } from '../Common';
 import { Grid } from '../Components/Grid';
-import { getColumnFromClientX } from '../Functions/getRowFromClientY';
-import { resetToDefaultBehavior } from '../Functions/resetToDefaultBehavior';
+import { getColumnFromClientX, resetToDefaultBehavior } from '../Functions';
 
 export let columnIsMoving: boolean = false;
 export class ColReorderBehavior extends DelegateBehavior {

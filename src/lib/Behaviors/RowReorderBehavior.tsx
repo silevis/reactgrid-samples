@@ -1,14 +1,11 @@
 import * as React from 'react';
-import { Row } from '../Model';
 import { DelegateBehavior } from "./DelegateBehavior";
 import { AutoScrollBehavior } from './AutoScrollBehavior';
 import { BasicGridBehavior } from './BasicGridBehavior';
 import { CellMatrix } from '..';
 import { Utilities } from '../Common/Utilities';
-import { GridContext } from '../Common';
-import { getRowFromClientY } from '../Functions/getColumnFromClientX';
-import { getLocationFromClient } from '../Functions/getLocationFromClient';
-import { resetToDefaultBehavior } from '../Functions/resetToDefaultBehavior';
+import { GridContext, Row } from '../Common';
+import { getRowFromClientY, getLocationFromClient, resetToDefaultBehavior } from '../Functions';
 
 export let rowIsMoving: boolean = false;
 
@@ -43,7 +40,7 @@ export class RowReorderBehavior extends DelegateBehavior {
                     : null;
 
         this.mouseOffsetYRelativeToCell =
-            this.positionY - document.elementFromPoint(0, this.positionY).getBoundingClientRect().top;
+            this.positionY - document.elementFromPoint(0, this.positionY)!.getBoundingClientRect().top;
 
         if (
             gridContext.cellMatrix.frozenBottomRange.rows.length > 0 &&

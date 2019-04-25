@@ -3,10 +3,7 @@ import { AutoScrollBehavior } from './AutoScrollBehavior';
 import { DelegateBehavior } from "./DelegateBehavior";
 import { BasicGridBehavior } from './BasicGridBehavior';
 import { Utilities } from '../Common/Utilities';
-import { getLocationFromClient } from '../Functions/getLocationFromClient';
-import { focusLocation } from '../Functions/focusLocation';
-import { resetToDefaultBehavior } from '../Functions/resetToDefaultBehavior';
-import { Grid } from '../Components/Grid';
+import { focusLocation, getLocationFromClient, resetToDefaultBehavior } from '../Functions';
 import { Location, CellMatrix, GridContext } from '../Common';
 
 // export let userIsMarkingGrid: boolean = false;
@@ -94,13 +91,13 @@ export class CellSelectionBehavior extends DelegateBehavior {
         if (event.type === 'mousedown') {
             if (event.button === 2) {
                 // right button of mouse
-                if (this.grid.isClickInsideSelectedRange(event)) {
+                if (this.gridContext.isClickInsideSelectedRange(event)) {
                     event.preventDefault();
                     event.stopPropagation();
                     focusLocation(this.gridContext, locationOfCell, false);
                     return;
                 } else if (!event.shiftKey) {
-                    if (this.grid.isClickOutOfGrid(this.clientX, this.clientY)) {
+                    if (this.gridContext.isClickOutOfGrid(this.clientX, this.clientY)) {
                     } else {
                         this.setFocusLocation(this.clientX, this.clientY);
                     }
