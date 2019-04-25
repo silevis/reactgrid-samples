@@ -4,7 +4,7 @@ import { DelegateBehavior } from "./DelegateBehavior";
 import { zIndex } from '../Common/Constants';
 import '../Cells/Cell.css';
 import { Utilities } from '../Common/Utilities';
-import { changeBehavior } from '../Functions/changeBehavior';
+import { changeBehavior } from '../Functions';
 import { Grid } from '../Components/Grid';
 import { MenuOption, Range } from '../Common';
 import { DefaultGridBehavior } from './DefaultGridBehavior';

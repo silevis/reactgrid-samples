@@ -10,7 +10,7 @@ export class DrawExternalFocusedLocationsBehavior extends DelegateBehavior {
 
     renderPartialAreaForPane(pane: Range) {
         let focuses: { range: Range; color: string }[] = [];
-        for (let el of this.gridContext.props.usersFocuses) {
+        for (let el of this.gridContext.usersFocuses) {
             let location = this.gridContext.cellMatrix.getLocation(el.rowIdx, el.colIdx);
             let range = new Range([location.col], [location.row]);
             let element: { range: Range; color: string } = { range: range, color: el.color };

@@ -8,8 +8,7 @@ import { headerCellTouchStartTime } from '../Cells/HeaderCell';
 import { columnIsMoving } from './ColReorderBehavior';
 import { FieldTypes } from 'FlexBase/Model';
 import { Location } from '../Common';
-import { getLocationFromClient } from '../Functions/getLocationFromClient';
-import { changeBehavior } from '../Functions/changeBehavior';
+import { changeBehavior, getLocationFromClient } from '../Functions';
 
 export class PointerHandlerBehavior extends DelegateBehavior {
     private touchStartTime: number = 0;

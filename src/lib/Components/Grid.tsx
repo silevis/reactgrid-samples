@@ -2,8 +2,7 @@ import * as React from "react";
 import { GridContext, GridController, CellMatrix } from "../Common";
 import { Range, Location, SelectionMode, Behavior, zIndex } from "../Common";
 import { PaneRow } from "./PaneRow";
-import { getVisibleCells } from "../Functions/getVisibleCells";
-import { refreshIfNeeded } from "../Functions/refreshIfNeeded";
+import { getVisibleCells, refreshIfNeeded } from "../Functions";
 
 interface GridProps {
     cellMatrix: CellMatrix;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
 import { DelegateBehavior } from "./DelegateBehavior";
-import { focusLocation } from '../Functions/focusLocation';
+import { focusLocation } from '../Functions';
 
 export class KeyNavigationInsideSelectionBehavior extends DelegateBehavior {
     public handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {

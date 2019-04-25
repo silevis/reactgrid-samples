@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Range } from '../Model';
 import { Behavior } from '../Common/Behavior';
 import { DelegateBehavior } from "./DelegateBehavior";
 import { DrawFillHandleBehavior } from './DrawFillHandleBehavior';
 import { DrawExternalFocusedLocationsBehavior } from './DrawExternalFocusedLocationsBehavior';
+import { Range } from '../Common';
 
 export class DrawSelectionBehavior extends DelegateBehavior {
     constructor(inner: Behavior) {

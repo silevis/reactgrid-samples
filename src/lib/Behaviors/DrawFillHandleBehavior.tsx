@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { Range } from '../Model';
 import { Behavior } from '../Common/Behavior';
 import { DelegateBehavior } from "./DelegateBehavior";
 import { FillHandleBehavior } from './FillHandleBehavior';
 import { Utilities } from '../Common/Utilities';
-import { changeBehavior } from '../Functions/changeBehavior';
+import { changeBehavior } from '../Functions';
+import { Range } from '../Common';
 
 export class DrawFillHandleBehavior extends DelegateBehavior {
     isVisible = true;
@@ -24,7 +24,7 @@ export class DrawFillHandleBehavior extends DelegateBehavior {
             !activeSelectedRange ||
             !pane.contains(activeSelectedRange.last) ||
             this.gridContext.state.isFocusedCellInEditMode ||
-            this.grid.state.isFocusedCellReadOnly
+            this.gridContext.state.isFocusedCellReadOnly
         ) {
             return;
         }
@@ -39,7 +39,7 @@ export class DrawFillHandleBehavior extends DelegateBehavior {
             <div
                 data-cy="touch-fill-handle"
                 onTouchStart={e => {
-                    changeBehavior(this.gridContext, new DrawFillHandleBehavior(new FillHandleBehavior(this.grid, e), false));
+                    changeBehavior(this.gridContext, new DrawFillHandleBehavior(new FillHandleBehavior(this.gridContext, e), false));
                     e.stopPropagation();
                 }}
                 onTouchEnd={() => (this.isVisible = true)}
@@ -55,7 +55,7 @@ export class DrawFillHandleBehavior extends DelegateBehavior {
                     className="fillHandle"
                     data-cy="fillHandle"
                     onMouseDown={e => {
-                        changeBehavior(this.gridContext, new FillHandleBehavior(this.grid, e));
+                        changeBehavior(this.gridContext, new FillHandleBehavior(this.gridContext, e));
                         e.stopPropagation();
                     }}
                     style={{
