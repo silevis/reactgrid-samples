@@ -25,12 +25,12 @@ export class PointerHandlerBehavior extends DelegateBehavior {
             const location: Location = getLocationFromClient(this.gridContext, e.clientX, e.clientY);
             if (
                 this.gridContext.state.isFocusedCellInEditMode &&
-                (this.gridContext.state.focusedLocation.row.idx === location.row.idx &&
-                    this.gridContext.state.focusedLocation.col.idx === location.col.idx)
+                (this.gridContext.state.focusedLocation!.row.idx === location.row.idx &&
+                    this.gridContext.state.focusedLocation!.col.idx === location.col.idx)
             ) {
                 return;
             }
-            changeBehavior(this.gridContext, new CellSelectionBehavior(this.grid, e, 'cell'));
+            changeBehavior(this.gridContext, new CellSelectionBehavior(this.gridContext, e, 'cell'));
         }
     };
 
@@ -55,7 +55,7 @@ export class PointerHandlerBehavior extends DelegateBehavior {
             if (this.gridContext.state.isFocusedCellInEditMode) {
                 return;
             }
-            changeBehavior(this.gridContext, new CellSelectionBehavior(this.grid, e, 'cell', true));
+            changeBehavior(this.gridContext, new CellSelectionBehavior(this.gridContext, e, 'cell', true));
         }
         this.mouseEvent = true;
     };
@@ -78,7 +78,7 @@ export class PointerHandlerBehavior extends DelegateBehavior {
         }
 
         if (isItTheSameCell) {
-            changeBehavior(this.gridContext, new CellSelectionBehavior(this.grid, e, 'cell', true));
+            changeBehavior(this.gridContext, new CellSelectionBehavior(this.gridContext, e, 'cell', true));
         }
 
         this.touchStartTime = new Date().getTime();

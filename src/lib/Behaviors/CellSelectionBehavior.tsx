@@ -1,14 +1,13 @@
 import * as React from 'react';
-import { Grid } from '../Components/Gridonents/Grid';
-import { Location } from '../Model';
 import { AutoScrollBehavior } from './AutoScrollBehavior';
 import { DelegateBehavior } from "./DelegateBehavior";
 import { BasicGridBehavior } from './BasicGridBehavior';
 import { Utilities } from '../Common/Utilities';
-import { CellMatrix } from '../CellMatrix';
 import { getLocationFromClient } from '../Functions/getLocationFromClient';
 import { focusLocation } from '../Functions/focusLocation';
 import { resetToDefaultBehavior } from '../Functions/resetToDefaultBehavior';
+import { Grid } from '../Components/Grid';
+import { Location, CellMatrix, GridContext } from '../Common';
 
 // export let userIsMarkingGrid: boolean = false;
 
@@ -19,10 +18,10 @@ export class CellSelectionBehavior extends DelegateBehavior {
 
     private moveHandler = this.handleMove.bind(this);
 
-    constructor(grid: Grid, event: any, private selectionType: 'cell' | 'row' | 'column', touch?: boolean) {
+    constructor(gridContext: GridContext, event: any, private selectionType: 'cell' | 'row' | 'column', touch?: boolean) {
         super(
             new AutoScrollBehavior(
-                new BasicGridBehavior(grid),
+                new BasicGridBehavior(gridContext),
                 selectionType === 'row' ? 'vertical' : selectionType === 'column' ? 'horizontal' : 'both'
             )
         );
@@ -50,16 +49,16 @@ export class CellSelectionBehavior extends DelegateBehavior {
             } else if (event.type === 'touchstart') {
                 window.addEventListener('touchmove', this.moveHandler);
                 window.addEventListener('touchend', this.touchEndHandler);
-                this.gridContext.state.gridElement.addEventListener('scroll', this.gridScrollHandler);
+                gridContext.state.gridElement.addEventListener('scroll', this.gridScrollHandler);
             }
         } else {
             this.handleMouseDownAndClick(event);
 
-            if (event.shiftKey && this.gridContext.state.focusedLocation) {
+            if (event.shiftKey && gridContext.state.focusedLocation) {
                 this.updateCellSelection();
             }
 
-            this.gridContext.state.gridElement.addEventListener('scroll', this.gridScrollHandler);
+            gridContext.state.gridElement.addEventListener('scroll', this.gridScrollHandler);
         }
     }
 
@@ -95,7 +94,7 @@ export class CellSelectionBehavior extends DelegateBehavior {
         if (event.type === 'mousedown') {
             if (event.button === 2) {
                 // right button of mouse
-                if (this.gridContextisClickInsideSelectedRange(event)) {
+                if (this.grid.isClickInsideSelectedRange(event)) {
                     event.preventDefault();
                     event.stopPropagation();
                     focusLocation(this.gridContext, locationOfCell, false);
@@ -103,7 +102,7 @@ export class CellSelectionBehavior extends DelegateBehavior {
                 } else if (!event.shiftKey) {
                     if (this.grid.isClickOutOfGrid(this.clientX, this.clientY)) {
                     } else {
-                        this.setFocusLocation(this.gridContext, this.clientX, this.clientY);
+                        this.setFocusLocation(this.clientX, this.clientY);
                     }
                 }
             } else {
@@ -123,20 +122,20 @@ export class CellSelectionBehavior extends DelegateBehavior {
 
     private selectCellOrRowOrColumn(event: any, locationOfCell: Location, cellMatrix: CellMatrix) {
         if (this.selectionType === 'cell') {
-            this.setFocusLocation(this.gridContext, this.clientX, this.clientY, event.ctrlKey);
+            this.setFocusLocation(this.clientX, this.clientY, event.ctrlKey);
         } else if (this.selectionType === 'row') {
             const range = this.gridContext.cellMatrix.getRange(locationOfCell, {
                 row: locationOfCell.row,
                 col: cellMatrix.cols[cellMatrix.cols.length - 1]
             });
-            let selectedRowsIdx: number[] = this.grid.state.selectedRowsIdx;
+            let selectedRowsIdx: number[] = this.gridContext.state.selectedRowsIdx;
             if (event.type === 'mousedown') {
                 if (event.ctrlKey) {
                     this.toggleRow(event, selectedRowsIdx, locationOfCell, cellMatrix, range);
                 } else {
                     selectedRowsIdx = [];
                     selectedRowsIdx.push(locationOfCell.row.idx);
-                    this.grid.setState({
+                    this.gridContext.setState({
                         selectedRowsIdx,
                         focusedLocation: locationOfCell,
                         selectedRanges: [range]
@@ -150,7 +149,7 @@ export class CellSelectionBehavior extends DelegateBehavior {
                 row: cellMatrix.rows[cellMatrix.rows.length - 1],
                 col: locationOfCell.col
             });
-            let selectedColsIdx: number[] = this.grid.state.selectedColsIdx;
+            let selectedColsIdx: number[] = this.gridContext.state.selectedColsIdx;
             if (event.type === 'mousedown') {
                 if (event.ctrlKey) {
                     this.toggleColumn(event, selectedColsIdx, locationOfCell, cellMatrix, range);
@@ -282,21 +281,21 @@ export class CellSelectionBehavior extends DelegateBehavior {
         }
     }
 
-    private setFocusLocation(grid: Grid, positionX: number, positionY: number, ctrlKeyPressed: boolean = false) {
-        let focusedLocation = grid.getLocationFromClient(positionX, positionY);
+    private setFocusLocation(positionX: number, positionY: number, ctrlKeyPressed: boolean = false) {
+        let focusedLocation = getLocationFromClient(this.gridContext, positionX, positionY);
 
         if (
-            grid.state.focusedLocation &&
-            grid.state.focusedLocation.col.idx === focusedLocation.col.idx &&
-            grid.state.focusedLocation.row.idx === focusedLocation.row.idx
+            this.gridContext.state.focusedLocation &&
+            this.gridContext.state.focusedLocation.col.idx === focusedLocation.col.idx &&
+            this.gridContext.state.focusedLocation.row.idx === focusedLocation.row.idx
         ) {
-            if (grid.state.isFocusedCellInEditMode) {
+            if (this.gridContext.state.isFocusedCellInEditMode) {
                 return;
             }
         } else {
-            grid.focusLocation(focusedLocation, !ctrlKeyPressed);
+            focusLocation(this.gridContext, focusedLocation, !ctrlKeyPressed);
             if (ctrlKeyPressed) {
-                if (!Utilities.isFocusedLocationInsideSelectedRanges(grid.state.selectedRanges, focusedLocation)) {
+                if (!Utilities.isFocusedLocationInsideSelectedRanges(this.gridContext.state.selectedRanges, focusedLocation)) {
                     this.gridContext.setState({
                         selectedRowsIdx: [],
                         selectedColsIdx: [],

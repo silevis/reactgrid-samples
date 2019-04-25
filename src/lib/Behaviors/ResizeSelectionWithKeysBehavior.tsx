@@ -7,7 +7,7 @@ import { scrollIntoView } from '../Functions/scrollIntoView';
 
 export class ResizeSelectionWithKeysBehavior extends DelegateBehavior {
     public handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
-        const focusedCell = this.gridContext.state.focusedLocation;
+        const focusedCell = this.gridContext.state.focusedLocation!;
         const cellMatrix = this.gridContext.cellMatrix;
         const activeSelectedRange = Utilities.getActiveSelectionRange(
             this.gridContext.state.selectedRanges,
@@ -142,7 +142,7 @@ export class ResizeSelectionWithKeysBehavior extends DelegateBehavior {
             }
         } else if (event.shiftKey && event.keyCode === keyCodes.PAGE_DOWN) {
             const rowsOnScreen = cellMatrix.rows.filter(
-                (r: Row) => r.top < this.grid.gridElement.clientHeight
+                (r: Row) => r.top < this.gridContext.state.gridElement.clientHeight
             );
             if (activeSelectedRange.first.row.idx >= focusedCell.row.idx) {
                 this.resizeSelection(

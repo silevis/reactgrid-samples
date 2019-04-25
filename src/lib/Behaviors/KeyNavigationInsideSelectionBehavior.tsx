@@ -20,7 +20,7 @@ export class KeyNavigationInsideSelectionBehavior extends DelegateBehavior {
             return this.innerBehavior.handleKeyDown(event);
         }
         if (event.keyCode === keyCodes.TAB && !event.shiftKey) {
-            this.grid.moveFocusInsideSelectedRange(1);
+            this.gridContext.moveFocusInsideSelectedRange(1);
             event.preventDefault();
         } else if (event.keyCode === keyCodes.TAB && event.shiftKey) {
             if (
@@ -33,7 +33,7 @@ export class KeyNavigationInsideSelectionBehavior extends DelegateBehavior {
                 );
                 focusLocation(this.gridContext, cell, false);
             } else {
-                this.grid.moveFocusInsideSelectedRange(-1);
+                this.gridContext.moveFocusInsideSelectedRange(-1);
             }
 
             if (
@@ -48,10 +48,10 @@ export class KeyNavigationInsideSelectionBehavior extends DelegateBehavior {
             }
             event.preventDefault();
         } else if (event.keyCode === keyCodes.ENTER && !event.shiftKey) {
-            this.grid.moveFocusInsideSelectedRange('down');
+            this.gridContext.moveFocusInsideSelectedRange('down');
             event.preventDefault();
         } else if (event.keyCode === keyCodes.ENTER && event.shiftKey) {
-            this.grid.moveFocusInsideSelectedRange('up');
+            this.gridContext.moveFocusInsideSelectedRange('up');
             if (focusedCell.row.idx === activeSelectedRange.first.row.idx) {
                 const cell = cellMatrix.getLocation(
                     activeSelectedRange.last.row.idx,

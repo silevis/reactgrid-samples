@@ -4,7 +4,7 @@ import { DelegateBehavior } from "./DelegateBehavior";
 import { BasicGridBehavior } from './BasicGridBehavior';
 import { CellMatrix } from '..';
 import { Utilities } from '../Common/Utilities';
-import { Column } from '../Common';
+import { Column, GridContext } from '../Common';
 import { Grid } from '../Components/Grid';
 import { getColumnFromClientX } from '../Functions/getRowFromClientY';
 import { resetToDefaultBehavior } from '../Functions/resetToDefaultBehavior';
@@ -19,8 +19,8 @@ export class ColReorderBehavior extends DelegateBehavior {
     private target: Column[];
     private positionX: number;
 
-    constructor(event: any, grid: Grid) {
-        super(new AutoScrollBehavior(new BasicGridBehavior(grid), 'horizontal'));
+    constructor(gridContext: GridContext, event: any, grid: Grid) {
+        super(new AutoScrollBehavior(new BasicGridBehavior(gridContext), 'horizontal'));
         const activeSelectedRange = Utilities.getActiveSelectionRange(
             this.gridContext.state.selectedRanges,
             this.gridContext.state.focusedLocation
@@ -50,7 +50,7 @@ export class ColReorderBehavior extends DelegateBehavior {
                     positionX -
                     activeSelectedRange.first.col.left -
                     this.gridContext.cellMatrix.frozenLeftRange.width -
-                    this.grid.state.scrollAreaWidth;
+                    this.gridContext.state.scrollAreaWidth;
             } else if (colUnderCursor.idx > this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
                 this.mouseOffset =
                     positionX -

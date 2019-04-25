@@ -5,6 +5,7 @@ import { Behavior, Column, Row, Orientation } from '../Common';
 import { Utilities } from '../Common/Utilities';
 import { getColumnFromClientX } from '../Functions/getRowFromClientY';
 import { scrollIntoView } from '../Functions/scrollIntoView';
+import { getRowFromClientY } from '../Functions/getColumnFromClientX';
 
 export class AutoScrollBehavior extends DelegateBehavior {
     private mouseMoveHandler = this.handleMouseMove.bind(this);
@@ -124,7 +125,7 @@ export class AutoScrollBehavior extends DelegateBehavior {
                         : undefined;
 
                 const scrollToCol = nextCol || (nextRow ? getColumnFromClientX(this.gridContext, positionX) : undefined);
-                const scrollToRow = nextRow || (nextCol ? getRowOnScreen(positionY) : undefined);
+                const scrollToRow = nextRow || (nextCol ? getRowFromClientY(this.gridContext, positionY) : undefined);
 
                 if (scrollToCol && scrollToRow) {
                     scrollIntoView(this.gridContext, cellMatrix.getLocation(scrollToRow.idx, scrollToCol.idx));

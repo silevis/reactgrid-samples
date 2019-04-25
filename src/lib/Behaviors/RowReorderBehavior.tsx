@@ -5,6 +5,10 @@ import { AutoScrollBehavior } from './AutoScrollBehavior';
 import { BasicGridBehavior } from './BasicGridBehavior';
 import { CellMatrix } from '..';
 import { Utilities } from '../Common/Utilities';
+import { GridContext } from '../Common';
+import { getRowFromClientY } from '../Functions/getColumnFromClientX';
+import { getLocationFromClient } from '../Functions/getLocationFromClient';
+import { resetToDefaultBehavior } from '../Functions/resetToDefaultBehavior';
 
 export let rowIsMoving: boolean = false;
 
@@ -19,13 +23,13 @@ export class RowReorderBehavior extends DelegateBehavior {
     private firstVisibleRowTop;
     private positionY: number;
 
-    constructor(event: any, grid: Grid) {
-        super(new AutoScrollBehavior(new BasicGridBehavior(grid), 'vertical'));
+    constructor(event: any, gridContext: GridContext) {
+        super(new AutoScrollBehavior(new BasicGridBehavior(gridContext), 'vertical'));
         const activeSelectedRange = Utilities.getActiveSelectionRange(
-            this.grid.state.selectedRanges,
-            this.grid.state.focusedLocation
+            gridContext.state.selectedRanges,
+            gridContext.state.focusedLocation
         );
-        this.target = this.grid.props.cellMatrix.rows.filter(
+        this.target = gridContext.cellMatrix.rows.filter(
             (r: Row) =>
                 r.idx < activeSelectedRange.rows[0].idx ||
                 r.idx > activeSelectedRange.rows[activeSelectedRange.rows.length - 1].idx
@@ -42,53 +46,53 @@ export class RowReorderBehavior extends DelegateBehavior {
             this.positionY - document.elementFromPoint(0, this.positionY).getBoundingClientRect().top;
 
         if (
-            this.grid.props.cellMatrix.frozenBottomRange.rows.length > 0 &&
-            this.grid.props.cellMatrix.frozenTopRange.rows.length > 0
+            gridContext.cellMatrix.frozenBottomRange.rows.length > 0 &&
+            gridContext.cellMatrix.frozenTopRange.rows.length > 0
         ) {
-            if (rowUnderCursor.idx >= this.grid.props.cellMatrix.frozenBottomStart) {
+            if (rowUnderCursor.idx >= gridContext.cellMatrix.frozenBottomStart) {
                 this.mouseOffset =
                     this.positionY -
                     activeSelectedRange.first.row.top -
-                    this.grid.props.cellMatrix.frozenTopRange.height -
-                    this.grid.state.scrollAreaHeight;
-            } else if (rowUnderCursor.idx > this.grid.props.cellMatrix.frozenTopRange.last.row.idx) {
+                    gridContext.cellMatrix.frozenTopRange.height -
+                    gridContext.state.scrollAreaHeight;
+            } else if (rowUnderCursor.idx > gridContext.cellMatrix.frozenTopRange.last.row.idx) {
                 this.mouseOffset =
                     this.positionY -
                     activeSelectedRange.first.row.top -
-                    this.grid.props.cellMatrix.frozenTopRange.height +
-                    this.grid.gridElement.scrollTop;
+                    gridContext.cellMatrix.frozenTopRange.height +
+                    gridContext.state.gridElement.scrollTop;
             } else {
                 this.mouseOffset = this.positionY - activeSelectedRange.first.row.top;
             }
         } else if (
-            this.grid.props.cellMatrix.frozenBottomRange.rows.length > 0 &&
-            !(this.grid.props.cellMatrix.frozenTopRange.rows.length > 0)
+            gridContext.cellMatrix.frozenBottomRange.rows.length > 0 &&
+            !(gridContext.cellMatrix.frozenTopRange.rows.length > 0)
         ) {
-            if (rowUnderCursor.idx >= this.grid.props.cellMatrix.frozenBottomStart) {
+            if (rowUnderCursor.idx >= gridContext.cellMatrix.frozenBottomStart) {
                 this.mouseOffset =
                     this.positionY -
                     activeSelectedRange.first.row.top -
-                    this.grid.props.cellMatrix.frozenTopRange.height -
-                    this.grid.state.scrollAreaHeight;
+                    gridContext.cellMatrix.frozenTopRange.height -
+                    gridContext.state.scrollAreaHeight;
             } else {
                 this.mouseOffset =
                     this.positionY -
                     activeSelectedRange.first.row.top -
-                    this.grid.props.cellMatrix.frozenTopRange.height +
-                    this.grid.gridElement.scrollTop;
+                    gridContext.cellMatrix.frozenTopRange.height +
+                    gridContext.state.gridElement.scrollTop;
             }
-        } else if (this.grid.props.cellMatrix.frozenTopRange.rows.length > 0) {
-            if (rowUnderCursor.idx > this.grid.props.cellMatrix.frozenTopRange.last.row.idx) {
+        } else if (gridContext.cellMatrix.frozenTopRange.rows.length > 0) {
+            if (rowUnderCursor.idx > gridContext.cellMatrix.frozenTopRange.last.row.idx) {
                 this.mouseOffset =
                     this.positionY -
                     activeSelectedRange.first.row.top -
-                    this.grid.props.cellMatrix.frozenTopRange.height +
-                    this.grid.gridElement.scrollTop;
+                    gridContext.cellMatrix.frozenTopRange.height +
+                    gridContext.state.gridElement.scrollTop;
             } else {
                 this.mouseOffset = this.positionY - activeSelectedRange.first.row.top;
             }
         } else {
-            this.mouseOffset = this.positionY - activeSelectedRange.first.row.top + this.grid.gridElement.scrollTop;
+            this.mouseOffset = this.positionY - activeSelectedRange.first.row.top + gridContext.state.gridElement.scrollTop;
         }
 
         if (event.type === 'mousedown') {
@@ -99,7 +103,7 @@ export class RowReorderBehavior extends DelegateBehavior {
             window.addEventListener('touchend', this.mouseUpAndTouchEndHandler);
             rowIsMoving = true;
         }
-        grid.gridElement.addEventListener('scroll', this.scrollHandler);
+        gridContext.state.gridElement.addEventListener('scroll', this.scrollHandler);
     }
 
     dispose = () => {
@@ -108,7 +112,7 @@ export class RowReorderBehavior extends DelegateBehavior {
         window.removeEventListener('mouseup', this.mouseUpAndTouchEndHandler);
         window.removeEventListener('touchmove', this.moveHandler);
         window.removeEventListener('touchend', this.mouseUpAndTouchEndHandler);
-        this.grid.gridElement.removeEventListener('scroll', this.scrollHandler);
+        this.gridContext.state.gridElement.removeEventListener('scroll', this.scrollHandler);
         rowIsMoving = false;
     };
 
@@ -117,14 +121,14 @@ export class RowReorderBehavior extends DelegateBehavior {
     }
 
     private changeShadowPosition() {
-        const gridElement = this.grid.gridElement;
-        const cellMatrix = this.grid.props.cellMatrix;
+        const gridElement = this.gridContext.state.gridElement;
+        const cellMatrix = this.gridContext.cellMatrix;
         const mousePosition = this.positionY + gridElement.scrollTop;
         const topBorder = gridElement.offsetTop + cellMatrix.frozenTopRange.first.row.height;
         const hiddenScrollableRangeHeight = gridElement.scrollHeight - gridElement.clientHeight;
         const lastRowTop = cellMatrix.last.row.top;
 
-        let rowUnderCursor = this.grid.getRowOnScreen(this.positionY);
+        let rowUnderCursor = getRowFromClientY(this.gridContext, this.positionY);
 
         if (rowUnderCursor) {
             if (rowUnderCursor.idx === 0) {
@@ -140,7 +144,8 @@ export class RowReorderBehavior extends DelegateBehavior {
             }
         }
 
-        this.firstVisibleRowTop = this.grid.getLocationFromClient(
+        this.firstVisibleRowTop = getLocationFromClient(
+            this.gridContext,
             0,
             gridElement.offsetTop + cellMatrix.frozenTopRange.height + 25
         ).row.top;
@@ -160,14 +165,14 @@ export class RowReorderBehavior extends DelegateBehavior {
             hiddenScrollableRangeHeight +
             cellMatrix.frozenTopRange.height -
             gridElement.offsetTop >=
-            this.grid.state.linePosition
+            this.gridContext.state.linePosition
         ) {
             shadowPosition = lastRowTop;
         } else {
             shadowPosition = mousePosition - this.mouseOffset;
         }
 
-        this.grid.setState({ shadowPosition, shadowOrientation: 'horizontal' });
+        this.gridContext.setState({ shadowPosition, shadowOrientation: 'horizontal' });
     }
 
     private handleMove(event: any) {
@@ -183,14 +188,14 @@ export class RowReorderBehavior extends DelegateBehavior {
 
     private handleMouseUpAndTouchEnd() {
         const activeSelectedRange = Utilities.getActiveSelectionRange(
-            this.grid.state.selectedRanges,
-            this.grid.state.focusedLocation
+            this.gridContext.state.selectedRanges,
+            this.gridContext.state.focusedLocation
         );
-        const cellMatrix = this.grid.props.cellMatrix;
+        const cellMatrix = this.gridContext.cellMatrix;
         const selectedRows = activeSelectedRange.rows;
 
         if (!this.rowOnScreen) {
-            this.grid.setState({ linePosition: undefined, shadowPosition: undefined });
+            this.gridContext.setState({ linePosition: undefined, shadowPosition: undefined });
         } else {
             const positionChange =
                 this.rowOnScreen.idx > selectedRows[0].idx
@@ -213,7 +218,7 @@ export class RowReorderBehavior extends DelegateBehavior {
             const endRowIdx = selectedRows[selectedRows.length - 1].idx + positionChange;
             const cell = cellMatrix.getLocation(
                 activeSelectedRange.first.row.idx + positionChange,
-                this.grid.state.focusedLocation.col.idx
+                this.gridContext.state.focusedLocation!.col.idx
             );
 
             const selectedRanges = [
@@ -223,7 +228,7 @@ export class RowReorderBehavior extends DelegateBehavior {
                 )
             ];
 
-            this.grid.setState({
+            this.gridContext.setState({
                 focusedLocation: cell,
                 isFocusedCellInEditMode: false,
                 linePosition: undefined,
@@ -232,17 +237,17 @@ export class RowReorderBehavior extends DelegateBehavior {
                 selectedRanges
             });
         }
-        this.grid.commitChanges();
+        this.gridContext.commitChanges();
 
         if (event!.type === 'mouseup') {
-            this.grid.resetToDefaultBehavior();
+            resetToDefaultBehavior(this.gridContext);
         }
     }
 
     private handleMouseEnterOnRow(row: Row) {
         const activeSelectedRange = Utilities.getActiveSelectionRange(
-            this.grid.state.selectedRanges,
-            this.grid.state.focusedLocation
+            this.gridContext.state.selectedRanges,
+            this.gridContext.state.focusedLocation
         );
         const isTargetRow = (row: Row) => {
             return this.target.some(r => r === row);
@@ -255,13 +260,13 @@ export class RowReorderBehavior extends DelegateBehavior {
         };
         this.rowOnScreen = isTargetRow(row) ? row : isSelectedRow(row) ? activeSelectedRange.rows[0] : this.rowOnScreen;
         let rowTop = row.top;
-        const cellMatrix: CellMatrix = this.grid.props.cellMatrix;
+        const cellMatrix: CellMatrix = this.gridContext.cellMatrix;
         let linePosition;
         if (
-            this.grid.props.cellMatrix.frozenBottomRange.rows.length > 0 &&
-            this.grid.props.cellMatrix.frozenTopRange.rows.length > 0
+            this.gridContext.cellMatrix.frozenBottomRange.rows.length > 0 &&
+            this.gridContext.cellMatrix.frozenTopRange.rows.length > 0
         ) {
-            if (row.idx >= this.grid.props.cellMatrix.frozenBottomStart) {
+            if (row.idx >= this.gridContext.cellMatrix.frozenBottomStart) {
                 linePosition = this.rowOnScreen
                     ? areRowsMovingDown()
                         ? (rowTop += cellMatrix.frozenTopRange.height + cellMatrix.scrollableRange.height + row.height)
@@ -314,6 +319,6 @@ export class RowReorderBehavior extends DelegateBehavior {
                 : undefined;
         }
 
-        this.grid.setState({ linePosition, lineOrientation: 'horizontal' });
+        this.gridContext.setState({ linePosition, lineOrientation: 'horizontal' });
     }
 }

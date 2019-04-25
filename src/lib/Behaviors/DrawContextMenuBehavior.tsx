@@ -1,19 +1,20 @@
 import * as React from 'react';
-import { Range, MenuOption } from '../Model';
 import { Behavior } from '../Common/Behavior';
 import { DelegateBehavior } from "./DelegateBehavior";
-import { Grid } from '../Components/Gridonents/Grid';
 import { zIndex } from '../Common/Constants';
 import '../Cells/Cell.css';
 import { Utilities } from '../Common/Utilities';
-import { DefaultGridBehavior } from 'ReactDynaGrid/lib/Behaviors';
 import { changeBehavior } from '../Functions/changeBehavior';
+import { Grid } from '../Components/Grid';
+import { MenuOption, Range } from '../Common';
+import { DefaultGridBehavior } from './DefaultGridBehavior';
 
 export class DrawContextMenuBehavior extends DelegateBehavior {
     root: HTMLDivElement;
 
     constructor(inner: Behavior, grid: Grid, private event: any) {
         super(inner);
+        // TODO Is it needed?
         this.grid = grid;
     }
 
@@ -45,8 +46,8 @@ export class DrawContextMenuBehavior extends DelegateBehavior {
     }
 
     private renderCustomContextMenu(pane): JSX.Element {
-        const selectedRows: Range[] = this.grid.selectRows(this.grid.state.selectedRowsIdx);
-        const options: MenuOption[] = this.grid.props.onContextMenu(this.gridContext.state.selectedRanges, selectedRows);
+        const selectedRows: Range[] = this.gridContext.selectRows(this.gridContext.state.selectedRowsIdx);
+        const options: MenuOption[] = this.gridContext.props.onContextMenu(this.gridContext.state.selectedRanges, selectedRows);
         if (this.gridContext.cellMatrix.scrollableRange.containsRange(pane)) {
             const clickX =
                 this.event.type === 'contextmenu'
@@ -126,8 +127,8 @@ export class DrawContextMenuBehavior extends DelegateBehavior {
     }
 
     private contextMenuHandler(e: React.MouseEvent<HTMLDivElement>) {
-        changeBehavior(this.gridContext, new DefaultGridBehavior(this.grid), false);
-        Utilities.createSelectionFromFocusedLocation(this.grid);
+        changeBehavior(this.gridContext, new DefaultGridBehavior(), false);
+        Utilities.createSelectionFromFocusedLocation(this.gridContext);
     }
 
     renderPanePart = (pane: Range): React.ReactNode => {
