@@ -3,5 +3,5 @@ import { DefaultGridBehavior } from "../Behaviors/DefaultGridBehavior";
 import { changeBehavior } from "./changeBehavior";
 
 export function resetToDefaultBehavior(gridContext: GridContext) {
-    changeBehavior(gridContext, new DefaultGridBehavior(this));
+    changeBehavior(gridContext, new DefaultGridBehavior(gridContext));
 }
