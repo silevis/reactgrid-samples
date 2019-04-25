@@ -6,6 +6,7 @@ import { CellMatrix } from '..';
 import { Utilities } from '../Common/Utilities';
 import { GridContext, Row } from '../Common';
 import { getRowFromClientY, getLocationFromClient, resetToDefaultBehavior } from '../Functions';
+import { Line } from "../Components/Line";
 
 export let rowIsMoving: boolean = false;
 
@@ -19,6 +20,8 @@ export class RowReorderBehavior extends DelegateBehavior {
     private mouseOffsetYRelativeToCell: number;
     private firstVisibleRowTop;
     private positionY: number;
+    private setLinePosition: (position: number) => void = _ => { };
+
 
     constructor(event: any, gridContext: GridContext) {
         super(new AutoScrollBehavior(new BasicGridBehavior(gridContext), 'vertical'));
@@ -103,7 +106,7 @@ export class RowReorderBehavior extends DelegateBehavior {
         gridContext.state.gridElement.addEventListener('scroll', this.scrollHandler);
     }
 
-    dispose = () => {
+    dispose() {
         this.innerBehavior.dispose();
         window.removeEventListener('mousemove', this.moveHandler);
         window.removeEventListener('mouseup', this.mouseUpAndTouchEndHandler);
@@ -316,6 +319,20 @@ export class RowReorderBehavior extends DelegateBehavior {
                 : undefined;
         }
 
-        this.gridContext.setState({ linePosition, lineOrientation: 'horizontal' });
+        //this.gridContext.setState({ linePosition, lineOrientation: 'horizontal' });
+        this.gridContext.setLine({ linePosition, lineOrientation: 'horizontal' });
+
+        this.setLinePosition(15);
+    }
+
+    renderGlobalPart = () => {
+        return <>
+            {this.innerBehavior.renderGlobalPart()}
+            <LineAndShadow onInitialized={setter => this.setLinePosition = setter} />
+            <Shadow />
+
+        </>
+
     }
 }
+
