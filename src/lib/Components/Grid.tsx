@@ -1,9 +1,11 @@
 import * as React from "react";
 import { GridContext, GridController, CellMatrix } from "../Common/";
-import { Behavior, Range, zIndex, Location } from "../Common/";
+import { Behavior, zIndex } from "../Common/";
 import { PaneRow } from "./PaneRow";
 import { getVisibleCells } from "../Functions/getVisibleCells";
 import { refreshIfNeeded } from "../Functions/refreshIfNeeded";
+import { Location } from "../Common/Model";
+import { Range } from "../Common/Range";
 
 
 interface GridProps {
@@ -20,6 +22,7 @@ interface GridProps {
 }
 
 export class GridState {
+    //cellMatrix!: CellMatrix;
     gridElement!: HTMLDivElement
     currentBehavior!: Behavior;
     selectedRanges: Range[] = [];

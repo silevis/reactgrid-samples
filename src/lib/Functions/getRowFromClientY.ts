@@ -1,38 +1,41 @@
-import { Column } from "../Model";
+import { Column } from "../Common/Model";
+import { GridContext } from "../Common/GridContext";
 
-export function getColumnFromClientX(clientX: number, outOfRangeTrim?: boolean): Column {
-    const rect = this.gridElement.getBoundingClientRect();
-    const frozenLeftColsWidth = this.props.cellMatrix.frozenLeftRange.width;
-    const frozenRightColsWidth = this.props.cellMatrix.frozenRightRange.width;
+export function getColumnFromClientX(gridContext: GridContext, clientX: number, outOfRangeTrim?: boolean): Column {
+    const gridElement = gridContext.state.gridElement;
+    const cellMatrix = gridContext.cellMatrix;
+    const rect = gridElement.getBoundingClientRect();
+    const frozenLeftColsWidth = cellMatrix.frozenLeftRange.width;
+    const frozenRightColsWidth = cellMatrix.frozenRightRange.width;
     const isCursorOnLeftPane = clientX < frozenLeftColsWidth + rect.left;
     const isCursorOnRightPane = clientX > rect.width - frozenRightColsWidth;
     let virtualPositionOfX =
         clientX -
         rect.left +
         (frozenRightColsWidth && isCursorOnRightPane
-            ? this.props.cellMatrix.frozenRightRange.cols[0].left -
-            (this.gridElement.clientWidth - frozenRightColsWidth)
+            ? cellMatrix.frozenRightRange.cols[0].left -
+            (gridElement.clientWidth - frozenRightColsWidth)
             : clientX > rect.left + frozenLeftColsWidth
-                ? this.gridElement.scrollLeft
+                ? gridElement.scrollLeft
                 : 0);
-    let cols = this.props.cellMatrix.cols;
+    let cols = cellMatrix.cols;
     if (outOfRangeTrim) {
-        if (clientX < this.gridElement.getBoundingClientRect().left) {
+        if (clientX < gridElement.getBoundingClientRect().left) {
             return cols[0];
         }
-        if (clientX > this.gridElement.getBoundingClientRect().right) {
+        if (clientX > gridElement.getBoundingClientRect().right) {
             return cols[cols.length - 1];
         }
     }
     if (isCursorOnLeftPane) {
-        cols = this.props.cellMatrix.frozenLeftRange.cols;
+        cols = cellMatrix.frozenLeftRange.cols;
     } else if (isCursorOnRightPane) {
-        cols = this.props.cellMatrix.frozenRightRange.cols;
+        cols = cellMatrix.frozenRightRange.cols;
     } else {
         virtualPositionOfX -= frozenLeftColsWidth;
         cols = cols.slice(
-            this.props.cellMatrix.frozenLeftRange.cols.length,
-            cols.length - this.props.cellMatrix.frozenRightRange.cols.length
+            cellMatrix.frozenLeftRange.cols.length,
+            cols.length - cellMatrix.frozenRightRange.cols.length
         );
     }
     return (

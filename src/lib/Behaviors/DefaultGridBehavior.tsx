@@ -1,5 +1,4 @@
 // import * as React from 'react'
-import { Grid } from '../Components/Gridonents/Grid'
 import { DelegateBehavior } from "./DelegateBehavior";
 import { KeyNavigationInsideSelectionBehavior } from './KeyNavigationInsideSelectionBehavior'
 import { DefaultKeyNavigationBehavior } from './DefaultKeyNavigationBehavior'
@@ -9,6 +8,7 @@ import { BasicGridBehavior } from './BasicGridBehavior'
 import { DefaultKeyHandlerBehavior } from './DefaultKeyHandlerBehavior'
 import { DrawSelectionBehavior } from './DrawSelectionBehavior';
 import { PointerHandlerBehavior } from './PointerHandlerBehavior';
+import { Grid } from '../Components/Grid';
 export class DefaultGridBehavior extends DelegateBehavior {
     constructor(grid: Grid) {
         super(

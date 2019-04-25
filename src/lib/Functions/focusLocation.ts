@@ -1,21 +1,25 @@
-focusLocation(location: Location, resetSelection = true) {
-    const cellMatrix = this.props.cellMatrix;
+import { GridContext } from "../Common/GridContext";
+import { Location } from "../Common/Model";
+import { scrollIntoView } from "./scrollIntoView";
+
+export function focusLocation(gridContext: GridContext, location: Location, resetSelection = true) {
+    const cellMatrix = gridContext.cellMatrix;
     const cell = cellMatrix.getCell(location);
     const isReadOnly = cell.isReadOnly;
-    this.scrollIntoView(location);
+    scrollIntoView(gridContext, location);
     // cell.onFocusChanged(location);
     if (resetSelection) {
-        this.setState({
+        gridContext.setState({
             focusedLocation: location,
             isFocusedCellInEditMode: false,
-            isFocusedCellReadOnly: isReadOnly,
+            // isFocusedCellReadOnly: isReadOnly,
             selectedRanges: [cellMatrix.getRange(location, location)]
         });
     } else {
-        this.setState({
+        gridContext.setState({
             focusedLocation: location,
             isFocusedCellInEditMode: false,
-            isFocusedCellReadOnly: isReadOnly
+            // isFocusedCellReadOnly: isReadOnly
         });
     }
 }

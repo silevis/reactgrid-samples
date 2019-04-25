@@ -1,12 +1,16 @@
+import { GridContext } from "../Common/GridContext";
+import { Location } from "../Common/Model";
+import { CellMatrix } from "../Common/CellMatrix";
 
-export function scrollIntoView(cell: Location) {
+export function scrollIntoView(gridContext: GridContext, cell: Location) {
     const col = cell.col;
     const row = cell.row;
-    const cellMatrix: CellMatrix = this.props.cellMatrix;
-    const rightScrollBorder = this.gridElement.clientWidth - cellMatrix.frozenRightRange.width;
-    const bottomScrollBorder = this.gridElement.clientHeight - cellMatrix.frozenBottomRange.height;
-    let left = this.gridElement.scrollLeft;
-    let top = this.gridElement.scrollTop;
+    const cellMatrix: CellMatrix = gridContext.cellMatrix;
+    const gridElement = gridContext.state.gridElement;
+    const rightScrollBorder = gridElement.clientWidth - cellMatrix.frozenRightRange.width;
+    const bottomScrollBorder = gridElement.clientHeight - cellMatrix.frozenBottomRange.height;
+    let left = gridElement.scrollLeft;
+    let top = gridElement.scrollTop;
     let colLeft = col.left;
     let rowTop = row.top;
     const isColOnRightPane = cellMatrix.frozenRightRange.cols.length > 0 && col.idx >= cellMatrix.frozenRightStart;
@@ -28,12 +32,12 @@ export function scrollIntoView(cell: Location) {
     }
     if (
         colLeft >= cellMatrix.frozenLeftRange.width &&
-        colLeft - this.gridElement.scrollLeft < cellMatrix.frozenLeftRange.width
+        colLeft - gridElement.scrollLeft < cellMatrix.frozenLeftRange.width
     ) {
         left = colLeft - cellMatrix.frozenLeftRange.width - 1;
     } else if (
         colLeft + col.width <= cellMatrix.frozenLeftRange.width + cellMatrix.scrollableRange.width &&
-        colLeft + col.width - this.gridElement.scrollLeft > rightScrollBorder
+        colLeft + col.width - gridElement.scrollLeft > rightScrollBorder
     ) {
         if (!(cell.col.width > rightScrollBorder - cellMatrix.frozenLeftRange.width)) {
             left = colLeft + col.width - rightScrollBorder;
@@ -43,14 +47,14 @@ export function scrollIntoView(cell: Location) {
     }
     if (
         rowTop >= cellMatrix.frozenTopRange.height &&
-        rowTop - this.gridElement.scrollTop < cellMatrix.frozenTopRange.height
+        rowTop - gridElement.scrollTop < cellMatrix.frozenTopRange.height
     ) {
         top = rowTop - cellMatrix.frozenTopRange.height - 1;
     } else if (
         rowTop + row.height <= cellMatrix.frozenTopRange.height + cellMatrix.scrollableRange.height &&
-        rowTop + row.height - this.gridElement.scrollTop > bottomScrollBorder
+        rowTop + row.height - gridElement.scrollTop > bottomScrollBorder
     ) {
         top = rowTop + row.height - bottomScrollBorder + cellMatrix.frozenBottomRange.height;
     }
-    this.gridElement.scrollTo({ top: top, left: left, behavior: behavior });
+    gridElement.scrollTo({ top: top, left: left, behavior: 'smooth' });
 }

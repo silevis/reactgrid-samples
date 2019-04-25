@@ -1,6 +1,10 @@
+import { getRowFromClientY } from "./getColumnFromClientX";
+import { getColumnFromClientX } from "./getRowFromClientY";
+import { GridContext } from "../Common/GridContext";
+import { Location } from "../Common/Model";
 
-export function getLocationFromClient(clientX: number, clientY: number, outOfRangeTrim?: boolean): Location {
-    const row = this.getRowOnScreen(clientY, outOfRangeTrim);
-    const col = this.getColumnOnScreen(clientX, outOfRangeTrim);
+export function getLocationFromClient(gridContext: GridContext, clientX: number, clientY: number, outOfRangeTrim?: boolean): Location {
+    const row = getRowFromClientY(gridContext, clientY, outOfRangeTrim);
+    const col = getColumnFromClientX(gridContext, clientX, outOfRangeTrim);
     return { row, col };
 }
