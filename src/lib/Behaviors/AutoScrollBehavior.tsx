@@ -3,6 +3,8 @@ import { DelegateBehavior } from "./DelegateBehavior";
 import { DrawExternalFocusedLocationsBehavior } from './DrawExternalFocusedLocationsBehavior';
 import { Behavior, Column, Row, Orientation } from '../Common';
 import { Utilities } from '../Common/Utilities';
+import { getColumnFromClientX } from '../Functions/getRowFromClientY';
+import { scrollIntoView } from '../Functions/scrollIntoView';
 
 export class AutoScrollBehavior extends DelegateBehavior {
     private mouseMoveHandler = this.handleMouseMove.bind(this);
@@ -36,9 +38,9 @@ export class AutoScrollBehavior extends DelegateBehavior {
                     ? event.changedTouches[0].clientY
                     : null;
         const scrollMargin = [25, 25, 50, 25]; // top right bottom left
-        const gridElement = this.grid.gridElement;
+        const gridElement = this.gridContext.state.gridElement;
         const gridRect = gridElement.getBoundingClientRect();
-        const cellMatrix = this.grid.props.cellMatrix;
+        const cellMatrix = this.gridContext.cellMatrix;
         const leftScrollBorder = gridRect.left + cellMatrix.frozenLeftRange.width + scrollMargin[3];
         const rightScrollBorder = gridElement.clientWidth - cellMatrix.frozenRightRange.width - scrollMargin[1];
         const topScrollBorder = gridRect.top + cellMatrix.frozenTopRange.height + scrollMargin[0];
@@ -105,7 +107,7 @@ export class AutoScrollBehavior extends DelegateBehavior {
                         ? this.scrollByTop < 0
                             ? gridElement.scrollTop - -this.scrollByTop
                             : (searchedNextRow ? searchedNextRow.top : topLastVisibleRow) + this.scrollByTop
-                        : undefined;
+                        : undefined!;
 
                 const nextRow =
                     this.scrollByTop !== 0
@@ -121,11 +123,11 @@ export class AutoScrollBehavior extends DelegateBehavior {
                                 : lastRow
                         : undefined;
 
-                const scrollToCol = nextCol || (nextRow ? this.grid.getColumnFromClientX(positionX) : undefined);
-                const scrollToRow = nextRow || (nextCol ? this.grid.getRowOnScreen(positionY) : undefined);
+                const scrollToCol = nextCol || (nextRow ? getColumnFromClientX(this.gridContext, positionX) : undefined);
+                const scrollToRow = nextRow || (nextCol ? getRowOnScreen(positionY) : undefined);
 
                 if (scrollToCol && scrollToRow) {
-                    this.grid.scrollIntoView(cellMatrix.getLocation(scrollToRow.idx, scrollToCol.idx), 'smooth');
+                    scrollIntoView(this.gridContext, cellMatrix.getLocation(scrollToRow.idx, scrollToCol.idx));
                 }
             }, 300);
         } else if (this.timer !== 0 && this.scrollByLeft === 0 && this.scrollByTop === 0) {
@@ -135,29 +137,29 @@ export class AutoScrollBehavior extends DelegateBehavior {
     }
 
     private isSelectionFixedVertically() {
-        const matrix = this.grid.props.cellMatrix;
+        const cellMatrix = this.gridContext.cellMatrix;
         return (
-            (matrix.frozenTopRange.rows.length &&
-                matrix.frozenTopRange.containsRange(
-                    Utilities.getActiveSelectionRange(this.grid.state.selectedRanges, this.grid.state.focusedLocation)
+            (cellMatrix.frozenTopRange.rows.length &&
+                cellMatrix.frozenTopRange.containsRange(
+                    Utilities.getActiveSelectionRange(this.gridContext.state.selectedRanges, this.gridContext.state.focusedLocation)
                 )) ||
-            (matrix.frozenBottomRange.rows.length > 0 &&
-                matrix.frozenBottomRange.containsRange(
-                    Utilities.getActiveSelectionRange(this.grid.state.selectedRanges, this.grid.state.focusedLocation)
+            (cellMatrix.frozenBottomRange.rows.length > 0 &&
+                cellMatrix.frozenBottomRange.containsRange(
+                    Utilities.getActiveSelectionRange(this.gridContext.state.selectedRanges, this.gridContext.state.focusedLocation)
                 ))
         );
     }
 
     private isSelectionFixedHorizontally() {
-        const matrix = this.grid.props.cellMatrix;
+        const cellMatrix = this.gridContext.cellMatrix;
         return (
-            (matrix.frozenLeftRange.cols.length > 0 &&
-                matrix.frozenLeftRange.containsRange(
-                    Utilities.getActiveSelectionRange(this.grid.state.selectedRanges, this.grid.state.focusedLocation)
+            (cellMatrix.frozenLeftRange.cols.length > 0 &&
+                cellMatrix.frozenLeftRange.containsRange(
+                    Utilities.getActiveSelectionRange(this.gridContext.state.selectedRanges, this.gridContext.state.focusedLocation)
                 )) ||
-            (matrix.frozenRightRange.cols.length > 0 &&
-                matrix.frozenRightRange.containsRange(
-                    Utilities.getActiveSelectionRange(this.grid.state.selectedRanges, this.grid.state.focusedLocation)
+            (cellMatrix.frozenRightRange.cols.length > 0 &&
+                cellMatrix.frozenRightRange.containsRange(
+                    Utilities.getActiveSelectionRange(this.gridContext.state.selectedRanges, this.gridContext.state.focusedLocation)
                 ))
         );
     }

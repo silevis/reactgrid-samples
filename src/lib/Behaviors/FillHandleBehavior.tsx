@@ -6,6 +6,8 @@ import { AutoScrollBehavior } from './AutoScrollBehavior';
 import { BasicGridBehavior } from './BasicGridBehavior';
 import { Utilities } from '../Common/Utilities';
 import { Row, Column } from '../Common';
+import { getLocationFromClient } from '../Functions/getLocationFromClient';
+import { resetToDefaultBehavior } from '../Functions/resetToDefaultBehavior';
 
 export class FillHandleBehavior extends DelegateBehavior {
     private currentLocation: Location = null;
@@ -39,11 +41,11 @@ export class FillHandleBehavior extends DelegateBehavior {
                     ? event.changedTouches[0].clientY
                     : null;
         const activeSelectedRange = Utilities.getActiveSelectionRange(
-            this.grid.state.selectedRanges,
-            this.grid.state.focusedLocation
+            this.gridContext.state.selectedRanges,
+            this.gridContext.state.focusedLocation
         );
-        const cellMatrix = this.grid.props.cellMatrix;
-        const location = this.grid.getLocationFromClient(positionX, positionY);
+        const cellMatrix = this.gridContext.cellMatrix;
+        const location = getLocationFromClient(this.gridContext, positionX, positionY);
         if (this.currentLocation === location || !activeSelectedRange || !location.col || !location.row) {
             return;
         }
@@ -135,13 +137,13 @@ export class FillHandleBehavior extends DelegateBehavior {
 
     handleMouseUpAndTouchEnd(event: any) {
         const activeSelectedRange = Utilities.getActiveSelectionRange(
-            this.grid.state.selectedRanges,
-            this.grid.state.focusedLocation
+            this.gridContext.state.selectedRanges,
+            this.gridContext.state.focusedLocation
         );
-        const cellMatrix = this.grid.props.cellMatrix;
+        const cellMatrix = this.gridContext.cellMatrix;
         let values: any[];
         if (!activeSelectedRange) {
-            this.grid.commitChanges();
+            this.gridContext.commitChanges();
             if (event.type === 'mouseup') {
                 window.removeEventListener('mousemove', this.moveHandler);
                 window.removeEventListener('mouseup', this.mouseUpAndTouchEndHandler);
@@ -149,14 +151,14 @@ export class FillHandleBehavior extends DelegateBehavior {
                 window.removeEventListener('touchmove', this.moveHandler);
                 window.removeEventListener('touchend', this.mouseUpAndTouchEndHandler);
             }
-            this.grid.resetToDefaultBehavior();
+            resetToDefaultBehavior(this.gridContext);
             return;
         }
 
         switch (this.fillDirection) {
             case 'right':
                 values = activeSelectedRange.rows.map((row: Row) =>
-                    this.grid.props.cellMatrix.getCell({ row, col: activeSelectedRange.last.col })
+                    this.gridContext.cellMatrix.getCell({ row, col: activeSelectedRange.last.col })
                 );
                 this.fillRange.rows.forEach((row: Row, i: number) =>
                     this.fillRange.cols.forEach((col: Column) => {
@@ -164,7 +166,7 @@ export class FillHandleBehavior extends DelegateBehavior {
                             cellMatrix.getCell({ row, col }).trySetValue(values[i].value);
                     })
                 );
-                this.grid.setState({
+                this.gridContext.setState({
                     selectedRanges: [
                         cellMatrix.getRange(activeSelectedRange.first, {
                             row: activeSelectedRange.last.row,
@@ -175,7 +177,7 @@ export class FillHandleBehavior extends DelegateBehavior {
                 break;
             case 'left':
                 values = activeSelectedRange.rows.map((row: Row) =>
-                    this.grid.props.cellMatrix.getCell({ row, col: activeSelectedRange.first.col })
+                    this.gridContext.cellMatrix.getCell({ row, col: activeSelectedRange.first.col })
                 );
                 this.fillRange.rows.forEach((row: Row, i: number) =>
                     this.fillRange.cols.forEach(
@@ -184,7 +186,7 @@ export class FillHandleBehavior extends DelegateBehavior {
                             cellMatrix.getCell({ row, col }).trySetValue(values[i].value)
                     )
                 );
-                this.grid.setState({
+                this.gridContext.setState({
                     selectedRanges: [
                         cellMatrix.getRange(activeSelectedRange.last, {
                             row: activeSelectedRange.first.row,
@@ -195,7 +197,7 @@ export class FillHandleBehavior extends DelegateBehavior {
                 break;
             case 'up':
                 values = activeSelectedRange.cols.map((col: Column) =>
-                    this.grid.props.cellMatrix.getCell({ row: activeSelectedRange.first.row, col })
+                    this.gridContext.cellMatrix.getCell({ row: activeSelectedRange.first.row, col })
                 );
                 this.fillRange.rows.forEach((row: Row) =>
                     this.fillRange.cols.forEach(
@@ -204,7 +206,7 @@ export class FillHandleBehavior extends DelegateBehavior {
                             cellMatrix.getCell({ row, col }).trySetValue(values[i].value)
                     )
                 );
-                this.grid.setState({
+                this.gridContext.setState({
                     selectedRanges: [
                         cellMatrix.getRange(activeSelectedRange.last, {
                             row: this.currentLocation.row,
@@ -215,7 +217,7 @@ export class FillHandleBehavior extends DelegateBehavior {
                 break;
             case 'down':
                 values = activeSelectedRange.cols.map((col: Column) =>
-                    this.grid.props.cellMatrix.getCell({ row: activeSelectedRange.last.row, col })
+                    this.gridContext.cellMatrix.getCell({ row: activeSelectedRange.last.row, col })
                 );
                 this.fillRange.rows.forEach((row: Row) =>
                     this.fillRange.cols.forEach(
@@ -224,7 +226,7 @@ export class FillHandleBehavior extends DelegateBehavior {
                             cellMatrix.getCell({ row, col }).trySetValue(values[i].value)
                     )
                 );
-                this.grid.setState({
+                this.gridContext.setState({
                     selectedRanges: [
                         cellMatrix.getRange(activeSelectedRange.first, {
                             row: this.currentLocation.row,
@@ -234,7 +236,7 @@ export class FillHandleBehavior extends DelegateBehavior {
                 });
                 break;
         }
-        this.grid.commitChanges();
+        this.gridContext.commitChanges();
         if (event.type === 'mouseup') {
             window.removeEventListener('mousemove', this.moveHandler);
             window.removeEventListener('mouseup', this.mouseUpAndTouchEndHandler);
@@ -242,7 +244,7 @@ export class FillHandleBehavior extends DelegateBehavior {
             window.removeEventListener('touchmove', this.moveHandler);
             window.removeEventListener('touchend', this.mouseUpAndTouchEndHandler);
         }
-        this.grid.resetToDefaultBehavior();
+        resetToDefaultBehavior(this.gridContext);
     }
 
     renderPanePart = (pane: Range): React.ReactNode => {

@@ -7,6 +7,7 @@ import { zIndex } from '../Common/Constants';
 import '../Cells/Cell.css';
 import { Utilities } from '../Common/Utilities';
 import { DefaultGridBehavior } from 'ReactDynaGrid/lib/Behaviors';
+import { changeBehavior } from '../Functions/changeBehavior';
 
 export class DrawContextMenuBehavior extends DelegateBehavior {
     root: HTMLDivElement;
@@ -22,29 +23,31 @@ export class DrawContextMenuBehavior extends DelegateBehavior {
 
     private renderContextMenu(pane: Range) {
         return (
-            <div
-                style={{ width: '100%', height: '100%', position: 'fixed', top: 0, left: 0, zIndex: 900 }}
-                onTouchStart={e => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                }}
-                onTouchEnd={e => {
-                    e.stopPropagation();
-                }}
-                onContextMenu={e => this.contextMenuHandler(e)}
-                onDoubleClick={e => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }}
-            />
+            <>
+                <div
+                    style={{ width: '100%', height: '100%', position: 'fixed', top: 0, left: 0, zIndex: 900 }}
+                    onTouchStart={e => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }}
+                    onTouchEnd={e => {
+                        e.stopPropagation();
+                    }}
+                    onContextMenu={e => this.contextMenuHandler(e)}
+                    onDoubleClick={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }}
+                    />
                 { this.renderCustomContextMenu(pane) }
+            </>
         );
     }
 
     private renderCustomContextMenu(pane): JSX.Element {
         const selectedRows: Range[] = this.grid.selectRows(this.grid.state.selectedRowsIdx);
-        const options: MenuOption[] = this.grid.props.onContextMenu(this.grid.state.selectedRanges, selectedRows);
-        if (this.grid.props.cellMatrix.scrollableRange.containsRange(pane)) {
+        const options: MenuOption[] = this.grid.props.onContextMenu(this.gridContext.state.selectedRanges, selectedRows);
+        if (this.gridContext.cellMatrix.scrollableRange.containsRange(pane)) {
             const clickX =
                 this.event.type === 'contextmenu'
                     ? this.event.clientX
@@ -123,7 +126,7 @@ export class DrawContextMenuBehavior extends DelegateBehavior {
     }
 
     private contextMenuHandler(e: React.MouseEvent<HTMLDivElement>) {
-        this.grid.changeBehavior(new DefaultGridBehavior(this.grid), false);
+        changeBehavior(this.gridContext, new DefaultGridBehavior(this.grid), false);
         Utilities.createSelectionFromFocusedLocation(this.grid);
     }
 

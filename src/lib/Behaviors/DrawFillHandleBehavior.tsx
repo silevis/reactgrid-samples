@@ -4,6 +4,7 @@ import { Behavior } from '../Common/Behavior';
 import { DelegateBehavior } from "./DelegateBehavior";
 import { FillHandleBehavior } from './FillHandleBehavior';
 import { Utilities } from '../Common/Utilities';
+import { changeBehavior } from '../Functions/changeBehavior';
 
 export class DrawFillHandleBehavior extends DelegateBehavior {
     isVisible = true;
@@ -16,19 +17,19 @@ export class DrawFillHandleBehavior extends DelegateBehavior {
     }
     private renderFillHandle(pane: Range) {
         const activeSelectedRange = Utilities.getActiveSelectionRange(
-            this.grid.state.selectedRanges,
-            this.grid.state.focusedLocation
+            this.gridContext.state.selectedRanges,
+            this.gridContext.state.focusedLocation
         );
         if (
             !activeSelectedRange ||
             !pane.contains(activeSelectedRange.last) ||
-            this.grid.state.isFocusedCellInEditMode ||
+            this.gridContext.state.isFocusedCellInEditMode ||
             this.grid.state.isFocusedCellReadOnly
         ) {
             return;
         }
 
-        const focusedCell = this.grid.state.focusedLocation;
+        const focusedCell = this.gridContext.state.focusedLocation!;
         const row = activeSelectedRange.last;
         // const first = this.grid.state.selectedRange.firstCell
         const onFocus = row.col.idx === focusedCell.col.idx && row.row.idx === focusedCell.row.idx;
@@ -38,7 +39,7 @@ export class DrawFillHandleBehavior extends DelegateBehavior {
             <div
                 data-cy="touch-fill-handle"
                 onTouchStart={e => {
-                    this.grid.changeBehavior(new DrawFillHandleBehavior(new FillHandleBehavior(this.grid, e), false));
+                    changeBehavior(this.gridContext, new DrawFillHandleBehavior(new FillHandleBehavior(this.grid, e), false));
                     e.stopPropagation();
                 }}
                 onTouchEnd={() => (this.isVisible = true)}
@@ -54,7 +55,7 @@ export class DrawFillHandleBehavior extends DelegateBehavior {
                     className="fillHandle"
                     data-cy="fillHandle"
                     onMouseDown={e => {
-                        this.grid.changeBehavior(new FillHandleBehavior(this.grid, e));
+                        changeBehavior(this.gridContext, new FillHandleBehavior(this.grid, e));
                         e.stopPropagation();
                     }}
                     style={{

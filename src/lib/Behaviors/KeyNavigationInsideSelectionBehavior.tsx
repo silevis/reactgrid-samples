@@ -1,48 +1,50 @@
 import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
 import { DelegateBehavior } from "./DelegateBehavior";
+import { focusLocation } from '../Functions/focusLocation';
 
 export class KeyNavigationInsideSelectionBehavior extends DelegateBehavior {
     public handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
+        const focusedCell = this.gridContext.state.focusedLocation!;
+        const cellMatrix = this.gridContext.cellMatrix;
         const activeSelectedRange = Utilities.getActiveSelectionRange(
-            this.grid.state.selectedRanges,
-            this.grid.state.focusedLocation
+            this.gridContext.state.selectedRanges,
+            focusedCell
         );
         if (
-            this.grid.state.selectedRanges.length <= 1 &&
-            this.grid.state.selectedRanges.length > 0 &&
+            this.gridContext.state.selectedRanges.length <= 1 &&
+            this.gridContext.state.selectedRanges.length > 0 &&
             activeSelectedRange.cols.length <= 1 &&
             activeSelectedRange.rows.length <= 1
         ) {
             return this.innerBehavior.handleKeyDown(event);
         }
-        const focusedCell = this.grid.state.focusedLocation;
         if (event.keyCode === keyCodes.TAB && !event.shiftKey) {
             this.grid.moveFocusInsideSelectedRange(1);
             event.preventDefault();
         } else if (event.keyCode === keyCodes.TAB && event.shiftKey) {
             if (
-                this.grid.state.focusedLocation.col.idx === 0 &&
-                this.grid.state.focusedLocation.row.idx === activeSelectedRange.first.row.idx
+                focusedCell.col.idx === 0 &&
+                focusedCell.row.idx === activeSelectedRange.first.row.idx
             ) {
-                const cell = this.grid.props.cellMatrix.getLocation(
+                const cell = cellMatrix.getLocation(
                     activeSelectedRange.last.row.idx,
                     activeSelectedRange.last.col.idx
                 );
-                this.grid.focusLocation(cell, false);
+                focusLocation(this.gridContext, cell, false);
             } else {
                 this.grid.moveFocusInsideSelectedRange(-1);
             }
 
             if (
-                this.grid.state.focusedLocation.col.idx === activeSelectedRange.first.col.idx &&
-                this.grid.state.focusedLocation.row.idx === activeSelectedRange.first.row.idx
+                focusedCell.col.idx === activeSelectedRange.first.col.idx &&
+                focusedCell.row.idx === activeSelectedRange.first.row.idx
             ) {
-                const cell = this.grid.props.cellMatrix.getLocation(
+                const cell = cellMatrix.getLocation(
                     activeSelectedRange.last.row.idx,
                     activeSelectedRange.last.col.idx
                 );
-                this.grid.focusLocation(cell, false);
+                focusLocation(this.gridContext, cell, false);
             }
             event.preventDefault();
         } else if (event.keyCode === keyCodes.ENTER && !event.shiftKey) {
@@ -50,33 +52,33 @@ export class KeyNavigationInsideSelectionBehavior extends DelegateBehavior {
             event.preventDefault();
         } else if (event.keyCode === keyCodes.ENTER && event.shiftKey) {
             this.grid.moveFocusInsideSelectedRange('up');
-            if (this.grid.state.focusedLocation.row.idx === activeSelectedRange.first.row.idx) {
-                const cell = this.grid.props.cellMatrix.getLocation(
+            if (focusedCell.row.idx === activeSelectedRange.first.row.idx) {
+                const cell = cellMatrix.getLocation(
                     activeSelectedRange.last.row.idx,
-                    this.grid.state.focusedLocation.col.idx
+                    focusedCell.col.idx
                 );
-                this.grid.focusLocation(cell, false);
+                focusLocation(this.gridContext, cell, false);
             }
         } else if (!event.shiftKey && event.keyCode === keyCodes.LEFT_ARROW && focusedCell.col.idx > 0) {
-            const cell = this.grid.props.cellMatrix.getLocation(focusedCell.row.idx, focusedCell.col.idx - 1);
-            this.grid.focusLocation(cell);
+            const cell = cellMatrix.getLocation(focusedCell.row.idx, focusedCell.col.idx - 1);
+            focusLocation(this.gridContext, cell);
         } else if (
             !event.shiftKey &&
             event.keyCode === keyCodes.RIGHT_ARROW &&
-            focusedCell.col.idx < this.grid.props.cellMatrix.last.col.idx
+            focusedCell.col.idx < cellMatrix.last.col.idx
         ) {
-            const cell = this.grid.props.cellMatrix.getLocation(focusedCell.row.idx, focusedCell.col.idx + 1);
-            this.grid.focusLocation(cell);
+            const cell = cellMatrix.getLocation(focusedCell.row.idx, focusedCell.col.idx + 1);
+            focusLocation(this.gridContext, cell);
         } else if (!event.shiftKey && event.keyCode === keyCodes.UP_ARROW && focusedCell.row.idx > 0) {
-            const cell = this.grid.props.cellMatrix.getLocation(focusedCell.row.idx - 1, focusedCell.col.idx);
-            this.grid.focusLocation(cell);
+            const cell = cellMatrix.getLocation(focusedCell.row.idx - 1, focusedCell.col.idx);
+            focusLocation(this.gridContext, cell);
         } else if (
             !event.shiftKey &&
             event.keyCode === keyCodes.DOWN_ARROW &&
-            focusedCell.row.idx < this.grid.props.cellMatrix.last.row.idx
+            focusedCell.row.idx < cellMatrix.last.row.idx
         ) {
-            const cell = this.grid.props.cellMatrix.getLocation(focusedCell.row.idx + 1, focusedCell.col.idx);
-            this.grid.focusLocation(cell);
+            const cell = cellMatrix.getLocation(focusedCell.row.idx + 1, focusedCell.col.idx);
+            focusLocation(this.gridContext, cell);
         } else {
             return this.innerBehavior.handleKeyDown(event);
         }
@@ -86,8 +88,8 @@ export class KeyNavigationInsideSelectionBehavior extends DelegateBehavior {
 
     handleKeyUp = (event: React.KeyboardEvent<HTMLDivElement>): void => {
         const activeSelectedRange = Utilities.getActiveSelectionRange(
-            this.grid.state.selectedRanges,
-            this.grid.state.focusedLocation
+            this.gridContext.state.selectedRanges,
+            this.gridContext.state.focusedLocation
         );
         if (
             activeSelectedRange === undefined ||
@@ -104,24 +106,25 @@ export class KeyNavigationInsideSelectionBehavior extends DelegateBehavior {
     };
 
     moveFocusInsideSelectedRange(direction: -1 | 1 | 'up' | 'down') {
-        const selectedRange = Utilities.getActiveSelectionRange(this.grid.state.selectedRanges, this.grid.state.focusedLocation);
-        const selectedRangeIdx = Utilities.getActiveSelectionIdx(this.grid.state.selectedRanges, this.grid.state.focusedLocation);
+        const focusedCell = this.gridContext.state.focusedLocation!;
+        const selectedRange = Utilities.getActiveSelectionRange(this.gridContext.state.selectedRanges, focusedCell);
+        const selectedRangeIdx = Utilities.getActiveSelectionIdx(this.gridContext.state.selectedRanges, focusedCell);
         const colCount = selectedRange.cols.length;
         const delta = direction === 'up' ? -colCount : direction === 'down' ? colCount : direction;
-        const focusedCell = this.grid.state.focusedLocation;
         const currentPosInRange =
             (focusedCell.row.idx - selectedRange.first.row.idx) * colCount +
             (focusedCell.col.idx - selectedRange.first.col.idx);
         const newPosInRange = (currentPosInRange + delta) % (selectedRange.rows.length * selectedRange.cols.length);
         if (newPosInRange === 0) {
-            const nextSelectionRangeIdx = (selectedRangeIdx + 1) % this.grid.state.selectedRanges.length;
-            const nextSelection = this.grid.state.selectedRanges[nextSelectionRangeIdx];
-            this.grid.focusLocation({ col: nextSelection.first.col, row: nextSelection.first.row }, false);
+            const nextSelectionRangeIdx = (selectedRangeIdx + 1) % this.gridContext.state.selectedRanges.length;
+            const nextSelection = this.gridContext.state.selectedRanges[nextSelectionRangeIdx];
+            focusLocation(this.gridContext, { col: nextSelection.first.col, row: nextSelection.first.row }, false);
         } else {
             const newColIdx = selectedRange.first.col.idx + (newPosInRange % colCount);
             const newRowIdx = selectedRange.first.row.idx + Math.floor(newPosInRange / colCount);
-            const location = this.grid.props.cellMatrix.getLocation(newRowIdx, newColIdx);
-            this.grid.focusLocation(
+            const location = this.gridContext.cellMatrix.getLocation(newRowIdx, newColIdx);
+            focusLocation(
+                this.gridContext,
                 location,
                 selectedRange ? (selectedRange.cols.length > 1 || selectedRange.rows.length > 1 ? false : true) : true
             );

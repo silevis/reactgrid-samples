@@ -3,6 +3,7 @@ import { DelegateBehavior } from "./DelegateBehavior";
 import { BasicGridBehavior } from './BasicGridBehavior'
 import { DrawExternalFocusedLocationsBehavior } from './DrawExternalFocusedLocationsBehavior';
 import { Column } from '../Common';
+import { resetToDefaultBehavior } from '../Functions/resetToDefaultBehavior';
 
 export class ResizeColumnBehavior extends DelegateBehavior {
     private moveHandler = this.handleMove.bind(this)
@@ -15,7 +16,7 @@ export class ResizeColumnBehavior extends DelegateBehavior {
         // doesn't seem like a best way to do that...
         this.frozenColumnsWidth = grid.props.cellMatrix.frozenLeftRange.width;
 
-        this.grid.setState({ linePosition: resizedColumn.left + resizedColumn.width + this.frozenColumnsWidth, lineOrientation: 'vertical' })
+        this.gridContext.setState({ linePosition: resizedColumn.left + resizedColumn.width + this.frozenColumnsWidth, lineOrientation: 'vertical' })
 
         if (event.type === 'mousedown') {
             window.addEventListener('mousemove', this.moveHandler)
@@ -28,26 +29,26 @@ export class ResizeColumnBehavior extends DelegateBehavior {
 
     handleMove(event: any) {
         const positionX = event.type === 'mousemove' ? event.clientX : event.type === 'touchmove' ? event.changedTouches[0].clientX : null
-        if ((positionX) >= this.grid.gridElement.clientWidth - this.grid.props.cellMatrix.frozenRightRange.width) {
-            this.grid.setState({ linePosition: positionX, lineOrientation: 'vertical' })
+        if ((positionX) >= this.gridContext.state.gridElement.clientWidth - this.gridContext.cellMatrix.frozenRightRange.width) {
+            this.gridContext.setState({ linePosition: positionX, lineOrientation: 'vertical' })
         } else {
-            const mousePosition = (positionX + this.grid.gridElement.scrollLeft > (this.resizedColumn.left + this.minColumnWidth + this.frozenColumnsWidth)) ?
-                positionX + this.grid.gridElement.scrollLeft : this.resizedColumn.left + this.minColumnWidth + this.frozenColumnsWidth
-            this.grid.setState({ linePosition: mousePosition, lineOrientation: 'vertical' })
+            const mousePosition = (positionX + this.gridContext.state.gridElement.scrollLeft > (this.resizedColumn.left + this.minColumnWidth + this.frozenColumnsWidth)) ?
+                positionX + this.gridContext.state.gridElement.scrollLeft : this.resizedColumn.left + this.minColumnWidth + this.frozenColumnsWidth
+            this.gridContext.setState({ linePosition: mousePosition, lineOrientation: 'vertical' })
         }
     }
 
     private handleMouseUpAndTouchEnd(event: any) {
         const positionX = event.type === 'mouseup' ? event.clientX : event.type === 'touchend' ? event.changedTouches[0].clientX : null
-        const mousePosition = (positionX + this.grid.gridElement.scrollLeft > (this.resizedColumn.left + this.minColumnWidth + this.frozenColumnsWidth)) ?
-            positionX + this.grid.gridElement.scrollLeft : this.resizedColumn.left + this.minColumnWidth + this.frozenColumnsWidth;
+        const mousePosition = (positionX + this.gridContext.state.gridElement.scrollLeft > (this.resizedColumn.left + this.minColumnWidth + this.frozenColumnsWidth)) ?
+            positionX + this.gridContext.state.gridElement.scrollLeft : this.resizedColumn.left + this.minColumnWidth + this.frozenColumnsWidth;
         const newWidth = mousePosition - this.resizedColumn.left - this.frozenColumnsWidth;
-        this.grid.resetToDefaultBehavior()
-        this.grid.setState({ linePosition: undefined })
+        resetToDefaultBehavior(this.gridContext)
+        this.gridContext.setState({ linePosition: undefined })
         if (this.resizedColumn.onColResize) {
             this.resizedColumn.onColResize(this.resizedColumn, newWidth)
         }
-        this.grid.commitChanges()
+        this.gridContext.commitChanges()
         if (event.type === 'mouseup') {
             window.removeEventListener('mousemove', this.moveHandler)
             window.removeEventListener('mouseup', this.mouseUpAndTouchEndHandler)

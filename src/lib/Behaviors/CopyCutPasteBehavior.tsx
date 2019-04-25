@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { DelegateBehavior } from "./DelegateBehavior";
 import { Utilities } from '../Common/Utilities';
-import { Row, Column } from '../Common';
+import { Row, Column, Location } from '../Common';
 
 export class CopyCutPasteBehavior extends DelegateBehavior {
 
@@ -11,21 +11,21 @@ export class CopyCutPasteBehavior extends DelegateBehavior {
         //this.grid.hiddenFocusElement.focus()
         //this.grid.preventFocusChange = false;
         event.preventDefault()
-        this.grid.commitChanges()
+        this.gridContext.commitChanges()
     }
 
     handleCopy = (event: React.ClipboardEvent<HTMLDivElement>) => {
         this.grid.preventFocusChange = true;
         this.copySelectedRangeToClipboard()
-        this.grid.hiddenFocusElement.focus()
+        this.gridContext.hiddenFocusElement.focus()
         this.grid.preventFocusChange = false;
         event.preventDefault()
     }
 
     handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
-        const activeSelectedRange = Utilities.getActiveSelectionRange(this.grid.state.selectedRanges, this.grid.state.focusedLocation)
+        const activeSelectedRange = Utilities.getActiveSelectionRange(this.gridContext.state.selectedRanges, this.gridContext.state.focusedLocation)
         const pasteContent = event.clipboardData.getData('text/plain').split('\n').map((line: string) => line.split('\t'))
-        const cellMatrix = this.grid.props.cellMatrix
+        const cellMatrix = this.gridContext.cellMatrix
         if (pasteContent.length === 1 && pasteContent[0].length === 1) {
             activeSelectedRange.rows.forEach((row: Row) =>
                 activeSelectedRange.cols.forEach((col: Column) =>
@@ -34,7 +34,7 @@ export class CopyCutPasteBehavior extends DelegateBehavior {
             )
         } else {
             let lastLocation: Location
-            pasteContent.forEach((row: Row[], pasteRowIdx: number) =>
+            pasteContent.forEach((row: Row[], pasteRowIdx: number) => {
                 row.forEach((pasteValue, pasteColIdx) => {
                     const rowIdx = activeSelectedRange.rows[0].idx + pasteRowIdx
                     const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx
@@ -43,23 +43,23 @@ export class CopyCutPasteBehavior extends DelegateBehavior {
                         cellMatrix.getCell(lastLocation).trySetValue(pasteValue ? pasteValue : undefined)
                     }
                 })
-            )
-            this.grid.setState({ selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, lastLocation)] })
+            })
+            this.gridContext.setState({ selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, lastLocation)] })
         }
         event.preventDefault()
-        this.grid.commitChanges()
+        this.gridContext.commitChanges()
     }
 
     private copySelectedRangeToClipboard(removeValues = false) {
         const div = document.createElement('div')
         const table = document.createElement('table')
         table.setAttribute('empty-cells', 'show')
-        const activeSelectedRange = Utilities.getActiveSelectionRange(this.grid.state.selectedRanges, this.grid.state.focusedLocation)
+        const activeSelectedRange = Utilities.getActiveSelectionRange(this.gridContext.state.selectedRanges, this.gridContext.state.focusedLocation)
         activeSelectedRange.rows.forEach((row: Row) => {
             const tableRow = table.insertRow()
             activeSelectedRange.cols.forEach((col: Column) => {
                 const tableCell = tableRow.insertCell()
-                const gridCell = this.grid.props.cellMatrix.getCell({ row, col })
+                const gridCell = this.gridContext.cellMatrix.getCell({ row, col })
                 tableCell.textContent = (gridCell.value ? gridCell.value : '')  // for undefined values
                 if (!gridCell.value) {
                     tableCell.innerHTML = '<img>';
