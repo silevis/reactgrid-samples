@@ -5,6 +5,7 @@ export function changeBehavior(gridContext: GridContext, behavior: Behavior, sho
     gridContext.state.currentBehavior.dispose();
     gridContext.setState({ currentBehavior: behavior });
 
+    // TODO who needs this and why?
     if (shouldFocusInnerElement) {
         gridContext.hiddenFocusElement && gridContext.hiddenFocusElement.focus();
     }

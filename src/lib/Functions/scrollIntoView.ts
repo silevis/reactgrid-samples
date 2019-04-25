@@ -30,10 +30,7 @@ export function scrollIntoView(gridContext: GridContext, cell: Location) {
     } else if (isRowOnMiddlePane) {
         rowTop += cellMatrix.frozenTopRange.height;
     }
-    if (
-        colLeft >= cellMatrix.frozenLeftRange.width &&
-        colLeft - gridElement.scrollLeft < cellMatrix.frozenLeftRange.width
-    ) {
+    if (colLeft >= cellMatrix.frozenLeftRange.width && colLeft - gridElement.scrollLeft < cellMatrix.frozenLeftRange.width) {
         left = colLeft - cellMatrix.frozenLeftRange.width - 1;
     } else if (
         colLeft + col.width <= cellMatrix.frozenLeftRange.width + cellMatrix.scrollableRange.width &&

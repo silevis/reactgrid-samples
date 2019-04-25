@@ -1,6 +1,6 @@
 import { GridContext } from "../Common/GridContext";
 
-export function print (gridContext: GridContext, title: string) {
+export function print(gridContext: GridContext, title: string) {
     let printIframe = document.createElement('iframe');
     const printTable = generatePrintTable(gridContext);
     document.body.appendChild(printIframe);
@@ -17,7 +17,7 @@ export function print (gridContext: GridContext, title: string) {
     }
 };
 
-export function generatePrintTable(gridContext: GridContext) {
+function generatePrintTable(gridContext: GridContext) {
     const cellMatrix = gridContext.cellMatrix;
     let cells = gridContext.cellMatrix.cells;
     let borderStyle = '1px solid';

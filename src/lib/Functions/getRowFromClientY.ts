@@ -1,7 +1,7 @@
 import { Column } from "../Common/Model";
 import { GridContext } from "../Common/GridContext";
 
-export function getColumnFromClientX(gridContext: GridContext, clientX: number, outOfRangeTrim?: boolean): Column {
+export function getColumnFromClientX(gridContext: GridContext, clientX: number, outOfRangeTrim: boolean = false): Column {
     const gridElement = gridContext.state.gridElement;
     const cellMatrix = gridContext.cellMatrix;
     const rect = gridElement.getBoundingClientRect();

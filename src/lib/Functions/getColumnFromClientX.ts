@@ -1,7 +1,7 @@
 import { GridContext } from "../Common/GridContext";
 import { Row } from "../Common/Model";
 
-export function getRowFromClientY(gridContext: GridContext, clientY: number, outOfRangeTrim?: boolean): Row {
+export function getRowFromClientY(gridContext: GridContext, clientY: number, outOfRangeTrim: boolean = false): Row {
     const cellMatrix = gridContext.cellMatrix;
     const gridElement = gridContext.state.gridElement;
     const rect = gridElement.getBoundingClientRect();
