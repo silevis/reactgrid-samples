@@ -238,11 +238,11 @@ export class Grid extends React.Component<GridProps, GridState> {
         if (hiddenFocusElement) { this.gridContext.hiddenFocusElement = hiddenFocusElement };
     }
 
-    private handleContextMenu = (e: any) => {
+    private handleContextMenu = (event: any) => {
         /*this.state.focusedLocation &&*/
-        e.preventDefault();
+        event.preventDefault();
         //changeBehavior(new DrawContextMenuBehavior(new DefaultGridBehavior(this), this, e));
-        e.persist();
+        event.persist();
     };
 
     private handleScroll = () => {
@@ -355,53 +355,53 @@ export class Grid extends React.Component<GridProps, GridState> {
     // }
 
     private handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleKeyDown(this.gridContext, event);
+        this.state.currentBehavior.handleKeyDown(event);
     };
 
     private handleKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleKeyUp(this.gridContext, event);
+        this.state.currentBehavior.handleKeyUp(event);
     };
 
     private handleCopy = (event: React.ClipboardEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleCopy(this.gridContext, event);
+        this.state.currentBehavior.handleCopy(event);
     };
 
     private handleCut = (event: React.ClipboardEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleCut(this.gridContext, event);
+        this.state.currentBehavior.handleCut(event);
     };
 
     private handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handlePaste(this.gridContext, event);
+        this.state.currentBehavior.handlePaste(event);
     };
 
-    private handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleMouseDown(this.gridContext, e);
+    private handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
+        this.state.currentBehavior.handleMouseDown(event);
     };
 
-    private handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleClick(this.gridContext, e);
+    private handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+        this.state.currentBehavior.handleClick(event);
     };
 
-    private handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleTouchStart(this.gridContext, e);
+    private handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+        this.state.currentBehavior.handleTouchStart(event);
     };
 
-    private handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleTouchEnd(this.gridContext, e);
+    private handleTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
+        this.state.currentBehavior.handleTouchEnd(event);
     };
 
-    private handleDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleDoubleClick(this.gridContext, e);
+    private handleDoubleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+        this.state.currentBehavior.handleDoubleClick(event);
     };
 
-    // private handleBlur = (e: React.ClipboardEvent<HTMLDivElement>) => {
+    // private handleBlur = (event: React.ClipboardEvent<HTMLDivElement>) => {
     //     if (this.state.isFocusedCellInEditMode) {
     //         e.preventDefault();
     //         e.stopPropagation();
     //     }
     // };
 
-    private handlePasteOnHiddenElement = (e: React.ClipboardEvent<HTMLDivElement>) => {
-        e.preventDefault();
+    private handlePasteOnHiddenElement = (event: React.ClipboardEvent<HTMLDivElement>) => {
+        event.preventDefault();
     };
 }

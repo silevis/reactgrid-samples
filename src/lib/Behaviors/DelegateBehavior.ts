@@ -13,4 +13,5 @@ export class DelegateBehavior implements Behavior {
     handleTouchStart = this.innerBehavior.handleTouchStart;
     handleTouchEnd = this.innerBehavior.handleTouchEnd;
     handleDoubleClick = this.innerBehavior.handleDoubleClick;
+    gridContext = this.innerBehavior.gridContext;
 }

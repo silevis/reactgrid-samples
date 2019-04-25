@@ -1,7 +1,7 @@
-import { Behavior } from '../Common';
+import { Behavior, GridContext } from '../Common';
 
 export class BasicGridBehavior implements Behavior {
-    constructor() { }
+    constructor(public gridContext: GridContext) { }
     renderPanePart = () => undefined;
     dispose = () => { };
     handleCopy = () => { };
