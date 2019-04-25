@@ -1,12 +1,9 @@
 import * as React from "react";
-import { GridContext, GridController, CellMatrix } from "../Common/";
-import { Behavior, zIndex } from "../Common/";
+import { GridContext, GridController, CellMatrix } from "../Common";
+import { Range, Location, SelectionMode, Behavior, zIndex } from "../Common";
 import { PaneRow } from "./PaneRow";
 import { getVisibleCells } from "../Functions/getVisibleCells";
 import { refreshIfNeeded } from "../Functions/refreshIfNeeded";
-import { Location } from "../Common/Model";
-import { Range } from "../Common/Range";
-
 
 interface GridProps {
     cellMatrix: CellMatrix;
@@ -21,13 +18,19 @@ interface GridProps {
     // onContextMenu?: (selectedRanges, selectedRows) => MenuOption[];
 }
 
+
+
 export class GridState {
-    //cellMatrix!: CellMatrix;
-    gridElement!: HTMLDivElement
+    gridElement!: HTMLDivElement;
     currentBehavior!: Behavior;
+    // SELECTION
+    selectionMode: SelectionMode = 'ranges';
     selectedRanges: Range[] = [];
+    selectedIndexes: number[] = [];
     focusedLocation?: Location;
+    focusedSelectedRangeIdx: number = 0;
     isFocusedCellInEditMode: boolean = false;
+    // VISIBLE RANGE
     visibleRange?: Range;
     minScrollTop: number = -1;
     maxScrollTop: number = -1;

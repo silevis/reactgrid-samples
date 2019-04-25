@@ -2,6 +2,8 @@ export type Orientation = 'horizontal' | 'vertical';
 
 export type Direction = 'left' | 'right' | 'up' | 'down';
 
+export type SelectionMode = 'rows' | 'columns' | 'ranges';
+
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface Cell {
     value: any;
