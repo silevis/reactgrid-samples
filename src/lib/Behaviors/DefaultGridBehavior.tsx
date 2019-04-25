@@ -7,8 +7,9 @@ import { BasicGridBehavior } from './BasicGridBehavior'
 import { DefaultKeyHandlerBehavior } from './DefaultKeyHandlerBehavior'
 import { DrawSelectionBehavior } from './DrawSelectionBehavior';
 import { PointerHandlerBehavior } from './PointerHandlerBehavior';
+import { GridContext } from "../Common";
 export class DefaultGridBehavior extends DelegateBehavior {
-    constructor() {
+    constructor(gridContext: GridContext) {
         super(
             new DrawSelectionBehavior(
                 new PointerHandlerBehavior(
@@ -17,12 +18,14 @@ export class DefaultGridBehavior extends DelegateBehavior {
                             new KeyNavigationInsideSelectionBehavior(
                                 new DefaultKeyNavigationBehavior(
                                     new CopyCutPasteBehavior(
-                                        new BasicGridBehavior()
+                                        new BasicGridBehavior(gridContext)
                                     )
                                 )
                             )
                         )
                     )
-                )))
+                )
+            )
+        )
     }
 }

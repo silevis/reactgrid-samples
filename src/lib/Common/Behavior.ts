@@ -4,6 +4,7 @@ import { GridContext } from "./GridContext";
 
 export interface Behavior {
     renderPanePart: (pane: Range) => React.ReactNode;
+    renderGlobalPart: () => React.ReactNode;
     dispose: () => void;
     handleKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
     handleKeyUp: (event: React.KeyboardEvent<HTMLDivElement>) => void;

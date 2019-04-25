@@ -1,7 +1,8 @@
 import { Behavior } from '../Common/Behavior';
-export class DelegateBehavior implements Behavior {
+export abstract class DelegateBehavior implements Behavior {
     constructor(protected innerBehavior: Behavior) { }
     renderPanePart = this.innerBehavior.renderPanePart;
+    renderGlobalPart = this.innerBehavior.renderGlobalPart;
     dispose = this.innerBehavior.dispose;
     handleKeyDown = this.innerBehavior.handleKeyDown;
     handleKeyUp = this.innerBehavior.handleKeyUp;

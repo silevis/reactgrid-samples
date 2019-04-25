@@ -154,7 +154,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                         onPaste={this.handlePasteOnHiddenElement}
                         ref={this.handleNewHiddenElementRef}
                     />
-                    )}
+                    {this.state.currentBehavior.renderGlobalPart()}
                 </div>
             </div>
         );
