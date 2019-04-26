@@ -1,6 +1,6 @@
 import * as React from "react";
 import { GridContext, GridController, CellMatrix } from "../Common";
-import { Range, Location, SelectionMode, Behavior, zIndex } from "../Common";
+import { Range, Location, SelectionMode, Behavior, zIndex, BehaviorDelegate } from "../Common";
 import { PaneRow } from "./PaneRow";
 import { getVisibleCells, refreshIfNeeded } from "../Functions";
 
@@ -94,6 +94,7 @@ export class Grid extends React.Component<GridProps, GridState> {
 
     render() {
         const matrix = this.props.cellMatrix;
+        const delegate = new BehaviorDelegate(this.gridContext);
 
         return (
             <div
@@ -108,21 +109,21 @@ export class Grid extends React.Component<GridProps, GridState> {
                     // overflow: userIsMarkingGrid || columnIsMoving || rowIsMoving ? 'hidden' : 'auto'
                 }}
                 onScroll={this.handleScroll}
-                onKeyDown={this.handleKeyDown}
-                onKeyUp={this.handleKeyUp}
-                onCopy={this.handleCopy}
-                onCut={this.handleCut}
-                onPaste={this.handlePaste}
+                onKeyDown={delegate.handleKeyDown}
+                onKeyUp={delegate.handleKeyUp}
+                onCopy={delegate.handleCopy}
+                onCut={delegate.handleCut}
+                onPaste={delegate.handlePaste}
                 data-cy="data-grid"
             >
                 <div
                     style={{ width: matrix.contentWidth, height: matrix.contentHeight, position: 'relative' }}
-                    onMouseDown={this.handleMouseDown}
-                    onTouchStart={this.handleTouchStart}
-                    onTouchEnd={this.handleTouchEnd}
+                    onMouseDown={delegate.handleMouseDown}
+                    onTouchStart={delegate.handleTouchStart}
+                    onTouchEnd={delegate.handleTouchEnd}
                     onContextMenu={this.handleContextMenu}
-                    onDoubleClick={this.handleDoubleClick}
-                    onClick={this.handleClick}
+                    onDoubleClick={delegate.handleDoubleClick}
+                    onClick={delegate.handleClick}
                 >
                     {matrix.frozenTopRange.height > 0 &&
                         <PaneRow
@@ -158,8 +159,6 @@ export class Grid extends React.Component<GridProps, GridState> {
             </div>
         );
     }
-    
-    // all selected range
 
     private handleNewGridElementRef = (gridElement: HTMLDivElement) => {
         // TODO do we need setTimout here due to setState inside ComponentDidMount?
@@ -286,45 +285,6 @@ export class Grid extends React.Component<GridProps, GridState> {
     //     }
     // }
 
-    private handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleKeyDown(event);
-    };
-
-    private handleKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleKeyUp(event);
-    };
-
-    private handleCopy = (event: React.ClipboardEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleCopy(event);
-    };
-
-    private handleCut = (event: React.ClipboardEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleCut(event);
-    };
-
-    private handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handlePaste(event);
-    };
-
-    private handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleMouseDown(event);
-    };
-
-    private handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleClick(event);
-    };
-
-    private handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleTouchStart(event);
-    };
-
-    private handleTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleTouchEnd(event);
-    };
-
-    private handleDoubleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-        this.state.currentBehavior.handleDoubleClick(event);
-    };
 
     // private handleBlur = (event: React.ClipboardEvent<HTMLDivElement>) => {
     //     if (this.state.isFocusedCellInEditMode) {

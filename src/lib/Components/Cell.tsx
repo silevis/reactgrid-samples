@@ -12,7 +12,7 @@ export const Cell: React.SFC<CellProps> = (props) => {
     const borders = props.borders;
     const location = props.location;
     const cell = props.gridContext.cellMatrix.getCell(props.location);
-    const isFocused = state.focusedLocation && (state.focusedLocation.col.idx === props.location.col.idx && state.focusedLocation.row.idx === props.location.row.idx);
+    const isFocused = (state.focusedLocation !== undefined) && (state.focusedLocation.col.idx === props.location.col.idx && state.focusedLocation.row.idx === props.location.row.idx);
     const dynamicStyle: React.CSSProperties = isFocused
         ? {
             // marginLeft: isFirstCol ? 0 : -1, marginTop: isFirstRow ? 0 : -1,
