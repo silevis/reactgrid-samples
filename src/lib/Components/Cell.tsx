@@ -38,7 +38,7 @@ export const Cell: React.SFC<CellProps> = (props) => {
                     : 'solid 1px #E0E0E0'
         };
 
-    return cell.render({
+    return <>{cell.render({
         ...cell,
         gridContext: props.gridContext,
         cellKey: location.row.idx + '-' + location.col.idx,
@@ -61,5 +61,5 @@ export const Cell: React.SFC<CellProps> = (props) => {
             }
         }
 
-    });
+    })}</>
 }

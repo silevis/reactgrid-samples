@@ -1,3 +1,4 @@
+export const x = 1;
 // import { DelegateBehavior } from "./DelegateBehavior";
 // import { BasicGridBehavior } from './BasicGridBehavior'
 // import { DrawExternalFocusedLocationsBehavior } from './DefaultGridBehavior/DrawExternalFocusedLocationsBehavior';

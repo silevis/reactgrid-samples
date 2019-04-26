@@ -1,3 +1,4 @@
+export const x = 1;
 // import * as React from 'react';
 // import { Grid } from '../Components/Gridonents/Grid';
 // import { Location, Range, Direction } from '../Common';

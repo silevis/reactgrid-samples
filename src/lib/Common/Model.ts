@@ -49,7 +49,7 @@ export interface Column {
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface ColProps {
-    readonly id: string;
+    readonly id?: string;
     readonly width: number;
     readonly context: any;
     readonly onDropRight?: (reorderedColumns: Column[], targetColumn: Column) => void;
@@ -71,7 +71,7 @@ export interface Row {
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface RowProps {
-    readonly id: string;
+    readonly id?: string;
     readonly height: number;
     readonly context: any;
     readonly onDropBelow?: (reorderedRows: Row[], targetRow: Row) => void;

@@ -1,3 +1,4 @@
+export const x = 1;
 // import * as React from 'react';
 // import { Behavior } from '../Common';
 // import { DelegateBehavior } from "../Behaviors/DelegateBehavior";

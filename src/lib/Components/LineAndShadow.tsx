@@ -1,6 +1,6 @@
 import * as React from "react";
 import { zIndex } from "../Common/Constants";
-import { CellMatrix } from "..";
+import { CellMatrix } from "../Common";
 
 interface LineAndShadowProps {
     onInitialized: (linePositionSetter: (linePosition: number) => void, shadowPositionSetter: (shadowPosition: number) => void) => void

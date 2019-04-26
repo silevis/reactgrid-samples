@@ -1,13 +1,9 @@
 import * as React from 'react';
-import { ResizeColumnBehavior } from '../Behaviors/ResizeColumnBehavior';
-import { handleKeyDown, handleCopy, handleCut, handlePaste } from './handleEvents';
-import './Cell.css';
+import { handleCopy, handleCut, handlePaste } from './handleEvents';
+// import './Cell.css';
 import { Utilities } from '../Common/Utilities';
 import { Cell, Orientation, CellProps, Location, CellMatrix } from '../Common';
-import { ColReorderBehavior } from '../Behaviors/ColReorderBehavior';
-import { RowReorderBehavior } from '../Behaviors/RowReorderBehavior';
-import { CellSelectionBehavior } from '../Behaviors/CellSelectionBehavior';
-import { getLocationFromClient, changeBehavior } from '../Functions';
+import { getLocationFromClient } from '../Functions';
 
 export interface HeaderCellProps extends CellProps {
     orientation: Orientation;
@@ -50,18 +46,18 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
             value,
             type,
             isReadOnly,
-            onFocusChanged: location => onFocusChanged(location),
+            // onFocusChanged: (location: Location) => onFocusChanged(location), ??
             render: cellProps => (
                 <HeaderCell
                     {...cellProps}
                     key={cellProps.cellKey}
                     orientation={orientation}
                     shouldStartReorder={isReorderable}
-                    shouldStartColResize={isResizable}
+                    shouldStartColResize={isResizable!}
                     customCss={customCSS}
-                    enableCheckBox={enableCheckBox}
+                    enableCheckBox={enableCheckBox!}
                     checkBoxValue={checkBoxValue}
-                    setCheckBoxValue={value => trySetCheckBox(value)}
+                    setCheckBoxValue={value => trySetCheckBox!(value)}
                 >
                     {customHtml}
                 </HeaderCell>
@@ -83,18 +79,18 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
     render() {
         let style = {
             background: '#eee',
-            cursor:
-                this.props.isSelected &&
-                    this.props.gridContext.cellMatrix.first.row.idx !== 0 &&
-                    this.props.gridContext.cellMatrix.first.col.idx !== 0
-                    ? '-webkit-grab'
-                    : 'default',
+            cursor: 'default',
+                // this.props.isSelected &&
+                //     this.props.gridContext.cellMatrix.first.row.idx !== 0 &&
+                //     this.props.gridContext.cellMatrix.first.col.idx !== 0
+                //     ? '-webkit-grab'
+                //     : 'default',
             paddingRight: 0
         };
         let mergedStyle = Object.assign({}, this.props.attributes.style, style, this.props.customCss);
         let innerStyle = {
             background: '#eee',
-            cursor: this.props.isSelected ? '-webkit-grab' : 'default',
+            cursor: /*this.props.isSelected ? '-webkit-grab' : 'default',*/ 'default',
             display: 'flex',
             justifyContent: this.state.visibleCheckBox ? 'center' : 'space-between',
             width: `calc(100% - ${this.resizeDivWidth}px)`,
@@ -140,9 +136,9 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
                                     this.props.trySetValue(e.currentTarget.value);
                                     this.props.gridContext.commitChanges();
                                 }
-                                this.props.setEditMode(false);
+                                // this.props.setEditMode(false);
                             }}
-                            onKeyDown={e => handleKeyDown(e, this.props)}
+                            onKeyDown={e => {}/*handleKeyDown(e, this.props)*/}
                             onCopy={handleCopy}
                             onCut={handleCut}
                             onPaste={handlePaste}
@@ -211,7 +207,7 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
     }
 
     private orientationAllowsResizing() {
-        return this.props.orientation === 'horizontal' || this.props.orientation === 'full-dimension';
+        return this.props.orientation === 'horizontal'/* || this.props.orientation === 'full-dimension'*/;
     }
 
     private handleMouseDownClickAndTouchStart(e: any) {
@@ -240,7 +236,7 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
             this.props.gridContext.state.selectedRanges,
             this.props.gridContext.state.focusedLocation!
         );
-        const cellMatrix = this.props.gridContext.props.cellMatrix;
+        const cellMatrix = this.props.gridContext.cellMatrix;
 
         if (e.type === 'touchstart') {
             headerCellTouchStartTime = new Date().getTime();
@@ -250,9 +246,9 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
             if (selRange && selRange.contains(locationOfCell) && !e.ctrlKey) {
                 if (this.props.shouldStartReorder) {
                     if (this.props.orientation === 'horizontal') {
-                        changeBehavior(this.props.gridContext, new ColReorderBehavior(this.props.gridContext, e));
+                        // changeBehavior(this.props.gridContext, new ColReorderBehavior(this.props.gridContext, e));
                     } else {
-                        changeBehavior(this.props.gridContext, new RowReorderBehavior(this.props.gridContext, e));
+                        // changeBehavior(this.props.gridContext, new RowReorderBehavior(this.props.gridContext, e));
                     }
                 }
             } else {
@@ -271,15 +267,15 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
 
         if (orientation === 'horizontal') {
             if (e.type === 'click') {
-                changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'column', true));
+                // changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'column', true));
             } else if (e.type === 'mousedown') {
-                changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'column'));
+                // changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'column'));
             }
         } else if (orientation === 'vertical') {
             if (e.type === 'click') {
-                changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'row', true));
+                // changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'row', true));
             } else if (e.type === 'mousedown') {
-                changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'row'));
+                // changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'row'));
             }
         } else if (orientation === 'full-dimension') {
             if (e.type === 'mousedown' || e.type === 'click') {
@@ -294,9 +290,9 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
     private startResizingColumn(e: any) {
         const positionX =
             e.type === 'mousedown' ? e.clientX : e.type === 'touchstart' ? e.changedTouches[0].clientX : null;
-        const column = this.props.grid.getColumnFromClientX(positionX);
+        // const column = this.props.grid.getColumnFromClientX(positionX);
         e.stopPropagation();
-        this.props.grid.changeBehavior(new ResizeColumnBehavior(this.props.grid, column, e));
+        // this.props.grid.changeBehavior(new ResizeColumnBehavior(this.props.grid, column, e));
     }
 
     private nameIsNullOrEmpty(name: string) {

@@ -1,15 +1,16 @@
 import * as React from "react";
-import { GridContext, GridController, CellMatrix } from "../Common";
-import { Range, Location, SelectionMode, Behavior, zIndex, BehaviorDelegate } from "../Common";
+import { GridContext, GridController, CellMatrix, BehaviorDelegate } from "../Common";
+import { Range, Location, SelectionMode, Behavior, zIndex } from "../Common";
 import { PaneRow } from "./PaneRow";
 import { getVisibleCells, refreshIfNeeded } from "../Functions";
+import { DefaultGridBehavior } from "../Behaviors/DefaultGridBehavior";
 
 interface GridProps {
     cellMatrix: CellMatrix;
     style?: React.CSSProperties;
     // TODO idea: render user focus together with cell? onCellRender
     //usersFocuses: { colIdx: number; rowIdx: number; color: string }[];
-    onInitialized: (grid: GridController) => void;
+    onInitialized?: (grid: GridController) => void;
     // TODO idea: collect changes from cells and return here
     onValuesChanged?: () => void;
 
@@ -38,11 +39,16 @@ export class GridState {
 }
 
 export class Grid extends React.Component<GridProps, GridState> {
-
-    state = new GridState();
-
     private gridContext = new GridContext(this);
 
+    
+    state = new GridState();
+    
+    constructor(props: any) {
+        super(props)
+        this.gridContext.state.currentBehavior = new DefaultGridBehavior(this.gridContext)
+    }
+    
     static getDerivedStateFromProps(nextProps: GridProps, prevState: GridState) {
         return (prevState.gridElement) ?
             getVisibleCells(prevState.gridElement, nextProps.cellMatrix) : prevState;
@@ -106,7 +112,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                     WebkitUserSelect: 'none',
                     msUserSelect: 'none',
                     userSelect: 'none',
-                    // overflow: userIsMarkingGrid || columnIsMoving || rowIsMoving ? 'hidden' : 'auto'
+                    overflow: 'auto'
                 }}
                 onScroll={this.handleScroll}
                 onKeyDown={delegate.handleKeyDown}
@@ -154,7 +160,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                         onPaste={this.handlePasteOnHiddenElement}
                         ref={this.handleNewHiddenElementRef}
                     />
-                    {this.state.currentBehavior.renderGlobalPart()}
+                    {/* {this.state.currentBehavior.renderGlobalPart && this.state.currentBehavior.renderGlobalPart()} */}
                 </div>
             </div>
         );

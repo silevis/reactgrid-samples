@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { CellProps, Cell, Location } from '../Model';
 import { keyCodes } from '../Common/Constants';
-import { handleKeyDown, isItLastRowOrCol, handleCopy, handleCut, handlePaste } from './handleEvents';
-import '../Grid.css';
+import { handleKeyDown/*, isItLastRowOrCol*/, handleCopy, handleCut, handlePaste } from './handleEvents';
+import { CellProps, Location, Cell } from '../Common';
+// import '../Grid.css';
 export interface TextCellProps extends CellProps {
     customCss?: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 }
 export class TextCell extends React.Component<TextCellProps, {}> {
-    enteredValue: string = undefined;
+    // enteredValue: string = undefined;
     static Create(
         value: string,
         setValue: (value: any, deleteKeyPress?: boolean) => void,
@@ -19,20 +19,20 @@ export class TextCell extends React.Component<TextCellProps, {}> {
         return {
             value,
             isReadOnly: readOnly,
-            onFocusChanged: location => onFocusChanged(location),
-            render: cellProps => (
+            // onFocusChanged: (location: Location) => onFocusChanged(location),
+            render: (cellProps: any) => (
                 <TextCell {...cellProps} key={cellProps.cellKey} customCss={customCSS}>
                     {customHtml}
                 </TextCell>
             ),
-            trySetValue: (v, deleteKeyPress) => {
+            trySetValue: (v: any/*, deleteKeyPress*/) => {
                 if (typeof v === 'boolean' || v instanceof Boolean) {
                     v = v.toString();
                 }
                 if (v && v.length && v.length > 1024) {
                     v = v.substring(0, 1024);
                 }
-                setValue(v, deleteKeyPress);
+                setValue(v/*, deleteKeyPress*/);
                 return true;
             }
         };
@@ -43,24 +43,24 @@ export class TextCell extends React.Component<TextCellProps, {}> {
         return (
             <div
                 className="cell"
-                ref={ref => this.props.setFocusedCellRef(ref)}
+                // ref={ref => this.props.setFocusedCellRef(ref)}
                 {...(this.props.attributes, { style: mergedStyle })}
                 onMouseDown={e => {
-                    if (isItLastRowOrCol(this.props, 'col')) {
-                        e.stopPropagation();
-                    }
+                    // if (isItLastRowOrCol(this.props, 'col')) {
+                    //     e.stopPropagation();
+                    // }
                 }}
                 onClick={e => {
-                    if (isItLastRowOrCol(this.props, 'col')) {
-                        e.stopPropagation();
-                    }
+                    // if (isItLastRowOrCol(this.props, 'col')) {
+                    //     e.stopPropagation();
+                    // }
                 }}
             >
                 {this.props.isInEditMode && (
                     <input
                         style={{
-                            width: this.props.attributes.style.width,
-                            height: this.props.attributes.style.height,
+                            width: 100/*this.props.attributes.style.width*/,
+                            height: 25/*this.props.attributes.style.height*/,
                             border: 0,
                             fontSize: 16,
                             outline: 'none'
@@ -72,29 +72,29 @@ export class TextCell extends React.Component<TextCellProps, {}> {
                             }
                         }}
                         defaultValue={this.props.value}
-                        onChange={input => (this.enteredValue = input.target.value)}
+                        // onChange={input => (this.enteredValue = input.target.value)}
                         onBlur={e => {
-                            this.props.setEditMode(false);
+                            // this.props.setEditMode(false);
                             if (
                                 (e.target.value && e.target.value !== this.props.value) ||
                                 (this.props.value && e.target.value !== this.props.value)
                             ) {
                                 this.props.trySetValue(e.target.value);
-                                this.props.grid.commitChanges();
+                                this.props.gridContext.commitChanges();
                             }
                         }}
                         onCopy={handleCopy}
                         onCut={handleCut}
                         onPaste={handlePaste}
                         onKeyDown={e => {
-                            handleKeyDown(e, this.props);
-                            if (
-                                (this.enteredValue === undefined || this.enteredValue.length === 0) &&
-                                (e.keyCode === keyCodes.ENTER && isItLastRowOrCol(this.props, 'row'))
-                            ) {
-                                this.props.trySetValue(this.enteredValue);
-                                this.props.grid.commitChanges();
-                            }
+                            // handleKeyDown(e, this.props);
+                            // if (
+                            //     (this.enteredValue === undefined || this.enteredValue.length === 0) &&
+                            //     (e.keyCode === keyCodes.ENTER && isItLastRowOrCol(this.props, 'row'))
+                            // ) {
+                            //     this.props.trySetValue(this.enteredValue);
+                            //     this.props.gridContext.commitChanges();
+                            // }
                         }}
                     />
                 )}

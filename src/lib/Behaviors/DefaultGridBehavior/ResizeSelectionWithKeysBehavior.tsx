@@ -1,3 +1,4 @@
+export const x = 1;
 // import * as React from 'react';
 // import { DelegateBehavior } from "./DelegateBehavior";
 // import { keyCodes } from '../../Common/Constants';

@@ -1,6 +1,6 @@
 import { GridContext } from "../Common";
 
-export function isClickOutOfGrid(gridContext: GridContext, clientX, clientY): boolean {
+export function isClickOutOfGrid(gridContext: GridContext, clientX: number, clientY: number): boolean {
     // const gridCellsContainerRef = this.gridCellsContainerRef.getBoundingClientRect();
     let outOfGrid: boolean = false;
     // if (

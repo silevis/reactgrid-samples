@@ -1,3 +1,4 @@
+export const x = 1;
 // import * as React from 'react';
 // import { AutoScrollBehavior } from './AutoScrollBehavior';
 // import { DelegateBehavior } from "./DelegateBehavior";

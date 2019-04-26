@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Range } from "../Model";
+import { Range } from "../Common";
 
 export interface PartialAreaProps {
     area: Range,

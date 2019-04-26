@@ -1,3 +1,4 @@
+export const x = 1;
 // import * as React from 'react'
 // import { Row, Column, Location, GridContext } from '../../Common';
 
