@@ -1,10 +1,12 @@
 import * as React from 'react';
-import { Cell, Orientation, CellProps, Location } from '../Model';
-import { CellSelectionBehavior, ColReorderBehavior, RowReorderBehavior } from '../Behaviors';
 import { ResizeColumnBehavior } from '../Behaviors/ResizeColumnBehavior';
 import { handleKeyDown, handleCopy, handleCut, handlePaste } from './handleEvents';
 import './Cell.css';
 import { Utilities } from '../Common/Utilities';
+import { Cell, Orientation, CellProps, Location, CellMatrix } from '../Common';
+import { ColReorderBehavior } from '../Behaviors/ColReorderBehavior';
+import { RowReorderBehavior } from '../Behaviors/RowReorderBehavior';
+import { CellSelectionBehavior } from '../Behaviors/CellSelectionBehavior';
 
 export interface HeaderCellProps extends CellProps {
     orientation: Orientation;
@@ -262,7 +264,7 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
         }
     }
 
-    private selectColumnOrRow(e: any, locationOfCell, cellMatrix) {
+    private selectColumnOrRow(e: any, locationOfCell: Location, cellMatrix: CellMatrix) {
         const orientation = this.props.orientation;
 
         if (orientation === 'horizontal') {

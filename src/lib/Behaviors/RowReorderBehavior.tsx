@@ -14,11 +14,11 @@ export class RowReorderBehavior extends DelegateBehavior {
     private moveHandler = this.handleMove.bind(this);
     private mouseUpAndTouchEndHandler = this.handleMouseUpAndTouchEnd.bind(this);
     private scrollHandler = this.handleScroll.bind(this);
-    private rowOnScreen: Row;
+    private rowOnScreen!: Row;
     private mouseOffset: number;
     private target: Row[];
     private mouseOffsetYRelativeToCell: number;
-    private firstVisibleRowTop;
+    private firstVisibleRowTop: any;
     private positionY: number;
     private linePosition: number = -1;
     private setLinePosition: (position: number) => void = _ => { };
@@ -29,7 +29,7 @@ export class RowReorderBehavior extends DelegateBehavior {
         super(new AutoScrollBehavior(new BasicGridBehavior(gridContext), 'vertical'));
         const activeSelectedRange = Utilities.getActiveSelectionRange(
             gridContext.state.selectedRanges,
-            gridContext.state.focusedLocation
+            gridContext.state.focusedLocation!
         );
         this.target = gridContext.cellMatrix.rows.filter(
             (r: Row) =>
@@ -55,8 +55,8 @@ export class RowReorderBehavior extends DelegateBehavior {
                 this.mouseOffset =
                     this.positionY -
                     activeSelectedRange.first.row.top -
-                    gridContext.cellMatrix.frozenTopRange.height -
-                    gridContext.state.scrollAreaHeight;
+                    gridContext.cellMatrix.frozenTopRange.height
+                    // - gridContext.state.scrollAreaHeight;
             } else if (rowUnderCursor.idx > gridContext.cellMatrix.frozenTopRange.last.row.idx) {
                 this.mouseOffset =
                     this.positionY -
@@ -74,8 +74,8 @@ export class RowReorderBehavior extends DelegateBehavior {
                 this.mouseOffset =
                     this.positionY -
                     activeSelectedRange.first.row.top -
-                    gridContext.cellMatrix.frozenTopRange.height -
-                    gridContext.state.scrollAreaHeight;
+                    gridContext.cellMatrix.frozenTopRange.height
+                    // - gridContext.state.scrollAreaHeight;
             } else {
                 this.mouseOffset =
                     this.positionY -
@@ -191,7 +191,7 @@ export class RowReorderBehavior extends DelegateBehavior {
     private handleMouseUpAndTouchEnd() {
         const activeSelectedRange = Utilities.getActiveSelectionRange(
             this.gridContext.state.selectedRanges,
-            this.gridContext.state.focusedLocation
+            this.gridContext.state.focusedLocation!
         );
         const cellMatrix = this.gridContext.cellMatrix;
         const selectedRows = activeSelectedRange.rows;
@@ -234,7 +234,7 @@ export class RowReorderBehavior extends DelegateBehavior {
             this.gridContext.setState({
                 focusedLocation: cell,
                 isFocusedCellInEditMode: false,
-                selectedRowsIdx,
+                // selectedRowsIdx,
                 selectedRanges
             });
         }
@@ -250,7 +250,7 @@ export class RowReorderBehavior extends DelegateBehavior {
     private handleMouseEnterOnRow(row: Row) {
         const activeSelectedRange = Utilities.getActiveSelectionRange(
             this.gridContext.state.selectedRanges,
-            this.gridContext.state.focusedLocation
+            this.gridContext.state.focusedLocation!
         );
         const isTargetRow = (row: Row) => {
             return this.target.some(r => r === row);
@@ -327,7 +327,7 @@ export class RowReorderBehavior extends DelegateBehavior {
     renderGlobalPart = () => {
         const activeSelectedRange = Utilities.getActiveSelectionRange(
             this.gridContext.state.selectedRanges,
-            this.gridContext.state.focusedLocation
+            this.gridContext.state.focusedLocation!
         );
         return <>
             {this.innerBehavior.renderGlobalPart()}

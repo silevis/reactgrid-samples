@@ -14,7 +14,7 @@ export class ColReorderBehavior extends DelegateBehavior {
     private moveHandler = this.handleMove.bind(this);
     private mouseUpAndTouchEndHandler = this.handleMouseUpAndTouchEnd.bind(this);
     private scrollHandler = this.handleScroll.bind(this);
-    private colOnScreen: Column;
+    private colOnScreen!: Column;
     private mouseOffset: number;
     private target: Column[];
     private positionX: number;
@@ -25,7 +25,7 @@ export class ColReorderBehavior extends DelegateBehavior {
         super(new AutoScrollBehavior(new BasicGridBehavior(gridContext), 'horizontal'));
         const activeSelectedRange = Utilities.getActiveSelectionRange(
             this.gridContext.state.selectedRanges,
-            this.gridContext.state.focusedLocation
+            this.gridContext.state.focusedLocation!
         );
         this.target = this.gridContext.cellMatrix.cols.filter(
             (c: Column) =>
@@ -51,8 +51,8 @@ export class ColReorderBehavior extends DelegateBehavior {
                 this.mouseOffset =
                     positionX -
                     activeSelectedRange.first.col.left -
-                    this.gridContext.cellMatrix.frozenLeftRange.width -
-                    this.gridContext.state.scrollAreaWidth;
+                    this.gridContext.cellMatrix.frozenLeftRange.width
+                    // - this.gridContext.state.scrollAreaWidth;
             } else if (colUnderCursor.idx > this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
                 this.mouseOffset =
                     positionX -
@@ -70,8 +70,8 @@ export class ColReorderBehavior extends DelegateBehavior {
                 this.mouseOffset =
                     positionX -
                     activeSelectedRange.first.col.left -
-                    this.gridContext.cellMatrix.frozenLeftRange.width -
-                    this.gridContext.state.scrollAreaWidth;
+                    this.gridContext.cellMatrix.frozenLeftRange.width
+                    // - this.gridContext.state.scrollAreaWidth;
             } else {
                 this.mouseOffset =
                     positionX -
@@ -126,7 +126,7 @@ export class ColReorderBehavior extends DelegateBehavior {
         const leftBorder = cellMatrix.frozenLeftRange.width;
         const activeSelectedRange = Utilities.getActiveSelectionRange(
             this.gridContext.state.selectedRanges,
-            this.gridContext.state.focusedLocation
+            this.gridContext.state.focusedLocation!
         );
 
         let colUnderCursor = getColumnFromClientX(this.gridContext, this.positionX);
@@ -182,7 +182,7 @@ export class ColReorderBehavior extends DelegateBehavior {
     private handleMouseUpAndTouchEnd(e: any) {
         const activeSelectedRange = Utilities.getActiveSelectionRange(
             this.gridContext.state.selectedRanges,
-            this.gridContext.state.focusedLocation
+            this.gridContext.state.focusedLocation!
         );
         const selectedCols = activeSelectedRange.cols;
         const cellMatrix: CellMatrix = this.gridContext.cellMatrix;
@@ -198,7 +198,7 @@ export class ColReorderBehavior extends DelegateBehavior {
                     : this.colOnScreen.idx - selectedCols[0].idx;
             if (isOnRightSideDrop) {
                 if (this.colOnScreen.onDropRight || this.colOnScreen.idx === cellMatrix.last.col.idx) {
-                    this.colOnScreen.onDropRight(activeSelectedRange.cols, this.colOnScreen);
+                    this.colOnScreen.onDropRight!(activeSelectedRange.cols, this.colOnScreen);
                 }
             } else {
                 if (this.colOnScreen.onDropLeft) {
@@ -225,7 +225,7 @@ export class ColReorderBehavior extends DelegateBehavior {
             this.gridContext.setState({
                 focusedLocation: cell,
                 isFocusedCellInEditMode: false,
-                selectedColsIdx,
+                // selectedColsIdx,
                 selectedRanges
             });
         }
@@ -237,7 +237,7 @@ export class ColReorderBehavior extends DelegateBehavior {
     private handleMouseEnterOnCol(col: Column) {
         const activeSelectedRange = Utilities.getActiveSelectionRange(
             this.gridContext.state.selectedRanges,
-            this.gridContext.state.focusedLocation
+            this.gridContext.state.focusedLocation!
         );
         const isTargetCol = (col: Column) => {
             return this.target.some(c => c === col);
@@ -331,7 +331,7 @@ export class ColReorderBehavior extends DelegateBehavior {
     renderGlobalPart = () => {
         const activeSelectedRange = Utilities.getActiveSelectionRange(
             this.gridContext.state.selectedRanges,
-            this.gridContext.state.focusedLocation
+            this.gridContext.state.focusedLocation!
         );
         return (
             <>
