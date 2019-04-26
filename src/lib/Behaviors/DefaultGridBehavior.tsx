@@ -1,31 +1,47 @@
-import { DelegateBehavior } from "./DelegateBehavior";
-import { KeyNavigationInsideSelectionBehavior } from './KeyNavigationInsideSelectionBehavior'
-import { DefaultKeyNavigationBehavior } from './DefaultKeyNavigationBehavior'
-import { CopyCutPasteBehavior } from './CopyCutPasteBehavior'
-import { ResizeSelectionWithKeysBehavior } from './ResizeSelectionWithKeysBehavior'
-import { BasicGridBehavior } from './BasicGridBehavior'
-import { DefaultKeyHandlerBehavior } from './DefaultKeyHandlerBehavior'
-import { DrawSelectionBehavior } from './DrawSelectionBehavior';
-import { PointerHandlerBehavior } from './PointerHandlerBehavior';
-import { GridContext } from "../Common";
-export class DefaultGridBehavior extends DelegateBehavior {
-    constructor(gridContext: GridContext) {
-        super(
-            new DrawSelectionBehavior(
-                new PointerHandlerBehavior(
-                    new DefaultKeyHandlerBehavior(
-                        new ResizeSelectionWithKeysBehavior(
-                            new KeyNavigationInsideSelectionBehavior(
-                                new DefaultKeyNavigationBehavior(
-                                    new CopyCutPasteBehavior(
-                                        new BasicGridBehavior(gridContext)
-                                    )
-                                )
-                            )
-                        )
-                    )
-                )
-            )
-        )
+import * as React from "react";
+import { GridContext, Behavior } from "../Common";
+import { handleCut } from "./DefaultGridBehavior/copyCutPasteHandlers";
+
+export class DefaultGridBehavior implements Behavior {
+    constructor(private gridContext: GridContext) { }
+
+    handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     }
+    handleKeyUp(event: React.KeyboardEvent<HTMLDivElement>): void {
+    }
+    handleCopy(event: React.ClipboardEvent<HTMLDivElement>): void {
+    }
+    handlePaste(event: React.ClipboardEvent<HTMLDivElement>): void {
+    }
+    handleCut = (event: React.ClipboardEvent<HTMLDivElement>) => handleCut(this.gridContext, event);
+
+    handleMouseDown(event: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
+    }
+    handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
+    }
+    handleTouchStart(event: React.TouchEvent<HTMLDivElement>): void {
+    }
+    handleTouchEnd(event: React.TouchEvent<HTMLDivElement>): void {
+    }
+    handleDoubleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
+    }
+
+
+    renderPanePart(pane: import("../Common").Range): React.ReactNode {
+        // <FillHandle pane={pane} />
+        return <>
+
+        </>
+    }
+
+    renderGlobalPart(): React.ReactNode {
+        return <>
+
+        </>
+    }
+
+    dispose(): void {
+    }
+
+
 }
