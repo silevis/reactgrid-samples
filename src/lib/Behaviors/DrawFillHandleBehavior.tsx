@@ -18,13 +18,13 @@ export class DrawFillHandleBehavior extends DelegateBehavior {
     private renderFillHandle(pane: Range) {
         const activeSelectedRange = Utilities.getActiveSelectionRange(
             this.gridContext.state.selectedRanges,
-            this.gridContext.state.focusedLocation
+            this.gridContext.state.focusedLocation!
         );
         if (
             !activeSelectedRange ||
             !pane.contains(activeSelectedRange.last) ||
             this.gridContext.state.isFocusedCellInEditMode ||
-            this.gridContext.state.isFocusedCellReadOnly
+            // || this.gridContext.state.isFocusedCellReadOnly
         ) {
             return;
         }

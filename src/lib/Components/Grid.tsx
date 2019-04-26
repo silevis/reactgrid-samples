@@ -158,75 +158,8 @@ export class Grid extends React.Component<GridProps, GridState> {
             </div>
         );
     }
-
-    // renderMultiplePartialAreasForPane(area: Range[], pane: Range, style: React.CSSProperties) {
-    //     let result = [];
-    //     area.forEach(range => {
-    //         if (range.first && range.last) {
-    //             if (
-    //                 !(
-    //                     range.first.col.idx === this.state.focusedLocation.col.idx &&
-    //                     range.first.row.idx === this.state.focusedLocation.row.idx &&
-    //                     range.last.col.idx === this.state.focusedLocation.col.idx &&
-    //                     range.last.row.idx === this.state.focusedLocation.row.idx
-    //                 )
-    //             ) {
-    //                 let partialPane = this.renderPartialAreaForPane(range, pane, style);
-    //                 partialPane && result.push([partialPane]);
-    //             }
-    //         }
-    //     });
-    //     return result;
-    // }
-
-
+    
     // all selected range
-
-
-    // isClickInsideSelectedRange(e: React.MouseEvent<HTMLDivElement>): boolean {
-    //     let isClickOnSelection = false;
-    //     for (let range of this.state.selectedRanges) {
-    //         const foc = this.getLocationOnScreen(e.clientX, e.clientY);
-    //         const col = range.cols.some(col => col.idx === foc.col.idx);
-    //         const rec = range.rows.some(row => row.idx === foc.row.idx);
-    //         if (col && rec) {
-    //             isClickOnSelection = true;
-    //         }
-    //     }
-    //     return isClickOnSelection;
-    // }
-
-
-    // selectRows(selectedRowsIdx: number[]): Range[] {
-    //     let selectedRows: Range[] = [];
-    //     if (selectedRowsIdx.length > 0) {
-    //         const { cellMatrix } = this.props;
-    //         selectedRowsIdx.forEach(id => {
-    //             let location = this.props.cellMatrix.getLocation(id + 1, cellMatrix.cols[0].idx);
-    //             let range = this.props.cellMatrix.getRange(location, {
-    //                 row: location.row,
-    //                 col: cellMatrix.cols[cellMatrix.cols.length - 1]
-    //             });
-    //             selectedRows.push(range);
-    //         });
-    //     }
-    //     return selectedRows;
-    // }
-
-
-    // isClickOutOfGrid(clientX, clientY): boolean {
-    //     const gridCellsContainerRef = this.gridCellsContainerRef.getBoundingClientRect();
-    //     let outOfGrid: boolean = false;
-    //     if (
-    //         clientY > gridCellsContainerRef.bottom ||
-    //         clientY < gridCellsContainerRef.top ||
-    //         clientX > gridCellsContainerRef.right ||
-    //         clientX < gridCellsContainerRef.left
-    //     ) {
-    //         outOfGrid = true;
-    //     }
-    //     return outOfGrid;
-    // }
 
     private handleNewGridElementRef = (gridElement: HTMLDivElement) => {
         // TODO do we need setTimout here due to setState inside ComponentDidMount?

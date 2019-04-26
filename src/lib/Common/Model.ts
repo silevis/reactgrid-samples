@@ -1,3 +1,5 @@
+import { GridContext } from "./GridContext";
+
 export type Orientation = 'horizontal' | 'vertical';
 
 export type Direction = 'left' | 'right' | 'up' | 'down';
@@ -24,7 +26,7 @@ export interface Location {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface CellProps extends Cell {
     attributes: React.HTMLAttributes<HTMLDivElement>;
-    grid: Grid;
+    gridContext: GridContext;
     cellKey: string;
     isInEditMode: boolean;
     isSelected: boolean;

@@ -9,11 +9,11 @@ import { Row, Column } from '../Common';
 import { getLocationFromClient, resetToDefaultBehavior } from '../Functions';
 
 export class FillHandleBehavior extends DelegateBehavior {
-    private currentLocation: Location = null;
+    private currentLocation: Location = {null};
     private moveHandler = this.handleMove.bind(this);
     private mouseUpAndTouchEndHandler = this.handleMouseUpAndTouchEnd.bind(this);
-    private fillDirection: Direction;
-    private fillRange: Range;
+    private fillDirection!: Direction;
+    private fillRange!: Range;
 
     constructor(grid: Grid, event: any) {
         super(new AutoScrollBehavior(new BasicGridBehavior(grid)));
@@ -41,7 +41,7 @@ export class FillHandleBehavior extends DelegateBehavior {
                     : null;
         const activeSelectedRange = Utilities.getActiveSelectionRange(
             this.gridContext.state.selectedRanges,
-            this.gridContext.state.focusedLocation
+            this.gridContext.state.focusedLocation!
         );
         const cellMatrix = this.gridContext.cellMatrix;
         const location = getLocationFromClient(this.gridContext, positionX, positionY);
@@ -51,7 +51,7 @@ export class FillHandleBehavior extends DelegateBehavior {
         this.currentLocation = location;
         // active selection
         let diffrences: { direction: Direction; value: number }[] = [];
-        diffrences.push({ direction: undefined, value: 0 });
+        diffrences.push({ direction: null, value: 0 });
         diffrences.push({
             direction: 'up',
             value:
@@ -137,7 +137,7 @@ export class FillHandleBehavior extends DelegateBehavior {
     handleMouseUpAndTouchEnd(event: any) {
         const activeSelectedRange = Utilities.getActiveSelectionRange(
             this.gridContext.state.selectedRanges,
-            this.gridContext.state.focusedLocation
+            this.gridContext.state.focusedLocation!
         );
         const cellMatrix = this.gridContext.cellMatrix;
         let values: any[];

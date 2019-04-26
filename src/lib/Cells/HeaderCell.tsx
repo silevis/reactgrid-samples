@@ -7,6 +7,7 @@ import { Cell, Orientation, CellProps, Location, CellMatrix } from '../Common';
 import { ColReorderBehavior } from '../Behaviors/ColReorderBehavior';
 import { RowReorderBehavior } from '../Behaviors/RowReorderBehavior';
 import { CellSelectionBehavior } from '../Behaviors/CellSelectionBehavior';
+import { getLocationFromClient, changeBehavior } from '../Functions';
 
 export interface HeaderCellProps extends CellProps {
     orientation: Orientation;
@@ -84,8 +85,8 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
             background: '#eee',
             cursor:
                 this.props.isSelected &&
-                    this.props.grid.props.cellMatrix.first.row.idx !== 0 &&
-                    this.props.grid.props.cellMatrix.first.col.idx !== 0
+                    this.props.gridContext.cellMatrix.first.row.idx !== 0 &&
+                    this.props.gridContext.cellMatrix.first.col.idx !== 0
                     ? '-webkit-grab'
                     : 'default',
             paddingRight: 0
@@ -137,7 +138,7 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
                                     e.currentTarget.value !== this.props.value
                                 ) {
                                     this.props.trySetValue(e.currentTarget.value);
-                                    this.props.grid.commitChanges();
+                                    this.props.gridContext.commitChanges();
                                 }
                                 this.props.setEditMode(false);
                             }}
@@ -146,8 +147,8 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
                             onCut={handleCut}
                             onPaste={handlePaste}
                             style={{
-                                width: this.props.attributes.style.width,
-                                height: this.props.attributes.style.height,
+                                width: this.props.attributes.style!.width,
+                                height: this.props.attributes.style!.height,
                                 border: 0,
                                 fontSize: 16,
                                 outline: 'none'
@@ -176,7 +177,7 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
                             position: 'relative',
                             right: 0,
                             width: 10,
-                            height: this.props.attributes.style.height
+                            height: this.props.attributes.style!.height
                         }}
                     >
                         <div
@@ -186,7 +187,7 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
                             onMouseOut={() => this.setState({ isResizerHover: false })}
                             style={{
                                 width: this.resizeDivWidth,
-                                height: this.props.attributes.style.height,
+                                height: this.props.attributes.style!.height,
                                 cursor: this.state.isResizerHover ? 'w-resize' : 'default',
                                 background: this.state.isResizerHover ? '#3498db' : '#eee',
                                 position: 'absolute',
@@ -226,20 +227,20 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
                 : e.type === 'touchstart'
                     ? e.changedTouches[0].clientY
                     : null;
-        const locationOfCell = this.props.grid.getLocationFromClient(positionX, positionY);
-        const isItTheSameCell = this.props.grid.state.focusedLocation
-            ? this.props.grid.state.focusedLocation.row.idx === locationOfCell.row.idx &&
-            this.props.grid.state.focusedLocation.col.idx === locationOfCell.col.idx
+        const locationOfCell = getLocationFromClient(this.props.gridContext, positionX, positionY);
+        const isItTheSameCell = this.props.gridContext.state.focusedLocation
+            ? this.props.gridContext.state.focusedLocation.row.idx === locationOfCell.row.idx &&
+            this.props.gridContext.state.focusedLocation.col.idx === locationOfCell.col.idx
             : null;
 
-        if (isItTheSameCell && this.props.grid.state.isFocusedCellInEditMode) {
+        if (isItTheSameCell && this.props.gridContext.state.isFocusedCellInEditMode) {
             return;
         }
         const selRange = Utilities.getActiveSelectionRange(
-            this.props.grid.state.selectedRanges,
-            this.props.grid.state.focusedLocation
+            this.props.gridContext.state.selectedRanges,
+            this.props.gridContext.state.focusedLocation!
         );
-        const cellMatrix = this.props.grid.props.cellMatrix;
+        const cellMatrix = this.props.gridContext.props.cellMatrix;
 
         if (e.type === 'touchstart') {
             headerCellTouchStartTime = new Date().getTime();
@@ -249,9 +250,9 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
             if (selRange && selRange.contains(locationOfCell) && !e.ctrlKey) {
                 if (this.props.shouldStartReorder) {
                     if (this.props.orientation === 'horizontal') {
-                        this.props.grid.changeBehavior(new ColReorderBehavior(e, this.props.grid));
+                        changeBehavior(this.props.gridContext, new ColReorderBehavior(this.props.gridContext, e));
                     } else {
-                        this.props.grid.changeBehavior(new RowReorderBehavior(e, this.props.grid));
+                        changeBehavior(this.props.gridContext, new RowReorderBehavior(this.props.gridContext, e));
                     }
                 }
             } else {
@@ -266,22 +267,23 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
 
     private selectColumnOrRow(e: any, locationOfCell: Location, cellMatrix: CellMatrix) {
         const orientation = this.props.orientation;
+        const gridContext = this.props.gridContext;
 
         if (orientation === 'horizontal') {
             if (e.type === 'click') {
-                this.props.grid.changeBehavior(new CellSelectionBehavior(this.props.grid, e, 'column', true));
+                changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'column', true));
             } else if (e.type === 'mousedown') {
-                this.props.grid.changeBehavior(new CellSelectionBehavior(this.props.grid, e, 'column'));
+                changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'column'));
             }
         } else if (orientation === 'vertical') {
             if (e.type === 'click') {
-                this.props.grid.changeBehavior(new CellSelectionBehavior(this.props.grid, e, 'row', true));
+                changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'row', true));
             } else if (e.type === 'mousedown') {
-                this.props.grid.changeBehavior(new CellSelectionBehavior(this.props.grid, e, 'row'));
+                changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'row'));
             }
         } else if (orientation === 'full-dimension') {
             if (e.type === 'mousedown' || e.type === 'click') {
-                this.props.grid.setState({
+                gridContext.setState({
                     focusedLocation: locationOfCell,
                     selectedRanges: [cellMatrix.getRange(cellMatrix.first, cellMatrix.last)]
                 });

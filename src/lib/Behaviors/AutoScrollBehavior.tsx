@@ -140,11 +140,11 @@ export class AutoScrollBehavior extends DelegateBehavior {
         return (
             (cellMatrix.frozenTopRange.rows.length &&
                 cellMatrix.frozenTopRange.containsRange(
-                    Utilities.getActiveSelectionRange(this.gridContext.state.selectedRanges, this.gridContext.state.focusedLocation)
+                    Utilities.getActiveSelectionRange(this.gridContext.state.selectedRanges, this.gridContext.state.focusedLocation!)
                 )) ||
             (cellMatrix.frozenBottomRange.rows.length > 0 &&
                 cellMatrix.frozenBottomRange.containsRange(
-                    Utilities.getActiveSelectionRange(this.gridContext.state.selectedRanges, this.gridContext.state.focusedLocation)
+                    Utilities.getActiveSelectionRange(this.gridContext.state.selectedRanges, this.gridContext.state.focusedLocation!)
                 ))
         );
     }
@@ -154,11 +154,11 @@ export class AutoScrollBehavior extends DelegateBehavior {
         return (
             (cellMatrix.frozenLeftRange.cols.length > 0 &&
                 cellMatrix.frozenLeftRange.containsRange(
-                    Utilities.getActiveSelectionRange(this.gridContext.state.selectedRanges, this.gridContext.state.focusedLocation)
+                    Utilities.getActiveSelectionRange(this.gridContext.state.selectedRanges, this.gridContext.state.focusedLocation!)
                 )) ||
             (cellMatrix.frozenRightRange.cols.length > 0 &&
                 cellMatrix.frozenRightRange.containsRange(
-                    Utilities.getActiveSelectionRange(this.gridContext.state.selectedRanges, this.gridContext.state.focusedLocation)
+                    Utilities.getActiveSelectionRange(this.gridContext.state.selectedRanges, this.gridContext.state.focusedLocation!)
                 ))
         );
     }

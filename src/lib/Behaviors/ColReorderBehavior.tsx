@@ -21,7 +21,7 @@ export class ColReorderBehavior extends DelegateBehavior {
     private setLinePosition: (position: number) => void = _ => { };
     private setShadowPosition: (position: number) => void = _ => { };
 
-    constructor(gridContext: GridContext, event: any, grid: Grid) {
+    constructor(gridContext: GridContext, event: any) {
         super(new AutoScrollBehavior(new BasicGridBehavior(gridContext), 'horizontal'));
         const activeSelectedRange = Utilities.getActiveSelectionRange(
             this.gridContext.state.selectedRanges,
@@ -101,7 +101,7 @@ export class ColReorderBehavior extends DelegateBehavior {
             window.addEventListener('touchend', this.mouseUpAndTouchEndHandler);
             columnIsMoving = true;
         }
-        grid.state.gridElement.addEventListener('scroll', this.scrollHandler);
+        gridContext.state.gridElement.addEventListener('scroll', this.scrollHandler);
     }
 
     dispose = () => {

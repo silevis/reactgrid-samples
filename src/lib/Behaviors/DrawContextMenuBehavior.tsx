@@ -4,7 +4,7 @@ import { DelegateBehavior } from "./DelegateBehavior";
 import { zIndex } from '../Common/Constants';
 import '../Cells/Cell.css';
 import { Utilities } from '../Common/Utilities';
-import { changeBehavior } from '../Functions';
+import { changeBehavior, selectRows } from '../Functions';
 import { Grid } from '../Components/Grid';
 import { MenuOption, Range } from '../Common';
 import { DefaultGridBehavior } from './DefaultGridBehavior';
@@ -45,9 +45,9 @@ export class DrawContextMenuBehavior extends DelegateBehavior {
         );
     }
 
-    private renderCustomContextMenu(pane): JSX.Element {
-        const selectedRows: Range[] = this.gridContext.selectRows(this.gridContext.state.selectedRowsIdx);
-        const options: MenuOption[] = this.gridContext.props.onContextMenu(this.gridContext.state.selectedRanges, selectedRows);
+    private renderCustomContextMenu(pane: any): JSX.Element { // ?
+        const selectedRows: Range[] = selectRows(this.gridContext, []/*this.gridContext.state.selectedRowsIdx*/);
+        const options: MenuOption[] = this.gridContext.props.onContextMenu(this.gridContext.state.selectedRanges, selectedRows); // ??
         if (this.gridContext.cellMatrix.scrollableRange.containsRange(pane)) {
             const clickX =
                 this.event.type === 'contextmenu'
@@ -67,7 +67,7 @@ export class DrawContextMenuBehavior extends DelegateBehavior {
             const left = !right;
             const top = screenH - clickY > 25;
             const bottom = !top;
-            let stylePosition = { left: null, top: null };
+            let stylePosition = { left: '', top: '' };
             if (right) {
                 stylePosition.left = `${clickX + 5}px`;
             }
@@ -127,7 +127,7 @@ export class DrawContextMenuBehavior extends DelegateBehavior {
     }
 
     private contextMenuHandler(e: React.MouseEvent<HTMLDivElement>) {
-        changeBehavior(this.gridContext, new DefaultGridBehavior(), false);
+        changeBehavior(this.gridContext, new DefaultGridBehavior(this.gridContext), false);
         Utilities.createSelectionFromFocusedLocation(this.gridContext);
     }
 

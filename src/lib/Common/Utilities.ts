@@ -1,6 +1,7 @@
 import { Location } from './Model';
 import { Range } from './Range';
 import { Grid } from '../Components/Grid';
+import { GridContext } from './GridContext';
 
 export class Utilities {
     static getActiveSelectionRange(selections: Range[], focusedLocation: Location): Range {
@@ -26,10 +27,10 @@ export class Utilities {
         });
     }
 
-    static createSelectionFromFocusedLocation(grid: Grid) {
-        const { cellMatrix } = grid.props;
-        const { focusedLocation } = grid.state;
-        grid.setState({
+    static createSelectionFromFocusedLocation(gridContext: GridContext) {
+        const cellMatrix = gridContext.cellMatrix;
+        const focusedLocation = gridContext.state.focusedLocation;
+        gridContext.setState({
             selectedRanges: [cellMatrix.getRange(focusedLocation!, focusedLocation!)]
         });
     }

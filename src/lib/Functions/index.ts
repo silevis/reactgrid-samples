@@ -8,3 +8,5 @@ export { print } from './print';
 export { refreshIfNeeded } from './refreshIfNeeded';
 export { resetToDefaultBehavior } from './resetToDefaultBehavior';
 export { scrollIntoView } from './scrollIntoView';
+export { isClickInsideSelectedRange } from './isClickInsideSelectedRange';
+export { selectRows } from './selectRows';
