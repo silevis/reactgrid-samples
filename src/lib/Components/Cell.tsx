@@ -1,5 +1,5 @@
 import * as React from "react";
-import { GridContext, Borders, Location, CellMatrix, } from "../Common";
+import { GridContext, Borders, Location, CellMatrix } from "../Common";
 
 export interface CellProps {
     gridContext: GridContext
@@ -9,6 +9,8 @@ export interface CellProps {
 
 export const Cell: React.SFC<CellProps> = (props) => {
     const state = props.gridContext.state;
+    const borders = props.borders;
+    const location = props.location;
     const cell = props.gridContext.cellMatrix.getCell(props.location);
     const isFocused = state.focusedLocation && (state.focusedLocation.col.idx === props.location.col.idx && state.focusedLocation.row.idx === props.location.row.idx);
     const dynamicStyle: React.CSSProperties = isFocused
@@ -38,12 +40,9 @@ export const Cell: React.SFC<CellProps> = (props) => {
 
     return cell.render({
         ...cell,
-        grid: this,
+        gridContext: props.gridContext,
         cellKey: location.row.idx + '-' + location.col.idx,
-        isInEditMode: isFocused && this.state.isFocusedCellInEditMode,
-        isReadOnly: cell.isReadOnly,
-        isSelected: isSelected,
-        isFocused: isFocused,
+        isInEditMode: isFocused && props.gridContext.state.isFocusedCellInEditMode,
         attributes: {
             style: {
                 boxSizing: 'border-box',

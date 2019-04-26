@@ -29,10 +29,9 @@ export interface CellProps extends Cell {
     gridContext: GridContext;
     cellKey: string;
     isInEditMode: boolean;
-    isSelected: boolean;
-    isFocused: boolean;
-    setEditMode: (value: boolean) => void;
-    setFocusedCellRef: (ref: HTMLDivElement) => void;
+    //isSelected: boolean;
+    //isFocused: boolean;
+    //setEditMode: (value: boolean) => void;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
