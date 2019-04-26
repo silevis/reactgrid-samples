@@ -4,7 +4,8 @@ import { keyCodes } from '../Common/Constants';
 
 export class DefaultKeyHandlerBehavior extends DelegateBehavior {
     public handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
-        if (!this.gridContext.state.focusedLocation || event.ctrlKey || this.gridContext.state.isFocusedCellReadOnly || this.gridContext.cellMatrix.getCell(this.gridContext.state.focusedLocation).type === FieldTypes.checkbox) {
+        // TODO FieldTypes.checkbox what with that?
+        if (!this.gridContext.state.focusedLocation || event.ctrlKey /*|| this.gridContext.state.isFocusedCellReadOnly*/ || this.gridContext.cellMatrix.getCell(this.gridContext.state.focusedLocation).type === FieldTypes.checkbox) {
             return this.innerBehavior.handleKeyDown(event);
         }
 

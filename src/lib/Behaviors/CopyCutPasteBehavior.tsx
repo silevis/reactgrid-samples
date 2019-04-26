@@ -15,10 +15,10 @@ export class CopyCutPasteBehavior extends DelegateBehavior {
     }
 
     handleCopy = (event: React.ClipboardEvent<HTMLDivElement>) => {
-        this.gridContext.preventFocusChange = true;
+        // this.gridContext.preventFocusChange = true;
         this.copySelectedRangeToClipboard()
         this.gridContext.hiddenFocusElement.focus()
-        this.gridContext.preventFocusChange = false;
+        // this.gridContext.preventFocusChange = false;
         event.preventDefault()
     }
 

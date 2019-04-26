@@ -128,13 +128,13 @@ export class DefaultKeyNavigationBehavior extends DelegateBehavior {
                     : cellMatrix.rows.length - 1
             );
         } else if (event.keyCode === keyCodes.BACKSPACE) {
-            cellMatrix.getCell(focusedLocation).trySetValue(undefined, true);
+            cellMatrix.getCell(focusedLocation).trySetValue(undefined, true); // second parameter
             this.gridContext.commitChanges();
         } else if (event.keyCode === keyCodes.DELETE) {
             this.gridContext.state.selectedRanges.forEach(range => {
                 range.rows.forEach((row: Row) =>
                     range.cols.forEach((col: Column) =>
-                        cellMatrix.getCell({ row, col }).trySetValue(undefined, true)
+                        cellMatrix.getCell({ row, col }).trySetValue(undefined, true) // second parameter
                     )
                 );
             });
@@ -142,8 +142,8 @@ export class DefaultKeyNavigationBehavior extends DelegateBehavior {
         } else if (
             !event.shiftKey &&
             event.keyCode === keyCodes.ENTER &&
-            !this.gridContext.state.isFocusedCellInEditMode &&
-            !this.gridContext.state.isFocusedCellReadOnly
+            !this.gridContext.state.isFocusedCellInEditMode
+            // && !this.gridContext.state.isFocusedCellReadOnly
         ) {
             this.gridContext.setState({ isFocusedCellInEditMode: true });
         } else if (event.shiftKey && event.keyCode === keyCodes.ENTER && focusedLocation.row.idx > 0) {
