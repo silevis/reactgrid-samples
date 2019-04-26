@@ -7,6 +7,7 @@ import { Utilities } from '../Common/Utilities';
 import { Column, GridContext } from '../Common';
 import { Grid } from '../Components/Grid';
 import { getColumnFromClientX, resetToDefaultBehavior } from '../Functions';
+import { LineAndShadow } from '../Components/LineAndShadow';
 
 export let columnIsMoving: boolean = false;
 export class ColReorderBehavior extends DelegateBehavior {
@@ -17,6 +18,8 @@ export class ColReorderBehavior extends DelegateBehavior {
     private mouseOffset: number;
     private target: Column[];
     private positionX: number;
+    private setLinePosition: (position: number) => void = _ => { };
+    private setShadowPosition: (position: number) => void = _ => { };
 
     constructor(gridContext: GridContext, event: any, grid: Grid) {
         super(new AutoScrollBehavior(new BasicGridBehavior(gridContext), 'horizontal'));
@@ -162,7 +165,7 @@ export class ColReorderBehavior extends DelegateBehavior {
             }
         }
 
-        this.gridContext.setState({ shadowPosition, shadowOrientation: 'vertical' });
+        this.setShadowPosition(shadowPosition);
     }
 
     private handleMove(event: any) {
@@ -185,7 +188,8 @@ export class ColReorderBehavior extends DelegateBehavior {
         const cellMatrix: CellMatrix = this.gridContext.cellMatrix;
 
         if (!this.colOnScreen) {
-            this.gridContext.setState({ linePosition: undefined, shadowPosition: undefined });
+            this.setLinePosition(-1);
+            this.setShadowPosition(-1);
         } else {
             const isOnRightSideDrop = activeSelectedRange.first.col.idx < this.colOnScreen.idx;
             const positionChange =
@@ -221,8 +225,6 @@ export class ColReorderBehavior extends DelegateBehavior {
             this.gridContext.setState({
                 focusedLocation: cell,
                 isFocusedCellInEditMode: false,
-                linePosition: undefined,
-                shadowPosition: undefined,
                 selectedColsIdx,
                 selectedRanges
             });
@@ -264,7 +266,7 @@ export class ColReorderBehavior extends DelegateBehavior {
                         : this.colOnScreen.left +
                         this.gridContext.cellMatrix.frozenLeftRange.width +
                         cellMatrix.scrollableRange.width
-                    : undefined;
+                    : -1;
             } else if (col.idx > this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
                 linePosition = this.colOnScreen
                     ? areColumnsMovingRight()
@@ -272,13 +274,13 @@ export class ColReorderBehavior extends DelegateBehavior {
                         this.colOnScreen.width +
                         this.gridContext.cellMatrix.frozenLeftRange.width
                         : this.colOnScreen.left + this.gridContext.cellMatrix.frozenLeftRange.width
-                    : undefined;
+                    : -1;
             } else {
                 linePosition = this.colOnScreen
                     ? areColumnsMovingRight()
                         ? this.colOnScreen.left + this.colOnScreen.width
                         : this.colOnScreen.left
-                    : undefined;
+                    : -1;
             }
         } else if (this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0) {
             if (col.idx >= this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
@@ -286,13 +288,13 @@ export class ColReorderBehavior extends DelegateBehavior {
                     ? areColumnsMovingRight()
                         ? this.colOnScreen.left + this.colOnScreen.width + cellMatrix.frozenLeftRange.width
                         : this.colOnScreen.left + cellMatrix.frozenLeftRange.width
-                    : undefined;
+                    : -1;
             } else {
                 linePosition = this.colOnScreen
                     ? areColumnsMovingRight()
                         ? this.colOnScreen.left + this.colOnScreen.width
                         : this.colOnScreen.left
-                    : undefined;
+                    : -1;
             }
         } else if (
             this.gridContext.cellMatrix.frozenRightRange.cols.length > 0 &&
@@ -305,7 +307,7 @@ export class ColReorderBehavior extends DelegateBehavior {
                         : this.colOnScreen.left +
                         this.gridContext.cellMatrix.frozenLeftRange.width +
                         cellMatrix.scrollableRange.width
-                    : undefined;
+                    : -1;
             } else {
                 linePosition = this.colOnScreen
                     ? areColumnsMovingRight()
@@ -313,16 +315,37 @@ export class ColReorderBehavior extends DelegateBehavior {
                         this.colOnScreen.width +
                         this.gridContext.cellMatrix.frozenLeftRange.width
                         : this.colOnScreen.left + this.gridContext.cellMatrix.frozenLeftRange.width
-                    : undefined;
+                    : -1;
             }
         } else {
             linePosition = this.colOnScreen
                 ? areColumnsMovingRight()
                     ? this.colOnScreen.left + this.colOnScreen.width + this.gridContext.cellMatrix.frozenLeftRange.width
                     : this.colOnScreen.left + this.gridContext.cellMatrix.frozenLeftRange.width
-                : undefined;
+                : -1;
         }
 
-        this.gridContext.setState({ linePosition, lineOrientation: 'vertical' });
+        this.setLinePosition(linePosition);
+    }
+
+    renderGlobalPart = () => {
+        const activeSelectedRange = Utilities.getActiveSelectionRange(
+            this.gridContext.state.selectedRanges,
+            this.gridContext.state.focusedLocation
+        );
+        return (
+            <>
+                {this.innerBehavior.renderGlobalPart()}
+                <LineAndShadow 
+                    onInitialized={(linePostion, shadowPosition) => { 
+                        this.setLinePosition = linePostion; 
+                        this.setShadowPosition = shadowPosition 
+                    }} 
+                    isVertical={true} 
+                    cellMatrix={this.gridContext.cellMatrix} 
+                    shadowSize={activeSelectedRange.width}
+                />
+            </>
+        )
     }
 }
