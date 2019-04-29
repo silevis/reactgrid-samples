@@ -19,7 +19,8 @@ export const Pane: React.SFC<PaneProps> = (props) =>
                 </div>
             )}
             {renderPartial(props.gridContext, props.range)}
-            {/* {props.gridContext.state.currentBehavior.renderPanePart(props.range)} */}
+            {/* Odkomentowanie tego powoduje błąd po kliknięciu w komórkę -- RangeError: Maximum call stack size exceeded*/}
+            {props.gridContext.state.currentBehavior.renderPanePart(props.range)}
         </div>
     </div>
 
