@@ -263,15 +263,6 @@ export class Grid extends React.Component<GridProps, GridState> {
 
 
 
-
-    // private renderPartial(range: Range) {
-    //     return this.renderMultiplePartialAreasForPane(this.state.selectedRanges, range, {
-    //         border: '1px solid rgb(53, 121, 248)',
-    //         backgroundColor: 'rgba(53, 121, 248, 0.1)'
-    //     });
-    // }
-
-
     // private forceNewFocusLocation(oldProps: GridProps) {
     //     const cellMatrix = this.props.cellMatrix;
     //     if (cellMatrix.focusLocation && cellMatrix.focusLocation !== oldProps.cellMatrix.focusLocation) {

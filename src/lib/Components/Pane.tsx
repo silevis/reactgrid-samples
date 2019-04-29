@@ -1,6 +1,7 @@
 import * as React from "react";
 import { GridContext, Range, Borders } from "../Common";
 import { Cell } from "./Cell";
+import { renderMultiplePartialAreasForPane } from "../Functions/renderPartialAreaForPane";
 
 export interface PaneProps {
     gridContext: GridContext
@@ -9,7 +10,7 @@ export interface PaneProps {
     borders: Borders,
 }
 
-export const Pane: React.SFC<PaneProps> = (props) =>
+export const Pane: React.SFC<PaneProps> = (props) => 
     <div style={{ width: props.range.width, height: props.range.height, ...props.style }}>
         <div style={{ position: 'relative', width: props.range.width, height: props.range.height }}>
             {props.range.rows.map((row, ri) =>
@@ -17,6 +18,14 @@ export const Pane: React.SFC<PaneProps> = (props) =>
                     {props.range.cols.map((col, ci) => <Cell key={ci} gridContext={props.gridContext} borders={props.borders} location={{ col, row }} />)}
                 </div>
             )}
-            {props.gridContext.state.currentBehavior.renderPanePart(props.range)}
+            {renderPartial(props.gridContext, props.range)}
+            {/* {props.gridContext.state.currentBehavior.renderPanePart(props.range)} */}
         </div>
     </div>
+
+export function renderPartial(gridContext: GridContext, range: Range) {
+    return renderMultiplePartialAreasForPane(gridContext, gridContext.state.selectedRanges, range, {
+        border: '1px solid rgb(53, 121, 248)',
+        backgroundColor: 'rgba(53, 121, 248, 0.1)'
+    });
+}

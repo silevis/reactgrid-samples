@@ -2,7 +2,7 @@ import * as React from "react";
 import { Range } from "../Common";
 
 export interface PartialAreaProps {
-    area: Range,
+    area: any,
     pane: Range,
     style: React.CSSProperties
 }

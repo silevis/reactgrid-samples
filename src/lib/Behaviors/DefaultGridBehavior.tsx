@@ -1,5 +1,6 @@
 import * as React from "react";
 import { GridContext, Behavior } from "../Common";
+import { handleMouseDown } from "./DefaultGridBehavior/mouseDownHandler";
 // import { handleCut } from "./DefaultGridBehavior/copyCutPasteHandlers";
 
 export class DefaultGridBehavior implements Behavior {
@@ -22,7 +23,7 @@ export class DefaultGridBehavior implements Behavior {
     }
 
     handleMouseDown(event: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
-        event.preventDefault();
+        handleMouseDown(this.gridContext, event);
     }
     handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
         event.preventDefault();

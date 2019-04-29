@@ -3,7 +3,7 @@ import { Behavior } from "./Behavior";
 import { GridContext, Range } from ".";
 
 export class BehaviorDelegate implements Behavior {
-    constructor(private gridContext: GridContext) { }
+    constructor(public gridContext: GridContext) { }
 
     handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => this.gridContext.state.currentBehavior.handleKeyDown(event);
     handleKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => this.gridContext.state.currentBehavior.handleKeyUp(event);
