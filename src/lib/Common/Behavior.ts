@@ -14,7 +14,7 @@ export interface Behavior {
     handleCopy(event: ClipboardEvent): void;
     handlePaste(event: ClipboardEvent): void;
     handleCut(event: ClipboardEvent): void;
-    handlePointerDown(event: PointerEvent): void;
+    handlePointerDown(event: PointerEvent, selectionMode: string): void;
     handlePointerMove(event: PointerEvent): void;
     handlePointerUp(event: PointerEvent): void;
     handleDoubleClick(event: PointerEvent): void;

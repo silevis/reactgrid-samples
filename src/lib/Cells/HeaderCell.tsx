@@ -101,30 +101,39 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
                 key={this.props.cellKey}
                 className="dg-header-cell"
                 {...(this.props.attributes, { style: mergedStyle })}
-                onMouseDown={e => {
+                onPointerDown={e => {
                     e.stopPropagation();
-                    if (this.mouseEvent) {
-                        this.handleMouseDownClickAndTouchStart(e);
+                    if (this.props.orientation === 'horizontal') {
+                        this.props.gridContext.state.currentBehavior.handlePointerDown(e, 'column')
+                    } else if (this.props.orientation === 'vertical') {
+                        this.props.gridContext.state.currentBehavior.handlePointerDown(e, 'row')
                     }
+                    // this.props.gridContext.state.currentBehavior.handlePointerDown(e)
                 }}
-                onTouchStart={e => {
-                    this.handleMouseDownClickAndTouchStart(e);
-                }}
-                onTouchEnd={() => {
-                    this.mouseEvent = false;
-                }}
-                onClick={e => {
-                    e.stopPropagation();
-                    if (!this.mouseEvent) {
-                        this.handleMouseDownClickAndTouchStart(e);
-                    }
-                    this.mouseEvent = true;
-                }}
-                onDoubleClick={e => {
-                    if (this.props.isReadOnly) {
-                        e.stopPropagation();
-                    }
-                }}
+                // onMouseDown={e => {
+                //     e.stopPropagation();
+                //     if (this.mouseEvent) {
+                //         this.handleMouseDownClickAndTouchStart(e);
+                //     }
+                // }}
+                // onTouchStart={e => {
+                //     this.handleMouseDownClickAndTouchStart(e);
+                // }}
+                // onTouchEnd={() => {
+                //     this.mouseEvent = false;
+                // }}
+                // onClick={e => {
+                //     e.stopPropagation();
+                //     if (!this.mouseEvent) {
+                //         this.handleMouseDownClickAndTouchStart(e);
+                //     }
+                //     this.mouseEvent = true;
+                // }}
+                // onDoubleClick={e => {
+                //     if (this.props.isReadOnly) {
+                //         e.stopPropagation();
+                //     }
+                // }}
             >
                 <div style={innerStyle}>
                     {this.props.isInEditMode && (

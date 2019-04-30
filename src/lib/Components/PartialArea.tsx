@@ -1,13 +1,13 @@
 import * as React from "react";
 import { Range } from "../Common";
 
-export interface PartialrangeProps {
+export interface PartialRangeProps {
     range: Range,
     pane: Range,
     style: React.CSSProperties
 }
 
-export const PartialArea: React.SFC<PartialrangeProps> = (props) => {
+export const PartialArea: React.SFC<PartialRangeProps> = (props) => {
     const { range, pane, style } = props;
     if (
         !range ||

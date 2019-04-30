@@ -7,8 +7,8 @@ export class DefaultGridBehavior implements Behavior {
 
     constructor(private gridContext: GridContext) { }
 
-    handlePointerDown(event: PointerEvent): void {
-        pointerDownHandler(this.gridContext, event);
+    handlePointerDown(event: PointerEvent, selectionMode: string): void {
+        pointerDownHandler(this.gridContext, event, selectionMode);
     }
 
     handlePointerMove(event: PointerEvent): void {

@@ -1,5 +1,5 @@
 import { GridContext, PointerEvent } from "../../Common";
-import { getLocationFromClient, focusLocation } from "../../Functions";
+import { getLocationFromClient } from "../../Functions";
 import { isClickOutOfGrid } from "../../Functions/isClickOutOfGrid";
 
 export function pointerMoveHandler(gridContext: GridContext, event: PointerEvent) {
