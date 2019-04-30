@@ -80,11 +80,11 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
         let style = {
             background: '#eee',
             cursor: 'default',
-                // this.props.isSelected &&
-                //     this.props.gridContext.cellMatrix.first.row.idx !== 0 &&
-                //     this.props.gridContext.cellMatrix.first.col.idx !== 0
-                //     ? '-webkit-grab'
-                //     : 'default',
+            // this.props.isSelected &&
+            //     this.props.gridContext.cellMatrix.first.row.idx !== 0 &&
+            //     this.props.gridContext.cellMatrix.first.col.idx !== 0
+            //     ? '-webkit-grab'
+            //     : 'default',
             paddingRight: 0
         };
         let mergedStyle = Object.assign({}, this.props.attributes.style, style, this.props.customCss);
@@ -98,7 +98,8 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
         };
         return (
             <div
-                className="cell-header"
+                key={this.props.cellKey}
+                className="dg-header-cell"
                 {...(this.props.attributes, { style: mergedStyle })}
                 onMouseDown={e => {
                     e.stopPropagation();
@@ -138,7 +139,7 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
                                 }
                                 // this.props.setEditMode(false);
                             }}
-                            onKeyDown={e => {}/*handleKeyDown(e, this.props)*/}
+                            onKeyDown={e => { }/*handleKeyDown(e, this.props)*/}
                             onCopy={handleCopy}
                             onCut={handleCut}
                             onPaste={handlePaste}

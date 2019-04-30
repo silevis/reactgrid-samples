@@ -1,9 +1,12 @@
 import * as React from "react";
-import { GridContext, GridController, CellMatrix, BehaviorDelegate } from "../Common";
+import { GridContext, GridController, CellMatrix } from "../Common";
 import { Range, Location, SelectionMode, Behavior, zIndex } from "../Common";
 import { PaneRow } from "./PaneRow";
 import { getVisibleCells, refreshIfNeeded } from "../Functions";
 import { DefaultGridBehavior } from "../Behaviors/DefaultGridBehavior";
+import { KeyboardEvent, ClipboardEvent, PointerEvent } from "../Common";
+import { PointerEventsController } from "../Common/PointerEventsController";
+
 
 interface GridProps {
     cellMatrix: CellMatrix;
@@ -39,19 +42,16 @@ export class GridState {
 }
 
 export class Grid extends React.Component<GridProps, GridState> {
+
     private gridContext = new GridContext(this);
 
-    
+    private pointerEventsController = new PointerEventsController(this.gridContext)
+
     state = new GridState();
-    
-    constructor(props: any) {
+
+    constructor(props: GridProps) {
         super(props)
-        this.gridContext.state.currentBehavior = new DefaultGridBehavior(this.gridContext)
-    }
-    
-    static getDerivedStateFromProps(nextProps: GridProps, prevState: GridState) {
-        return (prevState.gridElement) ?
-            getVisibleCells(prevState.gridElement, nextProps.cellMatrix) : prevState;
+        this.state.currentBehavior = new DefaultGridBehavior(this.gridContext)
     }
 
     componentDidMount() {
@@ -59,6 +59,7 @@ export class Grid extends React.Component<GridProps, GridState> {
         // TODO remove? this might be done by 
         //this.setState(getVisibleCells(this.state.gridElement, this.props.cellMatrix));
         this.props.onInitialized && this.props.onInitialized(new GridController(this));
+        console.log("gridRef" + this.state.gridElement);
     }
 
     componentWillUnmount() {
@@ -100,7 +101,6 @@ export class Grid extends React.Component<GridProps, GridState> {
 
     render() {
         const matrix = this.props.cellMatrix;
-        const delegate = new BehaviorDelegate(this.gridContext);
 
         return (
             <div
@@ -115,21 +115,18 @@ export class Grid extends React.Component<GridProps, GridState> {
                     overflow: 'auto'
                 }}
                 onScroll={this.handleScroll}
-                onKeyDown={delegate.handleKeyDown}
-                onKeyUp={delegate.handleKeyUp}
-                onCopy={delegate.handleCopy}
-                onCut={delegate.handleCut}
-                onPaste={delegate.handlePaste}
-                data-cy="data-grid"
+                data-cy="dyna-grid"
             >
                 <div
+                    className="dg-content"
                     style={{ width: matrix.contentWidth, height: matrix.contentHeight, position: 'relative' }}
-                    onMouseDown={delegate.handleMouseDown}
-                    onTouchStart={delegate.handleTouchStart}
-                    onTouchEnd={delegate.handleTouchEnd}
-                    onContextMenu={this.handleContextMenu}
-                    onDoubleClick={delegate.handleDoubleClick}
-                    onClick={delegate.handleClick}
+                    onPointerDown={this.pointerEventsController.handlePointerDown}
+                    //onContextMenu={this.handleContextMenu}
+                    onKeyDown={this.handleKeyDown}
+                    onKeyUp={this.handleKeyUp}
+                    onCopy={this.handleCopy}
+                    onCut={this.handleCut}
+                    onPaste={this.handlePaste}
                 >
                     {matrix.frozenTopRange.height > 0 &&
                         <PaneRow
@@ -153,7 +150,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                             borders={{ top: true }}
                         />}
                     <div
-                        className="hiddenFocusElement"
+                        className="dg-hidden-focus-element"
                         contentEditable={true}
                         style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }}
                         // onBlur={this.handleBlur}
@@ -167,20 +164,12 @@ export class Grid extends React.Component<GridProps, GridState> {
     }
 
     private handleNewGridElementRef = (gridElement: HTMLDivElement) => {
-        // TODO do we need setTimout here due to setState inside ComponentDidMount?
-        if (gridElement) { this.setState({ gridElement }) };
+        this.setState({ ...getVisibleCells(gridElement, this.props.cellMatrix), gridElement } as any);
     }
 
     private handleNewHiddenElementRef = (hiddenFocusElement: HTMLDivElement) => {
-        if (hiddenFocusElement) { this.gridContext.hiddenFocusElement = hiddenFocusElement };
+        this.gridContext.hiddenFocusElement = hiddenFocusElement;
     }
-
-    private handleContextMenu = (event: any) => {
-        /*this.state.focusedLocation &&*/
-        event.preventDefault();
-        //changeBehavior(new DrawContextMenuBehavior(new DefaultGridBehavior(this), this, e));
-        event.persist();
-    };
 
     private handleScroll = () => {
         refreshIfNeeded(this.gridContext);
@@ -190,25 +179,16 @@ export class Grid extends React.Component<GridProps, GridState> {
         refreshIfNeeded(this.gridContext);
     }
 
+    private handlePasteOnHiddenElement = (event: React.ClipboardEvent<HTMLDivElement>) => {
+        event.preventDefault();
+    };
 
-
-    // dataMatrix = () => {
-    //     let cells = this.props.cellMatrix.cells;
-    //     const data = [];
-    //     cells.forEach((row, rIdx) => {
-    //         if (rIdx < cells.length - 1) {
-    //             let dataRow: string[] = [];
-    //             row.forEach((col, cIdx) => {
-    //                 if (cIdx > 0 && cIdx < row.length - 1) {
-    //                     dataRow.push(col.value);
-    //                 }
-    //             });
-    //             data.push(dataRow);
-    //         }
-    //     });
-    //     return data;
-    // };
-
+    handleKeyDown = (event: KeyboardEvent) => this.state.currentBehavior.handleKeyDown(event);
+    handleKeyUp = (event: KeyboardEvent) => this.state.currentBehavior.handleKeyUp(event);
+    handleCopy = (event: ClipboardEvent) => this.state.currentBehavior.handleCopy(event);
+    handlePaste = (event: ClipboardEvent) => this.state.currentBehavior.handlePaste(event);
+    handleCut = (event: ClipboardEvent) => this.state.currentBehavior.handleCut(event);
+    //handleContextMenu = (event: React.MouseEvent) => this.state.currentBehavior.handleContextMenu(event);
 
 
     // private validateSelection(oldprops: GridProps) {
@@ -289,8 +269,4 @@ export class Grid extends React.Component<GridProps, GridState> {
     //         e.stopPropagation();
     //     }
     // };
-
-    private handlePasteOnHiddenElement = (event: React.ClipboardEvent<HTMLDivElement>) => {
-        event.preventDefault();
-    };
 }

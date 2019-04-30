@@ -1,18 +1,27 @@
 
 import { GridContext } from "../Common/GridContext";
 import { getVisibleCells } from "./getVisibleCells";
+//import { setTimeout, clearTimeout} from "";
 
 export function refreshIfNeeded(gridContext: GridContext) {
-    const gridElement = gridContext.state.gridElement;
-    const scrollTop = gridElement.scrollTop;
-    const scrollLeft = gridElement.scrollLeft;
-    if (
-        scrollTop < gridContext.state.minScrollTop ||
-        scrollTop > gridContext.state.maxScrollTop ||
-        scrollLeft < gridContext.state.minScrollLeft ||
-        scrollLeft > gridContext.state.maxScrollLeft
-    ) {
-        console.log('current: ' + scrollTop + 'min: ' + gridContext.state.minScrollTop + ' max:' + gridContext.state.maxScrollTop)
-        // gridContext.setState(getVisibleCells(gridElement, gridContext.cellMatrix));
+    const state = gridContext.state;
+    const { scrollTop, scrollLeft } = state.gridElement;
+    if (!gridContext.renderScheduled) {
+        gridContext.renderScheduled = true;
+        window.setTimeout(() => {
+            gridContext.renderScheduled = false;
+            if (
+                scrollTop < state.minScrollTop || scrollTop > state.maxScrollTop ||
+                scrollLeft < state.minScrollLeft || scrollLeft > state.maxScrollLeft
+            ) {
+                gridContext.setState(getVisibleCells(state.gridElement, gridContext.cellMatrix))
+            }
+        }, 200);
+
+        // console.log(
+        //     'top: ' + scrollTop + ' (' + gridContext.state.minScrollTop + ' - ' + gridContext.state.maxScrollTop + ')' +
+        //     'left: ' + scrollLeft + ' (' + gridContext.state.minScrollLeft + ' - ' + gridContext.state.maxScrollLeft + ')'
+        // );
+
     }
-};
+}

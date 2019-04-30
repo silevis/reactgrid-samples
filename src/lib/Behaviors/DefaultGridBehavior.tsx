@@ -1,41 +1,43 @@
 import * as React from "react";
-import { GridContext, Behavior } from "../Common";
+import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent } from "../Common";
 import { handleMouseDown } from "./DefaultGridBehavior/mouseDownHandler";
+
 // import { handleCut } from "./DefaultGridBehavior/copyCutPasteHandlers";
 
 export class DefaultGridBehavior implements Behavior {
+
     constructor(private gridContext: GridContext) { }
 
-    handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        event.preventDefault();
-    }
-    handleKeyUp(event: React.KeyboardEvent<HTMLDivElement>): void {
-        event.preventDefault();
-    }
-    handleCopy(event: React.ClipboardEvent<HTMLDivElement>): void {
-        event.preventDefault();
-    }
-    handlePaste(event: React.ClipboardEvent<HTMLDivElement>): void {
-        event.preventDefault();
-    }
-    handleCut(event: React.ClipboardEvent<HTMLDivElement>): void {
-        event.preventDefault();
+    handlePointerDown(event: PointerEvent): void {
+        console.log('down')
     }
 
-    handleMouseDown(event: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
-        handleMouseDown(this.gridContext, event);
+    handlePointerMove(event: PointerEvent): void {
+        console.log('move');
     }
-    handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
+
+    handlePointerUp(event: PointerEvent): void {
+        console.log('up');
+    }
+
+    handleDoubleClick(event: PointerEvent): void {
+        console.log('double');
+    }
+
+
+    handleKeyDown = (event: KeyboardEvent) => {
         event.preventDefault();
     }
-    handleTouchStart(event: React.TouchEvent<HTMLDivElement>): void {
+    handleKeyUp(event: KeyboardEvent): void {
         event.preventDefault();
     }
-    handleTouchEnd(event: React.TouchEvent<HTMLDivElement>): void {
+    handleCopy(event: ClipboardEvent): void {
         event.preventDefault();
     }
-    handleDoubleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
-        this.gridContext;
+    handlePaste(event: ClipboardEvent): void {
+        event.preventDefault();
+    }
+    handleCut(event: ClipboardEvent): void {
         event.preventDefault();
     }
 

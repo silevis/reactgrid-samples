@@ -9,11 +9,12 @@ export interface PaneRowProps {
     borders: Borders,
 }
 
-export const PaneRow: React.SFC<PaneRowProps> = (props) => {
+export const PaneRow: React.FunctionComponent<PaneRowProps> = (props) => {
     const matrix = props.gridContext.cellMatrix;
     const state = props.gridContext.state
     return (
         <div
+            className="dg-pane-row"
             style={{
                 width: matrix.frozenLeftRange.width + matrix.scrollableRange.width + matrix.frozenRightRange.width,
                 height: props.range.height,

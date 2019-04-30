@@ -42,6 +42,7 @@ export class TextCell extends React.Component<TextCellProps, {}> {
         let mergedStyle = Object.assign({}, this.props.attributes.style, this.props.customCss);
         return (
             <div
+                key={this.props.cellKey}
                 className="cell"
                 // ref={ref => this.props.setFocusedCellRef(ref)}
                 {...(this.props.attributes, { style: mergedStyle })}

@@ -1,21 +1,59 @@
-export const x = 1;
-// import * as React from 'react';
-// import { DelegateBehavior } from "./DelegateBehavior";
-// import { DrawExternalFocusedLocationsBehavior } from './DefaultGridBehavior/DrawExternalFocusedLocationsBehavior';
-// import { Behavior, Column, Row, Orientation } from '../Common';
-// import { Utilities } from '../Common/Utilities';
-// import { getRowFromClientY, getColumnFromClientX, scrollIntoView } from '../Functions';
+export const _ = {}
+// import { Behavior, GridContext } from "../Common";
 
-// export class AutoScrollBehavior extends DelegateBehavior {
-//     private mouseMoveHandler = this.handleMouseMove.bind(this);
+// // import * as React from 'react';
+// // import { DelegateBehavior } from "./DelegateBehavior";
+// // import { DrawExternalFocusedLocationsBehavior } from './DefaultGridBehavior/DrawExternalFocusedLocationsBehavior';
+// // import { Behavior, Column, Row, Orientation } from '../Common';
+// // import { Utilities } from '../Common/Utilities';
+// // import { getRowFromClientY, getColumnFromClientX, scrollIntoView } from '../Functions';
+
+
+
+// export abstract class AutoScrollBehavior implements Behavior {
+
+//     constructor(private gridContext: GridContext, private event: MouseEvent | TouchEvent) {
+//         if (event instanceof MouseEvent) {
+//             window.addEventListener('mousemove', this.handleMouseMove);
+//         } else {
+//             window.addEventListener('touchmove', this.handleTouchMove);
+//         }
+//     }
+
+//     private handleMouseMove() {
+
+//     }
+
+//     private handleTouchMove() {
+
+//     }
+
+
+//     dispose = () => { }
+
+//     handleKeyDown = () => { }
+//     handleKeyUp = () => { }
+//     handleCopy = () => { }
+//     handlePaste = () => { }
+//     handleCut = () => { }
+//     handleMouseDown = () => { }
+//     handleClick = () => { }
+//     handleTouchStart = () => { }
+//     handleTouchEnd = () => { }
+//     handleDoubleClick = () => { }
+//     renderPanePart = (_: any) => undefined
+//     renderGlobalPart = () => undefined
+// }
+
+
+    //     private mouseMoveHandler = this.handleMouseMove.bind(this);
 //     private scrollByTop = 0;
 //     private scrollByLeft = 0;
 //     private timer = 0;
 
 //     constructor(inner: Behavior, private direction: Orientation | 'both' = 'both') {
 //         super(new DrawExternalFocusedLocationsBehavior(inner));
-//         window.addEventListener('mousemove', this.mouseMoveHandler);
-//         window.addEventListener('touchmove', this.mouseMoveHandler);
+
 //     }
 
 //     dispose = () => {

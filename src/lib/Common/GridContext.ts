@@ -9,4 +9,5 @@ export class GridContext {
     setState(state: Partial<GridState>) { this.grid.setState(state as GridState); };
     commitChanges() { this.grid.props.onValuesChanged && this.grid.props.onValuesChanged(); }
     hiddenFocusElement!: HTMLDivElement;
+    renderScheduled: boolean = false;
 }

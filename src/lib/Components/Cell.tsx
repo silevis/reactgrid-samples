@@ -1,5 +1,5 @@
 import * as React from "react";
-import { GridContext, Borders, Location, CellMatrix } from "../Common";
+import { GridContext, Borders, Location } from "../Common";
 
 export interface CellProps {
     gridContext: GridContext
