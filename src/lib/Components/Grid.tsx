@@ -27,7 +27,7 @@ export class GridState {
     gridElement!: HTMLDivElement;
     currentBehavior!: Behavior;
     // SELECTION
-    selectionMode: SelectionMode = 'ranges';
+    selectionMode: SelectionMode = 'range';
     selectedRanges: Range[] = [];
     selectedIndexes: number[] = [];
     focusedLocation?: Location;

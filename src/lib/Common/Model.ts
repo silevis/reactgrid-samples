@@ -4,7 +4,7 @@ export type Orientation = 'horizontal' | 'vertical';
 
 export type Direction = 'left' | 'right' | 'up' | 'down';
 
-export type SelectionMode = 'rows' | 'columns' | 'ranges';
+export type SelectionMode = 'row' | 'column' | 'range';
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface Cell {
