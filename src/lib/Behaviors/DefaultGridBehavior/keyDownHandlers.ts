@@ -82,7 +82,6 @@ export function keyDownHandlers(gridContext: GridContext, event: KeyboardEvent) 
         event.keyCode === keyCodes.DOWN_ARROW &&
         focusedLocation.row.idx < cellMatrix.last.row.idx
     ) {
-        console.log('tuuuuu');
         focusCell(focusedLocation.col.idx, focusedLocation.row.idx + 1, gridContext);
     } else if (event.ctrlKey && event.keyCode === keyCodes.HOME) {
         focusCell(0, 0, gridContext);
@@ -154,7 +153,7 @@ export function keyDownHandlers(gridContext: GridContext, event: KeyboardEvent) 
 };
 
 
-function focusCell(colIdx: number, rowIdx: number, gridContext: GridContext) {
+const focusCell = (colIdx: number, rowIdx: number, gridContext: GridContext) => {
     const location = gridContext.cellMatrix.getLocation(rowIdx, colIdx);
     focusLocation(gridContext, location);
 }

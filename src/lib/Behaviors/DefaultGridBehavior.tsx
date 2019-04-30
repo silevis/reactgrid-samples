@@ -3,6 +3,7 @@ import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent } fr
 import { pointerDownHandler } from "./DefaultGridBehavior/pointerDownHandler";
 import { pointerMoveHandler } from "./DefaultGridBehavior/pointerMoveHandler";
 import { keyDownHandlers } from "./DefaultGridBehavior/keyDownHandlers";
+import { keyUpHandlers } from "./DefaultGridBehavior/keyUpHandler";
 export class DefaultGridBehavior implements Behavior {
 
     constructor(private gridContext: GridContext) { }
@@ -27,7 +28,7 @@ export class DefaultGridBehavior implements Behavior {
         keyDownHandlers(this.gridContext, event)
     }
     handleKeyUp(event: KeyboardEvent): void {
-        event.preventDefault();
+        keyUpHandlers(this.gridContext, event)
     }
     handleCopy(event: ClipboardEvent): void {
         event.preventDefault();
@@ -41,7 +42,7 @@ export class DefaultGridBehavior implements Behavior {
 
 
     renderPanePart(_pane: import("../Common").Range): React.ReactNode {
-        // <FillHandle pane={pane} />
+        // <FillHandle pane={pane} />y
         return <>
 
         </>
