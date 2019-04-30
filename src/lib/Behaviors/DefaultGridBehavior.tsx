@@ -2,6 +2,7 @@ import * as React from "react";
 import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent } from "../Common";
 import { pointerDownHandler } from "./DefaultGridBehavior/pointerDownHandler";
 import { pointerMoveHandler } from "./DefaultGridBehavior/pointerMoveHandler";
+import { keyDownHandlers } from "./DefaultGridBehavior/keyDownHandlers";
 export class DefaultGridBehavior implements Behavior {
 
     constructor(private gridContext: GridContext) { }
@@ -23,7 +24,7 @@ export class DefaultGridBehavior implements Behavior {
     }
 
     handleKeyDown = (event: KeyboardEvent) => {
-        event.preventDefault();
+        keyDownHandlers(this.gridContext, event)
     }
     handleKeyUp(event: KeyboardEvent): void {
         event.preventDefault();

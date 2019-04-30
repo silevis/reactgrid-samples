@@ -117,6 +117,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                 data-cy="dyna-grid"
             >
                 <div
+                    tabIndex={0}
                     className="dg-content"
                     style={{ width: matrix.contentWidth, height: matrix.contentHeight, position: 'relative' }}
                     onPointerDown={this.pointerEventsController.handlePointerDown}
