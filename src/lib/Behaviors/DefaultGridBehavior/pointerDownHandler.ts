@@ -2,14 +2,14 @@ import { GridContext, PointerEvent, CellMatrix, Location, Range } from "../../Co
 import { getLocationFromClient } from "../../Functions";
 import { Utilities } from "../../Common/Utilities";
 
-export function pointerDownHandler(gridContext: GridContext, event: PointerEvent, selectionMode: string) {
+export function pointerDownHandler(gridContext: GridContext, event: PointerEvent) {
     const focusedLocation = getLocationFromClient(gridContext, event.clientX, event.clientY);
     const cellMatrix = gridContext.cellMatrix;
 
     if (gridContext.state.focusedLocation &&
-        gridContext.state.focusedLocation.col.idx === focusedLocation.col.idx && 
+        gridContext.state.focusedLocation.col.idx === focusedLocation.col.idx &&
         gridContext.state.focusedLocation.row.idx === focusedLocation.row.idx && selectionMode === 'range') {
-        if (gridContext.state.isFocusedCellInEditMode) { 
+        if (gridContext.state.isFocusedCellInEditMode) {
             return;
         }
     } else {
@@ -20,42 +20,42 @@ export function pointerDownHandler(gridContext: GridContext, event: PointerEvent
             });
             let selectedIndexes: number[] = gridContext.state.selectionMode !== selectionMode ? [] : gridContext.state.selectedIndexes;
             // if (event.type === 'mousedown') {
-                if (event.ctrlKey) {
-                    toggleColumn(gridContext, event, selectedIndexes, focusedLocation, range);
-                } else {
-                    selectedIndexes = [];
-                    selectedIndexes.push(focusedLocation.col.idx);
-                    gridContext.setState({
-                        selectedIndexes,
-                        selectionMode,
-                        focusedLocation,
-                        selectedRanges: [range]
-                    });
-                }
+            if (event.ctrlKey) {
+                toggleColumn(gridContext, event, selectedIndexes, focusedLocation, range);
+            } else {
+                selectedIndexes = [];
+                selectedIndexes.push(focusedLocation.col.idx);
+                gridContext.setState({
+                    selectedIndexes,
+                    selectionMode,
+                    focusedLocation,
+                    selectedRanges: [range]
+                });
+            }
             // } else if (event.type === 'click') {
-                // this.toggleColumn(event, selectedColsIdx, focusedLocation, cellMatrix, range);
+            // this.toggleColumn(event, selectedColsIdx, focusedLocation, cellMatrix, range);
             // }
-        }  else if (selectionMode === 'row') {
+        } else if (selectionMode === 'row') {
             const range = cellMatrix.getRange(focusedLocation, {
                 row: focusedLocation.row,
                 col: cellMatrix.cols[cellMatrix.cols.length - 1]
             });
             let selectedIndexes: number[] = gridContext.state.selectionMode !== selectionMode ? [] : gridContext.state.selectedIndexes;
             // if (event.type === 'mousedown') {
-                if (event.ctrlKey) {
-                    toggleRow(gridContext, event, selectedIndexes, focusedLocation, range);
-                } else {
-                    selectedIndexes = [];
-                    selectedIndexes.push(focusedLocation.row.idx);
-                    gridContext.setState({
-                        selectedIndexes,
-                        selectionMode,
-                        focusedLocation,
-                        selectedRanges: [range]
-                    });
-                }
+            if (event.ctrlKey) {
+                toggleRow(gridContext, event, selectedIndexes, focusedLocation, range);
+            } else {
+                selectedIndexes = [];
+                selectedIndexes.push(focusedLocation.row.idx);
+                gridContext.setState({
+                    selectedIndexes,
+                    selectionMode,
+                    focusedLocation,
+                    selectedRanges: [range]
+                });
+            }
             // } else if (event.type === 'click') {
-                // this.toggleRow(event, selectedRowsIdx, focusedLocation, cellMatrix, range);
+            // this.toggleRow(event, selectedRowsIdx, focusedLocation, cellMatrix, range);
             // }
         } else if (selectionMode === 'range') {
             // focusLocation(gridContext, focusedLocation, !event.ctrlKey); 
@@ -69,8 +69,8 @@ export function pointerDownHandler(gridContext: GridContext, event: PointerEvent
                         selectionMode,
                         selectedRanges:
                             gridContext.state.selectionMode !== selectionMode
-                                ? (<Range[]>[]).concat([gridContext.cellMatrix.getRange(focusedLocation, focusedLocation)])          
-                                : gridContext.state.selectedRanges.concat([gridContext.cellMatrix.getRange(focusedLocation, focusedLocation)]) 
+                                ? (<Range[]>[]).concat([gridContext.cellMatrix.getRange(focusedLocation, focusedLocation)])
+                                : gridContext.state.selectedRanges.concat([gridContext.cellMatrix.getRange(focusedLocation, focusedLocation)])
                     });
                 }
             } else {
@@ -117,7 +117,7 @@ export function toggleRow(gridContext: GridContext, event: any, selectedRowsIdx:
     }
 }
 
-export function toggleColumn(gridContext: GridContext, event: any, selectedColsIdx: number[], focusedLocation: Location, range: any ) {
+export function toggleColumn(gridContext: GridContext, event: any, selectedColsIdx: number[], focusedLocation: Location, range: any) {
     if (selectedColsIdx.some(idx => idx === focusedLocation.col.idx)) {
         if (selectedColsIdx.length > 1) {
             selectedColsIdx = selectedColsIdx.filter(r => r !== focusedLocation.col.idx);

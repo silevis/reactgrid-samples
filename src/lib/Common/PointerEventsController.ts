@@ -12,7 +12,7 @@ export class PointerEventsController {
         window.addEventListener('pointerup', this.handlePointerUp as any);
         this.currentClickTime = 1 - this.currentClickTime;
         this.clickTimes[this.currentClickTime] = new Date().valueOf();
-        this.gridContext.state.currentBehavior.handlePointerDown(event, 'range');
+        this.gridContext.state.currentBehavior.handlePointerDown(event);
     }
 
     private handlePointerMove = (event: PointerEvent) => {
