@@ -59,7 +59,6 @@ export class Grid extends React.Component<GridProps, GridState> {
         // TODO remove? this might be done by 
         //this.setState(getVisibleCells(this.state.gridElement, this.props.cellMatrix));
         this.props.onInitialized && this.props.onInitialized(new GridController(this));
-        console.log("gridRef" + this.state.gridElement);
     }
 
     componentWillUnmount() {
@@ -179,7 +178,7 @@ export class Grid extends React.Component<GridProps, GridState> {
         refreshIfNeeded(this.gridContext);
     }
 
-    private handlePasteOnHiddenElement = (event: React.ClipboardEvent<HTMLDivElement>) => {
+    private handlePasteOnHiddenElement = (event: ClipboardEvent) => {
         event.preventDefault();
     };
 
