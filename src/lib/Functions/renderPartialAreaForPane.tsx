@@ -14,7 +14,7 @@ export function renderMultiplePartialAreasForPane(gridContext: GridContext, area
                     range.last.row.idx === gridContext.state.focusedLocation!.row.idx
                 )
             ) {
-                let partialPane = <PartialArea key={index} area={area} pane={pane} style={style} />
+                let partialPane = <PartialArea key={index} range={range} pane={pane} style={style} />
                 partialPane && result.push([partialPane]);
             }
         }
