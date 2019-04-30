@@ -1,6 +1,7 @@
 import * as React from "react";
 import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent } from "../Common";
 import { pointerDownHandler } from "./DefaultGridBehavior/pointerDownHandler";
+import { pointerMoveHandler } from "./DefaultGridBehavior/pointerMoveHandler";
 export class DefaultGridBehavior implements Behavior {
 
     constructor(private gridContext: GridContext) { }
@@ -10,7 +11,7 @@ export class DefaultGridBehavior implements Behavior {
     }
 
     handlePointerMove(event: PointerEvent): void {
-        console.log('move');
+        pointerMoveHandler(this.gridContext, event);
     }
 
     handlePointerUp(event: PointerEvent): void {

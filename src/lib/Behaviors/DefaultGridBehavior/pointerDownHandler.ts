@@ -3,7 +3,7 @@ import { getLocationFromClient, focusLocation } from "../../Functions";
 import { Utilities } from "../../Common/Utilities";
 
 export function pointerDownHandler(gridContext: GridContext, event: PointerEvent) {
-    let focusedLocation = getLocationFromClient(gridContext, event.clientX, event.clientY);
+    const focusedLocation = getLocationFromClient(gridContext, event.clientX, event.clientY);
 
     if (gridContext.state.focusedLocation && 
         gridContext.state.focusedLocation.col.idx === focusedLocation.col.idx && 
