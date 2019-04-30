@@ -1,15 +1,12 @@
 import * as React from "react";
 import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent } from "../Common";
-import { handleMouseDown } from "./DefaultGridBehavior/mouseDownHandler";
-
-// import { handleCut } from "./DefaultGridBehavior/copyCutPasteHandlers";
-
+import { pointerDownHandler } from "./DefaultGridBehavior/pointerDownHandler";
 export class DefaultGridBehavior implements Behavior {
 
     constructor(private gridContext: GridContext) { }
 
     handlePointerDown(event: PointerEvent): void {
-        console.log('down')
+        pointerDownHandler(this.gridContext, event);
     }
 
     handlePointerMove(event: PointerEvent): void {
@@ -23,7 +20,6 @@ export class DefaultGridBehavior implements Behavior {
     handleDoubleClick(event: PointerEvent): void {
         console.log('double');
     }
-
 
     handleKeyDown = (event: KeyboardEvent) => {
         event.preventDefault();
