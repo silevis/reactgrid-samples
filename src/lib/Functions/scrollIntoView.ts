@@ -53,5 +53,5 @@ export function scrollIntoView(gridContext: GridContext, cell: Location) {
     ) {
         top = rowTop + row.height - bottomScrollBorder + cellMatrix.frozenBottomRange.height;
     }
-    gridElement.scrollTo({ top: top, left: left, behavior: 'smooth' });
+    gridElement.scrollTo({ top: top, left: left, behavior: 'auto' });
 }

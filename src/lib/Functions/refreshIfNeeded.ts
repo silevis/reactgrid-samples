@@ -16,7 +16,7 @@ export function refreshIfNeeded(gridContext: GridContext) {
             ) {
                 gridContext.setState(getVisibleCells(state.gridElement, gridContext.cellMatrix))
             }
-        }, 200);
+        }, 100);
 
         // console.log(
         //     'top: ' + scrollTop + ' (' + gridContext.state.minScrollTop + ' - ' + gridContext.state.maxScrollTop + ')' +

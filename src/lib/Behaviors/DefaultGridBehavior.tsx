@@ -1,6 +1,6 @@
 import * as React from "react";
 import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent } from "../Common";
-import { pointerDownHandler } from "./DefaultGridBehavior/pointerDownHandler";
+// import { pointerDownHandler } from "./DefaultGridBehavior/pointerDownHandler";
 import { keyDownHandlers } from "./DefaultGridBehavior/keyDownHandlers";
 import { keyUpHandlers } from "./DefaultGridBehavior/keyUpHandler";
 import { focusLocation, getLocationFromClient } from "../Functions";
@@ -18,9 +18,10 @@ export class DefaultGridBehavior implements Behavior {
             selectRange(this.gridContext, range);
         } else if (event.ctrlKey) {
 
+            focusLocation(this.gridContext, location)
+
         } else {
             focusLocation(this.gridContext, location);
-
         }
         //pointerDownHandler(this.gridContext, event);
     }

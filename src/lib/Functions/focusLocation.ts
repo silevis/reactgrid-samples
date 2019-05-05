@@ -6,7 +6,7 @@ export function focusLocation(gridContext: GridContext, location: Location, rese
     const cellMatrix = gridContext.cellMatrix;
     const cell = cellMatrix.getCell(location);
     const isReadOnly = cell.isReadOnly;
-
+    console.log('focusLocation')
     // TODO scroll into view after changing state !? 
     scrollIntoView(gridContext, location);
     // cell.onFocusChanged(location);

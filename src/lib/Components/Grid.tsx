@@ -55,14 +55,14 @@ export class Grid extends React.Component<GridProps, GridState> {
     }
 
     componentDidMount() {
-        window.addEventListener('resize', this.handleWindowResize);
+        window.addEventListener('resize', this.windowResizeHandler);
         // TODO remove? this might be done by 
         //this.setState(getVisibleCells(this.state.gridElement, this.props.cellMatrix));
         this.props.onInitialized && this.props.onInitialized(new GridController(this));
     }
 
     componentWillUnmount() {
-        window.removeEventListener('resize', this.handleWindowResize);
+        window.removeEventListener('resize', this.windowResizeHandler);
     }
 
     componentDidUpdate(oldprops: GridProps) {
@@ -104,7 +104,7 @@ export class Grid extends React.Component<GridProps, GridState> {
         return (
             <div
                 className="dyna-grid"
-                ref={this.handleNewGridElementRef}
+                ref={this.newGridElementRefHandler}
                 style={{
                     ...this.props.style,
                     MozUserSelect: 'none',
@@ -113,7 +113,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                     userSelect: 'none',
                     overflow: 'auto'
                 }}
-                onScroll={this.handleScroll}
+                onScroll={this.scrollHandler}
                 data-cy="dyna-grid"
             >
                 <div
@@ -122,11 +122,11 @@ export class Grid extends React.Component<GridProps, GridState> {
                     style={{ width: matrix.contentWidth, height: matrix.contentHeight, position: 'relative' }}
                     onPointerDown={this.pointerEventsController.handlePointerDown}
                     //onContextMenu={this.handleContextMenu}
-                    onKeyDown={this.handleKeyDown}
-                    onKeyUp={this.handleKeyUp}
-                    onCopy={this.handleCopy}
-                    onCut={this.handleCut}
-                    onPaste={this.handlePaste}
+                    onKeyDown={this.keyDownHandler}
+                    onKeyUp={this.keyUpHandler}
+                    onCopy={this.copyHandler}
+                    onCut={this.cutHandler}
+                    onPaste={this.pasteHandler}
                 >
                     {matrix.frozenTopRange.height > 0 &&
                         <PaneRow
@@ -163,7 +163,7 @@ export class Grid extends React.Component<GridProps, GridState> {
         );
     }
 
-    private handleNewGridElementRef = (gridElement: HTMLDivElement) => {
+    private newGridElementRefHandler = (gridElement: HTMLDivElement) => {
         this.setState({ ...getVisibleCells(gridElement, this.props.cellMatrix), gridElement } as any);
     }
 
@@ -171,11 +171,11 @@ export class Grid extends React.Component<GridProps, GridState> {
         this.gridContext.hiddenFocusElement = hiddenFocusElement;
     }
 
-    private handleScroll = () => {
+    private scrollHandler = () => {
         refreshIfNeeded(this.gridContext);
     }
 
-    private handleWindowResize = () => {
+    private windowResizeHandler = () => {
         refreshIfNeeded(this.gridContext);
     }
 
@@ -183,11 +183,11 @@ export class Grid extends React.Component<GridProps, GridState> {
         event.preventDefault();
     };
 
-    handleKeyDown = (event: KeyboardEvent) => this.state.currentBehavior.handleKeyDown(event);
-    handleKeyUp = (event: KeyboardEvent) => this.state.currentBehavior.handleKeyUp(event);
-    handleCopy = (event: ClipboardEvent) => this.state.currentBehavior.handleCopy(event);
-    handlePaste = (event: ClipboardEvent) => this.state.currentBehavior.handlePaste(event);
-    handleCut = (event: ClipboardEvent) => this.state.currentBehavior.handleCut(event);
+    keyDownHandler = (event: KeyboardEvent) => this.state.currentBehavior.handleKeyDown(event);
+    keyUpHandler = (event: KeyboardEvent) => this.state.currentBehavior.handleKeyUp(event);
+    copyHandler = (event: ClipboardEvent) => this.state.currentBehavior.handleCopy(event);
+    pasteHandler = (event: ClipboardEvent) => this.state.currentBehavior.handlePaste(event);
+    cutHandler = (event: ClipboardEvent) => this.state.currentBehavior.handleCut(event);
     //handleContextMenu = (event: React.MouseEvent) => this.state.currentBehavior.handleContextMenu(event);
 
 
