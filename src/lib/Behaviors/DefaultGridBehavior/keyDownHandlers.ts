@@ -1,9 +1,11 @@
 import { GridContext, KeyboardEvent, keyCodes, Row, Column } from "../../Common";
-import { focusLocation } from "../../Functions";
+import { focusLocation, scrollIntoView } from "../../Functions";
+import { setFocusLocation } from "../DefaultGridBehavior";
 
 export function keyDownHandlers(gridContext: GridContext, event: KeyboardEvent) {
-    const focusedLocation = gridContext.state.focusedLocation;
+    const focusedLocation = gridContext.focusedLocation;
     const cellMatrix = gridContext.cellMatrix;
+
     if (!focusedLocation) { return }
 
     if (event.keyCode === keyCodes.TAB || event.keyCode === keyCodes.ENTER) {
@@ -68,21 +70,25 @@ export function keyDownHandlers(gridContext: GridContext, event: KeyboardEvent) 
             true
         );
     } else if (!event.shiftKey && event.keyCode === keyCodes.LEFT_ARROW && focusedLocation.col.idx > 0) {
-        focusCell(focusedLocation.col.idx - 1, focusedLocation.row.idx, gridContext);
+        setFocusLocation(gridContext.cellMatrix.getLocation(focusedLocation.row.idx, focusedLocation.col.idx - 1))
+        gridContext.focusedLocation = gridContext.cellMatrix.getLocation(focusedLocation.row.idx, focusedLocation.col.idx - 1);
     } else if (
         !event.shiftKey &&
         event.keyCode === keyCodes.RIGHT_ARROW &&
         focusedLocation.col.idx < cellMatrix.last.col.idx
     ) {
-        focusCell(focusedLocation.col.idx + 1, focusedLocation.row.idx, gridContext);
+        setFocusLocation(gridContext.cellMatrix.getLocation(focusedLocation.row.idx, focusedLocation.col.idx + 1))
+        gridContext.focusedLocation = gridContext.cellMatrix.getLocation(focusedLocation.row.idx, focusedLocation.col.idx + 1);
     } else if (!event.shiftKey && event.keyCode === keyCodes.UP_ARROW && focusedLocation.row.idx > 0) {
-        focusCell(focusedLocation.col.idx, focusedLocation.row.idx - 1, gridContext);
+        setFocusLocation(gridContext.cellMatrix.getLocation(focusedLocation.row.idx - 1, focusedLocation.col.idx))
+        gridContext.focusedLocation = gridContext.cellMatrix.getLocation(focusedLocation.row.idx - 1, focusedLocation.col.idx);
     } else if (
         !event.shiftKey &&
         event.keyCode === keyCodes.DOWN_ARROW &&
         focusedLocation.row.idx < cellMatrix.last.row.idx
     ) {
-        focusCell(focusedLocation.col.idx, focusedLocation.row.idx + 1, gridContext);
+        setFocusLocation(gridContext.cellMatrix.getLocation(focusedLocation.row.idx + 1, focusedLocation.col.idx))
+        gridContext.focusedLocation = gridContext.cellMatrix.getLocation(focusedLocation.row.idx + 1, focusedLocation.col.idx);
     } else if (event.ctrlKey && event.keyCode === keyCodes.HOME) {
         focusCell(0, 0, gridContext);
     } else if (event.keyCode === keyCodes.HOME) {
@@ -147,6 +153,8 @@ export function keyDownHandlers(gridContext: GridContext, event: KeyboardEvent) 
         // TODO
         // return this.innerBehavior.handleKeyDown(event);
     }
+    
+    scrollIntoView(gridContext, gridContext.focusedLocation);
     event.stopPropagation();
     event.preventDefault();
     return;

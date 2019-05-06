@@ -102,7 +102,7 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
                 className="dg-header-cell"
                 {...(this.props.attributes, { style: mergedStyle })}
                 onPointerDown={e => {
-                    e.stopPropagation();
+                    // e.stopPropagation();
                     // if (this.props.orientation === 'horizontal') {
                     //     this.props.gridContext.state.currentBehavior.handlePointerDown(e, 'column')
                     // } else if (this.props.orientation === 'vertical') {

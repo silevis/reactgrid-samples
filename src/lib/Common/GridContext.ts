@@ -1,5 +1,6 @@
 import { Grid, GridState } from "../Components/Grid";
 import { CellMatrix } from "./CellMatrix";
+import { Location } from "./Model";
 
 // INTERNAL
 export class GridContext {
@@ -10,4 +11,5 @@ export class GridContext {
     commitChanges() { this.grid.props.onValuesChanged && this.grid.props.onValuesChanged(); }
     hiddenFocusElement!: HTMLDivElement;
     renderScheduled: boolean = false;
+    focusedLocation!: Location;
 }

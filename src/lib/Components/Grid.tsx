@@ -157,6 +157,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                         onPaste={this.handlePasteOnHiddenElement}
                         ref={this.handleNewHiddenElementRef}
                     />
+                    {/* {this.state.visibleRange && this.state.currentBehavior.renderPanePart(matrix.scrollableRange.slice(this.state.visibleRange, 'rows'))} */}
                     {/* {this.state.currentBehavior.renderGlobalPart && this.state.currentBehavior.renderGlobalPart()} */}
                 </div>
             </div>
