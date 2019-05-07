@@ -129,6 +129,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                 >
                     {matrix.frozenTopRange.height > 0 &&
                         <PaneRow
+                            id='T'
                             gridContext={this.gridContext}
                             style={{ background: 'white', top: 0, position: 'sticky' }}
                             range={matrix.frozenTopRange}
@@ -137,6 +138,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                         />}
                     {matrix.scrollableRange.height > 0 && this.state.visibleRange &&
                         <PaneRow
+                            id='M'
                             gridContext={this.gridContext}
                             style={{ height: matrix.scrollableRange.height }}
                             range={matrix.scrollableRange.slice(this.state.visibleRange, 'rows')}
@@ -145,6 +147,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                         />}
                     {matrix.frozenBottomRange.height > 0 &&
                         <PaneRow
+                            id='B'
                             gridContext={this.gridContext}
                             style={{ background: 'white', bottom: 0, position: 'sticky', zIndex: zIndex.frozenPaneRow }}
                             range={matrix.frozenBottomRange}
@@ -164,7 +167,6 @@ export class Grid extends React.Component<GridProps, GridState> {
             </div>
         );
     }
-
     private newGridElementRefHandler = (gridElement: HTMLDivElement) => {
         this.gridContext.gridElement = gridElement;
         refresh(this.gridContext);

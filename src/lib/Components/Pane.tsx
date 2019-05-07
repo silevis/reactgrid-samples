@@ -4,15 +4,17 @@ import { Cell } from "./Cell";
 import { renderMultiplePartialAreasForPane } from "../Functions/renderPartialAreaForPane";
 
 export interface PaneProps {
-    gridContext: GridContext
+    id: string
+    gridContext: GridContext,
     style: React.CSSProperties,
     range: Range,
     borders: Borders,
 }
 
 export const Pane: React.FunctionComponent<PaneProps> = (props) =>
-    <div className="dg-pane" style={{ position: 'relative', width: props.range.width, height: '100%', ...props.style }}>
+    <div key={props.id} className="dg-pane" style={{ position: 'relative', width: props.range.width, height: '100%', ...props.style }}>
         <div>{props.range.cols.map(renderColumn)}</div>
+
         {props.range.rows.map((row) =>
             props.range.cols.map((col) => { }
                 //<Cell key={row.idx + '-' + col.idx} gridContext={props.gridContext} borders={props.borders} location={{ col, row }} />
@@ -43,3 +45,16 @@ export function renderColumn(column: Column): React.ReactNode {
         }} />
     )
 }
+
+// export class RangeRenderer extends React.Component<{ range: Range }, {}> {
+
+//     render() {
+//         return (props.range.rows.map((row) =>))
+//     }
+// }
+
+// export class Row extends React.Component<{ range: Range }, {}> {
+//     shouldComponentUpdate() {
+
+//     }
+// }
