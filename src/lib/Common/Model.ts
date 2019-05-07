@@ -2,7 +2,7 @@ import { GridContext } from "./GridContext";
 
 export type Orientation = 'horizontal' | 'vertical';
 
-export type Direction = 'left' | 'right' | 'up' | 'down';
+export type Direction = '' | 'left' | 'right' | 'up' | 'down';
 
 export type SelectionMode = 'row' | 'column' | 'range';
 
