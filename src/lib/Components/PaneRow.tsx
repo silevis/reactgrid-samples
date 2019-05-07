@@ -54,7 +54,7 @@ export const PaneRow: React.FunctionComponent<PaneRowProps> = (props) => {
                     borders={{ ...props.borders, left: true }}
                 />
             }
-            <div>
+            {/* <div>
                 {props.range.rows.map(row => <div key={row.idx} className="dg-row" style={{
                     boxSizing: 'border-box',
                     position: 'absolute',
@@ -65,7 +65,7 @@ export const PaneRow: React.FunctionComponent<PaneRowProps> = (props) => {
                     zIndex: props.zIndex + 1,
                     borderBottom: '1px solid #eee',
                 }} />)}
-            </div>
+            </div> */}
 
         </div>
     );

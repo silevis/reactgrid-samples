@@ -4,30 +4,26 @@ import { GridContext, Borders, Location } from "../Common";
 export interface CellProps {
     gridContext: GridContext
     location: Location,
-    borders: Borders,
+    borders: Borders
 }
 
 export const Cell: React.SFC<CellProps> = (props) => {
     const state = props.gridContext.state;
-    const borders = props.borders;
     const location = props.location;
+    const borders = props.borders;
     const cell = props.gridContext.cellMatrix.getCell(props.location);
     const isFocused = (state.focusedLocation !== undefined) && (state.focusedLocation.col.idx === props.location.col.idx && state.focusedLocation.row.idx === props.location.row.idx);
     const dynamicStyle: React.CSSProperties = {
         paddingLeft: 2,
         paddingRight: 2,
-        borderTop: borders.top ? 'solid 1px #CCC' : '',
-        borderLeft: borders.left ? 'solid 1px #CCC' : '',
+        borderTop: borders.top ? 'solid 1px #ccc' : '',
+        borderLeft: borders.left ? 'solid 1px #ccc' : '',
         borderBottom: borders.bottom
-            ? 'solid 1px #CCC'
-            : borders.bottom === undefined
-                ? 'solid 1px #E0E0E0'
-                : 'solid 1px #E0E0E0',
+            ? 'solid 1px #ccc'
+            : 'solid 1px #e5e5e5',
         borderRight: borders.right
-            ? 'solid 1px #CCC'
-            : borders.right === undefined
-                ? 'solid 1px #E0E0E0'
-                : 'solid 1px #E0E0E0'
+            ? 'solid 1px #ccc'
+            : 'solid 1px #e5e5e5'
     };
 
     return <>{cell.render({
