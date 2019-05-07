@@ -1,13 +1,51 @@
-export const _ = {}
-// import { Behavior, GridContext } from "../Common";
+import * as React from 'react';
+import { Range, Behavior, GridContext } from "../Common";
+import { PointerEvent } from "../Common/domEvents";
 
-// // import * as React from 'react';
 // // import { DelegateBehavior } from "./DelegateBehavior";
 // // import { DrawExternalFocusedLocationsBehavior } from './DefaultGridBehavior/DrawExternalFocusedLocationsBehavior';
 // // import { Behavior, Column, Row, Orientation } from '../Common';
 // // import { Utilities } from '../Common/Utilities';
 // // import { getRowFromClientY, getColumnFromClientX, scrollIntoView } from '../Functions';
 
+export abstract class AutoScrollBehavior implements Behavior {
+    handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
+    }
+
+    handleKeyUp(event: React.KeyboardEvent<HTMLDivElement>): void {
+
+    }
+    handleCopy(event: React.ClipboardEvent<HTMLDivElement>): void {
+
+    }
+    handlePaste(event: React.ClipboardEvent<HTMLDivElement>): void {
+
+    }
+    handleCut(event: React.ClipboardEvent<HTMLDivElement>): void {
+
+    }
+    handlePointerDown(event: React.PointerEvent<HTMLDivElement>): void {
+
+    }
+    handlePointerMove(event: PointerEvent): void {
+
+    }
+    handlePointerUp(event: React.PointerEvent<HTMLDivElement>): void {
+
+    }
+    handleDoubleClick(event: React.PointerEvent<HTMLDivElement>): void {
+
+    }
+    renderPanePart(pane: Range): React.ReactNode {
+        return undefined
+    }
+    renderGlobalPart(): React.ReactNode {
+        return undefined
+    }
+    dispose(): void {
+    }
+
+}
 
 
 // export abstract class AutoScrollBehavior implements Behavior {

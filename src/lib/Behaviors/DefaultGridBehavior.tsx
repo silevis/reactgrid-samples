@@ -8,6 +8,7 @@ import { selectRange } from "../Functions/selectRange";
 import { CellFocus } from "../Components/CellFocus";
 import { pointerMoveHandler } from "./DefaultGridBehavior/pointerMoveHandler";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
+import { FillHandle } from "../Components/FillHandle";
 
 export let setFocusLocation: (location: Location) => void = _ => { };
 
@@ -30,7 +31,7 @@ export class DefaultGridBehavior implements Behavior {
     }
 
     handlePointerMove(event: PointerEvent): void {
-        changeBehavior(this.gridContext, new CellSelectionBehavior(this.gridContext) as any);
+        changeBehavior(this.gridContext, new CellSelectionBehavior(this.gridContext));
     }
 
     handlePointerUp(event: PointerEvent): void {
@@ -41,7 +42,7 @@ export class DefaultGridBehavior implements Behavior {
         console.log('double');
     }
 
-    handleKeyDown = (event: KeyboardEvent) => {
+    handleKeyDown(event: KeyboardEvent) {
         console.log('key down')
         keyDownHandlers(this.gridContext, event)
     }
@@ -64,9 +65,10 @@ export class DefaultGridBehavior implements Behavior {
         const focusedLocation = this.gridContext.state.focusedLocation;
         return (
             focusedLocation && pane.contains(focusedLocation) &&
-                <>
-                    <CellFocus location={focusedLocation} />
-                </>
+            <>
+                <FillHandle gridContext={this.gridContext} location={focusedLocation} />
+                <CellFocus location={focusedLocation} />
+            </>
         )
     }
 
