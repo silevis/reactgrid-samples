@@ -6,7 +6,7 @@ export function scrollIntoView(gridContext: GridContext, cell: Location) {
     const col = cell.col;
     const row = cell.row;
     const cellMatrix: CellMatrix = gridContext.cellMatrix;
-    const gridElement = gridContext.state.gridElement;
+    const gridElement = gridContext.gridElement;
     const rightScrollBorder = gridElement.clientWidth - cellMatrix.frozenRightRange.width;
     const bottomScrollBorder = gridElement.clientHeight - cellMatrix.frozenBottomRange.height;
     let left = gridElement.scrollLeft;

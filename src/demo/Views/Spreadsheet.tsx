@@ -8,17 +8,17 @@ export class Spreadsheet extends React.Component<{}, {}> {
     private generateCellMatrix() {
         console.log('generateCellMatrix')
         const rowHeights = Array(100).fill(25)
-        const columnWidths = Array(20).fill(150)
+        const columnWidths = Array(20).fill(80)
 
         const cells = rowHeights.map((rh, ri) =>
             columnWidths.map((cw, ci) => TextCell.Create((ri + 100) + ' - ' + (ci + 100), _ => { }, false, _ => { }))
         )
-        const columns: ColProps[] = columnWidths.map(_ => { return { width: 200, context: undefined } });
+        const columns: ColProps[] = columnWidths.map(_ => { return { width: 80, context: undefined } });
         const rows: RowProps[] = rowHeights.map(_ => { return { height: 25, context: undefined } })
         rowHeights.map((_, i) => cells[i][0] = HeaderCell.Create('vertical', i.toString(), 'header', () => { }, false, true, () => { }));
         columnWidths.map((_, j) => cells[0][j] = HeaderCell.Create('horizontal', j.toString(), 'header', () => { }, false, true, () => { }));
         cells[0][0] = HeaderCell.Create('horizontal', '', 'header', () => { }, true, false, () => { });
-        return new CellMatrix({ frozenTopRows: 1, frozenLeftColumns: 1, frozenBottomRows: 1, frozenRightColumns: 1, rows, columns, cells: cells })
+        return new CellMatrix({ frozenTopRows: 2, frozenLeftColumns: 2, frozenBottomRows: 2, frozenRightColumns: 2, rows, columns, cells: cells })
     }
 
     render() {

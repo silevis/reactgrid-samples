@@ -1,8 +1,8 @@
 import * as React from "react";
-import { GridContext, GridController, CellMatrix } from "../Common";
+import { GridContext, GridController, CellMatrix, Column } from "../Common";
 import { Range, Location, SelectionMode, Behavior, zIndex } from "../Common";
 import { PaneRow } from "./PaneRow";
-import { getVisibleCells, refreshIfNeeded } from "../Functions";
+import { refresh } from "../Functions";
 import { DefaultGridBehavior } from "../Behaviors/DefaultGridBehavior";
 import { KeyboardEvent, ClipboardEvent, PointerEvent } from "../Common";
 import { PointerEventsController } from "../Common/PointerEventsController";
@@ -24,7 +24,6 @@ interface GridProps {
 
 
 export class GridState {
-    gridElement!: HTMLDivElement;
     currentBehavior!: Behavior;
     // SELECTION
     selectionMode: SelectionMode = 'range';
@@ -131,9 +130,10 @@ export class Grid extends React.Component<GridProps, GridState> {
                     {matrix.frozenTopRange.height > 0 &&
                         <PaneRow
                             gridContext={this.gridContext}
-                            style={{ top: 0, position: 'sticky', zIndex: zIndex.horizontalPane }}
+                            style={{ background: 'white', top: 0, position: 'sticky' }}
                             range={matrix.frozenTopRange}
                             borders={{ bottom: true }}
+                            zIndex={3}
                         />}
                     {matrix.scrollableRange.height > 0 && this.state.visibleRange &&
                         <PaneRow
@@ -141,13 +141,15 @@ export class Grid extends React.Component<GridProps, GridState> {
                             style={{ height: matrix.scrollableRange.height }}
                             range={matrix.scrollableRange.slice(this.state.visibleRange, 'rows')}
                             borders={{}}
+                            zIndex={0}
                         />}
                     {matrix.frozenBottomRange.height > 0 &&
                         <PaneRow
                             gridContext={this.gridContext}
-                            style={{ bottom: 0, position: 'sticky', zIndex: zIndex.horizontalPane }}
+                            style={{ background: 'white', bottom: 0, position: 'sticky', zIndex: zIndex.frozenPaneRow }}
                             range={matrix.frozenBottomRange}
                             borders={{ top: true }}
+                            zIndex={3}
                         />}
                     <div
                         className="dg-hidden-focus-element"
@@ -164,7 +166,8 @@ export class Grid extends React.Component<GridProps, GridState> {
     }
 
     private newGridElementRefHandler = (gridElement: HTMLDivElement) => {
-        this.setState({ ...getVisibleCells(gridElement, this.props.cellMatrix), gridElement } as any);
+        this.gridContext.gridElement = gridElement;
+        refresh(this.gridContext);
     }
 
     private handleNewHiddenElementRef = (hiddenFocusElement: HTMLDivElement) => {
@@ -172,11 +175,19 @@ export class Grid extends React.Component<GridProps, GridState> {
     }
 
     private scrollHandler = () => {
-        refreshIfNeeded(this.gridContext);
+        const { scrollTop, scrollLeft } = this.gridContext.gridElement;
+        if (
+            scrollTop < this.state.minScrollTop || scrollTop > this.state.maxScrollTop ||
+            scrollLeft < this.state.minScrollLeft || scrollLeft > this.state.maxScrollLeft
+        ) {
+            refresh(this.gridContext);
+        }
     }
 
     private windowResizeHandler = () => {
-        refreshIfNeeded(this.gridContext);
+        // TODO check clientHeight and width
+        //const { clientHeight, clientWidth } = this.state.gridElement;
+        refresh(this.gridContext);
     }
 
     private handlePasteOnHiddenElement = (event: ClipboardEvent) => {
@@ -270,3 +281,6 @@ export class Grid extends React.Component<GridProps, GridState> {
     //     }
     // };
 }
+
+
+

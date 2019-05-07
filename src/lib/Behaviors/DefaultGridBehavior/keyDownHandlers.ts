@@ -97,7 +97,7 @@ export function keyDownHandlers(gridContext: GridContext, event: KeyboardEvent) 
         !gridContext.state.isFocusedCellInEditMode
     ) {
         const rowsOnScreen = cellMatrix.rows.filter(
-            (r: Row) => r.top < gridContext.state.gridElement.clientHeight
+            (r: Row) => r.top < gridContext.gridElement.clientHeight
         );
         focusCell(
             focusedLocation.col.idx,
@@ -113,7 +113,7 @@ export function keyDownHandlers(gridContext: GridContext, event: KeyboardEvent) 
                 cellMatrix.frozenBottomRange.rows.length -
                 1
             )
-            .filter((r: Row) => r.top + r.height < gridContext.state.gridElement.clientHeight);
+            .filter((r: Row) => r.top + r.height < gridContext.gridElement.clientHeight);
         focusCell(
             focusedLocation.col.idx,
             focusedLocation.row.idx + rowsOnScreen.length < cellMatrix.rows.length

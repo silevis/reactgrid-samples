@@ -1,6 +1,8 @@
 export const zIndex = {
-    verticalPane: 1,
-    horizontalPane: 2,
+    frozenPaneRow: 4,
+    frozenPane: 3,
+    columns: 1,
+    rows: 4,
     cellInput: 10,
     colReorderShadow: 100,
     rowReorderShadow: 100,
