@@ -13,30 +13,22 @@ export const Cell: React.SFC<CellProps> = (props) => {
     const location = props.location;
     const cell = props.gridContext.cellMatrix.getCell(props.location);
     const isFocused = (state.focusedLocation !== undefined) && (state.focusedLocation.col.idx === props.location.col.idx && state.focusedLocation.row.idx === props.location.row.idx);
-    const dynamicStyle: React.CSSProperties = isFocused
-        ? {
-            // marginLeft: isFirstCol ? 0 : -1, marginTop: isFirstRow ? 0 : -1,
-            // paddingLeft: isFirstCol ? 0 : 1, paddingTop: isFirstRow ? 0 : 1,
-            paddingLeft: 0,
-            paddingRight: 0,
-            border: 'solid 2px #3579f8'
-        }
-        : {
-            paddingLeft: 2,
-            paddingRight: 2,
-            borderTop: borders.top ? 'solid 1px #CCC' : '',
-            borderLeft: borders.left ? 'solid 1px #CCC' : '',
-            borderBottom: borders.bottom
-                ? 'solid 1px #CCC'
-                : borders.bottom === undefined
-                    ? 'solid 1px #E0E0E0'
-                    : 'solid 1px #E0E0E0',
-            borderRight: borders.right
-                ? 'solid 1px #CCC'
-                : borders.right === undefined
-                    ? 'solid 1px #E0E0E0'
-                    : 'solid 1px #E0E0E0'
-        };
+    const dynamicStyle: React.CSSProperties = {
+        paddingLeft: 2,
+        paddingRight: 2,
+        borderTop: borders.top ? 'solid 1px #CCC' : '',
+        borderLeft: borders.left ? 'solid 1px #CCC' : '',
+        borderBottom: borders.bottom
+            ? 'solid 1px #CCC'
+            : borders.bottom === undefined
+                ? 'solid 1px #E0E0E0'
+                : 'solid 1px #E0E0E0',
+        borderRight: borders.right
+            ? 'solid 1px #CCC'
+            : borders.right === undefined
+                ? 'solid 1px #E0E0E0'
+                : 'solid 1px #E0E0E0'
+    };
 
     return <>{cell.render({
         ...cell,

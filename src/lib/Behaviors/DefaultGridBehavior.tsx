@@ -3,7 +3,7 @@ import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Loc
 // import { pointerDownHandler } from "./DefaultGridBehavior/pointerDownHandler";
 import { keyDownHandlers } from "./DefaultGridBehavior/keyDownHandlers";
 import { keyUpHandlers } from "./DefaultGridBehavior/keyUpHandler";
-import { getLocationFromClient } from "../Functions";
+import { getLocationFromClient, focusLocation } from "../Functions";
 import { selectRange } from "../Functions/selectRange";
 import { CellFocus } from "../Components/CellFocus";
 
@@ -19,12 +19,10 @@ export class DefaultGridBehavior implements Behavior {
             const range = this.gridContext.cellMatrix.getRange(this.gridContext.state.focusedLocation, location);
             selectRange(this.gridContext, range);
         } else if (event.ctrlKey) {
-            // focusLocation(this.gridContext, location)
+            focusLocation(this.gridContext, location)
         } else {
-            // focusLocation(this.gridContext, location);
+            focusLocation(this.gridContext, location);
         }
-        setFocusLocation(location);
-        this.gridContext.focusedLocation = location;
         //pointerDownHandler(this.gridContext, event);
     }
 
@@ -61,7 +59,8 @@ export class DefaultGridBehavior implements Behavior {
 
     renderPanePart(pane: Range): React.ReactNode {
         // <FillHandle pane={pane} />y
-        return <CellFocus onInitialized={location => setFocusLocation = location} />
+        const focusedLocation=this.gridContext.state.focusedLocation;
+        return focusedLocation && pane.contains(focusedLocation) && <CellFocus location={focusedLocation} />
     }
 
     renderGlobalPart(): React.ReactNode {

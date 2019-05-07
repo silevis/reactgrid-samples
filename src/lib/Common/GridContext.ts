@@ -11,5 +11,4 @@ export class GridContext {
     commitChanges() { this.grid.props.onValuesChanged && this.grid.props.onValuesChanged(); }
     hiddenFocusElement!: HTMLDivElement;
     renderScheduled: boolean = false;
-    focusedLocation!: Location;
 }

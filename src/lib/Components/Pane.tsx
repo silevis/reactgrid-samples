@@ -10,7 +10,7 @@ export interface PaneProps {
     borders: Borders,
 }
 
-export const Pane: React.SFC<PaneProps> = (props) =>
+export const Pane: React.FunctionComponent<PaneProps> = (props) =>
     <div className="dg-pane" style={{ position: 'relative', width: props.range.width, height: '100%', ...props.style }}>
         {props.range.rows.map((row) =>
             props.range.cols.map((col) =>
