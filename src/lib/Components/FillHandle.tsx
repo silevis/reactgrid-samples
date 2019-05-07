@@ -1,10 +1,45 @@
-export const x = 1;
 // import * as React from 'react';
 // import { Behavior } from '../Common';
 // import { DelegateBehavior } from "../Behaviors/DelegateBehavior";
 // import { FillHandleBehavior } from '../Behaviors/FillHandleBehavior';
 // import { changeBehavior } from '../Functions';
 // import { Range } from '../Common';
+
+import * as React from "react";
+import { Location, GridContext } from "../Common";
+import { Utilities } from "../Common/Utilities";
+import { changeBehavior } from "../Functions";
+import { FillHandleBehavior } from "../Behaviors/FillHandleBehavior";
+
+interface FillHandleProps {
+    gridContext: GridContext,
+    location: Location
+}
+
+export class FillHandle extends React.Component<FillHandleProps> {
+    render() {
+        const { gridContext, location } = this.props;
+        const activeRange = Utilities.getActiveSelectionRange(gridContext.state.selectedRanges, gridContext.state.focusedLocation!);
+        return (
+            <div
+                className='fillHandle'
+                style={{
+                    position: 'absolute',
+                    top: activeRange.last.row.top + location.row.height - 7,
+                    left: activeRange.last.col.left + location.col.width - 7,
+                    width: 6,
+                    height: 6,
+                    backgroundColor: '#3579f8',
+                    border: '1px solid white',
+                    cursor: 'crosshair',
+                    zIndex: 3
+                }}
+                onPointerDown={() => changeBehavior(gridContext, new FillHandleBehavior(gridContext) as any)}
+            >
+            </div>
+        )
+    }
+} 
 
 // export class DrawFillHandleBehavior extends DelegateBehavior {
 //     isVisible = true;

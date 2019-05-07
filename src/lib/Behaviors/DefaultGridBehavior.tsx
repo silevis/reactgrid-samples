@@ -3,9 +3,11 @@ import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Loc
 // import { pointerDownHandler } from "./DefaultGridBehavior/pointerDownHandler";
 import { keyDownHandlers } from "./DefaultGridBehavior/keyDownHandlers";
 import { keyUpHandlers } from "./DefaultGridBehavior/keyUpHandler";
-import { getLocationFromClient, focusLocation } from "../Functions";
+import { getLocationFromClient, focusLocation, changeBehavior } from "../Functions";
 import { selectRange } from "../Functions/selectRange";
 import { CellFocus } from "../Components/CellFocus";
+import { pointerMoveHandler } from "./DefaultGridBehavior/pointerMoveHandler";
+import { CellSelectionBehavior } from "./CellSelectionBehavior";
 
 export let setFocusLocation: (location: Location) => void = _ => { };
 
@@ -24,11 +26,11 @@ export class DefaultGridBehavior implements Behavior {
             focusLocation(this.gridContext, location);
         }
         //pointerDownHandler(this.gridContext, event);
+        // pointerMoveHandler(this.gridContext, event);
     }
 
     handlePointerMove(event: PointerEvent): void {
-        // TODO move this to cell selection behavior to disable all other events while moving
-        // pointerMoveHandler(this.gridContext, event);
+        changeBehavior(this.gridContext, new CellSelectionBehavior(this.gridContext) as any);
     }
 
     handlePointerUp(event: PointerEvent): void {
@@ -59,8 +61,13 @@ export class DefaultGridBehavior implements Behavior {
 
     renderPanePart(pane: Range): React.ReactNode {
         // <FillHandle pane={pane} />y
-        const focusedLocation=this.gridContext.state.focusedLocation;
-        return focusedLocation && pane.contains(focusedLocation) && <CellFocus location={focusedLocation} />
+        const focusedLocation = this.gridContext.state.focusedLocation;
+        return (
+            focusedLocation && pane.contains(focusedLocation) &&
+                <>
+                    <CellFocus location={focusedLocation} />
+                </>
+        )
     }
 
     renderGlobalPart(): React.ReactNode {
