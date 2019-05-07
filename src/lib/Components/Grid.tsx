@@ -99,7 +99,6 @@ export class Grid extends React.Component<GridProps, GridState> {
 
     render() {
         const matrix = this.props.cellMatrix;
-
         return (
             <div
                 className="dyna-grid"

@@ -50,7 +50,8 @@ export const PartialArea: React.SFC<PartialRangeProps> = (props) => {
                 position: 'absolute',
                 width: isBorderLeft && isAdjecentToFrozenLeft ? width - 2 : width - 1,
                 height: isBorderTop && isAdjecentToFrozenTop ? height - 2 : height - 1,
-                pointerEvents: 'none'
+                pointerEvents: 'none',
+                zIndex: 2
             }}
         />
     );

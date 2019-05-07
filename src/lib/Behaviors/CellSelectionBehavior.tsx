@@ -2,14 +2,12 @@ import * as React from 'react';
 import { getLocationFromClient, resetToDefaultBehavior } from '../Functions';
 import { GridContext, Range } from '../Common';
 import { updateCellSelection } from './DefaultGridBehavior/pointerMoveHandler';
-import { CellFocus } from '../Components/CellFocus';
+import { AutoScrollBehavior } from './AutoScrollBehavior';
+import { PointerEvent } from "../Common/domEvents";
 // import { Utilities } from '../Common/Utilities';
 // import { focusLocation, getLocationFromClient, resetToDefaultBehavior, isClickInsideSelectedRange } from '../Functions';
 // import { Location, CellMatrix, GridContext, Behavior } from '../Common';
 // import { isClickOutOfGrid } from '../Functions/isClickOutOfGrid';
-import { AutoScrollBehavior } from './AutoScrollBehavior';
-import { PointerEvent } from "../Common/domEvents";
-
 
 
 // // export let userIsMarkingGrid: boolean = false;
@@ -30,12 +28,12 @@ export class CellSelectionBehavior extends AutoScrollBehavior {
         resetToDefaultBehavior(this.gridContext);
     }
 
-    dispose() { }
 
     renderPanePart(pane: Range): React.ReactNode {
-        const focusedLocation = this.gridContext.state.focusedLocation;
-        return focusedLocation && pane.contains(focusedLocation) && <CellFocus location={focusedLocation} />
+        return <></>
     }
+
+    dispose() { }
 
     // handlePointerMove {
 

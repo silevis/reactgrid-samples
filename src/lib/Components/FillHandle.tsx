@@ -34,12 +34,12 @@ export class FillHandle extends React.Component<FillHandleProps> {
                     cursor: 'crosshair',
                     zIndex: 3
                 }}
-                onPointerDown={() => changeBehavior(gridContext, new FillHandleBehavior(gridContext) as any)}
+                onPointerDown={() => changeBehavior(gridContext, new FillHandleBehavior(gridContext))}
             >
             </div>
         )
     }
-} 
+}
 
 // export class DrawFillHandleBehavior extends DelegateBehavior {
 //     isVisible = true;

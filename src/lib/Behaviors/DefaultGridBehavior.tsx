@@ -5,10 +5,7 @@ import { keyDownHandlers } from "./DefaultGridBehavior/keyDownHandlers";
 import { keyUpHandlers } from "./DefaultGridBehavior/keyUpHandler";
 import { getLocationFromClient, focusLocation, changeBehavior } from "../Functions";
 import { selectRange } from "../Functions/selectRange";
-import { CellFocus } from "../Components/CellFocus";
-import { pointerMoveHandler } from "./DefaultGridBehavior/pointerMoveHandler";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
-import { FillHandle } from "../Components/FillHandle";
 
 export let setFocusLocation: (location: Location) => void = _ => { };
 
@@ -61,15 +58,7 @@ export class DefaultGridBehavior implements Behavior {
     }
 
     renderPanePart(pane: Range): React.ReactNode {
-        // <FillHandle pane={pane} />y
-        const focusedLocation = this.gridContext.state.focusedLocation;
-        return (
-            focusedLocation && pane.contains(focusedLocation) &&
-            <>
-                <FillHandle gridContext={this.gridContext} location={focusedLocation} />
-                <CellFocus location={focusedLocation} />
-            </>
-        )
+        return <></>
     }
 
     renderGlobalPart(): React.ReactNode {
