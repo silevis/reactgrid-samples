@@ -20,7 +20,6 @@ export const Pane: React.FunctionComponent<PaneProps> = (props) =>
         )}
         {renderPartial(props.gridContext, props.range)}
         {props.gridContext.state.currentBehavior.renderPanePart(props.range)}
-
     </div>
 
 

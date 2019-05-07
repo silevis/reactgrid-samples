@@ -1,9 +1,11 @@
 import { GridContext, KeyboardEvent, keyCodes, Row, Column } from "../../Common";
-import { focusLocation } from "../../Functions";
+import { focusLocation, scrollIntoView } from "../../Functions";
+import { setFocusLocation } from "../DefaultGridBehavior";
 
 export function keyDownHandlers(gridContext: GridContext, event: KeyboardEvent) {
     const focusedLocation = gridContext.state.focusedLocation;
     const cellMatrix = gridContext.cellMatrix;
+
     if (!focusedLocation) { return }
 
     if (event.keyCode === keyCodes.TAB || event.keyCode === keyCodes.ENTER) {
@@ -147,6 +149,7 @@ export function keyDownHandlers(gridContext: GridContext, event: KeyboardEvent) 
         // TODO
         // return this.innerBehavior.handleKeyDown(event);
     }
+    
     event.stopPropagation();
     event.preventDefault();
     return;
