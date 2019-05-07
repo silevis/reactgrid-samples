@@ -99,7 +99,6 @@ export class Grid extends React.Component<GridProps, GridState> {
 
     render() {
         const matrix = this.props.cellMatrix;
-
         return (
             <div
                 className="dyna-grid"
@@ -196,7 +195,7 @@ export class Grid extends React.Component<GridProps, GridState> {
         event.preventDefault();
     };
 
-    keyDownHandler = (event: KeyboardEvent) => this.state.currentBehavior.keyDownHandler(event);
+    keyDownHandler = (event: KeyboardEvent) => this.state.currentBehavior.handleKeyDown(event);
     keyUpHandler = (event: KeyboardEvent) => this.state.currentBehavior.handleKeyUp(event);
     copyHandler = (event: ClipboardEvent) => this.state.currentBehavior.handleCopy(event);
     pasteHandler = (event: ClipboardEvent) => this.state.currentBehavior.handlePaste(event);
