@@ -1,5 +1,8 @@
-export const _ = {}
-// import * as React from 'react';
+import * as React from 'react';
+import { getLocationFromClient, resetToDefaultBehavior } from '../Functions';
+import { GridContext, Range } from '../Common';
+import { updateCellSelection } from './DefaultGridBehavior/pointerMoveHandler';
+import { CellFocus } from '../Components/CellFocus';
 // import { Utilities } from '../Common/Utilities';
 // import { focusLocation, getLocationFromClient, resetToDefaultBehavior, isClickInsideSelectedRange } from '../Functions';
 // import { Location, CellMatrix, GridContext, Behavior } from '../Common';
@@ -10,7 +13,29 @@ export const _ = {}
 
 // // export let userIsMarkingGrid: boolean = false;
 
-// export class CellSelectionBehavior { //extends AutoScrollBehavior {
+export class CellSelectionBehavior { //extends AutoScrollBehavior {
+    constructor(private gridContext: GridContext) {}
+
+    handlePointerMove(event: PointerEvent) {
+        const location = getLocationFromClient(this.gridContext, event.clientX, event.clientY);
+        if (location.col === undefined || location.row === undefined) { return }
+        updateCellSelection(this.gridContext, event.clientX, event.clientY);
+    }
+
+    handlePointerUp() {
+        resetToDefaultBehavior(this.gridContext);
+    }
+
+    dispose() { }
+
+    renderPanePart(pane: Range): React.ReactNode {
+        const focusedLocation = this.gridContext.state.focusedLocation;
+        return focusedLocation && pane.contains(focusedLocation) && <CellFocus location={focusedLocation} />
+    }
+
+    // handlePointerMove {
+
+    // }
 
 //     private clientX = 0; // for gridScrollHandler!
 //     private clientY = 0;
@@ -324,4 +349,4 @@ export const _ = {}
 //             this.gridContext.setState({ selectedRanges: selectedRanges });
 //         }
 //     }
-// }
+}
