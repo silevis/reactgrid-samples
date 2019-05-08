@@ -112,7 +112,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                     className="dg-content"
                     style={{ width: matrix.width, height: matrix.height, position: 'relative' }}
                     onPointerDown={this.pointerEventsController.handlePointerDown}
-                    //onContextMenu={this.handleContextMenu}
+                    onContextMenu={this.handleContextMenu}
                     onKeyDown={this.keyDownHandler}
                     onKeyUp={this.keyUpHandler}
                     onCopy={this.copyHandler}
@@ -193,7 +193,7 @@ export class Grid extends React.Component<GridProps, GridState> {
     copyHandler = (event: ClipboardEvent) => this.gridContext.currentBehavior.handleCopy(event);
     pasteHandler = (event: ClipboardEvent) => this.gridContext.currentBehavior.handlePaste(event);
     cutHandler = (event: ClipboardEvent) => this.gridContext.currentBehavior.handleCut(event);
-    //handleContextMenu = (event: React.MouseEvent) => this.state.currentBehavior.handleContextMenu(event);
+    handleContextMenu = (event: React.MouseEvent) => this.gridContext.currentBehavior.handleContextMenu(event);
 
 
     // private validateSelection(oldprops: GridProps) {

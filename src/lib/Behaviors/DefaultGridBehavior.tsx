@@ -5,6 +5,7 @@ import { keyUpHandlers } from "./DefaultGridBehavior/keyUpHandler";
 import { getLocationFromClient, focusLocation, changeBehavior } from "../Functions";
 import { selectRange } from "../Functions/selectRange";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
+import { DrawContextMenuBehavior } from "../Components/ContextMenu";
 
 export let setFocusLocation: (location: Location) => void = _ => { };
 
@@ -29,6 +30,12 @@ export class DefaultGridBehavior implements Behavior {
         } else {
             focusLocation(this.gridContext, location);
         }
+    }
+
+    handleContextMenu(event: PointerEvent): void {
+        event.preventDefault();
+        changeBehavior(this.gridContext, new DrawContextMenuBehavior(this.gridContext, event))
+        event.persist();
     }
 
     handlePointerMove(event: PointerEvent): void {

@@ -232,6 +232,7 @@ export class FillHandleBehavior {
     handleCut(event: ClipboardEvent): void { }
     handlePointerDown(event: PointerEvent): void { }
     handleDoubleClick(event: PointerEvent): void { }
+    handleContextMenu(event: React.MouseEvent): void { }
     renderGlobalPart(): React.ReactNode { return undefined }
     dispose(): void { }
 }
