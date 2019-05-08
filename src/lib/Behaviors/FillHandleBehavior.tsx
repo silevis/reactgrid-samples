@@ -21,10 +21,7 @@ export class FillHandleBehavior {
     constructor(private gridContext: GridContext) { }
 
     handlePointerMove(event: PointerEvent) {
-        const activeSelectedRange = Utilities.getActiveSelectionRange(
-            this.gridContext.state.selectedRanges,
-            this.gridContext.state.focusedLocation!
-        );
+        const activeSelectedRange = this.gridContext.state.selectedRanges[this.gridContext.state.focusedSelectedRangeIdx]
         const cellMatrix = this.gridContext.cellMatrix;
         const location = getLocationFromClient(this.gridContext, event.clientX, event.clientY);
         if (this.currentLocation === location || !activeSelectedRange || !location.col || !location.row) {
@@ -32,30 +29,30 @@ export class FillHandleBehavior {
         }
         this.currentLocation = location;
         // active selection
-        let diffrences: { direction: Direction; value: number }[] = [];
-        diffrences.push({ direction: '', value: 0 });
-        diffrences.push({
+        let differences: { direction: Direction; value: number }[] = [];
+        differences.push({ direction: '', value: 0 });
+        differences.push({
             direction: 'up',
             value:
                 location.row.idx < activeSelectedRange.first.row.idx
                     ? activeSelectedRange.first.row.idx - location.row.idx
                     : 0
         });
-        diffrences.push({
+        differences.push({
             direction: 'down',
             value:
                 location.row.idx > activeSelectedRange.last.row.idx
                     ? location.row.idx - activeSelectedRange.last.row.idx
                     : 0
         });
-        diffrences.push({
+        differences.push({
             direction: 'left',
             value:
                 location.col.idx < activeSelectedRange.first.col.idx
                     ? activeSelectedRange.first.col.idx - location.col.idx
                     : 0
         });
-        diffrences.push({
+        differences.push({
             direction: 'right',
             value:
                 location.col.idx > activeSelectedRange.last.col.idx
@@ -63,7 +60,7 @@ export class FillHandleBehavior {
                     : 0
         });
         this.fillRange = [];
-        this.fillDirection = diffrences.reduce((prev, current) =>
+        this.fillDirection = differences.reduce((prev, current) =>
             prev.value >= current.value ? prev : current
         ).direction;
         switch (this.fillDirection) {

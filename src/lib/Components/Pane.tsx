@@ -20,10 +20,9 @@ export const Pane: React.FunctionComponent<PaneProps> = (props) =>
         {renderPartial(props.gridContext, props.range)}
         {props.gridContext.currentBehavior.renderPanePart(props.range)}
         {props.gridContext.state.focusedLocation && props.range.contains(props.gridContext.state.focusedLocation) &&
-            <>
-                <FillHandle gridContext={props.gridContext} location={props.gridContext.state.focusedLocation} />
-                <CellFocus location={props.gridContext.state.focusedLocation} />
-            </>}
+            <CellFocus location={props.gridContext.state.focusedLocation} />}
+        {props.gridContext.state.selectedRanges[props.gridContext.state.focusedSelectedRangeIdx] && props.range.contains(props.gridContext.state.selectedRanges[props.gridContext.state.focusedSelectedRangeIdx].last) &&
+            <FillHandle gridContext={props.gridContext} location={props.gridContext.state.selectedRanges[props.gridContext.state.focusedSelectedRangeIdx].last} />}
     </div>
 
 export function renderPartial(gridContext: GridContext, range: Range) {
