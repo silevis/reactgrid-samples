@@ -5,6 +5,7 @@ import { PaneRow } from "./PaneRow";
 import { refresh } from "../Functions";
 import { KeyboardEvent, ClipboardEvent, PointerEvent } from "../Common";
 import { PointerEventsController } from "../Common/PointerEventsController";
+import { FillHandle } from "./FillHandle";
 
 
 interface GridProps {
@@ -27,7 +28,7 @@ export class GridState {
     selectedRanges: Range[] = [];
     selectedIndexes: number[] = [];
     focusedLocation?: Location;
-    focusedSelectedRangeIdx: number = 0;
+    focusedSelectedRangeIdx: number = -1;
     isFocusedCellInEditMode: boolean = false;
     // VISIBLE RANGE
     visibleRange?: Range;

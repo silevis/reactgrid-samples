@@ -7,7 +7,6 @@
 
 import * as React from "react";
 import { Location, GridContext } from "../Common";
-import { Utilities } from "../Common/Utilities";
 import { changeBehavior } from "../Functions";
 import { FillHandleBehavior } from "../Behaviors/FillHandleBehavior";
 
@@ -19,14 +18,26 @@ interface FillHandleProps {
 export class FillHandle extends React.Component<FillHandleProps> {
     render() {
         const { gridContext, location } = this.props;
-        const activeRange = Utilities.getActiveSelectionRange(gridContext.state.selectedRanges, gridContext.state.focusedLocation!);
+
+        // if (
+        // !activeSelectedRange ||
+        // gridContext.state.isFocusedCellInEditMode
+        // || gridContext.state.isFocusedCellReadOnly
+        // ) {
+        //     return;
+        // }
+
+        const onFocus = location.col.idx === location.col.idx && location.row.idx === location.row.idx;
+        const left = location.col.left + location.col.width - (onFocus ? 5.5 : 4.5) - 2;
+        const top = location.row.top + location.row.height - (onFocus ? 5.5 : 4.5) - 2;
+
         return (
             <div
                 className='fillHandle'
                 style={{
                     position: 'absolute',
-                    top: activeRange.last.row.top + location.row.height - 7,
-                    left: activeRange.last.col.left + location.col.width - 7,
+                    top: top,
+                    left: left,
                     width: 6,
                     height: 6,
                     backgroundColor: '#3579f8',

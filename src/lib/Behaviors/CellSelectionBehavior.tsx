@@ -1,9 +1,8 @@
-import * as React from 'react';
 import { getLocationFromClient, resetToDefaultBehavior } from '../Functions';
-import { GridContext, Range } from '../Common';
-import { updateCellSelection } from './DefaultGridBehavior/pointerMoveHandler';
+import { GridContext } from '../Common';
 import { AutoScrollBehavior } from './AutoScrollBehavior';
 import { PointerEvent } from "../Common/domEvents";
+import { selectRange } from '../Functions/selectRange';
 // import { Utilities } from '../Common/Utilities';
 // import { focusLocation, getLocationFromClient, resetToDefaultBehavior, isClickInsideSelectedRange } from '../Functions';
 // import { Location, CellMatrix, GridContext, Behavior } from '../Common';
@@ -21,19 +20,14 @@ export class CellSelectionBehavior extends AutoScrollBehavior {
     handlePointerMove(event: PointerEvent) {
         const location = getLocationFromClient(this.gridContext, event.clientX, event.clientY);
         if (location.col === undefined || location.row === undefined) { return }
-        updateCellSelection(this.gridContext, event.clientX, event.clientY);
+        const range = this.gridContext.cellMatrix.getRange(this.gridContext.state.focusedLocation!, location);
+        selectRange(this.gridContext, range);
+        // updateCellSelection(this.gridContext, event.clientX, event.clientY);
     }
 
     handlePointerUp() {
         resetToDefaultBehavior(this.gridContext);
     }
-
-
-    renderPanePart(pane: Range): React.ReactNode {
-        return <></>
-    }
-
-    dispose() { }
 
     // handlePointerMove {
 

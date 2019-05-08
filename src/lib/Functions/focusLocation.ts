@@ -1,6 +1,7 @@
 import { GridContext } from "../Common/GridContext";
 import { Location } from "../Common/Model";
 import { scrollIntoView } from "./scrollIntoView";
+import { selectRange } from "./selectRange";
 
 export function focusLocation(gridContext: GridContext, location: Location, resetSelection = true) {
     const cellMatrix = gridContext.cellMatrix;
@@ -15,12 +16,14 @@ export function focusLocation(gridContext: GridContext, location: Location, rese
             focusedLocation: location,
             isFocusedCellInEditMode: false,
             // isFocusedCellReadOnly: isReadOnly,
+            focusedSelectedRangeIdx: 0,
             selectedRanges: [cellMatrix.getRange(location, location)]
         });
     } else {
         gridContext.setState({
             focusedLocation: location,
             isFocusedCellInEditMode: false,
+            focusedSelectedRangeIdx: 0,
             // isFocusedCellReadOnly: isReadOnly
         });
     }

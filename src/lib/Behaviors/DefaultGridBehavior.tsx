@@ -19,7 +19,14 @@ export class DefaultGridBehavior implements Behavior {
             const range = this.gridContext.cellMatrix.getRange(this.gridContext.state.focusedLocation, location);
             selectRange(this.gridContext, range);
         } else if (event.ctrlKey) {
-            focusLocation(this.gridContext, location)
+            focusLocation(this.gridContext, location);
+
+            this.gridContext.setState({
+                focusedSelectedRangeIdx: this.gridContext.state.selectedRanges.length,
+                selectedRanges: this.gridContext.state.selectedRanges.concat([
+                    this.gridContext.cellMatrix.getRange(location, location)
+                ])
+            });
         } else {
             focusLocation(this.gridContext, location);
         }
