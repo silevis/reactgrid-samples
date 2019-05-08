@@ -13,6 +13,7 @@ export interface Behavior {
     handlePointerMove(event: PointerEvent): void;
     handlePointerUp(event: PointerEvent): void;
     handleDoubleClick(event: PointerEvent): void;
+    handleContextMenu(event: React.MouseEvent): void;
     renderPanePart(pane: Range): React.ReactNode;
     renderGlobalPart(): React.ReactNode;
     dispose(): void;
