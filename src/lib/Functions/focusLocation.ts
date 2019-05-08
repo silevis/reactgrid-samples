@@ -15,7 +15,6 @@ export function focusLocation(gridContext: GridContext, location: Location, rese
         gridContext.setState({
             focusedLocation: location,
             isFocusedCellInEditMode: false,
-            // isFocusedCellReadOnly: isReadOnly,
             focusedSelectedRangeIdx: 0,
             selectedRanges: [cellMatrix.getRange(location, location)]
         });
@@ -24,7 +23,6 @@ export function focusLocation(gridContext: GridContext, location: Location, rese
             focusedLocation: location,
             isFocusedCellInEditMode: false,
             focusedSelectedRangeIdx: 0,
-            // isFocusedCellReadOnly: isReadOnly
         });
     }
 }

@@ -22,8 +22,8 @@ export class LineAndShadow extends React.Component<LineAndShadowProps, LineAndSh
 
     componentDidMount() {
         this.props.onInitialized(
-            (linePosition) => this.setState({ linePosition }), 
-            (shadowPosition) => this.setState({ shadowPosition})
+            (linePosition) => this.setState({ linePosition }),
+            (shadowPosition) => this.setState({ shadowPosition })
         );
     }
 
@@ -32,32 +32,32 @@ export class LineAndShadow extends React.Component<LineAndShadowProps, LineAndSh
         const { linePosition, shadowPosition } = this.state;
         return (
             (shadowPosition !== -1 || linePosition !== -1) &&
-                <>
-                    <div
-                        style={{
-                            position: 'absolute',
-                            background: '#666',
-                            cursor: '-webkit-grabbing',
-                            opacity: 0.3,
-                            top: isVertical ? 0 : this.state.shadowPosition,
-                            left: isVertical ? this.state.shadowPosition : 0,
-                            width: isVertical ? shadowSize : cellMatrix.contentWidth,
-                            height: isVertical ? cellMatrix.contentHeight : shadowSize,
-                            zIndex: zIndex.colReorderShadow
-                        }}
-                    />
-                    <div
-                        style={{
-                            position: 'absolute',
-                            background: '#74b9ff',
-                            top: isVertical ? 0 : this.state.linePosition,
-                            left: isVertical ? this.state.linePosition : 0,
-                            width: isVertical ? 2 : cellMatrix.contentWidth,
-                            height: isVertical ? cellMatrix.contentHeight : 2,
-                            zIndex: zIndex.line
-                        }}
-                    />
-                </>
+            <>
+                <div
+                    style={{
+                        position: 'absolute',
+                        background: '#666',
+                        cursor: '-webkit-grabbing',
+                        opacity: 0.3,
+                        top: isVertical ? 0 : this.state.shadowPosition,
+                        left: isVertical ? this.state.shadowPosition : 0,
+                        width: isVertical ? shadowSize : cellMatrix.width,
+                        height: isVertical ? cellMatrix.height : shadowSize,
+                        zIndex: zIndex.colReorderShadow
+                    }}
+                />
+                <div
+                    style={{
+                        position: 'absolute',
+                        background: '#74b9ff',
+                        top: isVertical ? 0 : this.state.linePosition,
+                        left: isVertical ? this.state.linePosition : 0,
+                        width: isVertical ? 2 : cellMatrix.width,
+                        height: isVertical ? cellMatrix.height : 2,
+                        zIndex: zIndex.line
+                    }}
+                />
+            </>
         )
     }
 }

@@ -1,6 +1,5 @@
 import * as React from "react";
 import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, Range } from "../Common";
-// import { pointerDownHandler } from "./DefaultGridBehavior/pointerDownHandler";
 import { keyDownHandlers } from "./DefaultGridBehavior/keyDownHandlers";
 import { keyUpHandlers } from "./DefaultGridBehavior/keyUpHandler";
 import { getLocationFromClient, focusLocation, changeBehavior } from "../Functions";
@@ -37,7 +36,6 @@ export class DefaultGridBehavior implements Behavior {
     }
 
     handlePointerUp(event: PointerEvent): void {
-        console.log('up');
     }
 
     handleDoubleClick(event: PointerEvent): void {
@@ -45,11 +43,9 @@ export class DefaultGridBehavior implements Behavior {
     }
 
     handleKeyDown(event: KeyboardEvent) {
-        console.log('key down')
         keyDownHandlers(this.gridContext, event)
     }
     handleKeyUp(event: KeyboardEvent): void {
-        console.log('key up');
         keyUpHandlers(this.gridContext, event)
     }
     handleCopy(event: ClipboardEvent): void {
@@ -67,9 +63,7 @@ export class DefaultGridBehavior implements Behavior {
     }
 
     renderGlobalPart(): React.ReactNode {
-        return <>
-
-        </>
+        return <></>
     }
 
     dispose(): void {

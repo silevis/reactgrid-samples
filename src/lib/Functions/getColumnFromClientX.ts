@@ -1,45 +1,27 @@
 import { Column } from "../Common/Model";
 import { GridContext } from "../Common/GridContext";
+import { CellMatrix } from "../Common";
 
-export function getColumnFromClientX(gridContext: GridContext, clientX: number, outOfRangeTrim: boolean = false): Column {
-    const gridElement = gridContext.gridElement;
+export function getColumnFromClientX(gridContext: GridContext, clientX: number): Column {
     const cellMatrix = gridContext.cellMatrix;
-    const rect = gridElement.getBoundingClientRect();
-    const frozenLeftColsWidth = cellMatrix.frozenLeftRange.width;
-    const frozenRightColsWidth = cellMatrix.frozenRightRange.width;
-    const isCursorOnLeftPane = clientX < frozenLeftColsWidth + rect.left;
-    const isCursorOnRightPane = clientX > rect.width - frozenRightColsWidth;
-    let virtualPositionOfX =
-        clientX -
-        rect.left +
-        (frozenRightColsWidth && isCursorOnRightPane
-            ? cellMatrix.frozenRightRange.cols[0].left -
-            (gridElement.clientWidth - frozenRightColsWidth)
-            : clientX > rect.left + frozenLeftColsWidth
-                ? gridElement.scrollLeft
-                : 0);
-    let cols = cellMatrix.cols;
-    if (outOfRangeTrim) {
-        if (clientX < gridElement.getBoundingClientRect().left) {
-            return cols[0];
-        }
-        if (clientX > gridElement.getBoundingClientRect().right) {
-            return cols[cols.length - 1];
-        }
+    const gridClientRect = gridContext.gridElement.getBoundingClientRect();
+    const gridWidth = Math.min(gridClientRect.width, cellMatrix.width);
+    const gridX = clientX - gridClientRect.left;
+    const rightPaneLeft = gridWidth - cellMatrix.frozenRightRange.width;
+
+    if (gridX < 0) {
+        return cellMatrix.first.col;
     }
-    if (isCursorOnLeftPane) {
-        cols = cellMatrix.frozenLeftRange.cols;
-    } else if (isCursorOnRightPane) {
-        cols = cellMatrix.frozenRightRange.cols;
-    } else {
-        virtualPositionOfX -= frozenLeftColsWidth;
-        cols = cols.slice(
-            cellMatrix.frozenLeftRange.cols.length,
-            cols.length - cellMatrix.frozenRightRange.cols.length
-        );
+    else if (gridX > gridWidth) {
+        return cellMatrix.last.col;
     }
-    return (
-        cols.find(col => col.left <= virtualPositionOfX && col.left + col.width >= virtualPositionOfX) ||
-        (virtualPositionOfX < 0 ? cols[0] : cols[cols.length - 1])
-    );
+    else if (gridX < cellMatrix.frozenLeftRange.width) {
+        return cellMatrix.frozenLeftRange.cols.find(col => col.right > gridX)!;
+    }
+    else if (gridX > rightPaneLeft) {
+        return cellMatrix.frozenRightRange.cols.find(col => col.right > gridX - rightPaneLeft)!;
+    }
+    else {
+        return cellMatrix.scrollableRange.cols.find(col => col.right > gridX - gridContext.gridElement.scrollLeft - cellMatrix.frozenLeftRange.width)!;
+    }
 }
