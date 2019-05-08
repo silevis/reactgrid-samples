@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { GridContext, Range, Location, Row, Column, KeyboardEvent, ClipboardEvent, PointerEvent, CellMatrix } from "../Common";
+import { GridContext, Range, Location, PointerEvent, CellMatrix } from "../Common";
 import { getLocationFromClient, resetToDefaultBehavior } from "../Functions";
 import { PartialArea } from '../Components/PartialArea';
 import { AutoScrollBehavior } from './AutoScrollBehavior';
