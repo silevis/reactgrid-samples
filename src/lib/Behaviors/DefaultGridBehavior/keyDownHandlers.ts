@@ -1,49 +1,62 @@
 import { GridContext, KeyboardEvent, keyCodes, Row, Column } from "../../Common";
 import { focusLocation } from "../../Functions";
+import { ResizeSelectionWithKeysBehavior } from "./ResizeSelectionWithKeysBehavior";
+import { KeyNavigationInsideSelectionBehavior } from "./KeyNavigationInsideSelectionBehavior";
 
 export function keyDownHandlers(gridContext: GridContext, event: KeyboardEvent) {
-    const focusedLocation = gridContext.state.focusedLocation;
+    const focusedLocation = gridContext.state.focusedLocation!;
     const key: string = event.key
     if (!focusedLocation) { return }
-    if (isArrowKey(key)) {
-        handleArrows(event, gridContext)
-    }
-    else if (isTabKey(key)) {
-        handleTabKey(event, gridContext)
-    }
 
-    else if (isEnterKey(key)) {
-        handleEnterKey(event, gridContext)
+    if (!isSelectedOneCell(gridContext) && !isArrowKey(key)) {
+        KeyNavigationInsideSelectionBehavior(gridContext, event)
+    } else {
+        if (event.shiftKey) {
+            ResizeSelectionWithKeysBehavior(gridContext, event)
+        }
+        if (isArrowKey(key)) {
+            handleArrows(event, gridContext)
+        }
+        else if (isTabKey(key)) {
+            handleTabKey(event, gridContext)
+        }
 
+        else if (isEnterKey(key)) {
+            handleEnterKey(event, gridContext)
+        }
+        else if (isSpecialNavKeys(key)) {
+            handleSpecialNavKeys(event, gridContext)
+        }
+        else if (isSpecialKeys(key)) {
+            handleSpecialKeys(event, gridContext)
+        }
     }
-
-    else if (isSpecialNavKeys(key)) {
-        handleSpecialNavKeys(event, gridContext)
-    }
-    else if (isSpecialKeys(key)) {
-        handleSpecialKeys(event, gridContext)
-    }
-
     event.stopPropagation();
     event.preventDefault();
     return;
-};
+}
 
 
 // TODO Check it
-const isArrowKey = (key: string) => key.includes('Arrow')
-const isEnterKey = (key: string) => key.includes('Enter')
-const isSpecialNavKeys = (key: string) => {
+const isArrowKey = (key: string): boolean => key.includes('Arrow')
+const isEnterKey = (key: string): boolean => key.includes('Enter')
+const isSpecialNavKeys = (key: string): boolean => {
     const keys = ['Home', 'PageUp', 'PageDown', 'End']
     return keys.some(el => el.includes(key))
 }
-const isTabKey = (key: string) => key.includes('Tab')
-const isSpecialKeys = (key: string) => {
+const isTabKey = (key: string): boolean => key.includes('Tab')
+const isSpecialKeys = (key: string): boolean => {
     const keys = ['Backspace', 'Delete']
     return keys.some(el => el.includes(key))
 }
 // or replace it
-// const isKeys = (key: string, keys: Array<string>) => keys.some(el => el.includes(key))
+// const isKeys = (key: string, keys: Array<string>): boolean => keys.some(el => el.includes(key))
+
+const isSelectedOneCell = (gridContext: GridContext): boolean => {
+    const activeSelectedRange = gridContext.state.selectedRanges[gridContext.state.focusedSelectedRangeIdx]
+    return gridContext.state.selectedRanges.length <= 1 && gridContext.state.selectedRanges.length > 0 && activeSelectedRange.cols.length <= 1 && activeSelectedRange.rows.length <= 1
+}
+
 
 const focusCell = (colIdx: number, rowIdx: number, gridContext: GridContext) => {
     const location = gridContext.cellMatrix.getLocation(rowIdx, colIdx);
