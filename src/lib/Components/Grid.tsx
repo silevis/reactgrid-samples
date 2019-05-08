@@ -48,8 +48,6 @@ export class Grid extends React.Component<GridProps, GridState> {
 
     componentDidMount() {
         window.addEventListener('resize', this.windowResizeHandler);
-        // TODO remove? this might be done by 
-        //this.setState(getVisibleCells(this.state.gridElement, this.props.cellMatrix));
         this.props.onInitialized && this.props.onInitialized(new GridController(this));
     }
 
@@ -108,8 +106,6 @@ export class Grid extends React.Component<GridProps, GridState> {
                 data-cy="dyna-grid"
             >
                 <div
-                    ref={this.contentElementRefHandler}
-                    tabIndex={0}
                     className="dg-content"
                     style={{ width: matrix.width, height: matrix.height, position: 'relative' }}
                     onPointerDown={this.pointerEventsController.handlePointerDown}
@@ -148,6 +144,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                             zIndex={3}
                         />}
                     <div
+                        tabIndex={0}
                         className="dg-hidden-focus-element"
                         contentEditable={true}
                         style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }}
@@ -165,11 +162,6 @@ export class Grid extends React.Component<GridProps, GridState> {
         this.gridContext.viewportElement = viewportElement;
         refresh(this.gridContext);
     }
-
-    private contentElementRefHandler = (viewportElement: HTMLDivElement) => {
-        this.gridContext.viewportElement = viewportElement;
-    }
-
     private hiddenElementRefHandler = (hiddenFocusElement: HTMLDivElement) => {
         this.gridContext.hiddenFocusElement = hiddenFocusElement;
     }
@@ -185,8 +177,6 @@ export class Grid extends React.Component<GridProps, GridState> {
     }
 
     private windowResizeHandler = () => {
-        // TODO check clientHeight and width
-        //const { clientHeight, clientWidth } = this.state.gridElement;
         refresh(this.gridContext);
     }
 

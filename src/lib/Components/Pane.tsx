@@ -1,10 +1,9 @@
 import * as React from "react";
-import { GridContext, Range, Borders, Row, Column, zIndex } from "../Common";
+import { GridContext, Range, Borders } from "../Common";
 import { CellFocus } from "./CellFocus";
 import { FillHandle } from "./FillHandle";
 import { RowRenderer } from "./RowRenderer";
 import { PartialArea } from "./PartialArea";
-import { focusLocation } from "../Functions";
 
 export interface PaneProps {
     id: string
@@ -13,6 +12,8 @@ export interface PaneProps {
     range: Range,
     borders: Borders,
 }
+
+// TODO gridContext.activeSelectedRange ?!
 
 export const Pane: React.FunctionComponent<PaneProps> = (props) =>
     <div key={props.id} className="dg-pane" style={{ position: 'relative', width: props.range.width, height: '100%', ...props.style }}>
