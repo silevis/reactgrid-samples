@@ -1,9 +1,11 @@
-import { GridContext, Range, Location } from "../Common";
+import { GridContext, Range } from "../Common";
 
-export function selectRange(gridContext: GridContext, range: Range) {
+export function selectRange(gridContext: GridContext, selectedRange: Range) {
+    const selectedRanges = gridContext.state.selectedRanges.map(range => range.contains(gridContext.state.focusedLocation!) ? selectedRange : range);
+
     gridContext.setState({
         selectionMode: 'range',
-        selectedRanges: [range],
-        focusedSelectedRangeIdx: 0
+        selectedRanges,
+        focusedSelectedRangeIdx: gridContext.state.focusedSelectedRangeIdx
     });
 }

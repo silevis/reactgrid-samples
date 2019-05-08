@@ -1,12 +1,10 @@
 import * as React from "react";
-import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, Range } from "../Common";
+import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Range } from "../Common";
 import { keyDownHandlers } from "./DefaultGridBehavior/keyDownHandlers";
 import { keyUpHandlers } from "./DefaultGridBehavior/keyUpHandler";
 import { getLocationFromClient, focusLocation, changeBehavior } from "../Functions";
 import { selectRange } from "../Functions/selectRange";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
-
-export let setFocusLocation: (location: Location) => void = _ => { };
 
 export class DefaultGridBehavior implements Behavior {
 
@@ -31,43 +29,15 @@ export class DefaultGridBehavior implements Behavior {
         }
     }
 
-    handlePointerMove(event: PointerEvent): void {
-        changeBehavior(this.gridContext, new CellSelectionBehavior(this.gridContext));
-    }
-
-    handlePointerUp(event: PointerEvent): void {
-    }
-
-    handleDoubleClick(event: PointerEvent): void {
-        console.log('double');
-    }
-
-    handleKeyDown(event: KeyboardEvent) {
-        keyDownHandlers(this.gridContext, event)
-    }
-    handleKeyUp(event: KeyboardEvent): void {
-        keyUpHandlers(this.gridContext, event)
-    }
-    handleCopy(event: ClipboardEvent): void {
-        event.preventDefault();
-    }
-    handlePaste(event: ClipboardEvent): void {
-        event.preventDefault();
-    }
-    handleCut(event: ClipboardEvent): void {
-        event.preventDefault();
-    }
-
-    renderPanePart(pane: Range): React.ReactNode {
-        return <></>
-    }
-
-    renderGlobalPart(): React.ReactNode {
-        return <></>
-    }
-
-    dispose(): void {
-    }
-
-
+    handlePointerMove(event: PointerEvent): void { changeBehavior(this.gridContext, new CellSelectionBehavior(this.gridContext)) }
+    handlePointerUp(event: PointerEvent): void { }
+    handleDoubleClick(event: PointerEvent): void { }
+    handleKeyDown(event: KeyboardEvent) { keyDownHandlers(this.gridContext, event) }
+    handleKeyUp(event: KeyboardEvent): void { keyUpHandlers(this.gridContext, event) }
+    handleCopy(event: ClipboardEvent): void { }
+    handlePaste(event: ClipboardEvent): void { }
+    handleCut(event: ClipboardEvent): void { }
+    renderPanePart(pane: Range): React.ReactNode { return <></> }
+    renderGlobalPart(): React.ReactNode { return <></> }
+    dispose(): void { }
 }
