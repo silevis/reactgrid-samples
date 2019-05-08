@@ -30,7 +30,6 @@ export function renderPartial(gridContext: GridContext, range: Range) {
     return renderMultiplePartialAreasForPane(gridContext, gridContext.state.selectedRanges, range, {
         border: '1px solid rgb(53, 121, 248)',
         backgroundColor: 'rgba(53, 121, 248, 0.1)',
-        zIndex: 2
     });
 }
 

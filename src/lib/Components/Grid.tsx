@@ -15,7 +15,6 @@ interface GridProps {
     onInitialized?: (grid: GridController) => void;
     // TODO idea: collect changes from cells and return here
     onValuesChanged?: () => void;
-
     // onRemoveSelection?: (value: boolean) => void;
     // onContextMenu?: (selectedRanges, selectedRows) => MenuOption[];
 }
