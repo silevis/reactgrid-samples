@@ -18,7 +18,7 @@ export const Pane: React.FunctionComponent<PaneProps> = (props) =>
         {/* <div>{props.range.cols.map(renderColumn)}</div> */}
         {props.range.rows.map((row) => <RowRenderer key={row.idx} gridContext={props.gridContext} row={row} columns={props.range.cols} forceUpdate={false} borders={{ ...props.borders, top: props.borders.top && row.top === 0, bottom: props.borders.bottom && row.idx === props.range.last.row.idx }} />)}
         {renderPartial(props.gridContext, props.range)}
-        {props.gridContext.state.currentBehavior.renderPanePart(props.range)}
+        {props.gridContext.currentBehavior.renderPanePart(props.range)}
         {props.gridContext.state.focusedLocation && props.range.contains(props.gridContext.state.focusedLocation) &&
             <>
                 <FillHandle gridContext={props.gridContext} location={props.gridContext.state.focusedLocation} />

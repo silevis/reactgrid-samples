@@ -3,7 +3,6 @@ import { GridContext, GridController, CellMatrix, Column } from "../Common";
 import { Range, Location, SelectionMode, Behavior, zIndex } from "../Common";
 import { PaneRow } from "./PaneRow";
 import { refresh } from "../Functions";
-import { DefaultGridBehavior } from "../Behaviors/DefaultGridBehavior";
 import { KeyboardEvent, ClipboardEvent, PointerEvent } from "../Common";
 import { PointerEventsController } from "../Common/PointerEventsController";
 
@@ -24,7 +23,6 @@ interface GridProps {
 
 
 export class GridState {
-    currentBehavior!: Behavior;
     // SELECTION
     selectionMode: SelectionMode = 'range';
     selectedRanges: Range[] = [];
@@ -47,11 +45,6 @@ export class Grid extends React.Component<GridProps, GridState> {
     private pointerEventsController = new PointerEventsController(this.gridContext)
 
     state = new GridState();
-
-    constructor(props: GridProps) {
-        super(props)
-        this.state.currentBehavior = new DefaultGridBehavior(this.gridContext)
-    }
 
     componentDidMount() {
         window.addEventListener('resize', this.windowResizeHandler);
@@ -195,11 +188,11 @@ export class Grid extends React.Component<GridProps, GridState> {
         event.preventDefault();
     };
 
-    keyDownHandler = (event: KeyboardEvent) => this.state.currentBehavior.handleKeyDown(event);
-    keyUpHandler = (event: KeyboardEvent) => this.state.currentBehavior.handleKeyUp(event);
-    copyHandler = (event: ClipboardEvent) => this.state.currentBehavior.handleCopy(event);
-    pasteHandler = (event: ClipboardEvent) => this.state.currentBehavior.handlePaste(event);
-    cutHandler = (event: ClipboardEvent) => this.state.currentBehavior.handleCut(event);
+    keyDownHandler = (event: KeyboardEvent) => this.gridContext.currentBehavior.handleKeyDown(event);
+    keyUpHandler = (event: KeyboardEvent) => this.gridContext.currentBehavior.handleKeyUp(event);
+    copyHandler = (event: ClipboardEvent) => this.gridContext.currentBehavior.handleCopy(event);
+    pasteHandler = (event: ClipboardEvent) => this.gridContext.currentBehavior.handlePaste(event);
+    cutHandler = (event: ClipboardEvent) => this.gridContext.currentBehavior.handleCut(event);
     //handleContextMenu = (event: React.MouseEvent) => this.state.currentBehavior.handleContextMenu(event);
 
 

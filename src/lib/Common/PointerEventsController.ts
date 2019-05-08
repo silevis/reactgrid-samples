@@ -12,11 +12,12 @@ export class PointerEventsController {
         window.addEventListener('pointerup', this.handlePointerUp as any);
         this.currentClickTime = 1 - this.currentClickTime;
         this.clickTimes[this.currentClickTime] = new Date().valueOf();
-        this.gridContext.state.currentBehavior.handlePointerDown(event);
+        this.gridContext.currentBehavior.handlePointerDown(event);
     }
 
     private handlePointerMove = (event: PointerEvent) => {
-        this.gridContext.state.currentBehavior.handlePointerMove(event as any);
+
+        this.gridContext.currentBehavior.handlePointerMove(event as any);
     }
 
     private handlePointerUp = (event: PointerEvent) => {
@@ -24,9 +25,9 @@ export class PointerEventsController {
         window.removeEventListener('pointermove', this.handlePointerMove as any);
         const currentClickTime = new Date().valueOf();
         const prevClickTime = this.clickTimes[1 - this.currentClickTime];
-        this.gridContext.state.currentBehavior.handlePointerUp(event);
+        this.gridContext.currentBehavior.handlePointerUp(event);
         if (currentClickTime - prevClickTime < 500) {
-            this.gridContext.state.currentBehavior.handleDoubleClick(event)
+            this.gridContext.currentBehavior.handleDoubleClick(event)
         }
     }
 }

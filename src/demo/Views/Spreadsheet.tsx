@@ -6,7 +6,6 @@ import { Grid } from '../../lib/Components/Grid';
 
 export class Spreadsheet extends React.Component<{}, {}> {
     private generateCellMatrix() {
-        console.log('generateCellMatrix')
         const rowHeights = Array(100).fill(25)
         const columnWidths = Array(20).fill(80)
 

@@ -114,7 +114,7 @@ export class FillHandleBehavior {
                 ));
                 break;
         }
-        this.gridContext.setState({});
+        this.gridContext.forceUpdate();
     }
 
     handlePointerUp(event: PointerEvent) {
