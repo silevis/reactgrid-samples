@@ -7,7 +7,7 @@ interface CellFocusProps {
 
 export const CellFocus: React.FunctionComponent<CellFocusProps> = (props) =>
     <div
-        className="focusCell"
+        className="dg-cell-focus"
         style={{
             boxSizing: 'border-box',
             position: 'absolute',

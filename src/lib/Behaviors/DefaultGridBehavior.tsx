@@ -20,7 +20,7 @@ export class DefaultGridBehavior implements Behavior {
             focusLocation(this.gridContext, location);
 
             this.gridContext.setState({
-                focusedSelectedRangeIdx: this.gridContext.state.selectedRanges.length,
+                activeSelectedRangeIdx: this.gridContext.state.selectedRanges.length,
                 selectedRanges: this.gridContext.state.selectedRanges.concat([
                     this.gridContext.cellMatrix.getRange(location, location)
                 ])

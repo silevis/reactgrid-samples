@@ -15,41 +15,25 @@ interface FillHandleProps {
     location: Location
 }
 
-export class FillHandle extends React.Component<FillHandleProps> {
-    render() {
-        const { gridContext, location } = this.props;
+export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
+    <div
+        className="dg-fill-handle"
+        style={{
+            position: 'absolute',
+            top: props.location.row.bottom,
+            left: props.location.col.right,
+            marginTop: -4,
+            marginLeft: -4,
+            width: 5,
+            height: 5,
+            backgroundColor: '#3579f8',
+            border: '1px solid white',
+            cursor: 'crosshair',
+        }}
+        onPointerDown={() => changeBehavior(props.gridContext, new FillHandleBehavior(props.gridContext))}
+    >
+    </div>
 
-        // if (
-        // !activeSelectedRange ||
-        // gridContext.state.isFocusedCellInEditMode
-        // || gridContext.state.isFocusedCellReadOnly
-        // ) {
-        //     return;
-        // }
-
-        const onFocus = location.col.idx === location.col.idx && location.row.idx === location.row.idx;
-        const left = location.col.left + location.col.width - (onFocus ? 5.5 : 4.5) - 2;
-        const top = location.row.top + location.row.height - (onFocus ? 5.5 : 4.5) - 2;
-
-        return (
-            <div
-                className='fillHandle'
-                style={{
-                    position: 'absolute',
-                    top: top,
-                    left: left,
-                    width: 6,
-                    height: 6,
-                    backgroundColor: '#3579f8',
-                    border: '1px solid white',
-                    cursor: 'crosshair',
-                }}
-                onPointerDown={() => changeBehavior(gridContext, new FillHandleBehavior(gridContext))}
-            >
-            </div>
-        )
-    }
-}
 
 // export class DrawFillHandleBehavior extends DelegateBehavior {
 //     isVisible = true;

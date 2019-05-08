@@ -6,6 +6,6 @@ export function selectRange(gridContext: GridContext, selectedRange: Range) {
     gridContext.setState({
         selectionMode: 'range',
         selectedRanges,
-        focusedSelectedRangeIdx: gridContext.state.focusedSelectedRangeIdx
+        activeSelectedRangeIdx: gridContext.state.activeSelectedRangeIdx
     });
 }

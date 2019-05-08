@@ -28,7 +28,7 @@ export class GridState {
     selectedRanges: Range[] = [];
     selectedIndexes: number[] = [];
     focusedLocation?: Location;
-    focusedSelectedRangeIdx: number = -1;
+    activeSelectedRangeIdx: number = -1;
     isFocusedCellInEditMode: boolean = false;
     // VISIBLE RANGE
     visibleRange?: Range;
@@ -94,7 +94,7 @@ export class Grid extends React.Component<GridProps, GridState> {
         const matrix = this.props.cellMatrix;
         return (
             <div
-                className="dg-viewport"
+                className="dyna-grid dg-viewport"
                 ref={this.viewportElementRefHandler}
                 style={{
                     ...this.props.style,

@@ -2,7 +2,7 @@ import { GridContext, KeyboardEvent, keyCodes } from "../../Common";
 import { scrollIntoView } from "../../Functions";
 
 export function ResizeSelectionWithKeysBehavior(gridContext: GridContext, event: KeyboardEvent) {
-    const activeSelectedRange = gridContext.state.selectedRanges[gridContext.state.focusedSelectedRangeIdx]
+    const activeSelectedRange = gridContext.state.selectedRanges[gridContext.state.activeSelectedRangeIdx]
     const focusedCell = gridContext.state.focusedLocation!;
     if (event.keyCode === keyCodes.UP_ARROW && event.shiftKey && activeSelectedRange.first.row.idx > 0) {
         if (activeSelectedRange.last.row.idx > focusedCell.row.idx) {
@@ -235,7 +235,7 @@ const resizeSelection = (
     const start = gridContext.cellMatrix.getLocation(firstRowIdx, firstColIdx);
     const end = gridContext.cellMatrix.getLocation(lastRowIdx, lastColIdx);
     let selectedRanges = gridContext.state.selectedRanges.slice();
-    selectedRanges[gridContext.state.focusedSelectedRangeIdx] = gridContext.cellMatrix.getRange(start, end);
+    selectedRanges[gridContext.state.activeSelectedRangeIdx] = gridContext.cellMatrix.getRange(start, end);
     gridContext.setState({
         selectedRanges: selectedRanges
     });

@@ -7,11 +7,10 @@ export interface PartialRangeProps {
     style: React.CSSProperties
 }
 
-export const PartialArea: React.SFC<PartialRangeProps> = (props) => {
+export const PartialArea: React.FunctionComponent<PartialRangeProps> = (props) => {
     const { range, pane, style } = props;
-
     const top = (range.first.row.idx <= pane.first.row.idx) ? pane.first.row.top : range.first.row.top;
-    const left = (range.first.col.idx <= pane.first.col.idx) ? pane.first.col.left : pane.first.row.top;
+    const left = (range.first.col.idx <= pane.first.col.idx) ? pane.first.col.left : range.first.col.left;
     const width = (range.last.col.idx > pane.last.col.idx ? pane.last.col.right : range.last.col.right) - left;
     const height = (range.last.row.idx > pane.last.row.idx ? pane.last.row.bottom : range.last.row.bottom) - top;
     const hasTopBorder = range.first.row.idx >= pane.first.row.idx;
@@ -33,5 +32,5 @@ export const PartialArea: React.SFC<PartialRangeProps> = (props) => {
                 borderLeft: hasLeftBorder ? (style.borderLeft ? style.borderLeft : style.border) : '',
             }}
         />
-    );
+    )
 }

@@ -21,8 +21,8 @@ export const Pane: React.FunctionComponent<PaneProps> = (props) =>
         {props.gridContext.currentBehavior.renderPanePart(props.range)}
         {props.gridContext.state.focusedLocation && props.range.contains(props.gridContext.state.focusedLocation) &&
             <CellFocus location={props.gridContext.state.focusedLocation} />}
-        {props.gridContext.state.selectedRanges[props.gridContext.state.focusedSelectedRangeIdx] && props.range.contains(props.gridContext.state.selectedRanges[props.gridContext.state.focusedSelectedRangeIdx].last) &&
-            <FillHandle gridContext={props.gridContext} location={props.gridContext.state.selectedRanges[props.gridContext.state.focusedSelectedRangeIdx].last} />}
+        {props.gridContext.state.selectedRanges[props.gridContext.state.activeSelectedRangeIdx] && props.range.contains(props.gridContext.state.selectedRanges[props.gridContext.state.activeSelectedRangeIdx].last) &&
+            <FillHandle gridContext={props.gridContext} location={props.gridContext.state.selectedRanges[props.gridContext.state.activeSelectedRangeIdx].last} />}
     </div>
 
 export function renderSelectedRanges(gridContext: GridContext, pane: Range) {

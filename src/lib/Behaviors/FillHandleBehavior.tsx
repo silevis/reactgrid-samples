@@ -1,12 +1,15 @@
 import * as React from 'react';
-import { GridContext, Direction, Range, Location, Row, Column, KeyboardEvent, ClipboardEvent, PointerEvent, CellMatrix } from "../Common";
+import { GridContext, Range, Location, Row, Column, KeyboardEvent, ClipboardEvent, PointerEvent, CellMatrix } from "../Common";
 import { getLocationFromClient, resetToDefaultBehavior } from "../Functions";
 import { PartialArea } from '../Components/PartialArea';
 import { AutoScrollBehavior } from './AutoScrollBehavior';
+import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
+
+type Direction = '' | 'left' | 'right' | 'up' | 'down';
 
 export class FillHandleBehavior extends AutoScrollBehavior {
-    private currentLocation!: Location;
-    private fillDirection!: Direction;
+    private currentLocation?: Location;
+    private fillDirection: Direction = '';
     private fillRange?: Range;
 
     constructor(private gridContext: GridContext) {
@@ -14,53 +17,57 @@ export class FillHandleBehavior extends AutoScrollBehavior {
     }
 
     handlePointerMove(event: PointerEvent) {
-        const activeSelectedRange = this.gridContext.state.selectedRanges[this.gridContext.state.focusedSelectedRangeIdx]
-        const location = getLocationFromClient(this.gridContext, event.clientX, event.clientY);
-        if (this.currentLocation === location || !activeSelectedRange || !location.col || !location.row) {
+        const selectedRange = getActiveSelectedRange(this.gridContext);
+        const pointerLocation = getLocationFromClient(this.gridContext, event.clientX, event.clientY);
+        if ((this.currentLocation && this.currentLocation.col === pointerLocation.col && this.currentLocation.row === pointerLocation.row)) {
             return;
         }
-        console.log('move')
-        this.currentLocation = location;
+        this.currentLocation = pointerLocation;
+        this.fillDirection = this.getFillDirection(selectedRange, pointerLocation)
+        this.fillRange = this.getFillRange(this.gridContext.cellMatrix, selectedRange, pointerLocation, this.fillDirection)
+        this.gridContext.forceUpdate();
+    }
+
+    private getFillDirection(selectedRange: Range, pointerLocation: Location) {
+
         // active selection
         let differences: { direction: Direction; value: number }[] = [];
         differences.push({ direction: '', value: 0 });
         differences.push({
             direction: 'up',
             value:
-                location.row.idx < activeSelectedRange.first.row.idx
-                    ? activeSelectedRange.first.row.idx - location.row.idx
+                pointerLocation.row.idx < selectedRange.first.row.idx
+                    ? selectedRange.first.row.idx - pointerLocation.row.idx
                     : 0
         });
         differences.push({
             direction: 'down',
             value:
-                location.row.idx > activeSelectedRange.last.row.idx
-                    ? location.row.idx - activeSelectedRange.last.row.idx
+                pointerLocation.row.idx > selectedRange.last.row.idx
+                    ? pointerLocation.row.idx - selectedRange.last.row.idx
                     : 0
         });
         differences.push({
             direction: 'left',
             value:
-                location.col.idx < activeSelectedRange.first.col.idx
-                    ? activeSelectedRange.first.col.idx - location.col.idx
+                pointerLocation.col.idx < selectedRange.first.col.idx
+                    ? selectedRange.first.col.idx - pointerLocation.col.idx
                     : 0
         });
         differences.push({
             direction: 'right',
             value:
-                location.col.idx > activeSelectedRange.last.col.idx
-                    ? location.col.idx - activeSelectedRange.last.col.idx
+                pointerLocation.col.idx > selectedRange.last.col.idx
+                    ? pointerLocation.col.idx - selectedRange.last.col.idx
                     : 0
         });
-        this.fillDirection = differences.reduce((prev, current) =>
+        return differences.reduce((prev, current) =>
             prev.value >= current.value ? prev : current
         ).direction;
-        this.fillRange = this.getFillRange(this.gridContext.cellMatrix, activeSelectedRange)
-        this.gridContext.forceUpdate();
     }
 
-    private getFillRange(cellMatrix: CellMatrix, selectedRange: Range) {
-        switch (this.fillDirection) {
+    private getFillRange(cellMatrix: CellMatrix, selectedRange: Range, location: Location, fillDirection: Direction) {
+        switch (fillDirection) {
             case 'right':
                 return cellMatrix.getRange(
                     cellMatrix.getLocation(
@@ -69,12 +76,11 @@ export class FillHandleBehavior extends AutoScrollBehavior {
                             ? cellMatrix.last.col.idx
                             : selectedRange.last.col.idx + 1
                     ),
-                    cellMatrix.getLocation(selectedRange.last.row.idx, this.currentLocation.col.idx)
+                    cellMatrix.getLocation(selectedRange.last.row.idx, location.col.idx)
                 );
-                break;
             case 'left':
                 return cellMatrix.getRange(
-                    cellMatrix.getLocation(selectedRange.first.row.idx, this.currentLocation.col.idx),
+                    cellMatrix.getLocation(selectedRange.first.row.idx, location.col.idx),
                     cellMatrix.getLocation(
                         selectedRange.last.row.idx,
                         cellMatrix.first.col.idx > selectedRange.first.col.idx - 1
@@ -82,11 +88,9 @@ export class FillHandleBehavior extends AutoScrollBehavior {
                             : selectedRange.first.col.idx - 1
                     )
                 );
-                break;
-
             case 'up':
                 return cellMatrix.getRange(
-                    cellMatrix.getLocation(this.currentLocation.row.idx, selectedRange.first.col.idx),
+                    cellMatrix.getLocation(location.row.idx, selectedRange.first.col.idx),
                     cellMatrix.getLocation(
                         cellMatrix.first.row.idx > selectedRange.first.row.idx - 1
                             ? cellMatrix.first.row.idx
@@ -94,8 +98,6 @@ export class FillHandleBehavior extends AutoScrollBehavior {
                         selectedRange.last.col.idx
                     )
                 );
-                break;
-
             case 'down':
                 return cellMatrix.getRange(
                     cellMatrix.getLocation(
@@ -104,9 +106,8 @@ export class FillHandleBehavior extends AutoScrollBehavior {
                             : selectedRange.last.row.idx + 1,
                         selectedRange.first.col.idx
                     ),
-                    cellMatrix.getLocation(this.currentLocation.row.idx, selectedRange.last.col.idx)
+                    cellMatrix.getLocation(location.row.idx, selectedRange.last.col.idx)
                 );
-                break;
         }
         return undefined;
     }
@@ -210,15 +211,13 @@ export class FillHandleBehavior extends AutoScrollBehavior {
     }
 
     renderPanePart(pane: Range): React.ReactNode {
-        return (
-            this.fillDirection && this.fillRange &&
+        return this.fillDirection && this.fillRange && pane.intersectsWith(this.fillRange) &&
             <PartialArea range={this.fillRange} pane={pane} style={{
                 backgroundColor: '',
-                borderTop: this.fillDirection === 'down' ? '0px' : '1px dashed #616161',
-                borderBottom: this.fillDirection === 'up' ? '0px' : '1px dashed #616161',
-                borderLeft: this.fillDirection === 'right' ? '0px' : '1px dashed #616161',
-                borderRight: this.fillDirection === 'left' ? '0px' : '1px dashed #616161'
+                borderTop: this.fillDirection === 'down' ? '' : '1px dashed #666',
+                borderBottom: this.fillDirection === 'up' ? '' : '1px dashed #666',
+                borderLeft: this.fillDirection === 'right' ? '' : '1px dashed #666',
+                borderRight: this.fillDirection === 'left' ? '' : '1px dashed #666'
             }} />
-        )
     }
 }
