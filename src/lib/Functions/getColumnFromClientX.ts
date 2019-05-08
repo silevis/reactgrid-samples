@@ -19,6 +19,6 @@ export function getColumnFromClientX(gridContext: GridContext, clientX: number):
         return cellMatrix.frozenRightRange.cols.find(col => col.right > gridX - rightPaneLeft)!;
     }
     else {
-        return cellMatrix.scrollableRange.cols.find(col => col.right > gridX - gridContext.viewportElement.scrollLeft - cellMatrix.frozenLeftRange.width)!;
+        return cellMatrix.scrollableRange.cols.find(col => col.right > gridX - cellMatrix.frozenLeftRange.width + gridContext.viewportElement.scrollLeft)!;
     }
 }

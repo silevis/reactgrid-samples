@@ -4,6 +4,7 @@ import { CellFocus } from "./CellFocus";
 import { FillHandle } from "./FillHandle";
 import { RowRenderer } from "./RowRenderer";
 import { PartialArea } from "./PartialArea";
+import { focusLocation } from "../Functions";
 
 export interface PaneProps {
     id: string
@@ -25,7 +26,8 @@ export const Pane: React.FunctionComponent<PaneProps> = (props) =>
     </div>
 
 export function renderSelectedRanges(gridContext: GridContext, pane: Range) {
-    return gridContext.state.selectedRanges.map((range, i) => pane.intersectsWith(range) && <PartialArea key={i} pane={pane} range={range} style={{
+    const focusedLocation = gridContext.state.focusedLocation;
+    return gridContext.state.selectedRanges.map((range, i) => !(focusedLocation && range.contains(focusedLocation) && range.cols.length === 1 && range.rows.length === 1) && pane.intersectsWith(range) && <PartialArea key={i} pane={pane} range={range} style={{
         border: '1px solid rgb(53, 121, 248)',
         backgroundColor: 'rgba(53, 121, 248, 0.1)',
     }} />);
