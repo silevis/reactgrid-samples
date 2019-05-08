@@ -14,6 +14,7 @@ export function keyDownHandlers(gridContext: GridContext, event: KeyboardEvent) 
 
     else if (isEnterKey(key)) {
         handleEnterKey(event, gridContext)
+
     }
 
     else if (isSpecialNavKeys(key)) {
@@ -33,8 +34,8 @@ export function keyDownHandlers(gridContext: GridContext, event: KeyboardEvent) 
 const isArrowKey = (key: string) => key.includes('Arrow')
 const isEnterKey = (key: string) => key.includes('Enter')
 const isSpecialNavKeys = (key: string) => {
-    const keyArr = ['Home', 'PageUp', 'PageDown', 'End']
-    return keyArr.some(el => el.includes(key))
+    const keys = ['Home', 'PageUp', 'PageDown', 'End']
+    return keys.some(el => el.includes(key))
 }
 const isTabKey = (key: string) => key.includes('Tab')
 const isSpecialKeys = (key: string) => {

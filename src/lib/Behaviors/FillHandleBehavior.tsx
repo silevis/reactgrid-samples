@@ -221,5 +221,4 @@ export class FillHandleBehavior extends AutoScrollBehavior {
             }} />
         )
     }
-
 }

@@ -36,6 +36,9 @@ export abstract class AutoScrollBehavior implements Behavior {
     handleDoubleClick(event: React.PointerEvent<HTMLDivElement>): void {
 
     }
+    handleContextMenu(event: PointerEvent): void {
+
+    }
     renderPanePart(pane: Range): React.ReactNode {
         return undefined
     }

@@ -3,6 +3,7 @@ import { ColProps, RowProps, CellMatrix } from '../../lib/Common';
 import { TextCell } from '../../lib/Cells/TextCell';
 import { HeaderCell } from '../../lib/Cells/HeaderCell';
 import { Grid } from '../../lib/Components/Grid';
+import { ColumnHeaderCell } from '../../lib/Cells/ColumnHeaderCell';
 
 export class Spreadsheet extends React.Component<{}, {}> {
     private generateCellMatrix() {
@@ -15,8 +16,8 @@ export class Spreadsheet extends React.Component<{}, {}> {
         const columns: ColProps[] = columnWidths.map(_ => { return { width: 80, context: undefined } });
         const rows: RowProps[] = rowHeights.map(_ => { return { height: 25, context: undefined } })
         rowHeights.map((_, i) => cells[i][0] = HeaderCell.Create('vertical', i.toString(), 'header', () => { }, false, true, () => { }));
-        columnWidths.map((_, j) => cells[0][j] = HeaderCell.Create('horizontal', j.toString(), 'header', () => { }, false, true, () => { }));
-        cells[0][0] = HeaderCell.Create('horizontal', '', 'header', () => { }, true, false, () => { });
+        columnWidths.map((_, j) => cells[0][j] = ColumnHeaderCell.Create(j.toString(), 'header', () => { }, false, true, () => { }));
+        cells[0][0] = ColumnHeaderCell.Create('', 'header', () => { }, true, false, () => { });
         return new CellMatrix({ frozenTopRows: 2, frozenLeftColumns: 2, frozenBottomRows: 2, frozenRightColumns: 2, rows, columns, cells: cells })
     }
 

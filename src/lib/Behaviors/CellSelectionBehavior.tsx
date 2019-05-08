@@ -3,6 +3,8 @@ import { GridContext } from '../Common';
 import { AutoScrollBehavior } from './AutoScrollBehavior';
 import { PointerEvent } from "../Common/domEvents";
 import { selectRange } from '../Functions/selectRange';
+import { Grid } from '../Components/Grid';
+import { isClickOutOfGrid } from '../Functions/isClickOutOfGrid';
 // import { Utilities } from '../Common/Utilities';
 // import { focusLocation, getLocationFromClient, resetToDefaultBehavior, isClickInsideSelectedRange } from '../Functions';
 // import { Location, CellMatrix, GridContext, Behavior } from '../Common';
@@ -22,7 +24,6 @@ export class CellSelectionBehavior extends AutoScrollBehavior {
         if (location.col === undefined || location.row === undefined) { return }
         const range = this.gridContext.cellMatrix.getRange(this.gridContext.state.focusedLocation!, location);
         selectRange(this.gridContext, range);
-        // updateCellSelection(this.gridContext, event.clientX, event.clientY);
     }
 
     handlePointerUp() {

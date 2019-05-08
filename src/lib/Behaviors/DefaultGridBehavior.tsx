@@ -1,12 +1,11 @@
 import * as React from "react";
-import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, Range } from "../Common";
+import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Range } from "../Common";
 import { keyDownHandlers } from "./DefaultGridBehavior/keyDownHandlers";
 import { keyUpHandlers } from "./DefaultGridBehavior/keyUpHandler";
 import { getLocationFromClient, focusLocation, changeBehavior } from "../Functions";
 import { selectRange } from "../Functions/selectRange";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
-
-export let setFocusLocation: (location: Location) => void = _ => { };
+import { DrawContextMenuBehavior } from "../Components/ContextMenu";
 
 export class DefaultGridBehavior implements Behavior {
 
@@ -29,6 +28,12 @@ export class DefaultGridBehavior implements Behavior {
         } else {
             focusLocation(this.gridContext, location);
         }
+    }
+
+    handleContextMenu(event: PointerEvent): void {
+        event.preventDefault();
+        changeBehavior(this.gridContext, new DrawContextMenuBehavior(this.gridContext, event))
+        event.persist();
     }
 
     handlePointerMove(event: PointerEvent): void {
