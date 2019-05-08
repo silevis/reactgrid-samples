@@ -1,6 +1,5 @@
 import { Grid, GridState } from "../Components/Grid";
 import { CellMatrix } from "./CellMatrix";
-import { Location } from "./Model";
 import { DefaultGridBehavior } from "../Behaviors/DefaultGridBehavior";
 import { Behavior } from ".";
 

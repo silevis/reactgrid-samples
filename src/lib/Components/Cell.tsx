@@ -7,7 +7,7 @@ export interface CellProps {
     borders: Borders
 }
 
-export const Cell: React.SFC<CellProps> = (props) => {
+export const Cell: React.FunctionComponent<CellProps> = (props) => {
     const state = props.gridContext.state;
     const location = props.location;
     const borders = props.borders;

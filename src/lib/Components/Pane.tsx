@@ -15,7 +15,6 @@ export interface PaneProps {
 
 export const Pane: React.FunctionComponent<PaneProps> = (props) =>
     <div key={props.id} className="dg-pane" style={{ position: 'relative', width: props.range.width, height: '100%', ...props.style }}>
-        {/* <div>{props.range.cols.map(renderColumn)}</div> */}
         {props.range.rows.map((row) => <RowRenderer key={row.idx} gridContext={props.gridContext} row={row} columns={props.range.cols} forceUpdate={false} borders={{ ...props.borders, top: props.borders.top && row.top === 0, bottom: props.borders.bottom && row.idx === props.range.last.row.idx }} />)}
         {renderPartial(props.gridContext, props.range)}
         {props.gridContext.currentBehavior.renderPanePart(props.range)}
@@ -32,20 +31,6 @@ export function renderPartial(gridContext: GridContext, range: Range) {
         backgroundColor: 'rgba(53, 121, 248, 0.1)',
     });
 }
-
-// export function renderColumn(column: Column): React.ReactNode {
-//     return (
-//         <div key={column.idx} className="dg-column" style={{
-//             boxSizing: 'border-box',
-//             position: 'absolute',
-//             left: column.left,
-//             width: column.width,
-//             top: 0,
-//             bottom: 0,
-//             borderRight: '1px solid #eee',
-//         }} />
-//     )
-// }
 
 export interface RowRendererProps {
     gridContext: GridContext,

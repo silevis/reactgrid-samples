@@ -32,7 +32,6 @@ export class FillHandle extends React.Component<FillHandleProps> {
                     backgroundColor: '#3579f8',
                     border: '1px solid white',
                     cursor: 'crosshair',
-                    zIndex: 3
                 }}
                 onPointerDown={() => changeBehavior(gridContext, new FillHandleBehavior(gridContext))}
             >

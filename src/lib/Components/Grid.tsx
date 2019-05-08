@@ -140,7 +140,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                         <PaneRow
                             id='B'
                             gridContext={this.gridContext}
-                            style={{ background: 'white', bottom: 0, position: 'sticky', zIndex: zIndex.frozenPaneRow }}
+                            style={{ background: 'white', bottom: 0, position: 'sticky' }}
                             range={matrix.frozenBottomRange}
                             borders={{ top: true }}
                             zIndex={3}

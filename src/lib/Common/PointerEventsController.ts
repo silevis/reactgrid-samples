@@ -2,16 +2,16 @@ import { PointerEvent } from "./domEvents";
 import { GridContext } from "./GridContext";
 
 export class PointerEventsController {
-    private clickTimes: number[] = [0, 0];
-    private currentClickTime: number = 0;
+    private clickTimestamps: number[] = [0, 0];
+    private currentClickTimestamp: number = 0;
 
     constructor(private gridContext: GridContext) { }
 
     public handlePointerDown = (event: PointerEvent) => {
         window.addEventListener('pointermove', this.handlePointerMove as any);
         window.addEventListener('pointerup', this.handlePointerUp as any);
-        this.currentClickTime = 1 - this.currentClickTime;
-        this.clickTimes[this.currentClickTime] = new Date().valueOf();
+        this.currentClickTimestamp = 1 - this.currentClickTimestamp;
+        this.clickTimestamps[this.currentClickTimestamp] = new Date().valueOf();
         this.gridContext.currentBehavior.handlePointerDown(event);
     }
 
@@ -23,10 +23,10 @@ export class PointerEventsController {
     private handlePointerUp = (event: PointerEvent) => {
         window.removeEventListener('pointerup', this.handlePointerUp as any);
         window.removeEventListener('pointermove', this.handlePointerMove as any);
-        const currentClickTime = new Date().valueOf();
-        const prevClickTime = this.clickTimes[1 - this.currentClickTime];
+        const currentClickTimestamp = new Date().valueOf();
+        const prevClickTimestamp = this.clickTimestamps[1 - this.currentClickTimestamp];
         this.gridContext.currentBehavior.handlePointerUp(event);
-        if (currentClickTime - prevClickTime < 500) {
+        if (currentClickTimestamp - prevClickTimestamp < 500) {
             this.gridContext.currentBehavior.handleDoubleClick(event)
         }
     }

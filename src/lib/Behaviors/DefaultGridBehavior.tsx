@@ -23,8 +23,6 @@ export class DefaultGridBehavior implements Behavior {
         } else {
             focusLocation(this.gridContext, location);
         }
-        //pointerDownHandler(this.gridContext, event);
-        // pointerMoveHandler(this.gridContext, event);
     }
 
     handlePointerMove(event: PointerEvent): void {
