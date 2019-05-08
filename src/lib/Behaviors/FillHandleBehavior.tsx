@@ -1,32 +1,25 @@
 import * as React from 'react';
-import { GridContext, Direction, Range, Location, Row, Column, KeyboardEvent, ClipboardEvent, PointerEvent } from "../Common";
+import { GridContext, Direction, Range, Location, Row, Column, KeyboardEvent, ClipboardEvent, PointerEvent, CellMatrix } from "../Common";
 import { getLocationFromClient, resetToDefaultBehavior } from "../Functions";
-import { Utilities } from "../Common/Utilities";
-import { renderMultiplePartialAreasForPane } from '../Functions/renderPartialAreaForPane';
+import { PartialArea } from '../Components/PartialArea';
+import { AutoScrollBehavior } from './AutoScrollBehavior';
 
-// import { Grid } from '../Components/Gridonents/Grid';
-// import { Location, Range, Direction } from '../Common';
-// import { DelegateBehavior } from "./DelegateBehavior";
-// import { AutoScrollBehavior } from './AutoScrollBehavior';
-// import { BasicGridBehavior } from './BasicGridBehavior';
-// import { Utilities } from '../Common/Utilities';
-// import { Row, Column } from '../Common';
-// import { getLocationFromClient, resetToDefaultBehavior } from '../Functions';
-
-export class FillHandleBehavior {
+export class FillHandleBehavior extends AutoScrollBehavior {
     private currentLocation!: Location;
     private fillDirection!: Direction;
-    private fillRange: Range[] = [];
+    private fillRange?: Range;
 
-    constructor(private gridContext: GridContext) { }
+    constructor(private gridContext: GridContext) {
+        super();
+    }
 
     handlePointerMove(event: PointerEvent) {
         const activeSelectedRange = this.gridContext.state.selectedRanges[this.gridContext.state.focusedSelectedRangeIdx]
-        const cellMatrix = this.gridContext.cellMatrix;
         const location = getLocationFromClient(this.gridContext, event.clientX, event.clientY);
         if (this.currentLocation === location || !activeSelectedRange || !location.col || !location.row) {
             return;
         }
+        console.log('move')
         this.currentLocation = location;
         // active selection
         let differences: { direction: Direction; value: number }[] = [];
@@ -59,59 +52,63 @@ export class FillHandleBehavior {
                     ? location.col.idx - activeSelectedRange.last.col.idx
                     : 0
         });
-        this.fillRange = [];
         this.fillDirection = differences.reduce((prev, current) =>
             prev.value >= current.value ? prev : current
         ).direction;
+        this.fillRange = this.getFillRange(this.gridContext.cellMatrix, activeSelectedRange)
+        this.gridContext.forceUpdate();
+    }
+
+    private getFillRange(cellMatrix: CellMatrix, selectedRange: Range) {
         switch (this.fillDirection) {
             case 'right':
-                this.fillRange.push(cellMatrix.getRange(
+                return cellMatrix.getRange(
                     cellMatrix.getLocation(
-                        activeSelectedRange.first.row.idx,
-                        cellMatrix.last.col.idx < activeSelectedRange.last.col.idx + 1
+                        selectedRange.first.row.idx,
+                        cellMatrix.last.col.idx < selectedRange.last.col.idx + 1
                             ? cellMatrix.last.col.idx
-                            : activeSelectedRange.last.col.idx + 1
+                            : selectedRange.last.col.idx + 1
                     ),
-                    cellMatrix.getLocation(activeSelectedRange.last.row.idx, this.currentLocation.col.idx)
-                ));
+                    cellMatrix.getLocation(selectedRange.last.row.idx, this.currentLocation.col.idx)
+                );
                 break;
             case 'left':
-                this.fillRange.push(cellMatrix.getRange(
-                    cellMatrix.getLocation(activeSelectedRange.first.row.idx, this.currentLocation.col.idx),
+                return cellMatrix.getRange(
+                    cellMatrix.getLocation(selectedRange.first.row.idx, this.currentLocation.col.idx),
                     cellMatrix.getLocation(
-                        activeSelectedRange.last.row.idx,
-                        cellMatrix.first.col.idx > activeSelectedRange.first.col.idx - 1
+                        selectedRange.last.row.idx,
+                        cellMatrix.first.col.idx > selectedRange.first.col.idx - 1
                             ? cellMatrix.first.col.idx
-                            : activeSelectedRange.first.col.idx - 1
+                            : selectedRange.first.col.idx - 1
                     )
-                ));
+                );
                 break;
 
             case 'up':
-                this.fillRange.push(cellMatrix.getRange(
-                    cellMatrix.getLocation(this.currentLocation.row.idx, activeSelectedRange.first.col.idx),
+                return cellMatrix.getRange(
+                    cellMatrix.getLocation(this.currentLocation.row.idx, selectedRange.first.col.idx),
                     cellMatrix.getLocation(
-                        cellMatrix.first.row.idx > activeSelectedRange.first.row.idx - 1
+                        cellMatrix.first.row.idx > selectedRange.first.row.idx - 1
                             ? cellMatrix.first.row.idx
-                            : activeSelectedRange.first.row.idx - 1,
-                        activeSelectedRange.last.col.idx
+                            : selectedRange.first.row.idx - 1,
+                        selectedRange.last.col.idx
                     )
-                ));
+                );
                 break;
 
             case 'down':
-                this.fillRange.push(cellMatrix.getRange(
+                return cellMatrix.getRange(
                     cellMatrix.getLocation(
-                        cellMatrix.last.row.idx < activeSelectedRange.last.row.idx + 1
+                        cellMatrix.last.row.idx < selectedRange.last.row.idx + 1
                             ? cellMatrix.last.row.idx
-                            : activeSelectedRange.last.row.idx + 1,
-                        activeSelectedRange.first.col.idx
+                            : selectedRange.last.row.idx + 1,
+                        selectedRange.first.col.idx
                     ),
-                    cellMatrix.getLocation(this.currentLocation.row.idx, activeSelectedRange.last.col.idx)
-                ));
+                    cellMatrix.getLocation(this.currentLocation.row.idx, selectedRange.last.col.idx)
+                );
                 break;
         }
-        this.gridContext.forceUpdate();
+        return undefined;
     }
 
     handlePointerUp(event: PointerEvent) {
@@ -214,24 +211,15 @@ export class FillHandleBehavior {
 
     renderPanePart(pane: Range): React.ReactNode {
         return (
-            this.fillDirection &&
-            renderMultiplePartialAreasForPane(this.gridContext, this.fillRange, pane, {
+            this.fillDirection && this.fillRange &&
+            <PartialArea range={this.fillRange} pane={pane} style={{
                 backgroundColor: '',
                 borderTop: this.fillDirection === 'down' ? '0px' : '1px dashed #616161',
                 borderBottom: this.fillDirection === 'up' ? '0px' : '1px dashed #616161',
                 borderLeft: this.fillDirection === 'right' ? '0px' : '1px dashed #616161',
                 borderRight: this.fillDirection === 'left' ? '0px' : '1px dashed #616161'
-            })
+            }} />
         )
     }
 
-    handleKeyDown(event: KeyboardEvent): void { }
-    handleKeyUp(event: KeyboardEvent): void { }
-    handleCopy(event: ClipboardEvent): void { }
-    handlePaste(event: ClipboardEvent): void { }
-    handleCut(event: ClipboardEvent): void { }
-    handlePointerDown(event: PointerEvent): void { }
-    handleDoubleClick(event: PointerEvent): void { }
-    renderGlobalPart(): React.ReactNode { return undefined }
-    dispose(): void { }
 }

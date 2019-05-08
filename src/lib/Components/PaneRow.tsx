@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Pane } from "./Pane";
-import { GridContext, Borders, Range, zIndex, Row } from "../Common";
+import { GridContext, Borders, Range } from "../Common";
 
 export interface PaneRowProps {
     id: string,
@@ -42,7 +42,7 @@ export const PaneRow: React.FunctionComponent<PaneRowProps> = (props) => {
                     gridContext={props.gridContext}
                     style={{ width: matrix.scrollableRange.width }}
                     range={props.range.slice(state.visibleRange, 'columns')}
-                    borders={{ ...props.borders }}
+                    borders={{ ...props.borders, right: false, bottom: false }}
                 />
             }
             {matrix.frozenRightRange.width > 0 &&
@@ -54,18 +54,7 @@ export const PaneRow: React.FunctionComponent<PaneRowProps> = (props) => {
                     borders={{ ...props.borders, left: true }}
                 />
             }
-            {/* <div>
-                {props.range.rows.map(row => <div key={row.idx} className="dg-row" style={{
-                    boxSizing: 'border-box',
-                    position: 'absolute',
-                    left: 0,
-                    right: 0,
-                    top: row.top,
-                    height: row.height,
-                    zIndex: props.zIndex + 1,
-                    borderBottom: '1px solid #eee',
-                }} />)}
-            </div> */}
+
 
         </div>
     );

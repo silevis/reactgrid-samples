@@ -31,6 +31,15 @@ export class Range {
         );
     }
 
+    intersectsWith(range: Range): boolean {
+        return (
+            range.first.col.idx <= this.last.col.idx &&
+            range.first.row.idx <= this.last.row.idx &&
+            range.last.col.idx >= this.first.col.idx &&
+            range.last.row.idx >= this.first.row.idx
+        )
+    }
+
     slice(range: Range, direction: 'columns' | 'rows' | 'both'): Range {
         const firstRow = direction === 'rows' ? range.first.row : this.first.row;
         const firstCol = direction === 'columns' ? range.first.col : this.first.col;

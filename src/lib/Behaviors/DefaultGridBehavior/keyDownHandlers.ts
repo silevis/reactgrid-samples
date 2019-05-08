@@ -88,7 +88,7 @@ const handleSpecialNavKeys = (event: KeyboardEvent, gridContext: GridContext) =>
         !gridContext.state.isFocusedCellInEditMode
     ) {
         const rowsOnScreen = cellMatrix.rows.filter(
-            (r: Row) => r.top < gridContext.gridElement.clientHeight
+            (r: Row) => r.top < gridContext.viewportElement.clientHeight
         );
         focusCell(
             focusedLocation.col.idx,
@@ -104,7 +104,7 @@ const handleSpecialNavKeys = (event: KeyboardEvent, gridContext: GridContext) =>
                 cellMatrix.frozenBottomRange.rows.length -
                 1
             )
-            .filter((r: Row) => r.top + r.height < gridContext.gridElement.clientHeight);
+            .filter((r: Row) => r.top + r.height < gridContext.viewportElement.clientHeight);
         focusCell(
             focusedLocation.col.idx,
             focusedLocation.row.idx + rowsOnScreen.length < cellMatrix.rows.length

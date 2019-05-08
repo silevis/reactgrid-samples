@@ -94,8 +94,8 @@ export class Grid extends React.Component<GridProps, GridState> {
         const matrix = this.props.cellMatrix;
         return (
             <div
-                className="dyna-grid"
-                ref={this.newGridElementRefHandler}
+                className="dg-viewport"
+                ref={this.viewportElementRefHandler}
                 style={{
                     ...this.props.style,
                     MozUserSelect: 'none',
@@ -108,6 +108,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                 data-cy="dyna-grid"
             >
                 <div
+                    ref={this.contentElementRefHandler}
                     tabIndex={0}
                     className="dg-content"
                     style={{ width: matrix.width, height: matrix.height, position: 'relative' }}
@@ -152,24 +153,29 @@ export class Grid extends React.Component<GridProps, GridState> {
                         style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }}
                         // onBlur={this.handleBlur}
                         onPaste={this.handlePasteOnHiddenElement}
-                        ref={this.handleNewHiddenElementRef}
+                        ref={this.hiddenElementRefHandler}
                     />
                     {/* {this.state.currentBehavior.renderGlobalPart && this.state.currentBehavior.renderGlobalPart()} */}
                 </div>
             </div>
         );
     }
-    private newGridElementRefHandler = (gridElement: HTMLDivElement) => {
-        this.gridContext.gridElement = gridElement;
+
+    private viewportElementRefHandler = (viewportElement: HTMLDivElement) => {
+        this.gridContext.viewportElement = viewportElement;
         refresh(this.gridContext);
     }
 
-    private handleNewHiddenElementRef = (hiddenFocusElement: HTMLDivElement) => {
+    private contentElementRefHandler = (viewportElement: HTMLDivElement) => {
+        this.gridContext.viewportElement = viewportElement;
+    }
+
+    private hiddenElementRefHandler = (hiddenFocusElement: HTMLDivElement) => {
         this.gridContext.hiddenFocusElement = hiddenFocusElement;
     }
 
     private scrollHandler = () => {
-        const { scrollTop, scrollLeft } = this.gridContext.gridElement;
+        const { scrollTop, scrollLeft } = this.gridContext.viewportElement;
         if (
             scrollTop < this.state.minScrollTop || scrollTop > this.state.maxScrollTop ||
             scrollLeft < this.state.minScrollLeft || scrollLeft > this.state.maxScrollLeft

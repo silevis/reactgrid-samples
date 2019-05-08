@@ -3,7 +3,7 @@ import { Row } from "../Common/Model";
 
 export function getRowFromClientY(gridContext: GridContext, clientY: number, outOfRangeTrim: boolean = false): Row {
     const cellMatrix = gridContext.cellMatrix;
-    const gridElement = gridContext.gridElement;
+    const gridElement = gridContext.viewportElement;
     const rect = gridElement.getBoundingClientRect();
     const frozenTopRowsHeight = cellMatrix.frozenTopRange.height;
     const frozenBottomRowsHeight = cellMatrix.frozenBottomRange.height;

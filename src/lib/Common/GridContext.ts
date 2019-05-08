@@ -12,7 +12,8 @@ export class GridContext {
     forceUpdate() { this.grid.forceUpdate(); }
     commitChanges() { this.grid.props.onValuesChanged && this.grid.props.onValuesChanged(); }
     hiddenFocusElement!: HTMLDivElement;
-    gridElement!: HTMLDivElement;
+    viewportElement!: HTMLDivElement;
+    contentElement!: HTMLDivElement;
     // currentBehavior cannot be in state, because setState() updates state asyncronously
     currentBehavior: Behavior = new DefaultGridBehavior(this);
 }

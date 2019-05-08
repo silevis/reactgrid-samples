@@ -2,7 +2,7 @@ import { Column, Row, Range, GridContext } from "../Common";
 
 export function refresh(gridContext: GridContext) {
     const matrix = gridContext.cellMatrix;
-    const { scrollTop, scrollLeft, clientWidth, clientHeight } = gridContext.gridElement;
+    const { scrollTop, scrollLeft, clientWidth, clientHeight } = gridContext.viewportElement;
     const scrollAreaWidth = clientWidth - matrix.frozenLeftRange.width - matrix.frozenRightRange.width;
     const scrollAreaHeight = clientHeight - matrix.frozenTopRange.height - matrix.frozenBottomRange.height;
     // TODO improve calculation of visibleCols & visibleRows
