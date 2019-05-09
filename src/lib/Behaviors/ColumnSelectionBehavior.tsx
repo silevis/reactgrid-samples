@@ -2,7 +2,7 @@ import { getLocationFromClient, resetToDefaultBehavior, focusLocation, getColumn
 import { GridContext, Location } from '../Common';
 import { AutoScrollBehavior } from './AutoScrollBehavior';
 import { PointerEvent } from "../Common/domEvents";
-import { selectColumns } from '../Functions/selectRange';
+import { selectColumn, updateActiveSelectedColumns } from '../Functions/selectRange';
 // import { Utilities } from '../Common/Utilities';
 // import { focusLocation, getLocationFromClient, resetToDefaultBehavior, isClickInsideSelectedRange } from '../Functions';
 // import { Location, CellMatrix, GridContext, Behavior } from '../Common';
@@ -14,9 +14,21 @@ export class ColumnSelectionBehavior extends AutoScrollBehavior {
         super();
     }
 
+    handlePointerDown(event: PointerEvent) {
+        const location = getLocationFromClient(this.gridContext, event.clientX, event.clientY);
+        if (event.ctrlKey && this.gridContext.state.selectionMode === 'column' && this.gridContext.state.selectedIndexes.some(idx => idx === location.col.idx)) {
+            // TODO remove column from selected indexes
+        } if (event.shiftKey) {
+            // TODO        
+        } else {
+            focusLocation(this.gridContext, location);
+            selectColumn(this.gridContext, location.col, event.ctrlKey);
+        }
+    }
+
     handlePointerMove(event: PointerEvent) {
         const column = getColumnFromClientX(this.gridContext, event.clientX);
-        selectColumns(this.gridContext, this.gridContext.state.focusedLocation!.col, column, event.ctrlKey);
+        updateActiveSelectedColumns(this.gridContext, this.gridContext.state.focusedLocation!.col, column, event.ctrlKey);
     }
 
     handlePointerUp() {
