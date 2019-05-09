@@ -2,8 +2,9 @@ import * as React from 'react';
 import { handleCopy, handleCut, handlePaste } from './handleEvents';
 // import './Cell.css';
 import { Utilities } from '../Common/Utilities';
-import { Cell, Orientation, CellProps, Location, CellMatrix } from '../Common';
-import { getLocationFromClient } from '../Functions';
+import { Cell, CellProps, Location, CellMatrix, GridContext } from '../Common';
+import { getLocationFromClient, changeBehavior } from '../Functions';
+import { ColumnSelectionBehavior } from '../Behaviors/ColumnSelectionBehavior';
 
 export interface HeaderCellProps extends CellProps {
     shouldStartReorder: boolean;
@@ -99,12 +100,7 @@ export class ColumnHeaderCell extends React.Component<HeaderCellProps, HeaderCel
                 className="dg-header-cell"
                 {...(this.props.attributes, { style: mergedStyle })}
                 onPointerDown={event => {
-                    console.log('pointerdown header')
-                    const locationOfCell = getLocationFromClient(this.props.gridContext, event.clientX, event.clientY);
-                    const range = this.props.gridContext.cellMatrix.getRange(locationOfCell, {
-                        row: locationOfCell.row,
-                        col: this.props.gridContext.cellMatrix.cols[this.props.gridContext.cellMatrix.cols.length - 1]
-                    });
+                    changeBehavior(this.props.gridContext, new ColumnSelectionBehavior(this.props.gridContext));
                     // e.stopPropagation();
                     // if (this.props.orientation === 'horizontal') {
                     //     this.props.gridContext.state.currentBehavior.handlePointerDown(e, 'column')
@@ -309,5 +305,17 @@ export class ColumnHeaderCell extends React.Component<HeaderCellProps, HeaderCel
 
     private nameIsNullOrEmpty(name: string) {
         return !name || !name.trim();
+    }
+}
+
+function isItTheSameCell(gridContext: GridContext, location: Location) {
+    if (gridContext.state.focusedLocation) {
+        if (gridContext.state.focusedLocation.row.idx === location.row.idx && gridContext.state.focusedLocation.col.idx === location.col.idx) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
     }
 }
