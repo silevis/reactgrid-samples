@@ -106,6 +106,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                 data-cy="dyna-grid"
             >
                 <div
+                    // this tabIndex attracts 
                     tabIndex={0}
                     className="dg-content"
                     style={{ width: matrix.width, height: matrix.height, position: 'relative', outline: 'none' }}

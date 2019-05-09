@@ -1,24 +1,24 @@
-import { Column, GridContext } from "../Common";
+import { GridContext, Column } from "../Common";
 
 export function getColumnFromClientX(gridContext: GridContext, clientX: number): Column {
     const cellMatrix = gridContext.cellMatrix;
     const visibleWidth = Math.min(gridContext.viewportElement.clientWidth, cellMatrix.width);
-    const gridX = clientX - gridContext.viewportElement.clientLeft;
+    const viewportX = clientX - gridContext.viewportElement.clientLeft;
     const rightPaneLeft = visibleWidth - cellMatrix.frozenRightRange.width;
 
-    if (gridX < 0) {
+    if (viewportX < 0) {
         return cellMatrix.first.col;
     }
-    else if (gridX > visibleWidth) {
+    else if (viewportX > visibleWidth) {
         return cellMatrix.last.col;
     }
-    else if (gridX < cellMatrix.frozenLeftRange.width) {
-        return cellMatrix.frozenLeftRange.cols.find(col => col.right > gridX)!;
+    else if (viewportX < cellMatrix.frozenLeftRange.width) {
+        return cellMatrix.frozenLeftRange.cols.find(col => col.right > viewportX)!;
     }
-    else if (gridX > rightPaneLeft) {
-        return cellMatrix.frozenRightRange.cols.find(col => col.right > gridX - rightPaneLeft)!;
+    else if (viewportX > rightPaneLeft) {
+        return cellMatrix.frozenRightRange.cols.find(col => col.right > viewportX - rightPaneLeft)!;
     }
     else {
-        return cellMatrix.scrollableRange.cols.find(col => col.right > gridX - cellMatrix.frozenLeftRange.width + gridContext.viewportElement.scrollLeft)!;
+        return cellMatrix.scrollableRange.cols.find(col => col.right > viewportX - cellMatrix.frozenLeftRange.width + gridContext.viewportElement.scrollLeft)!;
     }
 }

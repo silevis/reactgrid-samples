@@ -1,40 +1,24 @@
-import { GridContext } from "../Common/GridContext";
-import { Row } from "../Common/Model";
+import { GridContext, Row } from "../Common";
 
-export function getRowFromClientY(gridContext: GridContext, clientY: number, outOfRangeTrim: boolean = false): Row {
+export function getRowFromClientY(gridContext: GridContext, clientY: number): Row {
     const cellMatrix = gridContext.cellMatrix;
-    const gridElement = gridContext.viewportElement;
-    const rect = gridElement.getBoundingClientRect();
-    const frozenTopRowsHeight = cellMatrix.frozenTopRange.height;
-    const frozenBottomRowsHeight = cellMatrix.frozenBottomRange.height;
-    const isCursorOnTopPane = clientY < frozenTopRowsHeight + rect.top;
-    const isCursorOnBottomPane =
-        cellMatrix.frozenBottomRange.rows.length > 0 && clientY > rect.height - frozenBottomRowsHeight;
-    const scrollAreaHeight = gridElement.clientHeight - cellMatrix.frozenTopRange.height - cellMatrix.frozenBottomRange.height;
-    let virtualPositionOfY = clientY - rect.top;
-    let rows = cellMatrix.rows;
-    if (outOfRangeTrim) {
-        if (clientY < gridElement.getBoundingClientRect().top) {
-            return rows[0];
-        }
-        if (clientY > gridElement.getBoundingClientRect().bottom) {
-            return rows[rows.length - 1];
-        }
+    const visibleHeight = Math.min(gridContext.viewportElement.clientHeight, cellMatrix.height);
+    const viewportY = clientY - gridContext.viewportElement.clientTop;
+    const bottomPaneTop = visibleHeight - cellMatrix.frozenBottomRange.height;
+
+    if (viewportY < 0) {
+        return cellMatrix.first.row;
     }
-    if (isCursorOnTopPane) {
-        rows = cellMatrix.frozenTopRange.rows;
-    } else if (isCursorOnBottomPane) {
-        virtualPositionOfY = virtualPositionOfY - frozenTopRowsHeight - scrollAreaHeight;
-        rows = cellMatrix.frozenBottomRange.rows;
-    } else {
-        virtualPositionOfY = virtualPositionOfY - frozenTopRowsHeight + gridElement.scrollTop;
-        rows = rows.slice(
-            cellMatrix.frozenTopRange.rows.length,
-            rows.length - cellMatrix.frozenBottomRange.rows.length
-        );
+    else if (viewportY > visibleHeight) {
+        return cellMatrix.last.row;
     }
-    return (
-        rows.find(row => row.top <= virtualPositionOfY && row.top + row.height >= virtualPositionOfY) ||
-        (virtualPositionOfY < 0 ? rows[0] : rows[rows.length - 1])
-    );
+    else if (viewportY < cellMatrix.frozenTopRange.height) {
+        return cellMatrix.frozenTopRange.rows.find(row => row.bottom > viewportY)!;
+    }
+    else if (viewportY > bottomPaneTop) {
+        return cellMatrix.frozenBottomRange.rows.find(row => row.bottom > viewportY - bottomPaneTop)!;
+    }
+    else {
+        return cellMatrix.scrollableRange.rows.find(row => row.bottom > viewportY - cellMatrix.frozenTopRange.height + gridContext.viewportElement.scrollTop)!;
+    }
 }
