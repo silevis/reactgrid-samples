@@ -9,13 +9,13 @@ export function getColumnFromClientX(gridContext: GridContext, clientX: number):
     if (viewportX < 0) {
         return cellMatrix.first.col;
     }
-    else if (viewportX > visibleWidth) {
+    else if (viewportX >= visibleWidth) {
         return cellMatrix.last.col;
     }
     else if (viewportX < cellMatrix.frozenLeftRange.width) {
         return cellMatrix.frozenLeftRange.cols.find(col => col.right > viewportX)!;
     }
-    else if (viewportX > rightPaneLeft) {
+    else if (viewportX >= rightPaneLeft) {
         return cellMatrix.frozenRightRange.cols.find(col => col.right > viewportX - rightPaneLeft)!;
     }
     else {

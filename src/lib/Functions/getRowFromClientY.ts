@@ -9,13 +9,13 @@ export function getRowFromClientY(gridContext: GridContext, clientY: number): Ro
     if (viewportY < 0) {
         return cellMatrix.first.row;
     }
-    else if (viewportY > visibleHeight) {
+    else if (viewportY >= visibleHeight) {
         return cellMatrix.last.row;
     }
     else if (viewportY < cellMatrix.frozenTopRange.height) {
         return cellMatrix.frozenTopRange.rows.find(row => row.bottom > viewportY)!;
     }
-    else if (viewportY > bottomPaneTop) {
+    else if (viewportY >= bottomPaneTop) {
         return cellMatrix.frozenBottomRange.rows.find(row => row.bottom > viewportY - bottomPaneTop)!;
     }
     else {

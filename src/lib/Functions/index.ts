@@ -6,6 +6,5 @@ export { getRowFromClientY } from './getRowFromClientY';
 export { print } from './print';
 export { resetToDefaultBehavior } from './resetToDefaultBehavior';
 export { scrollIntoView } from './scrollIntoView';
-export { isClickInsideSelectedRange } from './isClickInsideSelectedRange';
 export { selectRows } from './selectRows';
 export { refresh } from './refresh';

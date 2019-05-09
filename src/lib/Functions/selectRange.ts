@@ -1,36 +1,31 @@
-import { GridContext, Range } from "../Common";
+import { GridContext, Range, Column } from "../Common";
 
-export function selectRange(gridContext: GridContext, range: Range) {
-    const selectedRanges = gridContext.state.selectedRanges.map(r => r.contains(gridContext.state.focusedLocation!) ? range : r);
-
+export function selectRange(gridContext: GridContext, range: Range, incremental: boolean) {
     gridContext.setState({
         selectionMode: 'range',
-        selectedRanges,
-        selectedIndexes: []
-    });
-}
-
-export function selectSingleCell(gridContext: GridContext, range: Range) {
-    gridContext.setState({
-        selectionMode: 'range',
-        selectedRanges: gridContext.state.selectedRanges.concat([range]),
+        selectedRanges: (incremental ? gridContext.state.selectedRanges : []).concat([range]),
         selectedIndexes: [],
-        activeSelectedRangeIdx: gridContext.state.selectedRanges.length
+        activeSelectedRangeIdx: incremental ? gridContext.state.selectedRanges.length : 0
+
     });
 }
 
-export function selectColumn(gridContext: GridContext, column: Range) {
+
+export function updateActiveSelectedRange(gridContext: GridContext, range: Range) {
     gridContext.setState({
-        selectionMode: 'column',
-        selectedRanges: [column],
-        selectedIndexes: [column.first.col.idx]
-    });
+        // replace active selected range in selectedRanges
+        selectedRanges: Object.assign([], gridContext.state.selectedRanges, { [gridContext.state.activeSelectedRangeIdx]: range })
+    })
 }
 
-export function selectColumns(gridContext: GridContext, column: Range) {
+export function selectColumns(gridContext: GridContext, firstColumn: Column, lastColumn: Column, incremental: boolean) {
+    const firstRow = gridContext.cellMatrix.first.row;
+    const lastRow = gridContext.cellMatrix.last.row;
+    const range = gridContext.cellMatrix.getRange({ col: firstColumn, row: firstRow }, { col: lastColumn, row: lastRow })
     gridContext.setState({
         selectionMode: 'column',
-        selectedRanges: gridContext.state.selectedRanges.concat(column),
-        selectedIndexes: gridContext.state.selectedIndexes.concat(column.first.col.idx)
+        // TODO Ranges have to be re-calculated durring render
+        selectedRanges: [range],
+        selectedIndexes: range.cols.map(col => col.idx)
     });
 }

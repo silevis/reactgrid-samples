@@ -2,8 +2,7 @@ import * as React from "react";
 import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Range } from "../Common";
 import { keyDownHandlers } from "./DefaultGridBehavior/keyDownHandlers";
 import { keyUpHandlers } from "./DefaultGridBehavior/keyUpHandler";
-import { getLocationFromClient, focusLocation, changeBehavior } from "../Functions";
-import { selectRange, selectSingleCell } from "../Functions/selectRange";
+import { changeBehavior } from "../Functions";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
 import { DrawContextMenuBehavior } from "../Components/ContextMenu";
 import { Utilities } from "../Common/Utilities";
@@ -12,18 +11,11 @@ export class DefaultGridBehavior implements Behavior {
 
     constructor(private gridContext: GridContext) { }
 
-    handlePointerDown(event: PointerEvent): void {
-        const location = getLocationFromClient(this.gridContext, event.clientX, event.clientY);
-        if (event.shiftKey && this.gridContext.state.focusedLocation) {
-            const range = this.gridContext.cellMatrix.getRange(this.gridContext.state.focusedLocation, location);
-            selectRange(this.gridContext, range);
-        } else if (event.ctrlKey) {
-            const range = this.gridContext.cellMatrix.getRange(location, location);
-            focusLocation(this.gridContext, location);
-            selectSingleCell(this.gridContext, range);
-        } else {
-            focusLocation(this.gridContext, location);
-        }
+    handlePointerDown(event: PointerEvent) {
+        // changing behavior will disable all keyboard event handlers
+        const cellSelectionBehavior = new CellSelectionBehavior(this.gridContext);
+        changeBehavior(this.gridContext, cellSelectionBehavior);
+        cellSelectionBehavior.handlePointerDown(event);
     }
 
     handleContextMenu(event: PointerEvent): void {
@@ -33,7 +25,7 @@ export class DefaultGridBehavior implements Behavior {
     }
 
     handlePointerMove(event: PointerEvent): void {
-        changeBehavior(this.gridContext, new CellSelectionBehavior(this.gridContext));
+
     }
 
     handlePointerUp(event: PointerEvent): void {

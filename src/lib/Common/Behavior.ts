@@ -9,6 +9,8 @@ export interface Behavior {
     handleCopy(event: ClipboardEvent): void;
     handlePaste(event: ClipboardEvent): void;
     handleCut(event: ClipboardEvent): void;
+    // TODO consider adding location to handlers
+    // TODO handlePointerCellEnter
     handlePointerDown(event: PointerEvent): void;
     handlePointerMove(event: PointerEvent): void;
     handlePointerUp(event: PointerEvent): void;

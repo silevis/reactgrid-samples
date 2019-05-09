@@ -1,8 +1,8 @@
-import { getLocationFromClient, resetToDefaultBehavior } from '../Functions';
+import { getLocationFromClient, resetToDefaultBehavior, focusLocation } from '../Functions';
 import { GridContext } from '../Common';
 import { AutoScrollBehavior } from './AutoScrollBehavior';
 import { PointerEvent } from "../Common/domEvents";
-import { selectRange } from '../Functions/selectRange';
+import { selectRange, updateActiveSelectedRange } from '../Functions/selectRange';
 // import { Utilities } from '../Common/Utilities';
 // import { focusLocation, getLocationFromClient, resetToDefaultBehavior, isClickInsideSelectedRange } from '../Functions';
 // import { Location, CellMatrix, GridContext, Behavior } from '../Common';
@@ -16,11 +16,37 @@ export class CellSelectionBehavior extends AutoScrollBehavior {
         super()
     }
 
+    handlePointerDown(event: PointerEvent) {
+        const location = getLocationFromClient(this.gridContext, event.clientX, event.clientY);
+
+        if (event.shiftKey && this.gridContext.state.focusedLocation) {
+            const range = this.gridContext.cellMatrix.getRange(this.gridContext.state.focusedLocation, location);
+            if (event.ctrlKey) {
+                updateActiveSelectedRange(this.gridContext, range);
+            } else {
+                selectRange(this.gridContext, range, false);
+            }
+
+        }
+        else if (event.ctrlKey) {
+            const pointedRange = this.gridContext.state.selectedRanges.find(range => range.contains(location));
+            if (pointedRange) {
+                // TODO if found, remove pointedRange from selectedRanges
+            } else {
+                const range = this.gridContext.cellMatrix.getRange(location, location);
+                selectRange(this.gridContext, range, true);
+                focusLocation(this.gridContext, location, false);
+            }
+        } else {
+            focusLocation(this.gridContext, location, true);
+        }
+    }
+
     handlePointerMove(event: PointerEvent) {
         const location = getLocationFromClient(this.gridContext, event.clientX, event.clientY);
         if (location.col === undefined || location.row === undefined) { return }
         const range = this.gridContext.cellMatrix.getRange(this.gridContext.state.focusedLocation!, location);
-        selectRange(this.gridContext, range);
+        updateActiveSelectedRange(this.gridContext, range);
     }
 
     handlePointerUp() {

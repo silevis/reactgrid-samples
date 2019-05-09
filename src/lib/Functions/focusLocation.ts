@@ -8,6 +8,8 @@ export function focusLocation(gridContext: GridContext, location: Location, rese
     // cell.onFocusChanged(location);
     // TODO external event needed?
 
+
+    // TODO move resetSelection out to an other function
     if (resetSelection) {
         gridContext.setState({
             focusedLocation: location,
@@ -20,7 +22,6 @@ export function focusLocation(gridContext: GridContext, location: Location, rese
         gridContext.setState({
             focusedLocation: location,
             isFocusedCellInEditMode: false,
-            selectedIndexes: []
         });
     }
 }

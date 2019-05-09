@@ -2,8 +2,7 @@ import { getLocationFromClient, resetToDefaultBehavior, focusLocation, getColumn
 import { GridContext, Location } from '../Common';
 import { AutoScrollBehavior } from './AutoScrollBehavior';
 import { PointerEvent } from "../Common/domEvents";
-import { isItFocusedCellPointered } from '../Functions/isItFocusedCellPointered';
-import { selectColumn, selectColumns } from '../Functions/selectRange';
+import { selectColumns } from '../Functions/selectRange';
 // import { Utilities } from '../Common/Utilities';
 // import { focusLocation, getLocationFromClient, resetToDefaultBehavior, isClickInsideSelectedRange } from '../Functions';
 // import { Location, CellMatrix, GridContext, Behavior } from '../Common';
@@ -15,40 +14,9 @@ export class ColumnSelectionBehavior extends AutoScrollBehavior {
         super();
     }
 
-    handlePointerDown(event: PointerEvent) {
-        const pointerColumn = getColumnFromClientX(this.gridContext, event.clientX);
-        const firstRow = this.gridContext.cellMatrix.rows[0];
-        const lastRow = this.gridContext.cellMatrix.rows[this.gridContext.cellMatrix.rows.length - 1]
-        const range = this.gridContext.cellMatrix.getRange(
-            { row: firstRow, col: pointerColumn },
-            { row: lastRow, col: pointerColumn }
-        );
-
-        if (this.gridContext.state.focusedLocation) {
-            if (!isItFocusedCellPointered(this.gridContext, { row: firstRow, col: pointerColumn })) {
-                focusLocation(this.gridContext, { row: firstRow, col: pointerColumn });
-                selectColumn(this.gridContext, range);
-            } else {
-                console.log('Column reorder behavior is coming');
-            }
-        } else { // select first column
-            focusLocation(this.gridContext, { row: firstRow, col: pointerColumn });
-            selectColumn(this.gridContext, range);
-        }
-    }
-
     handlePointerMove(event: PointerEvent) {
-        const pointerColumn = getColumnFromClientX(this.gridContext, event.clientX);
-        const firstRow = this.gridContext.cellMatrix.rows[0];
-        const lastRow = this.gridContext.cellMatrix.rows[this.gridContext.cellMatrix.rows.length - 1]
-        const range = this.gridContext.cellMatrix.getRange(
-            { row: firstRow, col: pointerColumn },
-            { row: lastRow, col: pointerColumn }
-        );
-
-        if (!this.gridContext.state.selectedIndexes.includes(pointerColumn.idx)) {
-            selectColumns(this.gridContext, range);
-        }
+        const column = getColumnFromClientX(this.gridContext, event.clientX);
+        selectColumns(this.gridContext, this.gridContext.state.focusedLocation!.col, column, event.ctrlKey);
     }
 
     handlePointerUp() {
