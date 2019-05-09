@@ -3,9 +3,10 @@ import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Ran
 import { keyDownHandlers } from "./DefaultGridBehavior/keyDownHandlers";
 import { keyUpHandlers } from "./DefaultGridBehavior/keyUpHandler";
 import { getLocationFromClient, focusLocation, changeBehavior } from "../Functions";
-import { selectRange } from "../Functions/selectRange";
+import { selectRange, selectSingleCell } from "../Functions/selectRange";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
 import { DrawContextMenuBehavior } from "../Components/ContextMenu";
+import { Utilities } from "../Common/Utilities";
 
 export class DefaultGridBehavior implements Behavior {
 
@@ -17,14 +18,9 @@ export class DefaultGridBehavior implements Behavior {
             const range = this.gridContext.cellMatrix.getRange(this.gridContext.state.focusedLocation, location);
             selectRange(this.gridContext, range);
         } else if (event.ctrlKey) {
+            const range = this.gridContext.cellMatrix.getRange(location, location);
             focusLocation(this.gridContext, location);
-
-            this.gridContext.setState({
-                activeSelectedRangeIdx: this.gridContext.state.selectedRanges.length,
-                selectedRanges: this.gridContext.state.selectedRanges.concat([
-                    this.gridContext.cellMatrix.getRange(location, location)
-                ])
-            });
+            selectSingleCell(this.gridContext, range);
         } else {
             focusLocation(this.gridContext, location);
         }
