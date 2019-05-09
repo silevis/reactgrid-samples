@@ -106,8 +106,9 @@ export class Grid extends React.Component<GridProps, GridState> {
                 data-cy="dyna-grid"
             >
                 <div
+                    tabIndex={0}
                     className="dg-content"
-                    style={{ width: matrix.width, height: matrix.height, position: 'relative' }}
+                    style={{ width: matrix.width, height: matrix.height, position: 'relative', outline: 'none' }}
                     onPointerDown={this.pointerEventsController.handlePointerDown}
                     onContextMenu={this.handleContextMenu}
                     onKeyDown={this.keyDownHandler}
@@ -144,11 +145,11 @@ export class Grid extends React.Component<GridProps, GridState> {
                             zIndex={3}
                         />}
                     <div
-                        tabIndex={0}
                         className="dg-hidden-focus-element"
                         contentEditable={true}
                         style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }}
                         // onBlur={this.handleBlur}
+                        onFocus={() => console.log('focus')}
                         onPaste={this.handlePasteOnHiddenElement}
                         ref={this.hiddenElementRefHandler}
                     />
