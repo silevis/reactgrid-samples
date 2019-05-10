@@ -16,8 +16,9 @@ pipeline {
     success {
       script {
         if (env.BRANCH_NAME == 'cleanup') {
-          bat "netstat -ano | findstr 0.0.0.0:3000 && (FOR /F \"tokens=5\" %%I IN ('netstat -ano ^| findstr 0.0.0.0:3000') DO taskkill /F /PID %%I) || cmd/k"
-          powershell 'Remove-Item -Recurse -Force node_modules'
+          dir(path: 'c:/users/lenovo/desktop/dynagrid') {
+            powershell 'Remove-Item -Recurse -Force node_modules'
+          }
           fileOperations([fileCopyOperation(	
             excludes: "",
             flattenFiles: false,	
@@ -26,9 +27,6 @@ pipeline {
           )])
           dir(path: 'c:/users/lenovo/desktop/dynagrid') {
             bat "npm install"
-          }
-          dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-            bat "npm start"
           }
         }
       }
