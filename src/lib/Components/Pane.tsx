@@ -27,8 +27,7 @@ export const Pane: React.FunctionComponent<PaneProps> = (props) =>
 function renderSelectedRanges(gridContext: GridContext, pane: Range) {
     const focusedLocation = gridContext.state.focusedLocation;
     return gridContext.state.selectedRanges.map((range, i) => !(focusedLocation && range.contains(focusedLocation) && range.cols.length === 1 && range.rows.length === 1) && pane.intersectsWith(range) && <PartialArea key={i} pane={pane} range={range} style={{
-        //border: '1px solid rgb(53, 121, 248)',
-        border: '1px solid rgb(53, 121, 248 )',
+        border: '1px solid rgb(53, 121, 248)',
         backgroundColor: 'rgba(53, 121, 248, 0.15)',
     }} />);
 }

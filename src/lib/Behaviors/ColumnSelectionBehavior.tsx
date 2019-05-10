@@ -14,8 +14,7 @@ export class ColumnSelectionBehavior extends AutoScrollBehavior {
         super();
     }
 
-    handlePointerDown(event: PointerEvent) {
-        const location = getLocationFromClient(this.gridContext, event.clientX, event.clientY);
+    handlePointerDown(event: PointerEvent, location: Location) {
         if (event.ctrlKey && this.gridContext.state.selectionMode === 'column' && this.gridContext.state.selectedIndexes.some(idx => idx === location.col.idx)) {
             // TODO remove column from selected indexes
         } if (event.shiftKey) {
@@ -26,11 +25,8 @@ export class ColumnSelectionBehavior extends AutoScrollBehavior {
         }
     }
 
-    handlePointerMove(event: PointerEvent) {
-        const column = getColumnFromClientX(this.gridContext, event.clientX);
-        if (!this.gridContext.state.selectedIndexes.some(idx => idx === column.idx)) {
-            updateActiveSelectedColumns(this.gridContext, this.gridContext.state.focusedLocation!.col, column, event.ctrlKey);
-        }
+    handlePointerMove(event: PointerEvent, location: Location) {
+        updateActiveSelectedColumns(this.gridContext, this.gridContext.state.focusedLocation!.col, location.col, event.ctrlKey);
     }
 
     handlePointerUp() {

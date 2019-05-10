@@ -1,5 +1,5 @@
-import { getLocationFromClient, resetToDefaultBehavior, focusLocation, getColumnFromClientX, getRowFromClientY } from '../Functions';
-import { GridContext } from '../Common';
+import { resetToDefaultBehavior, focusLocation, getRowFromClientY } from '../Functions';
+import { GridContext, Location } from '../Common';
 import { AutoScrollBehavior } from './AutoScrollBehavior';
 import { PointerEvent } from "../Common/domEvents";
 import { selectRow, updateActiveSelectedRows } from '../Functions/selectRange';
@@ -10,8 +10,7 @@ export class RowSelectionBehavior extends AutoScrollBehavior {
         super();
     }
 
-    handlePointerDown(event: PointerEvent) {
-        const location = getLocationFromClient(this.gridContext, event.clientX, event.clientY);
+    handlePointerDown(event: PointerEvent, location: Location) {
         if (event.ctrlKey && this.gridContext.state.selectionMode === 'row' && this.gridContext.state.selectedIndexes.some(idx => idx === location.row.idx)) {
             // TODO remove row from selected indexes
         } if (event.shiftKey) {
@@ -22,11 +21,9 @@ export class RowSelectionBehavior extends AutoScrollBehavior {
         }
     }
 
-    handlePointerMove(event: PointerEvent) {
-        const row = getRowFromClientY(this.gridContext, event.clientY);
-        if (!this.gridContext.state.selectedIndexes.some(idx => idx === row.idx)) {
-            updateActiveSelectedRows(this.gridContext, this.gridContext.state.focusedLocation!.row, row, event.ctrlKey);
-        }
+    handlePointerEnter(event: PointerEvent, location: Location) {
+        console.log('enter')
+        updateActiveSelectedRows(this.gridContext, this.gridContext.state.focusedLocation!.row, location.row, event.ctrlKey);
     }
 
     handlePointerUp() {

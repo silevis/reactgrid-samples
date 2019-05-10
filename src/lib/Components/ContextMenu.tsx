@@ -1,88 +1,56 @@
-import { GridContext, PointerEvent, Range } from "../Common";
 import * as React from 'react';
+import { GridContext, PointerEvent, Range, Behavior } from "../Common";
 import { resetToDefaultBehavior, getLocationFromClient, focusLocation, changeBehavior } from "../Functions";
 
-export class DrawContextMenuBehavior {
-    constructor(private gridContext: GridContext, private event: React.MouseEvent) {
-
+export class DrawContextMenuBehavior extends Behavior {
+    constructor(private gridContext: GridContext, private event: PointerEvent) {
+        super();
     }
 
-    handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
-    }
-
-    handleKeyUp(event: React.KeyboardEvent<HTMLDivElement>): void {
-
-    }
-    handleCopy(event: React.ClipboardEvent<HTMLDivElement>): void {
-
-    }
-    handlePaste(event: React.ClipboardEvent<HTMLDivElement>): void {
-
-    }
-    handleCut(event: React.ClipboardEvent<HTMLDivElement>): void {
-
-    }
-    handlePointerDown(event: React.PointerEvent<HTMLDivElement>): void {
-
-    }
-    handlePointerMove(event: PointerEvent): void {
-
-    }
-    handlePointerUp(event: React.PointerEvent<HTMLDivElement>): void {
-
-    }
-    handleDoubleClick(event: React.PointerEvent<HTMLDivElement>): void {
-
-    }
-
-    handleContextMenu(event: React.MouseEvent): void {
-
-    }
-
-    renderPanePart = (pane: Range): React.ReactNode => {
-        return (
-            <>
-                {renderContextMenu(pane, this.gridContext, this.event)}
-            </>
-        );
-    }
-    renderGlobalPart(): React.ReactNode {
-        return undefined
-    }
-    dispose(): void {
-    }
+    // renderPanePart = (pane: Range): React.ReactNode => {
+    //     return (
+    //         <>
+    //             {renderContextMenu(pane, this.gridContext, this.event)}
+    //         </>
+    //     );
+    // }
+    // renderGlobalPart(): React.ReactNode {
+    //     return undefined
+    // }
+    // dispose(): void {
+    // }
 }
 
-const renderContextMenu = (pane: Range, gridContext: GridContext, event: React.MouseEvent) => {
-    if (pane.contains(gridContext.state.focusedLocation!)) {
-        return (
-            <>
-                <div
-                    style={{ width: '100%', height: '100%', position: 'fixed', top: 0, left: 0, zIndex: 900 }}
-                    onTouchStart={e => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                    }}
-                    onTouchEnd={e => {
-                        e.stopPropagation();
-                    }}
-                    onContextMenu={e => contextMenuHandler(e, gridContext)}
-                    onDoubleClick={e => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    }}
-                    onClick={e => {
-                        e.stopPropagation();
-                        contextMenuHandler(e, gridContext);
-                    }}
-                />
-                {renderCustomContextMenu(pane, gridContext, event)}
-            </>
-        );
-    }
-}
+// const renderContextMenu = (pane: Range, gridContext: GridContext, event: PointerEvent) => {
+//     if (pane.contains(gridContext.state.focusedLocation!)) {
+//         return (
+//             <>
+//                 <div
+//                     style={{ width: '100%', height: '100%', position: 'fixed', top: 0, left: 0, zIndex: 900 }}
+//                     onTouchStart={e => {
+//                         e.stopPropagation();
+//                         e.preventDefault();
+//                     }}
+//                     onTouchEnd={e => {
+//                         e.stopPropagation();
+//                     }}
+//                     onContextMenu={e => contextMenuHandler(e, gridContext)}
+//                     onDoubleClick={e => {
+//                         e.preventDefault();
+//                         e.stopPropagation();
+//                     }}
+//                     onClick={e => {
+//                         e.stopPropagation();
+//                         contextMenuHandler(e, gridContext);
+//                     }}
+//                 />
+//                 {renderCustomContextMenu(pane, gridContext, event)}
+//             </>
+//         );
+//     }
+// }
 
-const renderCustomContextMenu = (pane: Range, gridContext: GridContext, event: React.MouseEvent) => {
+const renderCustomContextMenu = (pane: Range, gridContext: GridContext, event: PointerEvent) => {
     // TODO
     // const selectedRows: Range[] = this.gridContext.selectRows(this.gridContext.state.selectedRowsIdx);
     // const options: MenuOption[] = this.gridContext.props.onContextMenu(this.gridContext.state.selectedRanges, selectedRows);
@@ -131,7 +99,7 @@ const renderCustomContextMenu = (pane: Range, gridContext: GridContext, event: R
                 onClick={e => {
                     e.stopPropagation();
                     // option.handler();
-                    contextMenuHandler(e, gridContext);
+                    //contextMenuHandler(e, gridContext);
                 }}
                 onTouchStart={e => {
                     e.preventDefault();
@@ -148,7 +116,7 @@ const renderCustomContextMenu = (pane: Range, gridContext: GridContext, event: R
     );
 }
 
-const contextMenuHandler = (e: React.MouseEvent<HTMLDivElement>, gridContext: GridContext) => {
+const contextMenuHandler = (e: PointerEvent, gridContext: GridContext) => {
     resetToDefaultBehavior(gridContext);
     // TODO 
     gridContext.forceUpdate()

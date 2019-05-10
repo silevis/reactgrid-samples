@@ -1,5 +1,5 @@
-import { getLocationFromClient, resetToDefaultBehavior, focusLocation } from '../Functions';
-import { GridContext } from '../Common';
+import { resetToDefaultBehavior, focusLocation } from '../Functions';
+import { GridContext, Location } from '../Common';
 import { AutoScrollBehavior } from './AutoScrollBehavior';
 import { PointerEvent } from "../Common/domEvents";
 import { selectRange, updateActiveSelectedRange } from '../Functions/selectRange';
@@ -16,8 +16,7 @@ export class CellSelectionBehavior extends AutoScrollBehavior {
         super()
     }
 
-    handlePointerDown(event: PointerEvent) {
-        const location = getLocationFromClient(this.gridContext, event.clientX, event.clientY);
+    handlePointerDown(event: PointerEvent, location: Location) {
 
         if (event.shiftKey && this.gridContext.state.focusedLocation) {
             const range = this.gridContext.cellMatrix.getRange(this.gridContext.state.focusedLocation, location);
@@ -42,9 +41,7 @@ export class CellSelectionBehavior extends AutoScrollBehavior {
         }
     }
 
-    handlePointerMove(event: PointerEvent) {
-        const location = getLocationFromClient(this.gridContext, event.clientX, event.clientY);
-        if (location.col === undefined || location.row === undefined) { return }
+    handlePointerEnter(event: PointerEvent, location: Location) {
         const range = this.gridContext.cellMatrix.getRange(this.gridContext.state.focusedLocation!, location);
         updateActiveSelectedRange(this.gridContext, range);
     }

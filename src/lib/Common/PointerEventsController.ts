@@ -1,33 +1,52 @@
-import { PointerEvent } from "./domEvents";
+import { PointerEvent, Location } from "./";
 import { GridContext } from "./GridContext";
+import { getLocationFromClient } from "../Functions";
 
 export class PointerEventsController {
-    private clickTimestamps: number[] = [0, 0];
-    private currentClickTimestamp: number = 0;
+    private eventTimestamps: number[] = [0, 0];
+    private eventLocations: Array<Location | undefined> = [undefined, undefined]
+    private toggleIndex: number = 0;
 
     constructor(private gridContext: GridContext) { }
 
     public handlePointerDown = (event: PointerEvent) => {
         window.addEventListener('pointermove', this.handlePointerMove as any);
         window.addEventListener('pointerup', this.handlePointerUp as any);
-        this.currentClickTimestamp = 1 - this.currentClickTimestamp;
-        this.clickTimestamps[this.currentClickTimestamp] = new Date().valueOf();
-        this.gridContext.currentBehavior.handlePointerDown(event);
+        const currentLocation = getLocationFromClient(this.gridContext, event.clientX, event.clientY);
+        this.toggleIndex = 1 - this.toggleIndex;
+        this.eventTimestamps[this.toggleIndex] = new Date().valueOf();
+        this.eventLocations[this.toggleIndex] = currentLocation;
+        this.gridContext.currentBehavior.handlePointerDown(event, currentLocation);
     }
 
     private handlePointerMove = (event: PointerEvent) => {
-
-        this.gridContext.currentBehavior.handlePointerMove(event as any);
+        const currentLocation = getLocationFromClient(this.gridContext, event.clientX, event.clientY);
+        this.gridContext.currentBehavior.handlePointerMove(event, currentLocation);
+        const previousLocation = this.eventLocations[this.toggleIndex];
+        this.eventLocations[this.toggleIndex] = currentLocation;
+        if (!isSameLocation(previousLocation, currentLocation)) {
+            this.gridContext.currentBehavior.handlePointerEnter(event, currentLocation);
+        }
     }
 
     private handlePointerUp = (event: PointerEvent) => {
         window.removeEventListener('pointerup', this.handlePointerUp as any);
         window.removeEventListener('pointermove', this.handlePointerMove as any);
-        const currentClickTimestamp = new Date().valueOf();
-        const prevClickTimestamp = this.clickTimestamps[1 - this.currentClickTimestamp];
-        this.gridContext.currentBehavior.handlePointerUp(event);
-        if (currentClickTimestamp - prevClickTimestamp < 500) {
-            this.gridContext.currentBehavior.handleDoubleClick(event)
+        const currentLocation = getLocationFromClient(this.gridContext, event.clientX, event.clientY);
+        const currentTimestamp = new Date().valueOf();
+        const secondLastTimestamp = this.eventTimestamps[1 - this.toggleIndex];
+        this.gridContext.currentBehavior.handlePointerUp(event, currentLocation);
+        if (currentTimestamp - secondLastTimestamp < 500 && isSameLocation(currentLocation, this.eventLocations[0]) && isSameLocation(currentLocation, this.eventLocations[1])) {
+            this.gridContext.currentBehavior.handleDoubleClick(event, currentLocation)
         }
     }
 }
+
+
+function isSameLocation(location1?: Location, location2?: Location): boolean {
+    return location1 !== undefined
+        && location2 !== undefined
+        && location1.col.idx === location2.col.idx
+        && location1.row.idx === location2.row.idx;
+}
+

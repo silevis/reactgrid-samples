@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Range, Behavior, GridContext } from "../Common";
-import { PointerEvent } from "../Common/domEvents";
+import { Range, Behavior, Location } from "../Common";
+import { PointerEvent, KeyboardEvent, ClipboardEvent } from "../Common/domEvents";
 
 // // import { DelegateBehavior } from "./DelegateBehavior";
 // // import { DrawExternalFocusedLocationsBehavior } from './DefaultGridBehavior/DrawExternalFocusedLocationsBehavior';
@@ -8,45 +8,14 @@ import { PointerEvent } from "../Common/domEvents";
 // // import { Utilities } from '../Common/Utilities';
 // // import { getRowFromClientY, getColumnFromClientX, scrollIntoView } from '../Functions';
 
-export abstract class AutoScrollBehavior implements Behavior {
-    handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
+export abstract class AutoScrollBehavior extends Behavior {
+
+    handlePointerEnter(event: PointerEvent, location: Location): void {
     }
 
-    handleKeyUp(event: React.KeyboardEvent<HTMLDivElement>): void {
+    handlePointerMove(event: PointerEvent, location: Location): void {
+    }
 
-    }
-    handleCopy(event: React.ClipboardEvent<HTMLDivElement>): void {
-
-    }
-    handlePaste(event: React.ClipboardEvent<HTMLDivElement>): void {
-
-    }
-    handleCut(event: React.ClipboardEvent<HTMLDivElement>): void {
-
-    }
-    handlePointerDown(event: React.PointerEvent<HTMLDivElement>): void {
-
-    }
-    handlePointerMove(event: PointerEvent): void {
-
-    }
-    handlePointerUp(event: React.PointerEvent<HTMLDivElement>): void {
-
-    }
-    handleDoubleClick(event: React.PointerEvent<HTMLDivElement>): void {
-
-    }
-    handleContextMenu(event: PointerEvent): void {
-
-    }
-    renderPanePart(pane: Range): React.ReactNode {
-        return undefined
-    }
-    renderGlobalPart(): React.ReactNode {
-        return undefined
-    }
-    dispose(): void {
-    }
 
 }
 

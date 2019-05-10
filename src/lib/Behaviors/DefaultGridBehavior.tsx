@@ -1,21 +1,20 @@
 import * as React from "react";
-import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Range } from "../Common";
+import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Range, Location } from "../Common";
 import { keyDownHandlers } from "./DefaultGridBehavior/keyDownHandlers";
 import { keyUpHandlers } from "./DefaultGridBehavior/keyUpHandler";
 import { changeBehavior } from "../Functions";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
 import { DrawContextMenuBehavior } from "../Components/ContextMenu";
-import { Utilities } from "../Common/Utilities";
 
-export class DefaultGridBehavior implements Behavior {
+export class DefaultGridBehavior extends Behavior {
 
-    constructor(private gridContext: GridContext) { }
+    constructor(private gridContext: GridContext) { super(); }
 
-    handlePointerDown(event: PointerEvent) {
+    handlePointerDown(event: PointerEvent, location: Location) {
         // changing behavior will disable all keyboard event handlers
         const cellSelectionBehavior = new CellSelectionBehavior(this.gridContext);
         changeBehavior(this.gridContext, cellSelectionBehavior);
-        cellSelectionBehavior.handlePointerDown(event);
+        cellSelectionBehavior.handlePointerDown(event, location);
     }
 
     handleContextMenu(event: PointerEvent): void {
@@ -24,14 +23,14 @@ export class DefaultGridBehavior implements Behavior {
         event.persist();
     }
 
-    handlePointerMove(event: PointerEvent): void {
+    handlePointerMove(event: PointerEvent, location: Location): void {
 
     }
 
-    handlePointerUp(event: PointerEvent): void {
+    handlePointerUp(event: PointerEvent, location: Location): void {
     }
 
-    handleDoubleClick(event: PointerEvent): void {
+    handleDoubleClick(event: PointerEvent, location: Location): void {
         console.log('double');
     }
 
@@ -50,17 +49,4 @@ export class DefaultGridBehavior implements Behavior {
     handleCut(event: ClipboardEvent): void {
         event.preventDefault();
     }
-
-    renderPanePart(pane: Range): React.ReactNode {
-        return <></>
-    }
-
-    renderGlobalPart(): React.ReactNode {
-        return <></>
-    }
-
-    dispose(): void {
-    }
-
-
 }
