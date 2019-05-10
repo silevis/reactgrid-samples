@@ -2,14 +2,14 @@ import { GridContext, Row } from "../Common";
 
 export function getRowFromClientY(gridContext: GridContext, clientY: number): Row {
     const cellMatrix = gridContext.cellMatrix;
-    const visibleHeight = Math.min(gridContext.viewportElement.clientHeight, cellMatrix.height);
+    const visibleContentHeight = Math.min(gridContext.viewportElement.clientHeight, cellMatrix.height);
     const viewportY = clientY - gridContext.viewportElement.getBoundingClientRect().top;
-    const bottomPaneTop = visibleHeight - cellMatrix.frozenBottomRange.height;
+    const bottomPaneTop = visibleContentHeight - cellMatrix.frozenBottomRange.height;
 
     if (viewportY < 0) {
         return cellMatrix.first.row;
     }
-    else if (viewportY >= visibleHeight) {
+    else if (viewportY >= visibleContentHeight) {
         return cellMatrix.last.row;
     }
     else if (viewportY < cellMatrix.frozenTopRange.height) {

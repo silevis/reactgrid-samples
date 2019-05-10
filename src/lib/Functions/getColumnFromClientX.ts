@@ -2,14 +2,14 @@ import { GridContext, Column } from "../Common";
 
 export function getColumnFromClientX(gridContext: GridContext, clientX: number): Column {
     const cellMatrix = gridContext.cellMatrix;
-    const visibleWidth = Math.min(gridContext.viewportElement.clientWidth, cellMatrix.width);
+    const visibleContentWidth = Math.min(gridContext.viewportElement.clientWidth, cellMatrix.width);
     const viewportX = clientX - gridContext.viewportElement.getBoundingClientRect().left;
-    const rightPaneLeft = visibleWidth - cellMatrix.frozenRightRange.width;
+    const rightPaneLeft = visibleContentWidth - cellMatrix.frozenRightRange.width;
 
     if (viewportX < 0) {
         return cellMatrix.first.col;
     }
-    else if (viewportX >= visibleWidth) {
+    else if (viewportX >= visibleContentWidth) {
         return cellMatrix.last.col;
     }
     else if (viewportX < cellMatrix.frozenLeftRange.width) {
