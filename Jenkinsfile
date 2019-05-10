@@ -16,7 +16,7 @@ pipeline {
     success {
       script {
         if (env.BRANCH_NAME == 'cleanup') {
-          bat "netstat -ano | findstr 0.0.0.0:3000 && (FOR /F 'tokens=5 delims= ' %%I IN ('netstat -ano ^| findstr 0.0.0.0:3000') DO taskkill /F /PID %%I) || cmd/k"
+          bat "netstat -ano | findstr 0.0.0.0:3000 && (FOR /F \"tokens=5\" %%I IN ('netstat -ano ^| findstr 0.0.0.0:3000') DO taskkill /F /PID %%I) || cmd/k"
           powershell 'Remove-Item -Recurse -Force node_modules'
           fileOperations([fileCopyOperation(	
             excludes: "",
