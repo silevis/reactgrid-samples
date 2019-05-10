@@ -20,8 +20,8 @@ export class CellMatrix {
     scrollableRange: Range;
     width: number;
     height: number;
-    frozenRightStart: number;
-    frozenBottomStart: number;
+    //frozenRightFirstIdx: number;
+    //frozenBottomFirstIdx: number;
     // focusLocation: FocusLocation;
 
     readonly cols: Column[];
@@ -33,12 +33,12 @@ export class CellMatrix {
 
     constructor(props: CellMatrixProps) {
         this.cells = props.cells;
-        this.frozenBottomStart = props.rows.length - (props.frozenBottomRows || 0);
-        this.frozenRightStart = props.columns.length - (props.frozenRightColumns || 0);
+        const frozenBottomFirstIdx = props.rows.length - (props.frozenBottomRows || 0);
+        const frozenRightFirstIdx = props.columns.length - (props.frozenRightColumns || 0);
         this.rows = props.rows.reduce(
             (rows, row, idx) => {
                 const top =
-                    idx === 0 || idx === props.frozenTopRows || idx === this.frozenBottomStart
+                    idx === 0 || idx === props.frozenTopRows || idx === frozenBottomFirstIdx
                         ? 0
                         : rows[idx - 1].top + rows[idx - 1].height;
                 rows.push({ ...row, top: top, idx: idx, bottom: top + row.height });
@@ -49,7 +49,7 @@ export class CellMatrix {
         this.cols = props.columns.reduce(
             (cols, column, idx) => {
                 const left =
-                    idx === 0 || idx === props.frozenLeftColumns || idx === this.frozenRightStart
+                    idx === 0 || idx === props.frozenLeftColumns || idx === frozenRightFirstIdx
                         ? 0
                         : cols[idx - 1].left + cols[idx - 1].width;
                 cols.push({ ...column, idx, left, right: left + column.width });
@@ -61,12 +61,12 @@ export class CellMatrix {
         this.height = this.rows.reduce((sum, row) => sum + row.height, 0);
 
         this.frozenLeftRange = new Range(this.cols.slice(0, props.frozenLeftColumns || 0), this.rows);
-        this.frozenRightRange = new Range(this.cols.slice(this.frozenRightStart, this.cols.length), this.rows);
+        this.frozenRightRange = new Range(this.cols.slice(frozenRightFirstIdx, this.cols.length), this.rows);
         this.frozenTopRange = new Range(this.cols, this.rows.slice(0, props.frozenTopRows || 0));
-        this.frozenBottomRange = new Range(this.cols, this.rows.slice(this.frozenBottomStart, this.rows.length));
+        this.frozenBottomRange = new Range(this.cols, this.rows.slice(frozenBottomFirstIdx, this.rows.length));
         this.scrollableRange = new Range(
-            this.cols.slice(props.frozenLeftColumns || 0, this.frozenRightStart),
-            this.rows.slice(props.frozenTopRows || 0, this.frozenBottomStart)
+            this.cols.slice(props.frozenLeftColumns || 0, frozenRightFirstIdx),
+            this.rows.slice(props.frozenTopRows || 0, frozenBottomFirstIdx)
         );
         this.first = this.getLocation(0, 0);
         this.last = this.getLocation(this.rows.length - 1, this.cols.length - 1);

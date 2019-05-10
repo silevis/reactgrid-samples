@@ -13,8 +13,6 @@ export interface PaneProps {
     borders: Borders,
 }
 
-// TODO gridContext.activeSelectedRange ?!
-
 export const Pane: React.FunctionComponent<PaneProps> = (props) =>
     <div key={props.id} className="dg-pane" style={{ position: 'relative', width: props.range.width, height: '100%', ...props.style }}>
         {props.range.rows.map((row) => <RowRenderer key={row.idx} gridContext={props.gridContext} row={row} columns={props.range.cols} forceUpdate={false} borders={{ ...props.borders, top: props.borders.top && row.top === 0, bottom: props.borders.bottom && row.idx === props.range.last.row.idx }} />)}
@@ -26,11 +24,12 @@ export const Pane: React.FunctionComponent<PaneProps> = (props) =>
             <FillHandle gridContext={props.gridContext} location={props.gridContext.state.selectedRanges[props.gridContext.state.activeSelectedRangeIdx].last} />}
     </div>
 
-export function renderSelectedRanges(gridContext: GridContext, pane: Range) {
+function renderSelectedRanges(gridContext: GridContext, pane: Range) {
     const focusedLocation = gridContext.state.focusedLocation;
     return gridContext.state.selectedRanges.map((range, i) => !(focusedLocation && range.contains(focusedLocation) && range.cols.length === 1 && range.rows.length === 1) && pane.intersectsWith(range) && <PartialArea key={i} pane={pane} range={range} style={{
-        border: '1px solid rgb(53, 121, 248)',
-        backgroundColor: 'rgba(53, 121, 248, 0.1)',
+        //border: '1px solid rgb(53, 121, 248)',
+        border: '1px solid rgb(53, 121, 248 )',
+        backgroundColor: 'rgba(53, 121, 248, 0.15)',
     }} />);
 }
 

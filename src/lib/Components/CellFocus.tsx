@@ -15,7 +15,7 @@ export const CellFocus: React.FunctionComponent<CellFocusProps> = (props) =>
             left: props.location.col.left,
             width: props.location.col.width,
             height: props.location.row.height,
-            border: 'solid 1.5px #3579f8',
+            border: 'solid 2px #3579f8',
             pointerEvents: 'none'
         }}
     />
