@@ -1,6 +1,6 @@
 import * as React from "react";
-import { GridContext, GridController, CellMatrix, Column } from "../Common";
-import { Range, Location, SelectionMode, Behavior, zIndex } from "../Common";
+import { GridContext, GridController, CellMatrix } from "../Common";
+import { Range, Location, SelectionMode, } from "../Common";
 import { PaneRow } from "./PaneRow";
 import { refresh } from "../Functions";
 import { KeyboardEvent, ClipboardEvent, PointerEvent } from "../Common";

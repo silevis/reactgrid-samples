@@ -1,4 +1,4 @@
-import { GridContext, PointerEvent, Range, zIndex } from "../Common";
+import { GridContext, PointerEvent, Range } from "../Common";
 import * as React from 'react';
 import { resetToDefaultBehavior, getLocationFromClient, focusLocation, changeBehavior } from "../Functions";
 

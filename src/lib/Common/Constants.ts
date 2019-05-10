@@ -1,17 +1,3 @@
-export const zIndex = {
-    frozenPaneRow: 4,
-    frozenPane: 3,
-    columns: 1,
-    rows: 4,
-    cellInput: 10,
-    colReorderShadow: 100,
-    rowReorderShadow: 100,
-    horizontalLine: 50,
-    line: 50,
-    selection: 1010,
-    contextMenu: 1000
-};
-
 export const keyCodes = {
     BACKSPACE: 8,
     TAB: 9,
