@@ -27,7 +27,7 @@ pipeline {
           dir(path: 'c:/users/lenovo/desktop/dynagrid') {
             bat "npm install"
           }
-          powershell "Start-Process -FilePath 'npm' -WorkingDirectory 'c:/users/lenovo/desktop/dynagrid' -ArgumentList 'run'"
+          powershell "Start-Process -FilePath 'npm' -WorkingDirectory 'c:/users/lenovo/desktop/dynagrid' -ArgumentList 'start'"
         }
       }
     }
