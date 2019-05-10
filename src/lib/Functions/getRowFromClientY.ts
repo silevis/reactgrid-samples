@@ -3,7 +3,7 @@ import { GridContext, Row } from "../Common";
 export function getRowFromClientY(gridContext: GridContext, clientY: number): Row {
     const cellMatrix = gridContext.cellMatrix;
     const visibleHeight = Math.min(gridContext.viewportElement.clientHeight, cellMatrix.height);
-    const viewportY = clientY - gridContext.viewportElement.clientTop;
+    const viewportY = clientY - gridContext.viewportElement.getBoundingClientRect().top;
     const bottomPaneTop = visibleHeight - cellMatrix.frozenBottomRange.height;
 
     if (viewportY < 0) {

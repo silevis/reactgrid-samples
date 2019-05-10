@@ -1,4 +1,4 @@
-import { GridContext, Range, Column } from "../Common";
+import { GridContext, Range, Column, Row } from "../Common";
 
 export function selectRange(gridContext: GridContext, range: Range, incremental: boolean) {
     gridContext.setState({
@@ -9,7 +9,6 @@ export function selectRange(gridContext: GridContext, range: Range, incremental:
 
     });
 }
-
 
 export function updateActiveSelectedRange(gridContext: GridContext, range: Range) {
     gridContext.setState({
@@ -31,7 +30,6 @@ export function selectColumn(gridContext: GridContext, column: Column, increment
 }
 
 export function updateActiveSelectedColumns(gridContext: GridContext, firstColumn: Column, lastColumn: Column, incremental: boolean) {
-
     // TODO THIS! 
 
     const firstRow = gridContext.cellMatrix.first.row;
@@ -42,5 +40,31 @@ export function updateActiveSelectedColumns(gridContext: GridContext, firstColum
         // TODO Ranges have to be re-calculated durring render
         selectedRanges: [range],
         selectedIndexes: range.cols.map(col => col.idx)
+    });
+}
+
+export function selectRow(gridContext: GridContext, row: Row, incremental: boolean) {
+    const firstCol = gridContext.cellMatrix.first.col;
+    const lastCol = gridContext.cellMatrix.last.col;
+    const range = gridContext.cellMatrix.getRange({ col: firstCol, row: row }, { col: lastCol, row: row })
+    gridContext.setState({
+        selectionMode: 'row',
+        // TODO Ranges have to be re-calculated durring render
+        selectedRanges: (incremental && gridContext.state.selectionMode === 'row' ? gridContext.state.selectedRanges : []).concat(range),
+        selectedIndexes: (incremental && gridContext.state.selectionMode === 'row' ? gridContext.state.selectedIndexes : []).concat(row.idx)
+    });
+}
+
+export function updateActiveSelectedRows(gridContext: GridContext, firstRow: Row, lastRow: Row, incremental: boolean) {
+    // TODO THIS! 
+
+    const firstCol = gridContext.cellMatrix.first.col;
+    const lastCol = gridContext.cellMatrix.last.col;
+    const range = gridContext.cellMatrix.getRange({ col: firstCol, row: firstRow }, { col: lastCol, row: lastRow })
+    gridContext.setState({
+        selectionMode: 'row',
+        // TODO Ranges have to be re-calculated durring render
+        selectedRanges: [range],
+        selectedIndexes: range.rows.map(row => row.idx)
     });
 }

@@ -28,7 +28,9 @@ export class ColumnSelectionBehavior extends AutoScrollBehavior {
 
     handlePointerMove(event: PointerEvent) {
         const column = getColumnFromClientX(this.gridContext, event.clientX);
-        updateActiveSelectedColumns(this.gridContext, this.gridContext.state.focusedLocation!.col, column, event.ctrlKey);
+        if (!this.gridContext.state.selectedIndexes.some(idx => idx === column.idx)) {
+            updateActiveSelectedColumns(this.gridContext, this.gridContext.state.focusedLocation!.col, column, event.ctrlKey);
+        }
     }
 
     handlePointerUp() {
