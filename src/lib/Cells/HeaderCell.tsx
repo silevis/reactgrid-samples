@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { handleCopy, handleCut, handlePaste } from './handleEvents';
 // import './Cell.css';
-import { Utilities } from '../Common/Utilities';
 import { Cell, Orientation, CellProps, Location, CellMatrix } from '../Common';
 import { getLocationFromClient } from '../Functions';
+import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
 
 export interface HeaderCellProps extends CellProps {
     orientation: Orientation;
@@ -242,10 +242,7 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
         if (isItTheSameCell && this.props.gridContext.state.isFocusedCellInEditMode) {
             return;
         }
-        const selRange = Utilities.getActiveSelectionRange(
-            this.props.gridContext.state.selectedRanges,
-            this.props.gridContext.state.focusedLocation!
-        );
+        const selRange = getActiveSelectedRange(this.props.gridContext);
         const cellMatrix = this.props.gridContext.cellMatrix;
 
         if (e.type === 'touchstart') {

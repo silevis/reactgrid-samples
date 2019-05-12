@@ -1,15 +1,12 @@
 import { keyCodes } from '../../Common/Constants';
 import { focusLocation } from '../../Functions';
-import { Utilities } from '../../Common/Utilities';
 import { GridContext, KeyboardEvent } from '../../Common';
+import { getActiveSelectedRange } from '../../Functions/getActiveSelectedRange';
 
 export function KeyNavigationInsideSelectionBehavior(gridContext: GridContext, event: KeyboardEvent) {
     const focusedCell = gridContext.state.focusedLocation!;
     const cellMatrix = gridContext.cellMatrix;
-    const activeSelectedRange = Utilities.getActiveSelectionRange(
-        gridContext.state.selectedRanges,
-        focusedCell
-    );
+    const activeSelectedRange = getActiveSelectedRange(gridContext)
     if (event.keyCode === keyCodes.TAB && !event.shiftKey) {
         // TODO WHAT WITH THAT?
         moveFocusInsideSelectedRange(1, gridContext);
@@ -84,8 +81,10 @@ export function KeyNavigationInsideSelectionBehavior(gridContext: GridContext, e
 
 const moveFocusInsideSelectedRange = (direction: -1 | 1 | 'up' | 'down', gridContext: GridContext) => {
     const focusedCell = gridContext.state.focusedLocation!;
-    const selectedRange = Utilities.getActiveSelectionRange(gridContext.state.selectedRanges, focusedCell);
-    const selectedRangeIdx = Utilities.getActiveSelectionIdx(gridContext.state.selectedRanges, focusedCell);
+    //const selectedRange = Utilities.getActiveSelectionRange(gridContext.state.selectedRanges, focusedCell);
+    //const selectedRangeIdx = Utilities.getActiveSelectionIdx(gridContext.state.selectedRanges, focusedCell);
+    const selectedRange = getActiveSelectedRange(gridContext)
+    const selectedRangeIdx = gridContext.state.activeSelectedRangeIdx;
     const colCount = selectedRange.cols.length;
     const delta = direction === 'up' ? -colCount : direction === 'down' ? colCount : direction;
     const currentPosInRange =

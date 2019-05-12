@@ -1,4 +1,4 @@
-import { getLocationFromClient, resetToDefaultBehavior, focusLocation, getColumnFromClientX } from '../Functions';
+import { getLocationFromClient, resetToDefaultBehavior, focusLocation } from '../Functions';
 import { GridContext, Location } from '../Common';
 import { AutoScrollBehavior } from './AutoScrollBehavior';
 import { PointerEvent } from "../Common/domEvents";

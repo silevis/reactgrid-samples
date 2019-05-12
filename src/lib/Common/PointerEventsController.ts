@@ -1,6 +1,6 @@
 import { PointerEvent, Location } from "./";
 import { GridContext } from "./GridContext";
-import { getLocationFromClient } from "../Functions";
+import { getLocationFromClient, scrollIntoView } from "../Functions";
 
 export class PointerEventsController {
     private eventTimestamps: number[] = [0, 0];
@@ -20,7 +20,10 @@ export class PointerEventsController {
     }
 
     private handlePointerMove = (event: PointerEvent) => {
-        const currentLocation = getLocationFromClient(this.gridContext, event.clientX, event.clientY);
+        const currentLocation = getLocationFromClient(this.gridContext, event.clientX, event.clientY, true);
+        //if (!isFullyVisible(currentLocation)) {
+        scrollIntoView(this.gridContext, currentLocation);
+        //}
         this.gridContext.currentBehavior.handlePointerMove(event, currentLocation);
         const previousLocation = this.eventLocations[this.toggleIndex];
         this.eventLocations[this.toggleIndex] = currentLocation;

@@ -1,11 +1,11 @@
 import { GridContext, Location, Column, Row } from "../Common";
 
-export function scrollIntoView(gridContext: GridContext, location: Location) {
+export function scrollIntoView(gridContext: GridContext, location: Location, smooth = false) {
 
     const top = getScrollTopToMakeRowVisible(gridContext, location.row);
     const left = getScrollLeftToMakeColumnVisible(gridContext, location.col);
 
-    gridContext.viewportElement.scrollTo({ top, left, behavior: 'auto' });
+    gridContext.viewportElement.scrollTo({ top, left, behavior: smooth ? 'smooth' : 'auto' });
 
 }
 

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { handleCopy, handleCut, handlePaste } from './handleEvents';
 // import './Cell.css';
-import { Utilities } from '../Common/Utilities';
 import { Cell, CellProps, Location, CellMatrix, GridContext } from '../Common';
 import { getLocationFromClient, changeBehavior } from '../Functions';
 import { ColumnSelectionBehavior } from '../Behaviors/ColumnSelectionBehavior';
@@ -241,10 +240,7 @@ export class ColumnHeaderCell extends React.Component<HeaderCellProps, HeaderCel
         if (isItTheSameCell && this.props.gridContext.state.isFocusedCellInEditMode) {
             return;
         }
-        const selRange = Utilities.getActiveSelectionRange(
-            this.props.gridContext.state.selectedRanges,
-            this.props.gridContext.state.focusedLocation!
-        );
+        const selRange = this.props.gridContext.state.selectedRanges[this.props.gridContext.state.activeSelectedRangeIdx]
         const cellMatrix = this.props.gridContext.cellMatrix;
 
         if (e.type === 'touchstart') {

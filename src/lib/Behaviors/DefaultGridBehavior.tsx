@@ -1,8 +1,6 @@
-import * as React from "react";
-import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Range, Location } from "../Common";
+import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Range, Location, keyCodes } from "../Common";
 import { keyDownHandlers } from "./DefaultGridBehavior/keyDownHandlers";
-import { keyUpHandlers } from "./DefaultGridBehavior/keyUpHandler";
-import { changeBehavior } from "../Functions";
+import { changeBehavior, getLocationFromClient, scrollIntoView } from "../Functions";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
 import { DrawContextMenuBehavior } from "../Components/ContextMenu";
 
@@ -31,6 +29,8 @@ export class DefaultGridBehavior extends Behavior {
     }
 
     handleDoubleClick(event: PointerEvent, location: Location): void {
+        const location2 = getLocationFromClient(this.gridContext, event.clientX, event.clientY, true);
+        scrollIntoView(this.gridContext, location2);
         console.log('double');
     }
 
@@ -38,7 +38,12 @@ export class DefaultGridBehavior extends Behavior {
         keyDownHandlers(this.gridContext, event)
     }
     handleKeyUp(event: KeyboardEvent): void {
-        keyUpHandlers(this.gridContext, event)
+        if (event.keyCode === keyCodes.TAB || event.keyCode === keyCodes.ENTER) {
+            event.preventDefault();
+            event.stopPropagation();
+            return;
+        }
+
     }
     handleCopy(event: ClipboardEvent): void {
         event.preventDefault();
