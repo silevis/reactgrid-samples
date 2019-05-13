@@ -6,6 +6,35 @@ pipeline {
         bat 'npm install'	
       }
     }
+
+    stage('update files') {
+      steps {
+        script {
+          if (env.BRANCH_NAME == 'cleanup') {
+            dir(path: 'c:/users/lenovo/desktop/dynagrid') {
+              powershell 'Remove-Item -Recurse -Force node_modules'
+            }
+            fileOperations([fileCopyOperation(	
+              excludes: "",
+              flattenFiles: false,	
+              includes: "**/*",	
+              targetLocation: "c:/users/lenovo/desktop/dynagrid"	
+            )])
+            dir(path: 'c:/users/lenovo/desktop/dynagrid') {
+              bat "npm install"
+            }
+          }
+        }
+      }
+    }
+    
+    stage('tests') {
+      steps {
+        dir(path: 'c:/users/lenovo/desktop/dynagrid') {
+          bat "npm test"
+        }
+      }
+    }
   }
 
   options {
@@ -13,25 +42,6 @@ pipeline {
   }
 
   post {
-    success {
-      script {
-        if (env.BRANCH_NAME == 'cleanup') {
-          dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-            powershell 'Remove-Item -Recurse -Force node_modules'
-          }
-          fileOperations([fileCopyOperation(	
-            excludes: "",
-            flattenFiles: false,	
-            includes: "**/*",	
-            targetLocation: "c:/users/lenovo/desktop/dynagrid"	
-          )])
-          dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-            bat "npm install"
-          }
-        }
-      }
-    }
-
     cleanup {
       /* clean up our workspace */
       deleteDir()
@@ -48,7 +58,6 @@ pipeline {
 
     failure {
       emailext(to: 'piotr.mikosza@silevis.com', subject: "${env.JOB_NAME} ended with failure!", body: "Somethin was wrong! \n\nConsole: ${env.BUILD_URL}.\n\n")
-
     }
   }
 
