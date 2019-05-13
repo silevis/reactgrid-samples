@@ -3,7 +3,7 @@ const Utils = require('./common/utils');
 
 context('Filling', () => {
     beforeEach(() => {
-        cy.visit('http://localhost:3000/');
+        Utils.visit();
     });
 
     it('Fill handle by one cell should duplicate last record value', () => {

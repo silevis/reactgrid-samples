@@ -11,14 +11,27 @@ pipeline {
       steps {
         script {
           powershell 'Remove-Item -Recurse -Force node_modules'
-          fileOperations([fileCopyOperation(	
-            excludes: "",
-            flattenFiles: false,	
-            includes: "**/*",	
-            targetLocation: "c:/users/lenovo/desktop/dynagrid"	
-          )])
-          dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-            bat "npm ci"
+          if (env.CHANGE_ID) {
+            fileOperations([fileCopyOperation(	
+              excludes: "",
+              flattenFiles: false,	
+              includes: "**/*",	
+              targetLocation: "c:/users/lenovo/desktop/dynagrid-for-testing"	
+            )])
+            dir(path: 'c:/users/lenovo/desktop/dynagrid-for-testing') {
+              bat "npm ci"
+            }
+          }
+          if (env.BRANCH_NAME == 'develop') {
+            fileOperations([fileCopyOperation(	
+              excludes: "",
+              flattenFiles: false,	
+              includes: "**/*",	
+              targetLocation: "c:/users/lenovo/desktop/dynagrid"	
+            )])
+            dir(path: 'c:/users/lenovo/desktop/dynagrid') {
+              bat "npm ci"
+            }
           }
         }
       }
@@ -26,8 +39,12 @@ pipeline {
     
     stage('tests') {
       steps {
-        dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-          bat "npm run test:automatic"
+        script {
+          if (env.CHANGE_ID) { // if pipeline is triggered by pull request
+            dir(path: 'c:/users/lenovo/desktop/dynagrid-for-testing') {
+              bat "npm run test:automatic"
+            }
+          }
         }
       }
     }

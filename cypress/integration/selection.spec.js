@@ -3,7 +3,7 @@ const Utils = require('./common/utils');
 const Constants = require('./common/constants');
 context('Selection', () => {
     beforeEach(() => {
-        cy.visit('http://localhost:3000/');
+        Utils.visit();
     });
 
     it('Select one cell in click (without ctrl key)', () => {

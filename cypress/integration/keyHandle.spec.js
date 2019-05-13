@@ -4,7 +4,7 @@ const Constants = require('./common/constants');
 
 context('Keyboard', () => {
     beforeEach(() => {
-        cy.visit('http://localhost:3000/');
+        Utils.visit();
     });
 
     it('End & home should navigate to last and first cell', () => {

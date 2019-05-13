@@ -1,4 +1,8 @@
 class Utils {
+    visit() {
+        cy.visit('http://localhost:3001/');
+    }
+
     selectCell(clientX, clientY, customEventArgs) {
         if (customEventArgs != undefined) {
             cy.get('[data-cy=dyna-grid]').trigger('pointerdown', clientX, clientY, customEventArgs);
