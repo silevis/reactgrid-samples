@@ -30,6 +30,7 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
             border: '1px solid white',
             cursor: 'crosshair',
         }}
+        data-cy="dg-fill-handle"
         onPointerDown={() => changeBehavior(props.gridContext, new FillHandleBehavior(props.gridContext))}
     >
     </div>

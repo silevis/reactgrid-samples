@@ -3,7 +3,49 @@ pipeline {
   stages {
     stage('npm') {	
       steps {	
-        bat 'npm install'	
+        bat 'npm ci'	
+      }
+    }
+
+    stage('update files') {
+      steps {
+        script {
+          powershell 'Remove-Item -Recurse -Force node_modules'
+          if (env.CHANGE_ID) {
+            fileOperations([fileCopyOperation(	
+              excludes: "",
+              flattenFiles: false,	
+              includes: "**/*",	
+              targetLocation: "c:/users/lenovo/desktop/dynagrid-for-testing"	
+            )])
+            dir(path: 'c:/users/lenovo/desktop/dynagrid-for-testing') {
+              bat "npm ci"
+            }
+          }
+          if (env.BRANCH_NAME == 'develop') {
+            fileOperations([fileCopyOperation(	
+              excludes: "",
+              flattenFiles: false,	
+              includes: "**/*",	
+              targetLocation: "c:/users/lenovo/desktop/dynagrid"	
+            )])
+            dir(path: 'c:/users/lenovo/desktop/dynagrid') {
+              bat "npm ci"
+            }
+          }
+        }
+      }
+    }
+    
+    stage('tests') {
+      steps {
+        script {
+          if (env.CHANGE_ID) { // if pipeline is triggered by pull request
+            dir(path: 'c:/users/lenovo/desktop/dynagrid-for-testing') {
+              bat "npm run test:automatic"
+            }
+          }
+        }
       }
     }
   }
@@ -15,21 +57,10 @@ pipeline {
   post {
     success {
       script {
-        if (env.BRANCH_NAME == 'cleanup') {
-          dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-            powershell 'Remove-Item -Recurse -Force node_modules'
-          }
-          fileOperations([fileCopyOperation(	
-            excludes: "",
-            flattenFiles: false,	
-            includes: "**/*",	
-            targetLocation: "c:/users/lenovo/desktop/dynagrid"	
-          )])
-          dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-            bat "npm install"
-          }
+        if (env.BRANCH_NAME == 'develop') {
+          bat "npm version patch && npm publish"
         }
-      }
+       }  
     }
 
     cleanup {
@@ -48,7 +79,6 @@ pipeline {
 
     failure {
       emailext(to: 'piotr.mikosza@silevis.com', subject: "${env.JOB_NAME} ended with failure!", body: "Somethin was wrong! \n\nConsole: ${env.BUILD_URL}.\n\n")
-
     }
   }
 
