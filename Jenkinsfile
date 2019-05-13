@@ -3,24 +3,22 @@ pipeline {
   stages {
     stage('npm') {	
       steps {	
-        bat 'npm install'	
+        bat 'npm ci'	
       }
     }
 
     stage('update files') {
       steps {
         script {
-          if (env.BRANCH_NAME == 'cleanup') {
-            powershell 'Remove-Item -Recurse -Force node_modules'
-            fileOperations([fileCopyOperation(	
-              excludes: "",
-              flattenFiles: false,	
-              includes: "**/*",	
-              targetLocation: "c:/users/lenovo/desktop/dynagrid"	
-            )])
-            dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-              bat "npm install"
-            }
+          powershell 'Remove-Item -Recurse -Force node_modules'
+          fileOperations([fileCopyOperation(	
+            excludes: "",
+            flattenFiles: false,	
+            includes: "**/*",	
+            targetLocation: "c:/users/lenovo/desktop/dynagrid"	
+          )])
+          dir(path: 'c:/users/lenovo/desktop/dynagrid') {
+            bat "npm ci"
           }
         }
       }
@@ -40,6 +38,14 @@ pipeline {
   }
 
   post {
+    success {
+      script {
+        if (env.BRANCH_NAME == 'develop') {
+          bat "npm version patch && npm publish"
+        }
+       }  
+    }
+
     cleanup {
       /* clean up our workspace */
       deleteDir()

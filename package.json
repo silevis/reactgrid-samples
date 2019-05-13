@@ -1,7 +1,6 @@
 {
-  "name": "dynagrid",
-  "version": "0.1.4",
-  "private": true,
+  "name": "react-dyna-grid",
+  "version": "1.0.4",
   "dependencies": {
     "@types/jest": "24.0.11",
     "@types/node": "11.13.6",
