@@ -29,7 +29,7 @@ pipeline {
     stage('tests') {
       steps {
         dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-          bat "npm test:automatic"
+          bat "npm run test:automatic"
         }
       }
     }
