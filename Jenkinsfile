@@ -11,9 +11,7 @@ pipeline {
       steps {
         script {
           if (env.BRANCH_NAME == 'cleanup') {
-            dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-              powershell 'Remove-Item -Recurse -Force node_modules'
-            }
+            powershell 'Remove-Item -Recurse -Force node_modules'
             fileOperations([fileCopyOperation(	
               excludes: "",
               flattenFiles: false,	
@@ -31,7 +29,7 @@ pipeline {
     stage('tests') {
       steps {
         dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-          bat "npm test"
+          bat "npm test:automatic"
         }
       }
     }
