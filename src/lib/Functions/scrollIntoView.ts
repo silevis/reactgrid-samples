@@ -1,16 +1,18 @@
-import { GridContext, Location, Column, Row } from "../Common";
+import { GridContext, Location, Column, Row, Direction } from "../Common";
 
-export function scrollIntoView(gridContext: GridContext, location: Location, smooth = false) {
+export function scrollIntoView(gridContext: GridContext, location: Location, direction: Direction = 'both') {
 
-    const top = getScrollTopToMakeRowVisible(gridContext, location.row);
-    const left = getScrollLeftToMakeColumnVisible(gridContext, location.col);
+    const top = getScrollTop(gridContext, location.row, direction === 'horizontal');
+    const left = getScrollLeft(gridContext, location.col, direction === 'vertical');
 
-    gridContext.viewportElement.scrollTo({ top, left, behavior: smooth ? 'smooth' : 'auto' });
-
+    gridContext.viewportElement.scrollTo({ top, left, behavior: 'auto' });
 }
 
-function getScrollTopToMakeRowVisible(gridContext: GridContext, row: Row): number {
+function getScrollTop(gridContext: GridContext, row: Row, dontChange: boolean): number {
     const { scrollTop, clientHeight } = gridContext.viewportElement;
+    if (dontChange)
+        return scrollTop;
+
     const { frozenTopRange, frozenBottomRange } = gridContext.cellMatrix;
 
     const isRowOnFrozenPane = row.idx <= frozenTopRange.last.row.idx || row.idx >= frozenBottomRange.first.row.idx;
@@ -27,8 +29,11 @@ function getScrollTopToMakeRowVisible(gridContext: GridContext, row: Row): numbe
         return row.bottom - visibleScrollAreaHeight;
 }
 
-function getScrollLeftToMakeColumnVisible(gridContext: GridContext, column: Column): number {
+function getScrollLeft(gridContext: GridContext, column: Column, dontChange: boolean): number {
     const { scrollLeft, clientWidth } = gridContext.viewportElement;
+    if (dontChange)
+        return scrollLeft
+
     const { frozenLeftRange, frozenRightRange } = gridContext.cellMatrix;
 
     const isColumnOnFrozenPane = column.idx <= frozenLeftRange.last.col.idx || column.idx >= frozenRightRange.first.col.idx;

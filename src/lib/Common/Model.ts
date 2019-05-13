@@ -2,6 +2,8 @@ import { GridContext } from "./GridContext";
 
 export type Orientation = 'horizontal' | 'vertical';
 
+export type Direction  = 'horizontal' | 'vertical' | 'both'
+
 export type SelectionMode = 'row' | 'column' | 'range';
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 

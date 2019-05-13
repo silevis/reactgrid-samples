@@ -1,20 +1,17 @@
 import { resetToDefaultBehavior, focusLocation } from '../Functions';
-import { GridContext, Location } from '../Common';
-import { AutoScrollBehavior } from './AutoScrollBehavior';
+import { GridContext, Location, Behavior, Direction } from '../Common';
 import { PointerEvent } from "../Common/domEvents";
 import { selectRange, updateActiveSelectedRange } from '../Functions/selectRange';
-// import { Utilities } from '../Common/Utilities';
-// import { focusLocation, getLocationFromClient, resetToDefaultBehavior, isClickInsideSelectedRange } from '../Functions';
-// import { Location, CellMatrix, GridContext, Behavior } from '../Common';
-
 
 // // export let userIsMarkingGrid: boolean = false;
 
-export class CellSelectionBehavior extends AutoScrollBehavior {
+export class CellSelectionBehavior extends Behavior {
 
     constructor(private gridContext: GridContext) {
         super()
     }
+
+    autoScrollDirection: Direction = 'both';
 
     handlePointerDown(event: PointerEvent, location: Location) {
 

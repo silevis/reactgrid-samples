@@ -1,13 +1,12 @@
 import * as React from 'react';
-import { GridContext, Range, Location, PointerEvent, CellMatrix } from "../Common";
+import { GridContext, Range, Location, PointerEvent, CellMatrix, Behavior } from "../Common";
 import { getLocationFromClient, resetToDefaultBehavior } from "../Functions";
 import { PartialArea } from '../Components/PartialArea';
-import { AutoScrollBehavior } from './AutoScrollBehavior';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
 
 type Direction = '' | 'left' | 'right' | 'up' | 'down';
 
-export class FillHandleBehavior extends AutoScrollBehavior {
+export class FillHandleBehavior extends Behavior {
     private currentLocation?: Location;
     private fillDirection: Direction = '';
     private fillRange?: Range;

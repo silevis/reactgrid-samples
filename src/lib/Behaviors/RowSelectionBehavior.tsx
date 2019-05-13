@@ -1,10 +1,9 @@
 import { resetToDefaultBehavior, focusLocation } from '../Functions';
-import { GridContext, Location } from '../Common';
-import { AutoScrollBehavior } from './AutoScrollBehavior';
+import { GridContext, Location, Behavior } from '../Common';
 import { PointerEvent } from "../Common/domEvents";
 import { selectRow, updateActiveSelectedRows } from '../Functions/selectRange';
 
-export class RowSelectionBehavior extends AutoScrollBehavior {
+export class RowSelectionBehavior extends Behavior {
 
     constructor(private gridContext: GridContext) {
         super();
@@ -22,7 +21,6 @@ export class RowSelectionBehavior extends AutoScrollBehavior {
     }
 
     handlePointerEnter(event: PointerEvent, location: Location) {
-        console.log('enter')
         updateActiveSelectedRows(this.gridContext, this.gridContext.state.focusedLocation!.row, location.row, event.ctrlKey);
     }
 

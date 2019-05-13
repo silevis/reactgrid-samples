@@ -1,8 +1,8 @@
-import { GridContext, Location, Row, Column } from "../Common";
+import { GridContext, Location, Row, Column, Direction  } from "../Common";
 
-export function getLocationFromClient(gridContext: GridContext, clientX: number, clientY: number, favorScrollableContent = false): Location {
-    const row = getRowFromClientY(gridContext, clientY, favorScrollableContent);
-    const col = getColumnFromClientX(gridContext, clientX, favorScrollableContent);
+export function getLocationFromClient(gridContext: GridContext, clientX: number, clientY: number, favorScrollableContent?: Direction): Location {
+    const row = getRowFromClientY(gridContext, clientY, (favorScrollableContent === 'vertical' || favorScrollableContent === 'both'));
+    const col = getColumnFromClientX(gridContext, clientX, (favorScrollableContent === 'horizontal' || favorScrollableContent === 'both'));
     return { row, col };
 }
 

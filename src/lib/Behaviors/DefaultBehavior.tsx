@@ -1,10 +1,9 @@
 import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Range, Location, keyCodes } from "../Common";
-import { keyDownHandlers } from "./DefaultGridBehavior/keyDownHandlers";
-import { changeBehavior, getLocationFromClient, scrollIntoView } from "../Functions";
+import { handleKeyDown as handleKeyDown } from "./DefaultBehavior/handleKeyDown";
+import { changeBehavior } from "../Functions";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
-import { DrawContextMenuBehavior } from "../Components/ContextMenu";
 
-export class DefaultGridBehavior extends Behavior {
+export class DefaultBehavior extends Behavior {
 
     constructor(private gridContext: GridContext) { super(); }
 
@@ -17,8 +16,8 @@ export class DefaultGridBehavior extends Behavior {
 
     handleContextMenu(event: PointerEvent): void {
         event.preventDefault();
-        changeBehavior(this.gridContext, new DrawContextMenuBehavior(this.gridContext, event))
-        event.persist();
+        //changeBehavior(this.gridContext, new DrawContextMenuBehavior(this.gridContext, event))
+        //event.persist();
     }
 
     handlePointerMove(event: PointerEvent, location: Location): void {
@@ -29,13 +28,11 @@ export class DefaultGridBehavior extends Behavior {
     }
 
     handleDoubleClick(event: PointerEvent, location: Location): void {
-        const location2 = getLocationFromClient(this.gridContext, event.clientX, event.clientY, true);
-        scrollIntoView(this.gridContext, location2);
         console.log('double');
     }
 
     handleKeyDown(event: KeyboardEvent) {
-        keyDownHandlers(this.gridContext, event)
+        handleKeyDown(this.gridContext, event)
     }
     handleKeyUp(event: KeyboardEvent): void {
         if (event.keyCode === keyCodes.TAB || event.keyCode === keyCodes.ENTER) {

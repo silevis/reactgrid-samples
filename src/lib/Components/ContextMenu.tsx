@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { GridContext, PointerEvent, Range, Behavior } from "../Common";
-import { resetToDefaultBehavior, getLocationFromClient, focusLocation, changeBehavior } from "../Functions";
+import { getLocationFromClient, focusLocation, changeBehavior } from "../Functions";
 
 export class DrawContextMenuBehavior extends Behavior {
     constructor(private gridContext: GridContext, private event: PointerEvent) {
@@ -117,7 +117,7 @@ const renderCustomContextMenu = (pane: Range, gridContext: GridContext, event: P
 }
 
 const contextMenuHandler = (e: PointerEvent, gridContext: GridContext) => {
-    resetToDefaultBehavior(gridContext);
+
     // TODO 
     gridContext.forceUpdate()
     const location = getLocationFromClient(gridContext, e.clientX, e.clientY);

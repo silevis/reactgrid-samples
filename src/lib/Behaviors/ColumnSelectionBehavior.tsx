@@ -1,6 +1,5 @@
-import { getLocationFromClient, resetToDefaultBehavior, focusLocation } from '../Functions';
-import { GridContext, Location } from '../Common';
-import { AutoScrollBehavior } from './AutoScrollBehavior';
+import { resetToDefaultBehavior, focusLocation } from '../Functions';
+import { GridContext, Location, Behavior, Direction } from '../Common';
 import { PointerEvent } from "../Common/domEvents";
 import { selectColumn, updateActiveSelectedColumns } from '../Functions/selectRange';
 // import { Utilities } from '../Common/Utilities';
@@ -8,11 +7,13 @@ import { selectColumn, updateActiveSelectedColumns } from '../Functions/selectRa
 // import { Location, CellMatrix, GridContext, Behavior } from '../Common';
 // import { isClickOutOfGrid } from '../Functions/isClickOutOfGrid';
 
-export class ColumnSelectionBehavior extends AutoScrollBehavior {
+export class ColumnSelectionBehavior extends Behavior {
 
     constructor(private gridContext: GridContext) {
         super();
     }
+
+    autoScrollDirection: Direction = 'horizontal';
 
     handlePointerDown(event: PointerEvent, location: Location) {
         if (event.ctrlKey && this.gridContext.state.selectionMode === 'column' && this.gridContext.state.selectedIndexes.some(idx => idx === location.col.idx)) {

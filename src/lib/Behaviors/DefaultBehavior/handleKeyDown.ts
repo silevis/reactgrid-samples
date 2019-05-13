@@ -3,7 +3,7 @@ import { focusLocation } from "../../Functions";
 import { ResizeSelectionWithKeysBehavior } from "./ResizeSelectionWithKeysBehavior";
 import { KeyNavigationInsideSelectionBehavior as handleKeyNavigationInsideSelection } from "./KeyNavigationInsideSelectionBehavior";
 
-export function keyDownHandlers(gridContext: GridContext, event: KeyboardEvent) {
+export function handleKeyDown(gridContext: GridContext, event: KeyboardEvent) {
     const focusedLocation = gridContext.state.focusedLocation!;
     const key: string = event.key
     if (!focusedLocation) { return }
@@ -31,8 +31,8 @@ export function keyDownHandlers(gridContext: GridContext, event: KeyboardEvent) 
             handleSpecialKeys(event, gridContext)
         }
     }
-    event.stopPropagation();
-    event.preventDefault();
+    //event.stopPropagation();
+    //event.preventDefault();
     return;
 }
 

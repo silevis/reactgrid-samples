@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Range, Location } from "./";
 import { KeyboardEvent, ClipboardEvent, PointerEvent } from "./domEvents";
+import { Direction } from "./Model";
 
 // IMPORTANT !! PLEASE DO NOT INTRODUCE CHANGE WITHOUT TALKING TO ARCHITECT !!
 export abstract class Behavior {
@@ -18,6 +19,7 @@ export abstract class Behavior {
     renderPanePart(pane: Range): React.ReactNode { return undefined; }
     renderGlobalPart(): React.ReactNode { return undefined; }
     dispose(): void { }
+    autoScrollDirection: Direction = 'both';
 }
 
 
