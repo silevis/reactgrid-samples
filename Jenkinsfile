@@ -1,28 +1,28 @@
 pipeline {
   agent any
   stages {
-    stage('npm') {	
-      steps {	
-        bat 'npm ci'	
-      }
-    }
+    // stage('npm') {	
+    //   steps {	
+    //     bat 'npm install'	
+    //   }
+    // }
 
     stage('update files') {
       steps {
         script {
           powershell 'Remove-Item -Recurse -Force node_modules'
-          if (env.CHANGE_ID) {
-            fileOperations([fileCopyOperation(	
-              excludes: "",
-              flattenFiles: false,	
-              includes: "**/*",	
-              targetLocation: "c:/users/lenovo/desktop/dynagrid-for-testing"	
-            )])
-            dir(path: 'c:/users/lenovo/desktop/dynagrid-for-testing') {
-              bat "npm ci"
-            }
-          }
-          if (env.BRANCH_NAME == 'develop') {
+          // if (env.CHANGE_ID) {
+          //   fileOperations([fileCopyOperation(	
+          //     excludes: "",
+          //     flattenFiles: false,	
+          //     includes: "**/*",	
+          //     targetLocation: "c:/users/lenovo/desktop/dynagrid-for-testing"	
+          //   )])
+          //   dir(path: 'c:/users/lenovo/desktop/dynagrid-for-testing') {
+          //     bat "npm install"
+          //   }
+          // }
+          if (env.BRANCH_NAME == 'cleanup') {
             fileOperations([fileCopyOperation(	
               excludes: "",
               flattenFiles: false,	
@@ -30,24 +30,24 @@ pipeline {
               targetLocation: "c:/users/lenovo/desktop/dynagrid"	
             )])
             dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-              bat "npm ci"
+              bat "npm install"
             }
           }
         }
       }
     }
     
-    stage('tests') {
-      steps {
-        script {
-          if (env.CHANGE_ID) { // if pipeline is triggered by pull request
-            dir(path: 'c:/users/lenovo/desktop/dynagrid-for-testing') {
-              bat "npm run test:automatic"
-            }
-          }
-        }
-      }
-    }
+    // stage('tests') {
+    //   steps {
+    //     script {
+    //       if (env.CHANGE_ID) { // if pipeline is triggered by pull request
+    //         dir(path: 'c:/users/lenovo/desktop/dynagrid-for-testing') {
+    //           bat "npm run test:automatic"
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
   }
 
   options {
@@ -57,8 +57,10 @@ pipeline {
   post {
     success {
       script {
-        if (env.BRANCH_NAME == 'develop') {
-          bat "npm version patch && npm publish"
+        if (env.BRANCH_NAME == 'cleanup') {
+          dir(path: 'c:/users/lenovo/desktop/dynagrid') {
+            bat "npm version patch && npm publish"
+          }
         }
        }  
     }
