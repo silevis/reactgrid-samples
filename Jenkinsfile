@@ -59,7 +59,7 @@ pipeline {
       script {
         if (env.BRANCH_NAME == 'cleanup') {
           dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-            bat "npm version patch && npm publish"
+            bat "npm publish"
           }
         }
        }  
