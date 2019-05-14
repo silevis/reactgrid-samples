@@ -29,8 +29,8 @@ pipeline {
             //   includes: "**/*",	
             //   targetLocation: "c:/users/lenovo/desktop/dynagrid"	
             // )])
-            dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-              bat "git pull origin cleanup"
+            dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
+              powershell "git pull origin cleanup"
             }
           }
         }
