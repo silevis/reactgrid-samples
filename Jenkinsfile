@@ -10,7 +10,7 @@ pipeline {
     stage('update files') {
       steps {
         script {
-          powershell 'Remove-Item -Recurse -Force node_modules'
+          // powershell 'Remove-Item -Recurse -Force node_modules'
           // if (env.CHANGE_ID) {
           //   fileOperations([fileCopyOperation(	
           //     excludes: "",
@@ -23,14 +23,14 @@ pipeline {
           //   }
           // }
           if (env.BRANCH_NAME == 'cleanup') {
-            fileOperations([fileCopyOperation(	
-              excludes: "",
-              flattenFiles: false,	
-              includes: "**/*",	
-              targetLocation: "c:/users/lenovo/desktop/dynagrid"	
-            )])
+            // fileOperations([fileCopyOperation(	
+            //   excludes: "",
+            //   flattenFiles: false,	
+            //   includes: "**/*",	
+            //   targetLocation: "c:/users/lenovo/desktop/dynagrid"	
+            // )])
             dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-              bat "npm install"
+              bat "git pull origin cleanup"
             }
           }
         }
