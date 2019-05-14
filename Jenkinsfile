@@ -58,7 +58,7 @@ pipeline {
     success {
       script {
         if (env.BRANCH_NAME == 'cleanup') {
-          dir(path: 'c:/users/lenovo/desktop/dynagrid') {
+          dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
             bat "npm publish"
           }
         }
