@@ -1,0 +1,20 @@
+language: node_js
+
+node_js:
+  - 10
+
+cache:
+  directories:
+    - ~/.npm
+
+install:
+  - npm ci
+
+before_deploy:
+- npm version patch
+
+deploy:
+  provider: releases
+  skip_cleanup: true
+  on:
+    branch: cleanup
