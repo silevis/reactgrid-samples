@@ -14,7 +14,9 @@ before_deploy:
 - npm version patch
 
 deploy:
-  provider: releases
+  provider: script
   skip_cleanup: true
+  script: .travis/pu.sh
   on:
     branch: cleanup
+    tags: false
