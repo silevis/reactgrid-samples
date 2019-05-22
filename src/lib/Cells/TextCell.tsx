@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
 import { handleKeyDown/*, isItLastRowOrCol*/, handleCopy, handleCut, handlePaste } from './handleEvents';
-import { CellProps, Location, Cell } from '../Common';
+import { CellProps, Location, Cell, Value } from '../Common';
 // import '../Grid.css';
 export interface TextCellProps extends CellProps {
     customCss?: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
@@ -9,7 +9,7 @@ export interface TextCellProps extends CellProps {
 export class TextCell extends React.Component<TextCellProps, {}> {
     // enteredValue: string = undefined;
     static Create(
-        value: string,
+        value: Value,
         setValue: (value: any, deleteKeyPress?: boolean) => void,
         readOnly = false,
         onFocusChanged: (location: Location, reset?: boolean) => void,
@@ -39,6 +39,7 @@ export class TextCell extends React.Component<TextCellProps, {}> {
     }
 
     render() {
+        const cellValue = this.props.value.data === 'header' ? this.props.value.data : this.props.value.textValue;
         let mergedStyle = Object.assign({}, this.props.attributes.style, this.props.customCss);
         return (
             <div
@@ -72,13 +73,13 @@ export class TextCell extends React.Component<TextCellProps, {}> {
                                 input.setSelectionRange(input.value.length, input.value.length);
                             }
                         }}
-                        defaultValue={this.props.value}
+                        defaultValue={cellValue}
                         // onChange={input => (this.enteredValue = input.target.value)}
                         onBlur={e => {
                             // this.props.setEditMode(false);
                             if (
-                                (e.target.value && e.target.value !== this.props.value) ||
-                                (this.props.value && e.target.value !== this.props.value)
+                                (e.target.value && e.target.value !== cellValue) ||
+                                (cellValue && e.target.value !== cellValue)
                             ) {
                                 this.props.trySetValue(e.target.value);
                                 this.props.gridContext.commitChanges();
@@ -100,7 +101,7 @@ export class TextCell extends React.Component<TextCellProps, {}> {
                     />
                 )}
                 {this.props.children}
-                {!this.props.isInEditMode && this.props.value}
+                {!this.props.isInEditMode && cellValue}
             </div>
         );
     }

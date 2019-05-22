@@ -34,9 +34,7 @@ function generatePrintTable(gridContext: GridContext) {
                     cell.style.wordBreak = 'break-all';
                     cell.style.border = borderStyle;
                     cell.textContent = col.value;
-                    if (col.type) {
-                        cell.style.background = '#eee';
-                    }
+                    cell.style.background = '#eee';
                     cell.width = cellMatrix.cols[cIdx].width.toString();
                 }
             });

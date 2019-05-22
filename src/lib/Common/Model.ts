@@ -2,19 +2,23 @@ import { GridContext } from "./GridContext";
 
 export type Orientation = 'horizontal' | 'vertical';
 
-export type Direction  = 'horizontal' | 'vertical' | 'both'
+export type Direction = 'horizontal' | 'vertical' | 'both'
 
 export type SelectionMode = 'row' | 'column' | 'range';
+
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
+export interface Value {
+    textValue: string;
+    data: any;
+    type: string;
+}
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface Cell {
     value: any;
     isReadOnly: boolean;
-    type?: string;
     readonly trySetValue: (value: any) => void;
     readonly render: (props: CellProps) => React.ReactNode;
-    readonly validateValue?: (value: any) => boolean;
-    onContextMenu?: (ref: HTMLDivElement, closeContextMenu: () => void) => void;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { handleCopy, handleCut, handlePaste } from './handleEvents';
 // import './Cell.css';
-import { Cell, Orientation, CellProps, Location, CellMatrix } from '../Common';
+import { Cell, Orientation, CellProps, Location, CellMatrix, Value } from '../Common';
 import { getLocationFromClient } from '../Functions';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
 
@@ -29,7 +29,7 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
     private mouseEvent: boolean = true;
     static Create(
         orientation: Orientation,
-        value: string,
+        value: Value,
         type: string,
         setValue: (value: any) => void,
         isReadOnly: boolean,
@@ -44,7 +44,6 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
     ): Cell {
         return {
             value,
-            type,
             isReadOnly,
             // onFocusChanged: (location: Location) => onFocusChanged(location), ??
             render: cellProps => (
@@ -62,7 +61,15 @@ export class HeaderCell extends React.Component<HeaderCellProps, HeaderCellState
                     {customHtml}
                 </HeaderCell>
             ),
-            trySetValue: setValue
+            trySetValue: (v) => {
+                // handling value object
+                if (v !== undefined && v.type !== 'header' && v.data != null) {
+                    return false
+                }
+                // default cell handling
+                setValue({ textValue: v, data: v, type: 'header' });
+                return true;
+            }
         };
     }
 

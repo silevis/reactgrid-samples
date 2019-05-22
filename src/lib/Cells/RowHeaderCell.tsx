@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { handleCopy, handleCut, handlePaste } from './handleEvents';
 // import './Cell.css';
-import { Cell, CellProps, Location, CellMatrix, GridContext } from '../Common';
+import { Cell, CellProps, Location, CellMatrix, GridContext, Value } from '../Common';
 import { getLocationFromClient, changeBehavior } from '../Functions';
 import { ColumnSelectionBehavior } from '../Behaviors/ColumnSelectionBehavior';
 import { RowSelectionBehavior } from '../Behaviors/RowSelectionBehavior';
@@ -28,7 +28,7 @@ export class RowHeaderCell extends React.Component<HeaderCellProps, HeaderCellSt
     private readonly resizeDivWidth = 4;
     private mouseEvent: boolean = true;
     static Create(
-        value: string,
+        value: Value,
         type: string,
         setValue: (value: any) => void,
         isReadOnly: boolean,
@@ -43,7 +43,6 @@ export class RowHeaderCell extends React.Component<HeaderCellProps, HeaderCellSt
     ): Cell {
         return {
             value,
-            type,
             isReadOnly,
             // onFocusChanged: (location: Location) => onFocusChanged(location), ??
             render: cellProps => (
@@ -60,7 +59,15 @@ export class RowHeaderCell extends React.Component<HeaderCellProps, HeaderCellSt
                     {customHtml}
                 </RowHeaderCell>
             ),
-            trySetValue: setValue
+            trySetValue: (v) => {
+                // handling value object
+                if (v !== undefined && v.type !== 'rowHeader' && v.data != null) {
+                    return false
+                }
+                // default cell handling
+                setValue({ textValue: v, data: v, type: 'rowHeader' });
+                return true;
+            }
         };
     }
 
@@ -75,6 +82,7 @@ export class RowHeaderCell extends React.Component<HeaderCellProps, HeaderCellSt
     }
 
     render() {
+        const cellValue = this.props.value.data === 'rowHeader' ? this.props.value.data : this.props.value.textValue;
         let style = {
             background: '#eee',
             cursor: 'default',
@@ -140,7 +148,7 @@ export class RowHeaderCell extends React.Component<HeaderCellProps, HeaderCellSt
                             onBlur={e => {
                                 if (
                                     !this.nameIsNullOrEmpty(e.currentTarget.value) &&
-                                    e.currentTarget.value !== this.props.value
+                                    e.currentTarget.value !== cellValue
                                 ) {
                                     this.props.trySetValue(e.currentTarget.value);
                                     this.props.gridContext.commitChanges();
@@ -164,10 +172,10 @@ export class RowHeaderCell extends React.Component<HeaderCellProps, HeaderCellSt
                                     input.setSelectionRange(input.value.length, input.value.length);
                                 }
                             }}
-                            defaultValue={this.props.value}
+                            defaultValue={cellValue}
                         />
                     )}
-                    {this.shouldRenderCellValue() && <div style={{ overflow: 'hidden' }}>{this.props.value}</div>}
+                    {this.shouldRenderCellValue() && <div style={{ overflow: 'hidden' }}>{cellValue}</div>}
                     {this.props.children}
                 </div>
                 {this.props.shouldStartColResize && this.orientationAllowsResizing() && (

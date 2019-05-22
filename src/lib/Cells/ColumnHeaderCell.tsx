@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { handleCopy, handleCut, handlePaste } from './handleEvents';
 // import './Cell.css';
-import { Cell, CellProps, Location, CellMatrix, GridContext } from '../Common';
+import { Cell, CellProps, Location, CellMatrix, GridContext, Value } from '../Common';
 import { getLocationFromClient, changeBehavior } from '../Functions';
 import { ColumnSelectionBehavior } from '../Behaviors/ColumnSelectionBehavior';
 
@@ -27,7 +27,7 @@ export class ColumnHeaderCell extends React.Component<HeaderCellProps, HeaderCel
     private readonly resizeDivWidth = 4;
     private mouseEvent: boolean = true;
     static Create(
-        value: string,
+        value: Value,
         type: string,
         setValue: (value: any) => void,
         isReadOnly: boolean,
@@ -42,7 +42,6 @@ export class ColumnHeaderCell extends React.Component<HeaderCellProps, HeaderCel
     ): Cell {
         return {
             value,
-            type,
             isReadOnly,
             // onFocusChanged: (location: Location) => onFocusChanged(location), ??
             render: cellProps => (
@@ -59,7 +58,15 @@ export class ColumnHeaderCell extends React.Component<HeaderCellProps, HeaderCel
                     {customHtml}
                 </ColumnHeaderCell>
             ),
-            trySetValue: setValue
+            trySetValue: (v) => {
+                // handling value object
+                if (v !== undefined && v.type !== 'columnHeader' && v.data != null) {
+                    return false
+                }
+                // default cell handling
+                setValue({ textValue: v, data: v, type: 'columnHeader' });
+                return true;
+            }
         };
     }
 
@@ -74,6 +81,7 @@ export class ColumnHeaderCell extends React.Component<HeaderCellProps, HeaderCel
     }
 
     render() {
+        const cellValue = this.props.value.data === 'columnHeader' ? this.props.value.data : this.props.value.textValue;
         let style = {
             background: '#eee',
             cursor: 'default',
@@ -139,7 +147,7 @@ export class ColumnHeaderCell extends React.Component<HeaderCellProps, HeaderCel
                             onBlur={e => {
                                 if (
                                     !this.nameIsNullOrEmpty(e.currentTarget.value) &&
-                                    e.currentTarget.value !== this.props.value
+                                    e.currentTarget.value !== cellValue
                                 ) {
                                     this.props.trySetValue(e.currentTarget.value);
                                     this.props.gridContext.commitChanges();
@@ -163,10 +171,10 @@ export class ColumnHeaderCell extends React.Component<HeaderCellProps, HeaderCel
                                     input.setSelectionRange(input.value.length, input.value.length);
                                 }
                             }}
-                            defaultValue={this.props.value}
+                            defaultValue={cellValue}
                         />
                     )}
-                    {this.shouldRenderCellValue() && <div style={{ overflow: 'hidden' }}>{this.props.value}</div>}
+                    {this.shouldRenderCellValue() && <div style={{ overflow: 'hidden' }}>{cellValue}</div>}
                     {this.props.children}
                 </div>
                 {this.props.shouldStartColResize && this.orientationAllowsResizing() && (
