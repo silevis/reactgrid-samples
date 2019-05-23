@@ -9,8 +9,8 @@ export class Range {
     constructor(public readonly cols: Column[], public readonly rows: Row[]) {
         this.first = { row: this.rows[0], col: this.cols[0] };
         this.last = { row: this.rows[this.rows.length - 1], col: this.cols[this.cols.length - 1] };
-        this.height = this.rows.map(c => c.height).reduce((a, b) => a + b);
-        this.width = this.cols.map(c => c.width).reduce((a, b) => a + b);
+        this.height = this.rows.map(c => c.height).reduce((a, b) => a + b, 0);
+        this.width = this.cols.map(c => c.width).reduce((a, b) => a + b, 0);
     }
 
     contains(location: Location): boolean {
@@ -45,8 +45,8 @@ export class Range {
         const firstCol = direction === 'columns' ? range.first.col : this.first.col;
         const lastRow = direction === 'rows' ? range.last.row : this.last.row;
         const lastCol = direction === 'columns' ? range.last.col : this.last.col;
-        const slicedRows = this.rows.slice(this.rows.indexOf(firstRow), this.rows.indexOf(lastRow) + 1);
-        const slicedCols = this.cols.slice(this.cols.indexOf(firstCol), this.cols.indexOf(lastCol) + 1);
+        const slicedRows = this.rows.slice(firstRow.idx - this.first.row.idx, lastRow.idx - this.first.row.idx + 1);
+        const slicedCols = this.cols.slice(firstCol.idx - this.first.col.idx, lastCol.idx - this.first.col.idx + 1);
         return new Range(slicedCols, slicedRows);
     }
 }

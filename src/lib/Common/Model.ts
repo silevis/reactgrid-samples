@@ -7,7 +7,7 @@ export type Direction = 'horizontal' | 'vertical' | 'both'
 export type SelectionMode = 'row' | 'column' | 'range';
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export interface Value {
+export interface CellData {
     textValue: string;
     data: any;
     type: string;
@@ -15,10 +15,10 @@ export interface Value {
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface Cell {
-    value: any;
+    cellData: CellData;
     isReadOnly: boolean;
-    readonly trySetValue: (value: any) => void;
-    readonly render: (props: CellProps) => React.ReactNode;
+    trySetData(cellData: CellData): void;
+    render(props: CellProps): React.ReactNode;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
@@ -28,7 +28,10 @@ export interface Location {
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
-export interface CellProps extends Cell {
+export interface CellProps {
+    cellData: CellData;
+    // isReadOnly: boolean;
+    onValueChanged: (cellData: CellData) => void;
     attributes: React.HTMLAttributes<HTMLDivElement>;
     gridContext: GridContext;
     cellKey: string;

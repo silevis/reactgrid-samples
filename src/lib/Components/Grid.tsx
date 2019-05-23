@@ -23,6 +23,8 @@ interface GridProps {
 
 
 export class GridState {
+
+    viewportElement?: HTMLDivElement = undefined;
     // SELECTION
     selectionMode: SelectionMode = 'range';
     selectedRanges: Range[] = [];
@@ -45,6 +47,35 @@ export class Grid extends React.Component<GridProps, GridState> {
     private pointerEventsController = new PointerEventsController(this.gridContext)
 
     state = new GridState();
+
+    // static getDerivedStateFromProps(props: GridProps, state: GridState): GridState {
+
+    //     if (!state.viewportElement)
+    //         return state;
+
+    //     const matrix = props.cellMatrix;
+    //     const { scrollTop, scrollLeft, clientWidth, clientHeight } = state.viewportElement;
+    //     const scrollAreaWidth = clientWidth - matrix.frozenLeftRange.width - matrix.frozenRightRange.width;
+    //     const scrollAreaHeight = clientHeight - matrix.frozenTopRange.height - matrix.frozenBottomRange.height;
+    //     // TODO improve calculation of visibleCols & visibleRows
+    //     const visibleCols = matrix.scrollableRange.cols.filter(
+    //         col => col.right >= scrollLeft && col.left <= scrollLeft + scrollAreaWidth
+    //     );
+    //     const visibleRows = matrix.scrollableRange.rows.filter(
+    //         row => row.bottom >= scrollTop && row.top <= scrollTop + scrollAreaHeight
+    //     );
+    //     const visibleRange = new Range(visibleCols, visibleRows);
+
+    //     return ({
+    //         ...state,
+    //         minScrollLeft: visibleRange.first.col.left,
+    //         maxScrollLeft: visibleRange.last.col.right - scrollAreaWidth,
+    //         minScrollTop: visibleRows.length > 0 ? visibleRange.first.row.top : 0,
+    //         maxScrollTop: visibleCols.length > 0 ? visibleRange.last.row.bottom - scrollAreaHeight : 0,
+    //         visibleRange: visibleRange,
+    //     });
+
+    // }
 
     componentDidMount() {
         window.addEventListener('resize', this.windowResizeHandler);

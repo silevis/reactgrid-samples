@@ -27,7 +27,8 @@ export const Cell: React.FunctionComponent<CellProps> = (props) => {
     };
 
     return <>{cell.render({
-        ...cell,
+        cellData: cell.cellData,
+        onValueChanged: cell.trySetData,
         gridContext: props.gridContext,
         cellKey: location.row.idx + '-' + location.col.idx,
         isInEditMode: isFocused && props.gridContext.state.isFocusedCellInEditMode,

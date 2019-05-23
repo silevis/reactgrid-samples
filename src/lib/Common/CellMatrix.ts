@@ -59,7 +59,6 @@ export class CellMatrix {
         );
         this.width = this.cols.reduce((sum, col) => sum + col.width, 0);
         this.height = this.rows.reduce((sum, row) => sum + row.height, 0);
-
         this.frozenLeftRange = new Range(this.cols.slice(0, props.frozenLeftColumns || 0), this.rows);
         this.frozenRightRange = new Range(this.cols.slice(frozenRightFirstIdx, this.cols.length), this.rows);
         this.frozenTopRange = new Range(this.cols, this.rows.slice(0, props.frozenTopRows || 0));

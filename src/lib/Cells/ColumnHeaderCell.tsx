@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { handleCopy, handleCut, handlePaste } from './handleEvents';
-// import './Cell.css';
-import { Cell, CellProps, Location, CellMatrix, GridContext, Value } from '../Common';
+import { stopPropagationEventHandler } from './handleEvents';
+import './Cell.css';
+import { Cell, CellProps, Location, CellMatrix, GridContext, CellData } from '../Common';
 import { getLocationFromClient, changeBehavior } from '../Functions';
 import { ColumnSelectionBehavior } from '../Behaviors/ColumnSelectionBehavior';
 
@@ -23,98 +23,71 @@ interface HeaderCellState {
     checkboxFocused: boolean;
 }
 
-export class ColumnHeaderCell extends React.Component<HeaderCellProps, HeaderCellState> {
+export class ColumnHeaderCell implements Cell {
     private readonly resizeDivWidth = 4;
-    private mouseEvent: boolean = true;
-    static Create(
-        value: Value,
-        type: string,
-        setValue: (value: any) => void,
-        isReadOnly: boolean,
-        isReorderable: boolean,
-        onFocusChanged: (location: Location) => void,
-        isResizable?: boolean,
-        customHtml?: React.ReactNode,
-        customCSS?: React.CSSProperties,
-        enableCheckBox?: boolean,
-        checkBoxValue?: boolean,
-        trySetCheckBox?: (value: boolean) => void
-    ): Cell {
-        return {
-            value,
-            isReadOnly,
-            // onFocusChanged: (location: Location) => onFocusChanged(location), ??
-            render: cellProps => (
-                <ColumnHeaderCell
-                    {...cellProps}
-                    key={cellProps.cellKey}
-                    shouldStartReorder={isReorderable}
-                    shouldStartColResize={isResizable!}
-                    customCss={customCSS}
-                    enableCheckBox={enableCheckBox!}
-                    checkBoxValue={checkBoxValue}
-                    setCheckBoxValue={value => trySetCheckBox!(value)}
-                >
-                    {customHtml}
-                </ColumnHeaderCell>
-            ),
-            trySetValue: (v) => {
-                // handling value object
-                if (v !== undefined && v.type !== 'columnHeader' && v.data != null) {
-                    return false
-                }
-                // default cell handling
-                setValue({ textValue: v, data: v, type: 'columnHeader' });
-                return true;
-            }
-        };
+    cellData: CellData;
+    isReadOnly = false;
+
+    constructor(
+        value: string,
+        private onValueChanged: (value: string) => boolean,
+    ) {
+        this.cellData = { textValue: value, data: value, type: 'string' }
     }
 
-    constructor(props: HeaderCellProps) {
-        super(props);
-        this.state = {
-            isResizerHover: false,
-            checked: false,
-            visibleCheckBox: false,
-            checkboxFocused: false
-        };
+    trySetData(cellData: CellData) {
+        return this.onValueChanged(cellData.textValue);
     }
 
-    render() {
-        const cellValue = this.props.value.data === 'columnHeader' ? this.props.value.data : this.props.value.textValue;
+    render: (props: HeaderCellProps) => React.ReactNode = (props) => {
+
+        const [resizerHover, setResizerHover] = React.useState(false);
+        const [checked, setChecked] = React.useState(false);
+        const [checkboxFocused, setCheckboxFocused] = React.useState(false);
+
+        const orientationAllowsResizing = () => {
+            // return props.orientation === 'horizontal' || props.orientation === 'full-dimension';
+        }
+
+        const nameIsNullOrEmpty = (name: string) => {
+            return !name || !name.trim();
+        }
+
+
+        const cellValue = props.cellData.data === 'columnHeader' ? props.cellData.data : props.cellData.textValue;
         let style = {
             background: '#eee',
             cursor: 'default',
-            // this.props.isSelected &&
-            //     this.props.gridContext.cellMatrix.first.row.idx !== 0 &&
-            //     this.props.gridContext.cellMatrix.first.col.idx !== 0
+            // props.isSelected &&
+            //     props.gridContext.cellMatrix.first.row.idx !== 0 &&
+            //     props.gridContext.cellMatrix.first.col.idx !== 0
             //     ? '-webkit-grab'
             //     : 'default',
             paddingRight: 0
         };
-        let mergedStyle = Object.assign({}, this.props.attributes.style, style, this.props.customCss);
+        let mergedStyle = Object.assign({}, props.attributes.style, style);
         let innerStyle = {
             background: '#eee',
-            cursor: /*this.props.isSelected ? '-webkit-grab' : 'default',*/ 'default',
+            cursor: /*props.isSelected ? '-webkit-grab' : 'default',*/ 'default',
             display: 'flex',
-            justifyContent: this.state.visibleCheckBox ? 'center' : 'space-between',
+            justifyContent: 'space-between',
             width: `calc(100% - ${this.resizeDivWidth}px)`,
             alignItems: 'center'
         };
         return (
             <div
-                key={this.props.cellKey}
+                key={props.cellKey}
                 className="dg-header-cell"
-                {...(this.props.attributes, { style: mergedStyle })}
+                {...(props.attributes, { style: mergedStyle })}
                 onPointerDown={event => {
-                    changeBehavior(this.props.gridContext, new ColumnSelectionBehavior(this.props.gridContext));
+                    changeBehavior(props.gridContext, new ColumnSelectionBehavior(props.gridContext));
                     // e.stopPropagation();
-                    // if (this.props.orientation === 'horizontal') {
-                    //     this.props.gridContext.state.currentBehavior.handlePointerDown(e, 'column')
-                    // } else if (this.props.orientation === 'vertical') {
-                    //     this.props.gridContext.state.currentBehavior.handlePointerDown(e, 'row')
+                    // if (props.orientation === 'horizontal') {
+                    //     props.gridContext.state.currentBehavior.handlePointerDown(e, 'column')
+                    // } else if (props.orientation === 'vertical') {
+                    //     props.gridContext.state.currentBehavior.handlePointerDown(e, 'row')
                     // }
-                    // this.props.gridContext.state.currentBehavior.handlePointerDown(e)
+                    // props.gridContext.state.currentBehavior.handlePointerDown(e)
                 }}
             // onMouseDown={e => {
             //     e.stopPropagation();
@@ -136,31 +109,31 @@ export class ColumnHeaderCell extends React.Component<HeaderCellProps, HeaderCel
             //     this.mouseEvent = true;
             // }}
             // onDoubleClick={e => {
-            //     if (this.props.isReadOnly) {
+            //     if (props.isReadOnly) {
             //         e.stopPropagation();
             //     }
             // }}
             >
                 <div style={innerStyle}>
-                    {this.props.isInEditMode && (
+                    {props.isInEditMode && (
                         <input
                             onBlur={e => {
                                 if (
-                                    !this.nameIsNullOrEmpty(e.currentTarget.value) &&
+                                    !nameIsNullOrEmpty(e.currentTarget.value) &&
                                     e.currentTarget.value !== cellValue
                                 ) {
-                                    this.props.trySetValue(e.currentTarget.value);
-                                    this.props.gridContext.commitChanges();
+                                    this.onValueChanged(e.currentTarget.value);
+                                    props.gridContext.commitChanges();
                                 }
-                                // this.props.setEditMode(false);
+                                // props.setEditMode(false);
                             }}
                             onKeyDown={e => { }/*handleKeyDown(e, this.props)*/}
-                            onCopy={handleCopy}
-                            onCut={handleCut}
-                            onPaste={handlePaste}
+                            onCopy={stopPropagationEventHandler}
+                            onCut={stopPropagationEventHandler}
+                            onPaste={stopPropagationEventHandler}
                             style={{
-                                width: this.props.attributes.style!.width,
-                                height: this.props.attributes.style!.height,
+                                width: props.attributes.style!.width,
+                                height: props.attributes.style!.height,
                                 border: 0,
                                 fontSize: 16,
                                 outline: 'none'
@@ -174,152 +147,139 @@ export class ColumnHeaderCell extends React.Component<HeaderCellProps, HeaderCel
                             defaultValue={cellValue}
                         />
                     )}
-                    {this.shouldRenderCellValue() && <div style={{ overflow: 'hidden' }}>{cellValue}</div>}
-                    {this.props.children}
+                    {/* {props.children} && */   <div style={{ overflow: 'hidden' }}>{cellValue}</div>}
+                    {/* {props.children} */}
                 </div>
-                {this.props.shouldStartColResize && this.orientationAllowsResizing() && (
+                {/* {props.shouldStartColResize && orientationAllowsResizing() && (
                     <div
                         data-cy="touch-resize-button"
                         onTouchStart={e => {
                             this.startResizingColumn(e);
-                            this.setState({ isResizerHover: true });
+                            setResizerHover(true);
                         }}
-                        onTouchEnd={() => this.setState({ isResizerHover: false })}
+                        onTouchEnd={() => setResizerHover(true)}
                         style={{
                             position: 'relative',
                             right: 0,
                             width: 10,
-                            height: this.props.attributes.style!.height
+                            height: props.attributes.style!.height
                         }}
                     >
                         <div
                             onMouseDown={e => this.startResizingColumn(e)}
                             onClick={e => e.stopPropagation()}
-                            onMouseEnter={() => this.setState({ isResizerHover: true })}
-                            onMouseOut={() => this.setState({ isResizerHover: false })}
+                            onMouseEnter={() => setResizerHover(true)}
+                            onMouseOut={() => setResizerHover(true)}
                             style={{
                                 width: this.resizeDivWidth,
-                                height: this.props.attributes.style!.height,
-                                cursor: this.state.isResizerHover ? 'w-resize' : 'default',
-                                background: this.state.isResizerHover ? '#3498db' : '#eee',
+                                height: props.attributes.style!.height,
+                                cursor: resizerHover ? 'w-resize' : 'default',
+                                background: resizerHover ? '#3498db' : '#eee',
                                 position: 'absolute',
                                 right: 0
                             }}
                         />
                     </div>
-                )}
+                )} */}
             </div>
         );
     }
 
-    public setCheckBoxValue(value: boolean) {
-        this.setState({ checked: value });
-    }
+    // const setCheckBoxValue => (value: boolean) {
+    //     this.setState({ checked: value });
+    // }
 
-    private shouldRenderCellValue(): boolean {
-        return (
-            !this.props.isInEditMode && (this.props.checkBoxValue === undefined ? true : !this.state.visibleCheckBox)
-        );
-    }
+    //     private handleMouseDownClickAndTouchStart(e: any) {
+    //         const positionX =
+    //             e.type === 'mousedown' || e.type === 'click'
+    //                 ? e.clientX
+    //                 : e.type === 'touchstart'
+    //                     ? e.changedTouches[0].clientX
+    //                     : null;
+    //         const positionY =
+    //             e.type === 'mousedown' || e.type === 'click'
+    //                 ? e.clientY
+    //                 : e.type === 'touchstart'
+    //                     ? e.changedTouches[0].clientY
+    //                     : null;
+    //         const locationOfCell = getLocationFromClient(props.gridContext, positionX, positionY);
+    //         const isItTheSameCell = props.gridContext.state.focusedLocation
+    //             ? props.gridContext.state.focusedLocation.row.idx === locationOfCell.row.idx &&
+    //             props.gridContext.state.focusedLocation.col.idx === locationOfCell.col.idx
+    //             : null;
 
-    private orientationAllowsResizing() {
-        // return this.props.orientation === 'horizontal'/* || this.props.orientation === 'full-dimension'*/;
-    }
+    //         if (isItTheSameCell && props.gridContext.state.isFocusedCellInEditMode) {
+    //             return;
+    //         }
+    //         const selRange = props.gridContext.state.selectedRanges[props.gridContext.state.activeSelectedRangeIdx]
+    //         const cellMatrix = props.gridContext.cellMatrix;
 
-    private handleMouseDownClickAndTouchStart(e: any) {
-        const positionX =
-            e.type === 'mousedown' || e.type === 'click'
-                ? e.clientX
-                : e.type === 'touchstart'
-                    ? e.changedTouches[0].clientX
-                    : null;
-        const positionY =
-            e.type === 'mousedown' || e.type === 'click'
-                ? e.clientY
-                : e.type === 'touchstart'
-                    ? e.changedTouches[0].clientY
-                    : null;
-        const locationOfCell = getLocationFromClient(this.props.gridContext, positionX, positionY);
-        const isItTheSameCell = this.props.gridContext.state.focusedLocation
-            ? this.props.gridContext.state.focusedLocation.row.idx === locationOfCell.row.idx &&
-            this.props.gridContext.state.focusedLocation.col.idx === locationOfCell.col.idx
-            : null;
+    //         if (e.type === 'touchstart') {
+    //             headerCellTouchStartTime = new Date().getTime();
+    //         }
 
-        if (isItTheSameCell && this.props.gridContext.state.isFocusedCellInEditMode) {
-            return;
-        }
-        const selRange = this.props.gridContext.state.selectedRanges[this.props.gridContext.state.activeSelectedRangeIdx]
-        const cellMatrix = this.props.gridContext.cellMatrix;
+    //         if (e.type === 'mousedown' || e.type === 'touchstart') {
+    //             if (selRange && selRange.contains(locationOfCell) && !e.ctrlKey) {
+    //                 if (props.shouldStartReorder) {
+    //                     // if (props.orientation === 'horizontal') {
+    //                     // changeBehavior(props.gridContext, new ColReorderBehavior(props.gridContext, e));
+    //                     // } else {
+    //                     // changeBehavior(props.gridContext, new RowReorderBehavior(props.gridContext, e));
+    //                     // }
+    //                 }
+    //             } else {
+    //                 this.selectColumnOrRow(e, locationOfCell, cellMatrix);
+    //             }
+    //             e.stopPropagation();
+    //             e.preventDefault();
+    //         } else if (e.type === 'click') {
+    //             this.selectColumnOrRow(e, locationOfCell, cellMatrix);
+    //         }
+    //     }
 
-        if (e.type === 'touchstart') {
-            headerCellTouchStartTime = new Date().getTime();
-        }
+    //     private selectColumnOrRow(e: any, locationOfCell: Location, cellMatrix: CellMatrix) {
+    //         const gridContext = props.gridContext;
 
-        if (e.type === 'mousedown' || e.type === 'touchstart') {
-            if (selRange && selRange.contains(locationOfCell) && !e.ctrlKey) {
-                if (this.props.shouldStartReorder) {
-                    // if (this.props.orientation === 'horizontal') {
-                    // changeBehavior(this.props.gridContext, new ColReorderBehavior(this.props.gridContext, e));
-                    // } else {
-                    // changeBehavior(this.props.gridContext, new RowReorderBehavior(this.props.gridContext, e));
-                    // }
-                }
-            } else {
-                this.selectColumnOrRow(e, locationOfCell, cellMatrix);
-            }
-            e.stopPropagation();
-            e.preventDefault();
-        } else if (e.type === 'click') {
-            this.selectColumnOrRow(e, locationOfCell, cellMatrix);
-        }
-    }
+    //         // if (orientation === 'horizontal') {
+    //         //     if (e.type === 'click') {
+    //         //         // changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'column', true));
+    //         //     } else if (e.type === 'mousedown') {
+    //         //         // changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'column'));
+    //         //     }
+    //         // } else if (orientation === 'vertical') {
+    //         //     if (e.type === 'click') {
+    //         //         // changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'row', true));
+    //         //     } else if (e.type === 'mousedown') {
+    //         //         // changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'row'));
+    //         //     }
+    //         // } else if (orientation === 'full-dimension') {
+    //         //     if (e.type === 'mousedown' || e.type === 'click') {
+    //         //         gridContext.setState({
+    //         //             focusedLocation: locationOfCell,
+    //         //             selectedRanges: [cellMatrix.getRange(cellMatrix.first, cellMatrix.last)]
+    //         //         });
+    //         //     }
+    //         // }
+    //     }
 
-    private selectColumnOrRow(e: any, locationOfCell: Location, cellMatrix: CellMatrix) {
-        const gridContext = this.props.gridContext;
+    //     private startResizingColumn(e: any) {
+    //         const positionX =
+    //             e.type === 'mousedown' ? e.clientX : e.type === 'touchstart' ? e.changedTouches[0].clientX : null;
+    //         // const column = props.grid.getColumnFromClientX(positionX);
+    //         e.stopPropagation();
+    //         // props.grid.changeBehavior(new ResizeColumnBehavior(props.grid, column, e));
+    //     }
 
-        // if (orientation === 'horizontal') {
-        //     if (e.type === 'click') {
-        //         // changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'column', true));
-        //     } else if (e.type === 'mousedown') {
-        //         // changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'column'));
-        //     }
-        // } else if (orientation === 'vertical') {
-        //     if (e.type === 'click') {
-        //         // changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'row', true));
-        //     } else if (e.type === 'mousedown') {
-        //         // changeBehavior(gridContext, new CellSelectionBehavior(gridContext, e, 'row'));
-        //     }
-        // } else if (orientation === 'full-dimension') {
-        //     if (e.type === 'mousedown' || e.type === 'click') {
-        //         gridContext.setState({
-        //             focusedLocation: locationOfCell,
-        //             selectedRanges: [cellMatrix.getRange(cellMatrix.first, cellMatrix.last)]
-        //         });
-        //     }
-        // }
-    }
+    // }
 
-    private startResizingColumn(e: any) {
-        const positionX =
-            e.type === 'mousedown' ? e.clientX : e.type === 'touchstart' ? e.changedTouches[0].clientX : null;
-        // const column = this.props.grid.getColumnFromClientX(positionX);
-        e.stopPropagation();
-        // this.props.grid.changeBehavior(new ResizeColumnBehavior(this.props.grid, column, e));
-    }
-
-    private nameIsNullOrEmpty(name: string) {
-        return !name || !name.trim();
-    }
-}
-
-function isItTheSameCell(gridContext: GridContext, location: Location) {
-    if (gridContext.state.focusedLocation) {
-        if (gridContext.state.focusedLocation.row.idx === location.row.idx && gridContext.state.focusedLocation.col.idx === location.col.idx) {
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
+    // function isItTheSameCell(gridContext: GridContext, location: Location) {
+    //     if (gridContext.state.focusedLocation) {
+    //         if (gridContext.state.focusedLocation.row.idx === location.row.idx && gridContext.state.focusedLocation.col.idx === location.col.idx) {
+    //             return true;
+    //         } else {
+    //             return false;
+    //         }
+    //     } else {
+    //         return false;
+    //     }
 }

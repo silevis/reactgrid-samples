@@ -219,13 +219,14 @@ const handleSpecialKeys = (event: KeyboardEvent, gridContext: GridContext) => {
     const focusedLocation = gridContext.state.focusedLocation!;
     const cellMatrix = gridContext.cellMatrix;
     if (event.keyCode === keyCodes.BACKSPACE) {
-        cellMatrix.getCell(focusedLocation).trySetValue(undefined);
+        // cellMatrix.getCell(focusedLocation).trySetValue(undefined);
         gridContext.commitChanges();
     } else if (event.keyCode === keyCodes.DELETE) {
         gridContext.state.selectedRanges.forEach(range => {
             range.rows.forEach((row: Row) =>
                 range.cols.forEach((col: Column) =>
-                    cellMatrix.getCell({ row, col }).trySetValue(undefined)
+                    // cellMatrix.getCell({ row, col }).trySetValue(undefined)
+                    console.log('commented out')
                 )
             );
         });

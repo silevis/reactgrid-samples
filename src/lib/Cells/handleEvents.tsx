@@ -58,14 +58,8 @@ export const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, props: C
     // e.stopPropagation();
 };
 
-export const handleCopy = (e: React.ClipboardEvent<HTMLInputElement>) => {
-    // e.stopPropagation();
-};
-export const handleCut = (e: React.ClipboardEvent<HTMLInputElement>) => {
-    // e.stopPropagation();
-};
-export const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-    // e.stopPropagation();
+export const stopPropagationEventHandler = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.stopPropagation();
 };
 
 export const handleKeyDownCheckboxCell = (e: React.KeyboardEvent<HTMLInputElement>, props: CellProps) => {

@@ -33,7 +33,7 @@ function generatePrintTable(gridContext: GridContext) {
                     let cell = td.insertCell();
                     cell.style.wordBreak = 'break-all';
                     cell.style.border = borderStyle;
-                    cell.textContent = col.value;
+                    cell.textContent = col.cellData.textValue;
                     cell.style.background = '#eee';
                     cell.width = cellMatrix.cols[cIdx].width.toString();
                 }

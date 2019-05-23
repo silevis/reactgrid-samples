@@ -1,4 +1,4 @@
-import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Range, Location, keyCodes } from "../Common";
+import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Range, Location, keyCodes, CellData } from "../Common";
 import { handleKeyDown as handleKeyDown } from "./DefaultBehavior/handleKeyDown";
 import { changeBehavior } from "../Functions";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
@@ -52,42 +52,42 @@ export class DefaultBehavior extends Behavior {
     }
     handlePaste(event: ClipboardEvent): void {
         const activeSelectedRange = getActiveSelectedRange(this.gridContext)
-        let pasteContent: Array<any> = [];
+        let pasteContent: CellData[][];
         const htmlData = event.clipboardData.getData('text/html');
         const parsedData = new DOMParser().parseFromString(htmlData, 'text/html')
         if (htmlData && parsedData.body.firstElementChild!.getAttribute('data-key') === 'dynagrid') {
             const cells = parsedData.body.firstElementChild!.firstElementChild!.children
             pasteContent = [];
             for (let i = 0; i < cells.length; i++) {
-                let row = [];
+                const row: CellData[] = [];
                 for (let j = 0; j < cells[i].children.length; j++) {
                     const data = JSON.parse(cells[i].children[j].getAttribute('data-data')!)
                     const type = cells[i].children[j].getAttribute('data-type')
                     const textValue = cells[i].children[j].innerHTML
-                    row.push({ textValue: textValue, data: data, type: type })
+                    row.push({ textValue: textValue, data: data, type: type! })
                 }
                 pasteContent.push(row)
             }
         } else {
-            pasteContent = event.clipboardData.getData('text/plain').split('\n').map(line => line.split('\t'))
+            pasteContent = event.clipboardData.getData('text/plain').split('\n').map(line => line.split('\t').map(t => ({ textValue: t, data: t, type: 'string' })))
         }
         const cellMatrix = this.gridContext.cellMatrix
         if (pasteContent.length === 1 && pasteContent[0].length === 1) {
             activeSelectedRange.rows.forEach(row =>
                 activeSelectedRange.cols.forEach(col => {
-                    cellMatrix.getCell({ row, col }).trySetValue(pasteContent[0][0])
+                    cellMatrix.getCell({ row, col }).trySetData(pasteContent[0][0])
                 }
                 )
             )
         } else {
             let lastLocation: Location
             pasteContent.forEach((row, pasteRowIdx) =>
-                row.forEach((pasteValue: string, pasteColIdx: number) => {
+                row.forEach((pasteValue: CellData, pasteColIdx: number) => {
                     const rowIdx = activeSelectedRange.rows[0].idx + pasteRowIdx
                     const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx
                     if (rowIdx <= cellMatrix.last.row.idx && colIdx <= cellMatrix.last.col.idx) {
                         lastLocation = cellMatrix.getLocation(rowIdx, colIdx)
-                        cellMatrix.getCell(lastLocation).trySetValue(pasteValue ? pasteValue : undefined)
+                        cellMatrix.getCell(lastLocation).trySetData(pasteValue)
                     }
                 })
             )
@@ -116,14 +116,14 @@ export class DefaultBehavior extends Behavior {
             activeSelectedRange.cols.forEach(col => {
                 const tableCell = tableRow.insertCell()
                 const gridCell = this.gridContext.cellMatrix.getCell({ row, col })
-                tableCell.textContent = (gridCell.value ? gridCell.value.textValue : '')  // for undefined values
-                if (!gridCell.value) {
+                tableCell.textContent = (gridCell.cellData ? gridCell.cellData.textValue : '')  // for undefined values
+                if (!gridCell.cellData) {
                     tableCell.innerHTML = '<img>';
                 }
-                tableCell.setAttribute('data-data', JSON.stringify(gridCell.value.data))
-                tableCell.setAttribute('data-type', gridCell.value.type)
+                tableCell.setAttribute('data-data', JSON.stringify(gridCell.cellData.data))
+                tableCell.setAttribute('data-type', gridCell.cellData.type)
                 tableCell.style.border = '1px solid #D3D3D3'
-                if (removeValues) { gridCell.trySetValue(undefined) }
+                if (removeValues) { gridCell.trySetData({ textValue: '', data: '', type: 'string' }) }
             })
         })
         div.setAttribute('contenteditable', 'true')
