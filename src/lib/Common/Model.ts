@@ -38,7 +38,7 @@ export interface CellProps {
     isInEditMode: boolean;
     //isSelected: boolean;
     //isFocused: boolean;
-    //setEditMode: (value: boolean) => void;
+    setEditMode: (value: boolean) => void;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 

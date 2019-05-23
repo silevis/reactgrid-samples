@@ -11,26 +11,29 @@ export function handleKeyDown(gridContext: GridContext, event: KeyboardEvent) {
     if (!isSelectedOneCell(gridContext) && !isArrowKey(key)) {
         handleKeyNavigationInsideSelection(gridContext, event)
     } else {
-        if (event.shiftKey) {
-            ResizeSelectionWithKeysBehavior(gridContext, event)
-        }
-        if (isArrowKey(key)) {
-            handleArrows(event, gridContext)
-        }
-        else if (isTabKey(key)) {
+        if (isTabKey(key)) {
             handleTabKey(event, gridContext)
         }
-
-        else if (isEnterKey(key)) {
+        if (isEnterKey(key)) {
             handleEnterKey(event, gridContext)
         }
-        else if (isSpecialNavKeys(key)) {
-            handleSpecialNavKeys(event, gridContext)
-        }
-        else if (isSpecialKeys(key)) {
-            handleSpecialKeys(event, gridContext)
-        }
     }
+    if (event.shiftKey) {
+        ResizeSelectionWithKeysBehavior(gridContext, event)
+    }
+    if (isArrowKey(key)) {
+        handleArrows(event, gridContext)
+    }
+
+
+
+    if (isSpecialNavKeys(key)) {
+        handleSpecialNavKeys(event, gridContext)
+    }
+    if (isSpecialKeys(key)) {
+        handleSpecialKeys(event, gridContext)
+    }
+
     //event.stopPropagation();
     //event.preventDefault();
     return;
@@ -46,6 +49,7 @@ const isSpecialNavKeys = (key: string): boolean => {
 }
 const isTabKey = (key: string): boolean => key.includes('Tab')
 const isSpecialKeys = (key: string): boolean => {
+    console.log(key)
     const keys = ['Backspace', 'Delete']
     return keys.some(el => el.includes(key))
 }
@@ -218,6 +222,7 @@ const handleEnterKey = (event: KeyboardEvent, gridContext: GridContext) => {
 const handleSpecialKeys = (event: KeyboardEvent, gridContext: GridContext) => {
     const focusedLocation = gridContext.state.focusedLocation!;
     const cellMatrix = gridContext.cellMatrix;
+    console.log(gridContext.state.selectedRanges)
     if (event.keyCode === keyCodes.BACKSPACE) {
         // cellMatrix.getCell(focusedLocation).trySetValue(undefined);
         gridContext.commitChanges();
@@ -225,8 +230,8 @@ const handleSpecialKeys = (event: KeyboardEvent, gridContext: GridContext) => {
         gridContext.state.selectedRanges.forEach(range => {
             range.rows.forEach((row: Row) =>
                 range.cols.forEach((col: Column) =>
-                    // cellMatrix.getCell({ row, col }).trySetValue(undefined)
-                    console.log('commented out')
+                    cellMatrix.getCell({ row, col }).trySetData({ textValue: '', data: null, type: 'string' })
+
                 )
             );
         });

@@ -10,7 +10,7 @@ export class PointerEventsController {
     constructor(private gridContext: GridContext) { }
 
     public handlePointerDown = (event: PointerEvent) => {
-        console.log(event.button)
+
         // TODO open context menu (long hold tap)
 
         if (event.button !== 0)
@@ -40,7 +40,6 @@ export class PointerEventsController {
     }
 
     private handlePointerUp = (event: PointerEvent) => {
-        console.log('up')
         if (event.button !== 0)
             return
 
@@ -50,9 +49,10 @@ export class PointerEventsController {
         const currentTimestamp = new Date().valueOf();
         const secondLastTimestamp = this.eventTimestamps[1 - this.currentIndex];
         this.gridContext.currentBehavior.handlePointerUp(event, currentLocation);
-        if (currentTimestamp - secondLastTimestamp < 500 && isSameLocation(currentLocation, this.eventLocations[0]) && isSameLocation(currentLocation, this.eventLocations[1])) {
-            this.gridContext.currentBehavior.handleDoubleClick(event, currentLocation)
-        }
+        // if (currentTimestamp - secondLastTimestamp < 500 && isSameLocation(currentLocation, this.eventLocations[0]) && isSameLocation(currentLocation, this.eventLocations[1])) {
+        //     console.log('iffffffffffff')
+        this.gridContext.currentBehavior.handleDoubleClick(event, currentLocation)
+        // }
     }
 }
 

@@ -47,7 +47,7 @@ export class TextCell implements Cell {
                     defaultValue={props.cellData.textValue}
                     // onChange={input => (this.enteredValue = input.target.value)}
                     onBlur={e => {
-                        // this.props.setEditMode(false);
+                        // props.setEditMode(false);
                         if (
                             (e.target.value && e.target.value !== props.cellData.textValue) ||
                             (props.cellData.textValue && e.target.value !== props.cellData.textValue)
@@ -61,7 +61,8 @@ export class TextCell implements Cell {
                     // TODO onPaste: is content cellData matrix? preventDefault & propagate event ELSE paste in input & stopPropagation 
                     onPaste={stopPropagationEventHandler}
                     onKeyDown={e => {
-                        // handleKeyDown(e, this.props);
+                        // handleKeyDown(e, props);
+                        console.log('key')
                         // if (
                         //     (this.enteredValue === undefined || this.enteredValue.length === 0) &&
                         //     (e.keyCode === keyCodes.ENTER && isItLastRowOrCol(this.props, 'row'))

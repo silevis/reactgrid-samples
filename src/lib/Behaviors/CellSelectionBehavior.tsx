@@ -1,4 +1,4 @@
-import { resetToDefaultBehavior, focusLocation } from '../Functions';
+import { resetToDefaultBehavior, focusLocation, getLocationFromClient } from '../Functions';
 import { GridContext, Location, Behavior, Direction } from '../Common';
 import { PointerEvent } from "../Common/domEvents";
 import { selectRange, updateActiveSelectedRange } from '../Functions/selectRange';
@@ -105,21 +105,21 @@ export class CellSelectionBehavior extends Behavior {
     //         // this.gridContext.state.gridElement.removeEventListener('scroll', this.gridScrollHandler);
     //     };
 
-    //     // handleDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    //     // const location: Location = getLocationFromClient(this.gridContext, e.clientX, e.clientY);
-    //     // if (this.gridContext.state.isFocusedCellInEditMode /*|| this.grid.state.isFocusedCellReadOnly*/) {
-    //     //     e.preventDefault();
-    //     //     e.stopPropagation();
-    //     // } else {
-    //     //     if (
-    //     //         this.gridContext.state.focusedLocation &&
-    //     //         this.gridContext.state.focusedLocation.col.idx === location.col.idx &&
-    //     //         this.gridContext.state.focusedLocation.row.idx === location.row.idx
-    //     //     ) {
-    //     //         setTimeout(() => this.gridContext.setState({ isFocusedCellInEditMode: true }));
-    //     //     }
-    //     // }
-    //     // };
+    handleDoubleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        const location: Location = getLocationFromClient(this.gridContext, e.clientX, e.clientY);
+        if (this.gridContext.state.isFocusedCellInEditMode /*|| this.grid.state.isFocusedCellReadOnly*/) {
+            e.preventDefault();
+            e.stopPropagation();
+        } else {
+            if (
+                this.gridContext.state.focusedLocation &&
+                this.gridContext.state.focusedLocation.col.idx === location.col.idx &&
+                this.gridContext.state.focusedLocation.row.idx === location.row.idx
+            ) {
+                setTimeout(() => this.gridContext.setState({ isFocusedCellInEditMode: true }));
+            }
+        }
+    };
 
     //     private handleMouseDownAndClick = (event: any) => {
     //         const locationOfCell = getLocationFromClient(this.gridContext, this.clientX, this.clientY);

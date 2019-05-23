@@ -25,13 +25,15 @@ export const Cell: React.FunctionComponent<CellProps> = (props) => {
             ? 'solid 1px #ccc'
             : 'solid 1px #e5e5e5'
     };
-
     return <>{cell.render({
         cellData: cell.cellData,
         onValueChanged: cell.trySetData,
         gridContext: props.gridContext,
         cellKey: location.row.idx + '-' + location.col.idx,
         isInEditMode: isFocused && props.gridContext.state.isFocusedCellInEditMode,
+        setEditMode: value => {
+            props.gridContext.setState({ isFocusedCellInEditMode: value });
+        },
         attributes: {
             style: {
                 boxSizing: 'border-box',

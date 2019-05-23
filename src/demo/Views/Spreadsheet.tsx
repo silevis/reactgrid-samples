@@ -31,7 +31,7 @@ export class Spreadsheet extends React.Component<{}, { data: string[][] }> {
         console.log('render spreadsheet')
         return <Grid style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
             cellMatrix={this.generateCellMatrix()}
-        // onValuesChanged={() => this.forceUpdate()}
+            onValuesChanged={() => this.forceUpdate()}
         />
     }
 }
