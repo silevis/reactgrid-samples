@@ -29,19 +29,9 @@ export class DefaultBehavior extends Behavior {
     }
 
     handleDoubleClick(event: PointerEvent, location: Location): void {
-        console.log('doubleckick')
-        if (this.gridContext.state.isFocusedCellInEditMode /*|| this.grid.state.isFocusedCellReadOnly*/) {
-            event.preventDefault();
-            event.stopPropagation();
-        } else {
-            if (
-                this.gridContext.state.focusedLocation &&
-                this.gridContext.state.focusedLocation.col.idx === location.col.idx &&
-                this.gridContext.state.focusedLocation.row.idx === location.row.idx
-            ) {
-                setTimeout(() => this.gridContext.setState({ isFocusedCellInEditMode: true }));
-            }
-        }
+        const cellSelectionBehavior = new CellSelectionBehavior(this.gridContext);
+        changeBehavior(this.gridContext, cellSelectionBehavior);
+        cellSelectionBehavior.handleDoubleClick(event);
     }
 
     handleKeyDown(event: KeyboardEvent) {

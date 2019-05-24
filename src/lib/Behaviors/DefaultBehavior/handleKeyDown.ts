@@ -49,7 +49,6 @@ const isSpecialNavKeys = (key: string): boolean => {
 }
 const isTabKey = (key: string): boolean => key.includes('Tab')
 const isSpecialKeys = (key: string): boolean => {
-    console.log(key)
     const keys = ['Backspace', 'Delete']
     return keys.some(el => el.includes(key))
 }

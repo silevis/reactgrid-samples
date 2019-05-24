@@ -7,8 +7,6 @@ export function focusLocation(gridContext: GridContext, location: Location, rese
     scrollIntoView(gridContext, location);
     // cell.onFocusChanged(location);
     // TODO external event needed?
-
-
     // TODO move resetSelection out to an other function
     if (resetSelection) {
         gridContext.setState({
