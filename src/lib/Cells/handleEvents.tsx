@@ -1,7 +1,7 @@
 // import { keyCodes } from "../Common";
-import { CellProps } from "../Components/Cell";
+import { CellRendererProps } from "../Components/Cell";
 
-export const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, props: CellProps, type?: string) => {
+export const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, props: CellRendererProps, type?: string) => {
     // let cell = undefined;
     // if (
     //     e.keyCode === keyCodes.LEFT_ARROW ||
@@ -62,7 +62,7 @@ export const stopPropagationEventHandler = (e: React.ClipboardEvent<HTMLInputEle
     e.stopPropagation();
 };
 
-export const handleKeyDownCheckboxCell = (e: React.KeyboardEvent<HTMLInputElement>, props: CellProps) => {
+export const handleKeyDownCheckboxCell = (e: React.KeyboardEvent<HTMLInputElement>, props: CellRendererProps) => {
     // let cell = undefined;
     // if (
     //     e.keyCode === keyCodes.RIGHT_ARROW ||

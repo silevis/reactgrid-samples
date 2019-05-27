@@ -18,7 +18,7 @@ export interface Cell {
     cellData: CellData;
     isReadOnly: boolean;
     trySetData(cellData: CellData): void;
-    render(props: CellProps): React.ReactNode;
+    renderContent(props: CellProps): React.ReactNode;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
@@ -32,13 +32,11 @@ export interface CellProps {
     cellData: CellData;
     // isReadOnly: boolean;
     onValueChanged: (cellData: CellData) => void;
-    attributes: React.HTMLAttributes<HTMLDivElement>;
     gridContext: GridContext;
-    cellKey: string;
     isInEditMode: boolean;
     //isSelected: boolean;
     //isFocused: boolean;
-    setEditMode: (value: boolean) => void;
+    //setEditMode: (value: boolean) => void;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 

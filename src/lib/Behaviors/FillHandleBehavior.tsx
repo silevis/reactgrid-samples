@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { GridContext, Range, Location, PointerEvent, CellMatrix, Behavior } from "../Common";
+import { GridContext, Range, Location, PointerEvent, CellMatrix, Behavior, Row, Column } from "../Common";
 import { getLocationFromClient, resetToDefaultBehavior } from "../Functions";
 import { PartialArea } from '../Components/PartialArea';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
@@ -112,100 +112,97 @@ export class FillHandleBehavior extends Behavior {
     }
 
     handlePointerUp(event: PointerEvent) {
-        // const activeSelectedRange = Utilities.getActiveSelectionRange(
-        //     this.gridContext.state.selectedRanges,
-        //     this.gridContext.state.focusedLocation!
-        // );
-        // const cellMatrix = this.gridContext.cellMatrix;
-        // let values: any[];
-        // if (!activeSelectedRange) {
-        //     this.gridContext.commitChanges();
-        //     resetToDefaultBehavior(this.gridContext);
-        //     return;
-        // }
+        const activeSelectedRange = getActiveSelectedRange(this.gridContext);
+        const cellMatrix = this.gridContext.cellMatrix;
+        let values: any[];
+        if (!activeSelectedRange) {
+            this.gridContext.commitChanges();
+            resetToDefaultBehavior(this.gridContext);
+            return;
+        }
 
-        // switch (this.fillDirection) {
-        //     case 'right':
-        //         values = activeSelectedRange.rows.map((row: Row) =>
-        //             this.gridContext.cellMatrix.getCell({ row, col: activeSelectedRange.last.col })
-        //         );
-        //         this.fillRange.rows.forEach((row: Row, i: number) =>
-        //             this.fillRange.cols.forEach((col: Column) => {
-        //                 cellMatrix.getCell({ row, col }) &&
-        //                     cellMatrix.getCell({ row, col }).trySetValue(values[i].value);
-        //             })
-        //         );
-        //         this.gridContext.setState({
-        //             selectedRanges: [
-        //                 cellMatrix.getRange(activeSelectedRange.first, {
-        //                     row: activeSelectedRange.last.row,
-        //                     col: this.currentLocation.col
-        //                 })
-        //             ]
-        //         });
-        //         break;
-        //     case 'left':
-        //         values = activeSelectedRange.rows.map((row: Row) =>
-        //             this.gridContext.cellMatrix.getCell({ row, col: activeSelectedRange.first.col })
-        //         );
-        //         this.fillRange.rows.forEach((row: Row, i: number) =>
-        //             this.fillRange.cols.forEach(
-        //                 (col: Column) =>
-        //                     cellMatrix.getCell({ row, col }) &&
-        //                     cellMatrix.getCell({ row, col }).trySetValue(values[i].value)
-        //             )
-        //         );
-        //         this.gridContext.setState({
-        //             selectedRanges: [
-        //                 cellMatrix.getRange(activeSelectedRange.last, {
-        //                     row: activeSelectedRange.first.row,
-        //                     col: this.currentLocation.col
-        //                 })
-        //             ]
-        //         });
-        //         break;
-        //     case 'up':
-        //         values = activeSelectedRange.cols.map((col: Column) =>
-        //             this.gridContext.cellMatrix.getCell({ row: activeSelectedRange.first.row, col })
-        //         );
-        //         this.fillRange.rows.forEach((row: Row) =>
-        //             this.fillRange.cols.forEach(
-        //                 (col: Column, i: number) =>
-        //                     cellMatrix.getCell({ row, col }) &&
-        //                     cellMatrix.getCell({ row, col }).trySetValue(values[i].value)
-        //             )
-        //         );
-        //         this.gridContext.setState({
-        //             selectedRanges: [
-        //                 cellMatrix.getRange(activeSelectedRange.last, {
-        //                     row: this.currentLocation.row,
-        //                     col: activeSelectedRange.first.col
-        //                 })
-        //             ]
-        //         });
-        //         break;
-        //     case 'down':
-        //         values = activeSelectedRange.cols.map((col: Column) =>
-        //             this.gridContext.cellMatrix.getCell({ row: activeSelectedRange.last.row, col })
-        //         );
-        //         this.fillRange.rows.forEach((row: Row) =>
-        //             this.fillRange.cols.forEach(
-        //                 (col: Column, i: number) =>
-        //                     cellMatrix.getCell({ row, col }) &&
-        //                     cellMatrix.getCell({ row, col }).trySetValue(values[i].value)
-        //             )
-        //         );
-        //         this.gridContext.setState({
-        //             selectedRanges: [
-        //                 cellMatrix.getRange(activeSelectedRange.first, {
-        //                     row: this.currentLocation.row,
-        //                     col: activeSelectedRange.last.col
-        //                 })
-        //             ]
-        //         });
-        //         break;
-        // }
-        // this.gridContext.commitChanges();
+        switch (this.fillDirection) {
+            case 'right':
+                values = activeSelectedRange.rows.map((row: Row) =>
+                    this.gridContext.cellMatrix.getCell({ row, col: activeSelectedRange.last.col })
+                );
+                this.fillRange!.rows.forEach((row: Row, i: number) =>
+                    this.fillRange!.cols.forEach((col: Column) => {
+                        cellMatrix.getCell({ row, col }) &&
+                            cellMatrix.getCell({ row, col }).trySetData(values[i].cellData);
+                    })
+                );
+                this.gridContext.setState({
+                    selectedRanges: [
+                        cellMatrix.getRange(activeSelectedRange.first, {
+                            row: activeSelectedRange.last.row,
+                            col: this.currentLocation!.col
+                        })
+                    ]
+                });
+                break;
+            case 'left':
+                values = activeSelectedRange.rows.map((row: Row) =>
+                    this.gridContext.cellMatrix.getCell({ row, col: activeSelectedRange.first.col })
+                );
+                this.fillRange!.rows.forEach((row: Row, i: number) =>
+                    this.fillRange!.cols.forEach(
+                        (col: Column) =>
+                            cellMatrix.getCell({ row, col }) &&
+                            cellMatrix.getCell({ row, col }).trySetData(values[i].cellData)
+                    )
+                );
+                this.gridContext.setState({
+                    selectedRanges: [
+                        cellMatrix.getRange(activeSelectedRange.last, {
+                            row: activeSelectedRange.first.row,
+                            col: this.currentLocation!.col
+                        })
+                    ]
+                });
+                break;
+            case 'up':
+                values = activeSelectedRange.cols.map((col: Column) =>
+                    this.gridContext.cellMatrix.getCell({ row: activeSelectedRange.first.row, col })
+                );
+                this.fillRange!.rows.forEach((row: Row) =>
+                    this.fillRange!.cols.forEach(
+                        (col: Column, i: number) =>
+                            cellMatrix.getCell({ row, col }) &&
+                            cellMatrix.getCell({ row, col }).trySetData(values[i].cellData)
+                    )
+                );
+                this.gridContext.setState({
+                    selectedRanges: [
+                        cellMatrix.getRange(activeSelectedRange.last, {
+                            row: this.currentLocation!.row,
+                            col: activeSelectedRange.first.col
+                        })
+                    ]
+                });
+                break;
+            case 'down':
+                values = activeSelectedRange.cols.map((col: Column) =>
+                    this.gridContext.cellMatrix.getCell({ row: activeSelectedRange.last.row, col })
+                );
+                this.fillRange!.rows.forEach((row: Row) =>
+                    this.fillRange!.cols.forEach(
+                        (col: Column, i: number) =>
+                            cellMatrix.getCell({ row, col }) &&
+                            cellMatrix.getCell({ row, col }).trySetData(values[i].cellData)
+                    )
+                );
+                this.gridContext.setState({
+                    selectedRanges: [
+                        cellMatrix.getRange(activeSelectedRange.first, {
+                            row: this.currentLocation!.row,
+                            col: activeSelectedRange.last.col
+                        })
+                    ]
+                });
+                break;
+        }
+        this.gridContext.commitChanges();
         resetToDefaultBehavior(this.gridContext);
     }
 

@@ -180,8 +180,8 @@ export class Grid extends React.Component<GridProps, GridState> {
                         className="dg-hidden-focus-element"
                         contentEditable={true}
                         style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }}
-                        // onBlur={this.handleBlur}
-                        onFocus={() => console.log('focus')}
+                        onBlur={() => console.log('HFE: blur')}
+                        onFocus={() => console.log('HFE: focus')}
                         onPaste={this.handlePasteOnHiddenElement}
                         ref={this.hiddenElementRefHandler}
                     />

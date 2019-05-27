@@ -1,33 +1,29 @@
 import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
 import { handleKeyDown/*, isItLastRowOrCol*/, stopPropagationEventHandler } from './handleEvents';
-import { CellProps, Location, Cell, CellData } from '../Common';
+import { CellProps, Location, Cell as Cell, CellData } from '../Common';
 // import '../Grid.css';
-export interface TextCellProps extends CellProps {
-    customCss?: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
-}
 
 export class TextCell implements Cell {
     cellData: CellData;
     isReadOnly = false;
+    enteredValue: string = '';
 
     constructor(
+        // customCss?: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
         value: string,
         private onValueChanged: (value: string) => boolean,
     ) {
         this.cellData = { textValue: value, data: value, type: 'string' }
+        this.enteredValue = value
     }
 
     trySetData(cellData: CellData) {
         return this.onValueChanged(cellData.textValue);
     }
 
-    render: (props: TextCellProps) => React.ReactNode = (props) =>
-        <div
-            key={props.cellKey}
-            className="cell"
-            {...(props.attributes)}
-        >
+    renderContent: (props: CellProps) => React.ReactNode = (props) =>
+        <>
             {props.isInEditMode && (
                 <input
                     style={{
@@ -45,7 +41,7 @@ export class TextCell implements Cell {
                         }
                     }}
                     defaultValue={props.cellData.textValue}
-                    // onChange={input => (this.enteredValue = input.target.value)}
+                    onChange={input => (this.enteredValue = input.target.value)}
                     onBlur={e => {
                         // props.setEditMode(false);
                         if (
@@ -61,21 +57,22 @@ export class TextCell implements Cell {
                     // TODO onPaste: is content cellData matrix? preventDefault & propagate event ELSE paste in input & stopPropagation 
                     onPaste={stopPropagationEventHandler}
                     onKeyDown={e => {
-                        // handleKeyDown(e, props);
-                        console.log('key')
-                        // if (
-                        //     (this.enteredValue === undefined || this.enteredValue.length === 0) &&
-                        //     (e.keyCode === keyCodes.ENTER && isItLastRowOrCol(this.props, 'row'))
-                        // ) {
-                        //     this.props.trySetValue(this.enteredValue);
-                        //     this.props.gridContext.commitChanges();
-                        // }
+                        if (
+                            !(this.enteredValue === undefined || this.enteredValue.length === 0) &&
+                            (e.keyCode === keyCodes.ENTER)
+                        ) {
+                            console.log(this.enteredValue)
+                            this.trySetData({ textValue: this.enteredValue, data: this.enteredValue, type: 'string' });
+                            props.gridContext.commitChanges();
+                            props.gridContext.setState({ isFocusedCellInEditMode: false });
+                            props.gridContext.hiddenFocusElement.focus();
+                        }
                     }}
                 />
             )}
             {/* {props.children} */}
             {!props.isInEditMode && props.cellData.textValue}
-        </div>;
+        </>;
 }
 
 

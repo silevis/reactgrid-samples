@@ -29,12 +29,22 @@ export class DefaultBehavior extends Behavior {
     }
 
     handleDoubleClick(event: PointerEvent, location: Location): void {
-        const cellSelectionBehavior = new CellSelectionBehavior(this.gridContext);
-        changeBehavior(this.gridContext, cellSelectionBehavior);
-        cellSelectionBehavior.handleDoubleClick(event);
+        if (this.gridContext.state.isFocusedCellInEditMode /*|| this.grid.state.isFocusedCellReadOnly*/) {
+            event.preventDefault();
+            event.stopPropagation();
+        } else {
+            if (
+                this.gridContext.state.focusedLocation &&
+                this.gridContext.state.focusedLocation.col.idx === location.col.idx &&
+                this.gridContext.state.focusedLocation.row.idx === location.row.idx
+            ) {
+                setTimeout(() => this.gridContext.setState({ isFocusedCellInEditMode: true }));
+            }
+        }
     }
 
     handleKeyDown(event: KeyboardEvent) {
+        console.log('keydown')
         handleKeyDown(this.gridContext, event)
     }
     handleKeyUp(event: KeyboardEvent): void {

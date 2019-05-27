@@ -9,7 +9,7 @@ export class Spreadsheet extends React.Component<{}, { data: string[][] }> {
     constructor(props: {}) {
         super(props);
         this.state = {
-            data: Array(500).fill(0).map((r, ri) => Array(50).fill(0).map((c, ci) => (ri + 100) + ' - ' + (ci + 100)))
+            data: Array(10).fill(0).map((r, ri) => Array(5).fill(0).map((c, ci) => (ri + 100) + ' - ' + (ci + 100)))
         }
 
     }
