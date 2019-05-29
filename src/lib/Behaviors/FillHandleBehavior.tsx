@@ -115,7 +115,7 @@ export class FillHandleBehavior extends Behavior {
         const activeSelectedRange = getActiveSelectedRange(this.gridContext);
         const cellMatrix = this.gridContext.cellMatrix;
         let values: any[];
-        if (!activeSelectedRange) {
+        if (!activeSelectedRange || this.fillRange === undefined) {
             this.gridContext.commitChanges();
             resetToDefaultBehavior(this.gridContext);
             return;
@@ -126,7 +126,7 @@ export class FillHandleBehavior extends Behavior {
                 values = activeSelectedRange.rows.map((row: Row) =>
                     this.gridContext.cellMatrix.getCell({ row, col: activeSelectedRange.last.col })
                 );
-                this.fillRange!.rows.forEach((row: Row, i: number) =>
+                this.fillRange.rows.forEach((row: Row, i: number) =>
                     this.fillRange!.cols.forEach((col: Column) => {
                         cellMatrix.getCell({ row, col }) &&
                             cellMatrix.getCell({ row, col }).trySetData(values[i].cellData);
@@ -145,7 +145,7 @@ export class FillHandleBehavior extends Behavior {
                 values = activeSelectedRange.rows.map((row: Row) =>
                     this.gridContext.cellMatrix.getCell({ row, col: activeSelectedRange.first.col })
                 );
-                this.fillRange!.rows.forEach((row: Row, i: number) =>
+                this.fillRange.rows.forEach((row: Row, i: number) =>
                     this.fillRange!.cols.forEach(
                         (col: Column) =>
                             cellMatrix.getCell({ row, col }) &&
@@ -165,7 +165,7 @@ export class FillHandleBehavior extends Behavior {
                 values = activeSelectedRange.cols.map((col: Column) =>
                     this.gridContext.cellMatrix.getCell({ row: activeSelectedRange.first.row, col })
                 );
-                this.fillRange!.rows.forEach((row: Row) =>
+                this.fillRange.rows.forEach((row: Row) =>
                     this.fillRange!.cols.forEach(
                         (col: Column, i: number) =>
                             cellMatrix.getCell({ row, col }) &&
@@ -185,7 +185,7 @@ export class FillHandleBehavior extends Behavior {
                 values = activeSelectedRange.cols.map((col: Column) =>
                     this.gridContext.cellMatrix.getCell({ row: activeSelectedRange.last.row, col })
                 );
-                this.fillRange!.rows.forEach((row: Row) =>
+                this.fillRange.rows.forEach((row: Row) =>
                     this.fillRange!.cols.forEach(
                         (col: Column, i: number) =>
                             cellMatrix.getCell({ row, col }) &&

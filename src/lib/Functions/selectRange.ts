@@ -37,7 +37,7 @@ export function updateActiveSelectedColumns(gridContext: GridContext, firstColum
     const range = gridContext.cellMatrix.getRange({ col: firstColumn, row: firstRow }, { col: lastColumn, row: lastRow })
     gridContext.setState({
         selectionMode: 'column',
-        // TODO Ranges have to be re-calculated durring render
+        // TODO Ranges have to be re-calculated during render
         selectedRanges: [range],
         selectedIndexes: range.cols.map(col => col.idx)
     });

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
 import { handleKeyDown/*, isItLastRowOrCol*/, stopPropagationEventHandler } from './handleEvents';
-import { CellProps, Location, Cell as Cell, CellData } from '../Common';
+import { CellProps, Location, Cell as Cell, CellData, GridContext } from '../Common';
 // import '../Grid.css';
 
 export class TextCell implements Cell {
@@ -22,14 +22,23 @@ export class TextCell implements Cell {
         return this.onValueChanged(cellData.textValue);
     }
 
+    checkCellMatrixClipboard(e: any, gridContext: GridContext) {
+        const htmlData = e.clipboardData!.getData('text/html');
+        const parsedData = new DOMParser().parseFromString(htmlData, 'text/html')
+        if (htmlData && parsedData.body.firstElementChild!.getAttribute('data-key') === 'dynagrid') {
+            gridContext.setState({ isFocusedCellInEditMode: false });
+            return e.preventDefault()
+        }
+        return e.stopPropagation()
+    }
+
     renderContent: (props: CellProps) => React.ReactNode = (props) =>
         <>
             {props.isInEditMode && (
                 <input
                     style={{
-                        // TODO !!!
-                        width: 100/*this.props.attributes.style.width*/,
-                        height: 25/*this.props.attributes.style.height*/,
+                        width: '100%',
+                        height: '100%',
                         border: 0,
                         fontSize: 16,
                         outline: 'none'
@@ -43,7 +52,6 @@ export class TextCell implements Cell {
                     defaultValue={props.cellData.textValue}
                     onChange={input => (this.enteredValue = input.target.value)}
                     onBlur={e => {
-                        // props.setEditMode(false);
                         if (
                             (e.target.value && e.target.value !== props.cellData.textValue) ||
                             (props.cellData.textValue && e.target.value !== props.cellData.textValue)
@@ -54,18 +62,21 @@ export class TextCell implements Cell {
                     }}
                     onCopy={stopPropagationEventHandler}
                     onCut={stopPropagationEventHandler}
-                    // TODO onPaste: is content cellData matrix? preventDefault & propagate event ELSE paste in input & stopPropagation 
-                    onPaste={stopPropagationEventHandler}
+                    onPaste={e => this.checkCellMatrixClipboard(e, props.gridContext)}
+                    onPointerDown={e => e.stopPropagation()}
                     onKeyDown={e => {
                         if (
                             !(this.enteredValue === undefined || this.enteredValue.length === 0) &&
-                            (e.keyCode === keyCodes.ENTER)
+                            (e.keyCode === keyCodes.ENTER || e.keyCode === keyCodes.TAB)
                         ) {
-                            console.log(this.enteredValue)
-                            this.trySetData({ textValue: this.enteredValue, data: this.enteredValue, type: 'string' });
-                            props.gridContext.commitChanges();
+                            if (this.cellData.textValue !== this.enteredValue) {
+                                this.trySetData({ textValue: this.enteredValue, data: this.enteredValue, type: 'string' });
+                                props.gridContext.commitChanges();
+                            }
                             props.gridContext.setState({ isFocusedCellInEditMode: false });
                             props.gridContext.hiddenFocusElement.focus();
+                        } else {
+                            e.stopPropagation();
                         }
                     }}
                 />

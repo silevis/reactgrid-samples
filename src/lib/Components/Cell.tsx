@@ -4,7 +4,7 @@ import { GridContext, Borders, Location } from "../Common";
 export interface CellRendererProps {
     gridContext: GridContext
     location: Location,
-    borders: Borders
+    borders: Borders,
 }
 
 export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) => {
@@ -18,7 +18,6 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
         boxSizing: 'border-box',
         whiteSpace: 'nowrap',
         position: 'absolute',
-        background: 'white',
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
@@ -50,7 +49,6 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
                 onValueChanged: cell.trySetData,
                 gridContext: props.gridContext,
                 isInEditMode: isFocused && props.gridContext.state.isFocusedCellInEditMode,
-
             })}
         </div>
     )

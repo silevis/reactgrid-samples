@@ -64,6 +64,9 @@ export class DefaultBehavior extends Behavior {
     }
     handlePaste(event: ClipboardEvent): void {
         const activeSelectedRange = getActiveSelectedRange(this.gridContext)
+        if (!activeSelectedRange) {
+            return
+        }
         let pasteContent: CellData[][];
         const htmlData = event.clipboardData.getData('text/html');
         const parsedData = new DOMParser().parseFromString(htmlData, 'text/html')

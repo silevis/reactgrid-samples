@@ -10,7 +10,7 @@ export function scrollIntoView(gridContext: GridContext, location: Location, dir
 
 function getScrollTop(gridContext: GridContext, row: Row, dontChange: boolean): number {
     const { scrollTop, clientHeight } = gridContext.viewportElement;
-    if (dontChange)
+    if (dontChange || !row)
         return scrollTop;
 
     const { frozenTopRange, frozenBottomRange } = gridContext.cellMatrix;
@@ -18,7 +18,7 @@ function getScrollTop(gridContext: GridContext, row: Row, dontChange: boolean): 
     const isRowOnFrozenPane = row.idx <= frozenTopRange.last.row.idx || row.idx >= frozenBottomRange.first.row.idx;
     const visibleContentHeight = Math.min(clientHeight, gridContext.cellMatrix.height);
     const visibleScrollAreaHeight = visibleContentHeight - frozenTopRange.height - frozenBottomRange.height;
-    const isRowBelowTopPane = row.top < scrollTop
+    const isRowBelowTopPane = row.top < scrollTop;
 
     const isRowVisible = isRowOnFrozenPane || !isRowBelowTopPane && row.bottom < scrollTop + visibleScrollAreaHeight;
     if (isRowVisible) {
@@ -31,7 +31,7 @@ function getScrollTop(gridContext: GridContext, row: Row, dontChange: boolean): 
 
 function getScrollLeft(gridContext: GridContext, column: Column, dontChange: boolean): number {
     const { scrollLeft, clientWidth } = gridContext.viewportElement;
-    if (dontChange)
+    if (dontChange || !column)
         return scrollLeft
 
     const { frozenLeftRange, frozenRightRange } = gridContext.cellMatrix;
@@ -39,7 +39,7 @@ function getScrollLeft(gridContext: GridContext, column: Column, dontChange: boo
     const isColumnOnFrozenPane = column.idx <= frozenLeftRange.last.col.idx || column.idx >= frozenRightRange.first.col.idx;
     const visibleContentWidth = Math.min(clientWidth, gridContext.cellMatrix.width);
     const visibleScrollAreaWidth = visibleContentWidth - frozenLeftRange.width - frozenRightRange.width;
-    const isColumnBelowLeftPane = column.left < scrollLeft
+    const isColumnBelowLeftPane = column.left < scrollLeft;
 
     const isColumnVisible = isColumnOnFrozenPane || !isColumnBelowLeftPane && column.right < scrollLeft + visibleScrollAreaWidth;
     if (isColumnVisible) {

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { ColProps, RowProps, CellMatrix } from '../../lib/Common';
 import { TextCell } from '../../lib/Cells/TextCell';
 import { Grid } from '../../lib/Components/Grid';
-// import { ColumnHeaderCell } from '../../lib/Cells/ColumnHeaderCell';
+import { ColumnHeaderCell } from '../../lib/Cells/ColumnHeaderCell';
 // import { RowHeaderCell } from '../../lib/Cells/RowHeaderCell';
 
 export class Spreadsheet extends React.Component<{}, { data: string[][] }> {
@@ -22,14 +22,14 @@ export class Spreadsheet extends React.Component<{}, { data: string[][] }> {
         const columns: ColProps[] = this.state.data[0].map(_ => { return { width: 80, context: undefined } });
         const rows: RowProps[] = this.state.data.map(_ => { return { height: 25, context: undefined } })
         // rowHeights.map((_, i) => cells[i][0] = RowHeaderCell.Create({ textValue: i.toString(), data: i.toString(), type: 'rowHeader' }, 'header', () => { }, false, true, () => { }));
-        // columnWidths.map((_, j) => cells[0][j] = ColumnHeaderCell.Create({ textValue: j.toString(), data: j.toString(), type: 'columnHeader' }, 'header', () => { }, false, true, () => { }));
+        // columnWidths.map((_, j) => cells[0][j] = new ColumnHeaderCell({ textValue: j.toString(), data: j.toString(), type: 'columnHeader' }, 'header',);
         // cells[0][0] = ColumnHeaderCell.Create({ textValue: '', data: '', type: 'columnHeader' }, 'header', () => { }, true, false, () => { });
         return new CellMatrix({ frozenTopRows: 1, frozenLeftColumns: 1, frozenBottomRows: 1, frozenRightColumns: 1, rows, columns, cells: cells })
     }
 
     render() {
         console.log('render spreadsheet')
-        return <Grid style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
+        return <Grid style={{ position: 'absolute', top: 40, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
             cellMatrix={this.generateCellMatrix()}
             onValuesChanged={() => this.forceUpdate()}
         />

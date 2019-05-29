@@ -57,6 +57,9 @@ const isSpecialKeys = (key: string): boolean => {
 
 const isSelectedOneCell = (gridContext: GridContext): boolean => {
     const activeSelectedRange = gridContext.state.selectedRanges[gridContext.state.activeSelectedRangeIdx]
+    if (!activeSelectedRange) {
+        return false
+    }
     return gridContext.state.selectedRanges.length <= 1 && gridContext.state.selectedRanges.length > 0 && activeSelectedRange.cols.length <= 1 && activeSelectedRange.rows.length <= 1
 }
 
