@@ -49,4 +49,3 @@ function getScrollLeft(gridContext: GridContext, column: Column, dontChange: boo
     } else // column is below right pane
         return column.right - visibleScrollAreaWidth;
 }
-

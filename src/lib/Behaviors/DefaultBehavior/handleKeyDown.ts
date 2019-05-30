@@ -2,10 +2,12 @@ import { GridContext, KeyboardEvent, keyCodes, Row, Column } from "../../Common"
 import { focusLocation } from "../../Functions";
 import { ResizeSelectionWithKeysBehavior } from "./ResizeSelectionWithKeysBehavior";
 import { KeyNavigationInsideSelectionBehavior as handleKeyNavigationInsideSelection } from "./KeyNavigationInsideSelectionBehavior";
+import { KeyObject } from "crypto";
 
 export function handleKeyDown(gridContext: GridContext, event: KeyboardEvent) {
     const focusedLocation = gridContext.state.focusedLocation!;
     const key: string = event.key
+    console.log(key)
     if (!focusedLocation) { return }
 
     if (!isSelectedOneCell(gridContext) && !isArrowKey(key)) {
@@ -34,6 +36,10 @@ export function handleKeyDown(gridContext: GridContext, event: KeyboardEvent) {
         handleSpecialKeys(event, gridContext)
     }
 
+    if (!event.ctrlKey && (event.keyCode >= keyCodes.ZERO && event.keyCode <= keyCodes.Z) || (event.keyCode >= keyCodes.NUM_PAD_0 && event.keyCode <= keyCodes.DIVIDE) || (event.keyCode >= keyCodes.SEMI_COLON && event.keyCode <= keyCodes.SINGLE_QUOTE) || event.keyCode === keyCodes.SPACE) {
+        gridContext.setState({ isFocusedCellInEditMode: true })
+        return;
+    }
     //event.stopPropagation();
     //event.preventDefault();
     return;

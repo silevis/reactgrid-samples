@@ -19,5 +19,5 @@ export const keyCodes = {
     PAGE_UP: 33,
     PAGE_DOWN: 34,
     SEMI_COLON: 186,
-    SINGLE_QUOTE: 222
+    SINGLE_QUOTE: 222,
 };
