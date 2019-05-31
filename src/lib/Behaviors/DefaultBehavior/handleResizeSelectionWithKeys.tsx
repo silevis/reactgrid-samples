@@ -1,7 +1,7 @@
 import { GridContext, KeyboardEvent, keyCodes } from "../../Common";
 import { scrollIntoView } from "../../Functions";
 
-export function ResizeSelectionWithKeysBehavior(gridContext: GridContext, event: KeyboardEvent) {
+export function handleResizeSelectionWithKeys(gridContext: GridContext, event: KeyboardEvent) {
     const activeSelectedRange = gridContext.state.selectedRanges[gridContext.state.activeSelectedRangeIdx]
     const focusedCell = gridContext.state.focusedLocation!;
     if (event.keyCode === keyCodes.UP_ARROW && event.shiftKey && activeSelectedRange.first.row.idx > 0) {

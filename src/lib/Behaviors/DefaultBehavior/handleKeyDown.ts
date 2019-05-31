@@ -1,8 +1,7 @@
 import { GridContext, KeyboardEvent, keyCodes, Row, Column } from "../../Common";
 import { focusLocation } from "../../Functions";
-import { ResizeSelectionWithKeysBehavior } from "./ResizeSelectionWithKeysBehavior";
-import { KeyNavigationInsideSelectionBehavior as handleKeyNavigationInsideSelection } from "./KeyNavigationInsideSelectionBehavior";
-import { KeyObject } from "crypto";
+import { handleResizeSelectionWithKeys } from "./handleResizeSelectionWithKeys";
+import { handleKeyNavigationInsideSelection as handleKeyNavigationInsideSelection } from "./handleKeyNavigationInsideSelection";
 
 export function handleKeyDown(gridContext: GridContext, event: KeyboardEvent) {
     const focusedLocation = gridContext.state.focusedLocation!;
@@ -20,7 +19,7 @@ export function handleKeyDown(gridContext: GridContext, event: KeyboardEvent) {
         }
     }
     if (event.shiftKey) {
-        ResizeSelectionWithKeysBehavior(gridContext, event)
+        handleResizeSelectionWithKeys(gridContext, event)
     }
     if (isArrowKey(key)) {
         handleArrows(event, gridContext)

@@ -17,6 +17,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
     let cellData = { ...cell.cellData };
 
     const controlKeyCodes = [keyCodes.ENTER, keyCodes.ESC];
+    const preserveValueKeyCodes = [0, keyCodes.ENTER];
 
     const style: React.CSSProperties = {
         boxSizing: 'border-box',
@@ -30,8 +31,8 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
         top: location.row.top,
         width: location.col.width,
         height: location.row.height,
-        paddingLeft: 2,
-        paddingRight: 2,
+        // paddingLeft: 2,
+        // paddingRight: 2,
         borderTop: borders.top ? 'solid 1px #ccc' : '',
         borderLeft: borders.left ? 'solid 1px #ccc' : '',
         borderBottom: borders.bottom

@@ -3,7 +3,7 @@ import { focusLocation } from '../../Functions';
 import { GridContext, KeyboardEvent } from '../../Common';
 import { getActiveSelectedRange } from '../../Functions/getActiveSelectedRange';
 
-export function KeyNavigationInsideSelectionBehavior(gridContext: GridContext, event: KeyboardEvent) {
+export function handleKeyNavigationInsideSelection(gridContext: GridContext, event: KeyboardEvent) {
     const focusedCell = gridContext.state.focusedLocation!;
     const cellMatrix = gridContext.cellMatrix;
     const activeSelectedRange = getActiveSelectedRange(gridContext)
