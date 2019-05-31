@@ -7,7 +7,6 @@ import { KeyObject } from "crypto";
 export function handleKeyDown(gridContext: GridContext, event: KeyboardEvent) {
     const focusedLocation = gridContext.state.focusedLocation!;
     const key: string = event.key
-    console.log(key)
     if (!focusedLocation) { return }
 
     if (!isSelectedOneCell(gridContext) && !isArrowKey(key)) {
@@ -36,9 +35,19 @@ export function handleKeyDown(gridContext: GridContext, event: KeyboardEvent) {
         handleSpecialKeys(event, gridContext)
     }
 
-    if (!event.ctrlKey && (event.keyCode >= keyCodes.ZERO && event.keyCode <= keyCodes.Z) || (event.keyCode >= keyCodes.NUM_PAD_0 && event.keyCode <= keyCodes.DIVIDE) || (event.keyCode >= keyCodes.SEMI_COLON && event.keyCode <= keyCodes.SINGLE_QUOTE) || event.keyCode === keyCodes.SPACE) {
-        gridContext.setState({ isFocusedCellInEditMode: true })
-        return;
+
+    if (!event.ctrlKey && !gridContext.state.isFocusedCellInEditMode && (event.keyCode == keyCodes.ENTER || (event.keyCode >= keyCodes.ZERO && event.keyCode <= keyCodes.Z) || (event.keyCode >= keyCodes.NUM_PAD_0 && event.keyCode <= keyCodes.DIVIDE) || (event.keyCode >= keyCodes.SEMI_COLON && event.keyCode <= keyCodes.SINGLE_QUOTE) || event.keyCode === keyCodes.SPACE)) {
+        // TODO call shouldEnableEditMode on current cell
+        if (gridContext.cellMatrix.getCell(gridContext.state.focusedLocation!).shouldEnableEditMode(event.keyCode))
+            gridContext.setState({ isFocusedCellInEditMode: true })
+        gridContext.lastKeyCode = event.keyCode;
+
+    }
+
+    if (event.keyCode === keyCodes.ESC && gridContext.state.isFocusedCellInEditMode) {
+        gridContext.lastKeyCode = event.keyCode;
+        gridContext.setState({ isFocusedCellInEditMode: false })
+        gridContext.hiddenFocusElement.focus();
     }
     //event.stopPropagation();
     //event.preventDefault();
@@ -153,7 +162,6 @@ const handleTabKey = (event: KeyboardEvent, gridContext: GridContext) => {
         !event.shiftKey &&
         focusedLocation.col.idx < cellMatrix.last.col.idx
     ) {
-        gridContext.setState({ isFocusedCellInEditMode: false });
         focusLocation(
             gridContext,
             cellMatrix.getLocation(
@@ -167,7 +175,6 @@ const handleTabKey = (event: KeyboardEvent, gridContext: GridContext) => {
         event.shiftKey &&
         focusedLocation.col.idx > 0
     ) {
-        gridContext.setState({ isFocusedCellInEditMode: false });
         focusLocation(
             gridContext,
             cellMatrix.getLocation(
@@ -187,7 +194,6 @@ const handleEnterKey = (event: KeyboardEvent, gridContext: GridContext) => {
         gridContext.state.isFocusedCellInEditMode &&
         focusedLocation.row.idx < cellMatrix.last.row.idx
     ) {
-        gridContext.setState({ isFocusedCellInEditMode: false });
         focusLocation(
             gridContext,
             cellMatrix.getLocation(
@@ -201,7 +207,6 @@ const handleEnterKey = (event: KeyboardEvent, gridContext: GridContext) => {
         gridContext.state.isFocusedCellInEditMode &&
         focusedLocation.row.idx > 0
     ) {
-        gridContext.setState({ isFocusedCellInEditMode: false });
         focusLocation(
             gridContext,
             cellMatrix.getLocation(
@@ -230,11 +235,7 @@ const handleEnterKey = (event: KeyboardEvent, gridContext: GridContext) => {
 const handleSpecialKeys = (event: KeyboardEvent, gridContext: GridContext) => {
     const focusedLocation = gridContext.state.focusedLocation!;
     const cellMatrix = gridContext.cellMatrix;
-    console.log(gridContext.state.selectedRanges)
-    if (event.keyCode === keyCodes.BACKSPACE) {
-        // cellMatrix.getCell(focusedLocation).trySetValue(undefined);
-        gridContext.commitChanges();
-    } else if (event.keyCode === keyCodes.DELETE) {
+    if (event.keyCode === keyCodes.DELETE || event.keyCode === keyCodes.BACKSPACE) {
         gridContext.state.selectedRanges.forEach(range => {
             range.rows.forEach((row: Row) =>
                 range.cols.forEach((col: Column) =>

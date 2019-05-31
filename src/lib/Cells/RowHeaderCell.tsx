@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { stopPropagationEventHandler } from './handleEvents';
 // import './Cell.css';
-import { Cell, CellProps, Location, CellMatrix, GridContext, CellData } from '../Common';
+import { Cell, CellRenderProps, Location, CellMatrix, GridContext, CellData } from '../Common';
 import { getLocationFromClient, changeBehavior } from '../Functions';
 import { ColumnSelectionBehavior } from '../Behaviors/ColumnSelectionBehavior';
 

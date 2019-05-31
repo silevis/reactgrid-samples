@@ -6,6 +6,7 @@ import { refresh } from "../Functions";
 import { KeyboardEvent, ClipboardEvent, PointerEvent } from "../Common";
 import { PointerEventsController } from "../Common/PointerEventsController";
 import { FillHandle } from "./FillHandle";
+import { timingSafeEqual } from "crypto";
 
 
 interface GridProps {
@@ -119,6 +120,14 @@ export class Grid extends React.Component<GridProps, GridState> {
         // }
     }
 
+    handlePasteCapture(e: React.ClipboardEvent<HTMLDivElement>) {
+        const htmlData = e.clipboardData!.getData('text/html');
+        const parsedData = new DOMParser().parseFromString(htmlData, 'text/html')
+        if (htmlData && parsedData.body.firstElementChild!.getAttribute('data-key') === 'dynagrid') {
+            e.bubbles = false;
+        }
+    }
+
     render() {
         const matrix = this.props.cellMatrix;
         return (
@@ -148,6 +157,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                     onCopy={this.copyHandler}
                     onCut={this.cutHandler}
                     onPaste={this.pasteHandler}
+                    onPasteCapture={this.handlePasteCapture}
                 >
                     {matrix.frozenTopRange.height > 0 &&
                         <PaneRow

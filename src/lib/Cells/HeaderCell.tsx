@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { stopPropagationEventHandler } from './handleEvents';
 // import './Cell.css';
-import { Cell, Orientation, CellProps, Location, CellMatrix, CellData } from '../Common';
+import { Cell, Orientation, CellRenderProps, Location, CellMatrix, CellData } from '../Common';
 import { getLocationFromClient } from '../Functions';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
 

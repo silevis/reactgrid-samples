@@ -16,27 +16,24 @@ export interface CellData {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface Cell {
     cellData: CellData;
-    isReadOnly: boolean;
     trySetData(cellData: CellData): void;
-    renderContent(props: CellProps): React.ReactNode;
+    shouldEnableEditMode(keyCode: number): boolean;
+    renderContent(props: CellRenderProps): React.ReactNode;
 }
+
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
+export interface CellRenderProps {
+    cellData: CellData;
+    gridContext: GridContext;
+    onCellDataChanged: (cellData: CellData) => void;
+    isInEditMode: boolean;
+}
+
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface Location {
     readonly row: Row;
     readonly col: Column;
-}
-
-// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
-export interface CellProps {
-    cellData: CellData;
-    // isReadOnly: boolean;
-    onValueChanged: (cellData: CellData) => void;
-    gridContext: GridContext;
-    isInEditMode: boolean;
-    //isSelected: boolean;
-    //isFocused: boolean;
-    //setEditMode: (value: boolean) => void;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 

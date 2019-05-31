@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { stopPropagationEventHandler } from './handleEvents';
-import { Cell, CellProps, Location, CellMatrix, GridContext, CellData } from '../Common';
+import { Cell, CellRenderProps, Location, CellMatrix, GridContext, CellData } from '../Common';
 import { getLocationFromClient, changeBehavior } from '../Functions';
 import { ColumnSelectionBehavior } from '../Behaviors/ColumnSelectionBehavior';
 
-export interface HeaderCellProps extends CellProps {
+export interface HeaderCellProps extends CellRenderProps {
     shouldStartReorder: boolean;
     shouldStartColResize: boolean;
     customCss?: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
@@ -30,6 +30,8 @@ export class ColumnHeaderCell implements Cell {
     trySetData(cellData: CellData) {
         return this.onValueChanged(cellData.textValue);
     }
+
+    shouldEnableEditMode = () => false;
 
     renderContent: (props: HeaderCellProps) => React.ReactNode = (props) => {
 

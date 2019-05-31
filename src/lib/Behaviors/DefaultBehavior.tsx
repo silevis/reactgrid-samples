@@ -38,13 +38,13 @@ export class DefaultBehavior extends Behavior {
                 this.gridContext.state.focusedLocation.col.idx === location.col.idx &&
                 this.gridContext.state.focusedLocation.row.idx === location.row.idx
             ) {
+                this.gridContext.lastKeyCode = 0;
                 setTimeout(() => this.gridContext.setState({ isFocusedCellInEditMode: true }));
             }
         }
     }
 
     handleKeyDown(event: KeyboardEvent) {
-        console.log('keydown')
         handleKeyDown(this.gridContext, event)
     }
     handleKeyUp(event: KeyboardEvent): void {

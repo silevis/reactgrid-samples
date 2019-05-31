@@ -15,7 +15,6 @@ export class PointerEventsController {
 
         if (event.button !== 0)
             return
-
         window.addEventListener('pointermove', this.handlePointerMove as any);
         window.addEventListener('pointerup', this.handlePointerUp as any);
         const currentLocation = getLocationFromClient(this.gridContext, event.clientX, event.clientY);

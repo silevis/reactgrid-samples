@@ -1,7 +1,7 @@
 import { Grid, GridState } from "../Components/Grid";
 import { CellMatrix } from "./CellMatrix";
 import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
-import { Behavior } from ".";
+import { Behavior, CellData } from ".";
 
 // INTERNAL
 export class GridContext {
@@ -15,4 +15,5 @@ export class GridContext {
     viewportElement!: HTMLDivElement;
     // currentBehavior cannot be in state, because setState() updates state asyncronously
     currentBehavior: Behavior = new DefaultBehavior(this);
+    lastKeyCode: number = 0;
 }
