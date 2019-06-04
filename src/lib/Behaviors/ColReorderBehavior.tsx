@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Column, GridContext, Behavior, CellMatrix, Cell } from '../Common';
+import { Column, GridContext, Behavior, CellMatrix, Cell, Location } from '../Common';
 import { Grid } from '../Components/Grid';
 import { resetToDefaultBehavior } from '../Functions';
 import { LineAndShadow } from '../Components/LineAndShadow';
@@ -8,11 +8,11 @@ import { getColumnFromClientX } from '../Functions/getLocationFromClient';
 
 export let columnIsMoving: boolean = false;
 export class ColReorderBehavior extends Behavior {
-    private scrollHandler = this.handleScroll.bind(this);
     private colOnScreen!: Column;
     private mouseOffset: number;
     private target: Column[];
     private positionX: number;
+    private lastAssignableColumn: Column | undefined;
     private setLinePosition: (position: number) => void = _ => { };
     private setShadowPosition: (position: number) => void = _ => { };
 
@@ -35,6 +35,7 @@ export class ColReorderBehavior extends Behavior {
                     : null;
 
         this.positionX = positionX;
+        this.lastAssignableColumn = undefined;
 
         if (
             this.gridContext.cellMatrix.frozenRightRange.cols.length > 0 &&
@@ -85,28 +86,16 @@ export class ColReorderBehavior extends Behavior {
         } else {
             this.mouseOffset = positionX - activeSelectedRange.first.col.left + this.gridContext.viewportElement.scrollLeft;
         }
-
-        gridContext.viewportElement.addEventListener('scroll', this.scrollHandler);
     }
 
     dispose = () => {
-        this.gridContext.viewportElement.removeEventListener('scroll', this.scrollHandler);
         columnIsMoving = false;
     };
 
-    private handleScroll() {
-        this.changeShadowPosition();
-    }
-
-    private changeShadowPosition() {
+    private changeShadowPosition(location: Location) {
         const cellMatrix = this.gridContext.cellMatrix;
-
-        let colUnderCursor = getColumnFromClientX(this.gridContext, this.positionX, false);
-
+        let colUnderCursor = location.col
         if (colUnderCursor) {
-            if (colUnderCursor.idx === 0) {
-                colUnderCursor = cellMatrix.cols[cellMatrix.frozenLeftRange.cols.length];
-            }
 
             if (colUnderCursor.idx === cellMatrix.cols[cellMatrix.last.col.idx].idx) {
                 colUnderCursor = cellMatrix.cols[cellMatrix.last.col.idx - 1];
@@ -135,6 +124,7 @@ export class ColReorderBehavior extends Behavior {
         }
     }
 
+
     handlePointerUp = (e: any) => {
         const activeSelectedRange = getActiveSelectedRange(this.gridContext);
         const selectedCols = activeSelectedRange.cols;
@@ -145,17 +135,31 @@ export class ColReorderBehavior extends Behavior {
             this.setShadowPosition(-1);
         } else {
             const isOnRightSideDrop = activeSelectedRange.first.col.idx < this.colOnScreen.idx;
+
+            // checking if the column is enabled to drop on certain side
+            if (this.colOnScreen.canDropRight && (isOnRightSideDrop && !this.colOnScreen.canDropRight()) ||
+                this.colOnScreen.canDropLeft && (!isOnRightSideDrop && !this.colOnScreen.canDropLeft())) {
+
+                if (this.lastAssignableColumn) {
+                    this.colOnScreen = this.lastAssignableColumn;
+                    this.lastAssignableColumn = undefined;
+                } else {
+                    resetToDefaultBehavior(this.gridContext);
+                    return;
+                }
+            }
+
             const positionChange =
                 this.colOnScreen.idx > selectedCols[0].idx
                     ? this.colOnScreen.idx - selectedCols[selectedCols.length - 1].idx
                     : this.colOnScreen.idx - selectedCols[0].idx;
             if (isOnRightSideDrop) {
                 if (this.colOnScreen.onDropRight || this.colOnScreen.idx === cellMatrix.last.col.idx) {
-                    this.colOnScreen.onDropRight!(activeSelectedRange.cols, this.colOnScreen);
+                    this.colOnScreen.onDropRight!(activeSelectedRange.cols);
                 }
             } else {
                 if (this.colOnScreen.onDropLeft) {
-                    this.colOnScreen.onDropLeft(activeSelectedRange.cols, this.colOnScreen);
+                    this.colOnScreen.onDropLeft(activeSelectedRange.cols);
                 }
             }
 
@@ -193,18 +197,28 @@ export class ColReorderBehavior extends Behavior {
             return this.target.some(c => c === col);
         };
         const isSelectedCol = (col: Column) => {
-            return activeSelectedRange.cols.some((c: Column) => c === col);
+            return activeSelectedRange.cols.some((c: Column) => c.idx === col.idx);
         };
 
         const areColumnsMovingRight = () => {
             return activeSelectedRange.first.col.idx < this.colOnScreen.idx;
         };
 
-        this.colOnScreen = isTargetCol(col) ? col : isSelectedCol(col) ? activeSelectedRange.cols[0] : this.colOnScreen;
+        this.colOnScreen =
+            isTargetCol(col)
+                ? col
+                : isSelectedCol(col)
+                    ? activeSelectedRange.cols[0]
+                    : this.colOnScreen;
+
+        // checking if the position line should be updated
+        if (col.canDropRight && (!col.canDropRight() && areColumnsMovingRight()) ||
+            col.canDropLeft && (!col.canDropLeft() && !areColumnsMovingRight()))
+            return
+
         let colLeft = col.left;
         const cellMatrix: CellMatrix = this.gridContext.cellMatrix;
         let linePosition;
-
         if (
             this.gridContext.cellMatrix.frozenRightRange.cols.length > 0 &&
             this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0
@@ -275,6 +289,7 @@ export class ColReorderBehavior extends Behavior {
                 : -1;
         }
 
+        this.lastAssignableColumn = this.colOnScreen;
         this.setLinePosition(linePosition);
     }
 
@@ -292,13 +307,13 @@ export class ColReorderBehavior extends Behavior {
             />
         )
     }
-    handlePointerMove = (event: any) => {
+    handlePointerMove(event: any, location: any) {
         if (event.type === 'pointermove') {
             this.positionX = event.clientX;
         } else if (event.type === 'touchmove') {
             this.positionX = event.changedTouches[0].clientX;
         }
 
-        this.changeShadowPosition();
+        this.changeShadowPosition(location);
     }
 }
