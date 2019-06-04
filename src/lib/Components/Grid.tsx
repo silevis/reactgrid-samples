@@ -186,6 +186,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                             borders={{ top: true }}
                             zIndex={3}
                         />}
+                    {this.gridContext.currentBehavior.renderGlobalPart && this.gridContext.currentBehavior.renderGlobalPart()}
                     <div
                         className="dg-hidden-focus-element"
                         contentEditable={true}
@@ -195,7 +196,6 @@ export class Grid extends React.Component<GridProps, GridState> {
                         onPaste={this.handlePasteOnHiddenElement}
                         ref={this.hiddenElementRefHandler}
                     />
-                    {/* {this.state.currentBehavior.renderGlobalPart && this.state.currentBehavior.renderGlobalPart()} */}
                 </div>
             </div>
         );

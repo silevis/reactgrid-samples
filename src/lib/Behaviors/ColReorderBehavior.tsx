@@ -1,351 +1,304 @@
-export const x = 1;
+import * as React from 'react';
+import { Column, GridContext, Behavior, CellMatrix, Cell } from '../Common';
+import { Grid } from '../Components/Grid';
+import { resetToDefaultBehavior } from '../Functions';
+import { LineAndShadow } from '../Components/LineAndShadow';
+import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
+import { getColumnFromClientX } from '../Functions/getLocationFromClient';
 
-// import * as React from 'react';
-// import { AutoScrollBehavior } from './AutoScrollBehavior';
-// import { DelegateBehavior } from "./DelegateBehavior";
-// import { BasicGridBehavior } from './BasicGridBehavior';
-// import { CellMatrix } from '..';
-// import { Utilities } from '../Common/Utilities';
-// import { Column, GridContext } from '../Common';
-// import { Grid } from '../Components/Grid';
-// import { getColumnFromClientX, resetToDefaultBehavior } from '../Functions';
-// import { LineAndShadow } from '../Components/LineAndShadow';
-// import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
+export let columnIsMoving: boolean = false;
+export class ColReorderBehavior extends Behavior {
+    private scrollHandler = this.handleScroll.bind(this);
+    private colOnScreen!: Column;
+    private mouseOffset: number;
+    private target: Column[];
+    private positionX: number;
+    private setLinePosition: (position: number) => void = _ => { };
+    private setShadowPosition: (position: number) => void = _ => { };
 
-// export let columnIsMoving: boolean = false;
-// export class ColReorderBehavior extends DelegateBehavior {
-//     private moveHandler = this.handleMove.bind(this);
-//     private mouseUpAndTouchEndHandler = this.handleMouseUpAndTouchEnd.bind(this);
-//     private scrollHandler = this.handleScroll.bind(this);
-//     private colOnScreen!: Column;
-//     private mouseOffset: number;
-//     private target: Column[];
-//     private positionX: number;
-//     private setLinePosition: (position: number) => void = _ => { };
-//     private setShadowPosition: (position: number) => void = _ => { };
+    constructor(private gridContext: GridContext, event: any) {
+        super();
+        const activeSelectedRange = getActiveSelectedRange(gridContext);
 
-//     constructor(gridContext: GridContext, event: any) {
-//         super(new AutoScrollBehavior(new BasicGridBehavior(gridContext), 'horizontal'));
-//         const activeSelectedRange = getActiveSelectedRange(gridContext);
-//         this.target = this.gridContext.cellMatrix.cols.filter(
-//             (c: Column) =>
-//                 c.idx < activeSelectedRange.cols[0].idx ||
-//                 c.idx > activeSelectedRange.cols[activeSelectedRange.cols.length - 1].idx
-//         );
+        this.target = this.gridContext.cellMatrix.cols.filter(
+            (c: Column) =>
+                c.idx < activeSelectedRange.cols[0].idx ||
+                c.idx > activeSelectedRange.cols[activeSelectedRange.cols.length - 1].idx
+        );
 
-//         const colUnderCursor = activeSelectedRange.first.col;
-//         const positionX =
-//             event.type === 'mousedown'
-//                 ? event.clientX
-//                 : event.type === 'touchstart'
-//                     ? event.changedTouches[0].clientX
-//                     : null;
+        const colUnderCursor = activeSelectedRange.first.col;
+        const positionX =
+            event.type === 'pointerdown'
+                ? event.clientX
+                : event.type === 'touchstart'
+                    ? event.changedTouches[0].clientX
+                    : null;
 
-//         this.positionX = positionX;
+        this.positionX = positionX;
 
-//         if (
-//             this.gridContext.cellMatrix.frozenRightRange.cols.length > 0 &&
-//             this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0
-//         ) {
-//             if (colUnderCursor.idx >= this.gridContext.cellMatrix.frozenRightStart) {
-//                 this.mouseOffset =
-//                     positionX -
-//                     activeSelectedRange.first.col.left -
-//                     this.gridContext.cellMatrix.frozenLeftRange.width
-//                 // - this.gridContext.state.scrollAreaWidth;
-//             } else if (colUnderCursor.idx > this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
-//                 this.mouseOffset =
-//                     positionX -
-//                     activeSelectedRange.first.col.left -
-//                     this.gridContext.cellMatrix.frozenLeftRange.width +
-//                     this.gridContext.state.gridElement.scrollLeft;
-//             } else {
-//                 this.mouseOffset = positionX - activeSelectedRange.first.col.left;
-//             }
-//         } else if (
-//             this.gridContext.cellMatrix.frozenRightRange.cols.length > 0 &&
-//             !(this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0)
-//         ) {
-//             if (colUnderCursor.idx >= this.gridContext.cellMatrix.frozenRightStart) {
-//                 this.mouseOffset =
-//                     positionX -
-//                     activeSelectedRange.first.col.left -
-//                     this.gridContext.cellMatrix.frozenLeftRange.width
-//                 // - this.gridContext.state.scrollAreaWidth;
-//             } else {
-//                 this.mouseOffset =
-//                     positionX -
-//                     activeSelectedRange.first.col.left -
-//                     this.gridContext.cellMatrix.frozenLeftRange.width +
-//                     this.gridContext.state.gridElement.scrollLeft;
-//             }
-//         } else if (this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0) {
-//             if (colUnderCursor.idx > this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
-//                 this.mouseOffset =
-//                     positionX -
-//                     activeSelectedRange.first.col.left -
-//                     this.gridContext.cellMatrix.frozenLeftRange.width +
-//                     this.gridContext.state.gridElement.scrollLeft;
-//             } else {
-//                 this.mouseOffset = positionX - activeSelectedRange.first.col.left;
-//             }
-//         } else {
-//             this.mouseOffset = positionX - activeSelectedRange.first.col.left + this.gridContext.state.gridElement.scrollLeft;
-//         }
+        if (
+            this.gridContext.cellMatrix.frozenRightRange.cols.length > 0 &&
+            this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0
+        ) {
+            if (colUnderCursor.idx >= this.gridContext.cellMatrix.frozenRightRange.first.col.idx) {
+                this.mouseOffset =
+                    positionX -
+                    activeSelectedRange.first.col.left -
+                    this.gridContext.cellMatrix.frozenLeftRange.width
+                // - this.gridContext.state.scrollAreaWidth;
+            } else if (colUnderCursor.idx > this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
+                this.mouseOffset =
+                    positionX -
+                    activeSelectedRange.first.col.left -
+                    this.gridContext.cellMatrix.frozenLeftRange.width +
+                    this.gridContext.viewportElement.scrollLeft;
+            } else {
+                this.mouseOffset = positionX - activeSelectedRange.first.col.left;
+            }
+        } else if (
+            this.gridContext.cellMatrix.frozenRightRange.cols.length > 0 &&
+            !(this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0)
+        ) {
+            if (colUnderCursor.idx >= this.gridContext.cellMatrix.frozenRightRange.first.col.idx) {
+                this.mouseOffset =
+                    positionX -
+                    activeSelectedRange.first.col.left -
+                    this.gridContext.cellMatrix.frozenLeftRange.width
+                // - this.gridContext.state.scrollAreaWidth;
+            } else {
+                this.mouseOffset =
+                    positionX -
+                    activeSelectedRange.first.col.left -
+                    this.gridContext.cellMatrix.frozenLeftRange.width +
+                    this.gridContext.viewportElement.scrollLeft;
+            }
+        } else if (this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0) {
+            if (colUnderCursor.idx > this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
+                this.mouseOffset =
+                    positionX -
+                    activeSelectedRange.first.col.left -
+                    this.gridContext.cellMatrix.frozenLeftRange.width +
+                    this.gridContext.viewportElement.scrollLeft;
+            } else {
+                this.mouseOffset = positionX - activeSelectedRange.first.col.left;
+            }
+        } else {
+            this.mouseOffset = positionX - activeSelectedRange.first.col.left + this.gridContext.viewportElement.scrollLeft;
+        }
 
-//         if (event.type === 'mousedown') {
-//             window.addEventListener('mousemove', this.moveHandler);
-//             window.addEventListener('mouseup', this.mouseUpAndTouchEndHandler);
-//         } else if (event.type === 'touchstart') {
-//             window.addEventListener('touchmove', this.moveHandler);
-//             window.addEventListener('touchend', this.mouseUpAndTouchEndHandler);
-//             columnIsMoving = true;
-//         }
-//         gridContext.state.gridElement.addEventListener('scroll', this.scrollHandler);
-//     }
+        gridContext.viewportElement.addEventListener('scroll', this.scrollHandler);
+    }
 
-//     dispose = () => {
-//         this.innerBehavior.dispose();
-//         window.removeEventListener('mousemove', this.moveHandler);
-//         window.removeEventListener('mouseup', this.mouseUpAndTouchEndHandler);
-//         window.removeEventListener('touchmove', this.moveHandler);
-//         window.removeEventListener('touchend', this.mouseUpAndTouchEndHandler);
-//         this.gridContext.state.gridElement.removeEventListener('scroll', this.scrollHandler);
-//         columnIsMoving = false;
-//     };
+    dispose = () => {
+        this.gridContext.viewportElement.removeEventListener('scroll', this.scrollHandler);
+        columnIsMoving = false;
+    };
 
-//     private handleScroll() {
-//         this.changeShadowPosition();
-//     }
+    private handleScroll() {
+        this.changeShadowPosition();
+    }
 
-//     private changeShadowPosition() {
-//         const gridElement = this.gridContext.state.gridElement;
-//         const cellMatrix = this.gridContext.cellMatrix;
-//         const mousePosition = this.positionX + gridElement.scrollLeft;
-//         const lastColLeft = cellMatrix.last.col.left;
-//         const leftBorder = cellMatrix.frozenLeftRange.width;
-//         const activeSelectedRange = Utilities.getActiveSelectionRange(
-//             this.gridContext.state.selectedRanges,
-//             this.gridContext.state.focusedLocation!
-//         );
+    private changeShadowPosition() {
+        const cellMatrix = this.gridContext.cellMatrix;
 
-//         let colUnderCursor = getColumnFromClientX(this.gridContext, this.positionX);
+        let colUnderCursor = getColumnFromClientX(this.gridContext, this.positionX, false);
 
-//         if (colUnderCursor) {
-//             if (colUnderCursor.idx === 0) {
-//                 colUnderCursor = cellMatrix.cols[cellMatrix.frozenLeftRange.cols.length];
-//             }
+        if (colUnderCursor) {
+            if (colUnderCursor.idx === 0) {
+                colUnderCursor = cellMatrix.cols[cellMatrix.frozenLeftRange.cols.length];
+            }
 
-//             if (colUnderCursor.idx === cellMatrix.cols[cellMatrix.last.col.idx].idx) {
-//                 colUnderCursor = cellMatrix.cols[cellMatrix.last.col.idx - 1];
-//             }
+            if (colUnderCursor.idx === cellMatrix.cols[cellMatrix.last.col.idx].idx) {
+                colUnderCursor = cellMatrix.cols[cellMatrix.last.col.idx - 1];
+            }
 
-//             if (colUnderCursor !== this.colOnScreen) {
-//                 this.handleMouseEnterOnCol(colUnderCursor);
-//             }
-//         }
+            if (colUnderCursor !== this.colOnScreen) {
+                this.handleMouseEnterOnCol(colUnderCursor);
+            }
+        }
+        this.setShadowPosition(this.calculateShadowPosition(cellMatrix));
+    }
 
-//         let shadowPosition;
+    private calculateShadowPosition(cellMatrix: CellMatrix) {
+        const viewportElement = this.gridContext.viewportElement;
+        const mousePosition = this.positionX + viewportElement.scrollLeft;
+        const activeSelectedRange = getActiveSelectedRange(this.gridContext);
+        if (this.positionX - this.mouseOffset <= cellMatrix.first.col.left && viewportElement.scrollLeft === 0) {
+            return cellMatrix.first.col.left;
+        } else if (
+            this.positionX - this.mouseOffset + activeSelectedRange.width + viewportElement.scrollLeft >=
+            cellMatrix.width
+        ) {
+            return cellMatrix.width - activeSelectedRange.width
+        } else {
+            return mousePosition - this.mouseOffset;
+        }
+    }
 
-//         if (this.positionX - this.mouseOffset <= leftBorder && gridElement.scrollLeft === 0) {
-//             shadowPosition = cellMatrix.frozenLeftRange.width;
-//         } else if (
-//             this.positionX - this.mouseOffset + activeSelectedRange.cols[0].width + gridElement.scrollLeft >=
-//             lastColLeft + cellMatrix.frozenLeftRange.width
-//         ) {
-//             shadowPosition = lastColLeft - activeSelectedRange.cols[0].width + cellMatrix.last.col.width;
-//         } else {
-//             if (
-//                 this.positionX - this.mouseOffset + gridElement.scrollLeft <=
-//                 gridElement.scrollLeft + cellMatrix.frozenLeftRange.width
-//             ) {
-//                 shadowPosition = gridElement.scrollLeft + cellMatrix.frozenLeftRange.width;
-//             } else {
-//                 shadowPosition = mousePosition - this.mouseOffset;
-//             }
-//         }
+    handlePointerUp = (e: any) => {
+        const activeSelectedRange = getActiveSelectedRange(this.gridContext);
+        const selectedCols = activeSelectedRange.cols;
+        const cellMatrix: CellMatrix = this.gridContext.cellMatrix;
 
-//         this.setShadowPosition(shadowPosition);
-//     }
+        if (!this.colOnScreen) {
+            this.setLinePosition(-1);
+            this.setShadowPosition(-1);
+        } else {
+            const isOnRightSideDrop = activeSelectedRange.first.col.idx < this.colOnScreen.idx;
+            const positionChange =
+                this.colOnScreen.idx > selectedCols[0].idx
+                    ? this.colOnScreen.idx - selectedCols[selectedCols.length - 1].idx
+                    : this.colOnScreen.idx - selectedCols[0].idx;
+            if (isOnRightSideDrop) {
+                if (this.colOnScreen.onDropRight || this.colOnScreen.idx === cellMatrix.last.col.idx) {
+                    this.colOnScreen.onDropRight!(activeSelectedRange.cols, this.colOnScreen);
+                }
+            } else {
+                if (this.colOnScreen.onDropLeft) {
+                    this.colOnScreen.onDropLeft(activeSelectedRange.cols, this.colOnScreen);
+                }
+            }
 
-//     private handleMove(event: any) {
-//         this.positionX =
-//             event.type === 'mousemove'
-//                 ? event.clientX
-//                 : event.type === 'touchmove'
-//                     ? event.changedTouches[0].clientX
-//                     : null;
+            const selectedColsIdx = [selectedCols[0].idx + positionChange];
 
-//         this.changeShadowPosition();
-//     }
+            const startColIdx = selectedCols[0].idx + positionChange;
+            const endColIdx = selectedCols[selectedCols.length - 1].idx + positionChange;
+            const cell = cellMatrix.getLocation(
+                this.gridContext.state.focusedLocation!.row.idx,
+                activeSelectedRange.first.col.idx + positionChange
+            );
 
-//     private handleMouseUpAndTouchEnd(e: any) {
-//         const activeSelectedRange = Utilities.getActiveSelectionRange(
-//             this.gridContext.state.selectedRanges,
-//             this.gridContext.state.focusedLocation!
-//         );
-//         const selectedCols = activeSelectedRange.cols;
-//         const cellMatrix: CellMatrix = this.gridContext.cellMatrix;
+            const selectedRanges = [
+                cellMatrix.getRange(
+                    cellMatrix.getLocation(0, startColIdx),
+                    cellMatrix.getLocation(cellMatrix.rows.length - 1, endColIdx)
+                )
+            ];
 
-//         if (!this.colOnScreen) {
-//             this.setLinePosition(-1);
-//             this.setShadowPosition(-1);
-//         } else {
-//             const isOnRightSideDrop = activeSelectedRange.first.col.idx < this.colOnScreen.idx;
-//             const positionChange =
-//                 this.colOnScreen.idx > selectedCols[0].idx
-//                     ? this.colOnScreen.idx - selectedCols[selectedCols.length - 1].idx
-//                     : this.colOnScreen.idx - selectedCols[0].idx;
-//             if (isOnRightSideDrop) {
-//                 if (this.colOnScreen.onDropRight || this.colOnScreen.idx === cellMatrix.last.col.idx) {
-//                     this.colOnScreen.onDropRight!(activeSelectedRange.cols, this.colOnScreen);
-//                 }
-//             } else {
-//                 if (this.colOnScreen.onDropLeft) {
-//                     this.colOnScreen.onDropLeft(activeSelectedRange.cols, this.colOnScreen);
-//                 }
-//             }
+            this.gridContext.setState({
+                focusedLocation: cell,
+                isFocusedCellInEditMode: false,
+                // selectedColsIdx,
+                selectedRanges
+            });
+        }
 
-//             const selectedColsIdx = [selectedCols[0].idx + positionChange];
+        this.gridContext.commitChanges();
+        resetToDefaultBehavior(this.gridContext);
+    }
 
-//             const startColIdx = selectedCols[0].idx + positionChange;
-//             const endColIdx = selectedCols[selectedCols.length - 1].idx + positionChange;
-//             const cell = cellMatrix.getLocation(
-//                 this.gridContext.state.focusedLocation!.row.idx,
-//                 activeSelectedRange.first.col.idx + positionChange
-//             );
+    private handleMouseEnterOnCol(col: Column) {
+        const activeSelectedRange = getActiveSelectedRange(this.gridContext);
+        const isTargetCol = (col: Column) => {
+            return this.target.some(c => c === col);
+        };
+        const isSelectedCol = (col: Column) => {
+            return activeSelectedRange.cols.some((c: Column) => c === col);
+        };
 
-//             const selectedRanges = [
-//                 cellMatrix.getRange(
-//                     cellMatrix.getLocation(0, startColIdx),
-//                     cellMatrix.getLocation(cellMatrix.rows.length - 1, endColIdx)
-//                 )
-//             ];
+        const areColumnsMovingRight = () => {
+            return activeSelectedRange.first.col.idx < this.colOnScreen.idx;
+        };
 
-//             this.gridContext.setState({
-//                 focusedLocation: cell,
-//                 isFocusedCellInEditMode: false,
-//                 // selectedColsIdx,
-//                 selectedRanges
-//             });
-//         }
+        this.colOnScreen = isTargetCol(col) ? col : isSelectedCol(col) ? activeSelectedRange.cols[0] : this.colOnScreen;
+        let colLeft = col.left;
+        const cellMatrix: CellMatrix = this.gridContext.cellMatrix;
+        let linePosition;
 
-//         this.gridContext.commitChanges();
-//         resetToDefaultBehavior(this.gridContext);
-//     }
+        if (
+            this.gridContext.cellMatrix.frozenRightRange.cols.length > 0 &&
+            this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0
+        ) {
+            if (col.idx >= this.gridContext.cellMatrix.frozenRightRange.first.col.idx) {
+                linePosition = this.colOnScreen
+                    ? areColumnsMovingRight()
+                        ? (colLeft += cellMatrix.frozenLeftRange.width + cellMatrix.scrollableRange.width + col.width)
+                        : this.colOnScreen.left +
+                        this.gridContext.cellMatrix.frozenLeftRange.width +
+                        cellMatrix.scrollableRange.width
+                    : -1;
+            } else if (col.idx > this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
+                linePosition = this.colOnScreen
+                    ? areColumnsMovingRight()
+                        ? this.colOnScreen.left +
+                        this.colOnScreen.width +
+                        this.gridContext.cellMatrix.frozenLeftRange.width
+                        : this.colOnScreen.left + this.gridContext.cellMatrix.frozenLeftRange.width
+                    : -1;
+            } else {
+                linePosition = this.colOnScreen
+                    ? areColumnsMovingRight()
+                        ? this.colOnScreen.left + this.colOnScreen.width
+                        : this.colOnScreen.left
+                    : -1;
+            }
+        } else if (this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0) {
+            if (col.idx >= this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
+                linePosition = this.colOnScreen
+                    ? areColumnsMovingRight()
+                        ? this.colOnScreen.left + this.colOnScreen.width + cellMatrix.frozenLeftRange.width
+                        : this.colOnScreen.left + cellMatrix.frozenLeftRange.width
+                    : -1;
+            } else {
+                linePosition = this.colOnScreen
+                    ? areColumnsMovingRight()
+                        ? this.colOnScreen.left + this.colOnScreen.width
+                        : this.colOnScreen.left
+                    : -1;
+            }
+        } else if (
+            this.gridContext.cellMatrix.frozenRightRange.cols.length > 0 &&
+            !(this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0)
+        ) {
+            if (col.idx >= this.gridContext.cellMatrix.frozenRightRange.first.col.idx) {
+                linePosition = this.colOnScreen
+                    ? areColumnsMovingRight()
+                        ? (colLeft += cellMatrix.frozenLeftRange.width + cellMatrix.scrollableRange.width + col.width)
+                        : this.colOnScreen.left +
+                        this.gridContext.cellMatrix.frozenLeftRange.width +
+                        cellMatrix.scrollableRange.width
+                    : -1;
+            } else {
+                linePosition = this.colOnScreen
+                    ? areColumnsMovingRight()
+                        ? this.colOnScreen.left +
+                        this.colOnScreen.width +
+                        this.gridContext.cellMatrix.frozenLeftRange.width
+                        : this.colOnScreen.left + this.gridContext.cellMatrix.frozenLeftRange.width
+                    : -1;
+            }
+        } else {
+            linePosition = this.colOnScreen
+                ? areColumnsMovingRight()
+                    ? this.colOnScreen.left + this.colOnScreen.width + this.gridContext.cellMatrix.frozenLeftRange.width
+                    : this.colOnScreen.left + this.gridContext.cellMatrix.frozenLeftRange.width
+                : -1;
+        }
 
-//     private handleMouseEnterOnCol(col: Column) {
-//         const activeSelectedRange = Utilities.getActiveSelectionRange(
-//             this.gridContext.state.selectedRanges,
-//             this.gridContext.state.focusedLocation!
-//         );
-//         const isTargetCol = (col: Column) => {
-//             return this.target.some(c => c === col);
-//         };
-//         const isSelectedCol = (col: Column) => {
-//             return activeSelectedRange.cols.some((c: Column) => c === col);
-//         };
+        this.setLinePosition(linePosition);
+    }
 
-//         const areColumnsMovingRight = () => {
-//             return activeSelectedRange.first.col.idx < this.colOnScreen.idx;
-//         };
+    renderGlobalPart = () => {
+        const activeSelectedRange = getActiveSelectedRange(this.gridContext);
+        return (
+            <LineAndShadow
+                onInitialized={(linePostionSetter, shadowPositionSetter) => {
+                    this.setLinePosition = linePostionSetter;
+                    this.setShadowPosition = shadowPositionSetter
+                }}
+                isVertical={true}
+                cellMatrix={this.gridContext.cellMatrix}
+                shadowSize={activeSelectedRange.width}
+            />
+        )
+    }
+    handlePointerMove = (event: any) => {
+        if (event.type === 'pointermove') {
+            this.positionX = event.clientX;
+        } else if (event.type === 'touchmove') {
+            this.positionX = event.changedTouches[0].clientX;
+        }
 
-//         this.colOnScreen = isTargetCol(col) ? col : isSelectedCol(col) ? activeSelectedRange.cols[0] : this.colOnScreen;
-//         let colLeft = col.left;
-//         const cellMatrix: CellMatrix = this.gridContext.cellMatrix;
-//         let linePosition;
-
-//         if (
-//             this.gridContext.cellMatrix.frozenRightRange.cols.length > 0 &&
-//             this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0
-//         ) {
-//             if (col.idx >= this.gridContext.cellMatrix.frozenRightStart) {
-//                 linePosition = this.colOnScreen
-//                     ? areColumnsMovingRight()
-//                         ? (colLeft += cellMatrix.frozenLeftRange.width + cellMatrix.scrollableRange.width + col.width)
-//                         : this.colOnScreen.left +
-//                         this.gridContext.cellMatrix.frozenLeftRange.width +
-//                         cellMatrix.scrollableRange.width
-//                     : -1;
-//             } else if (col.idx > this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
-//                 linePosition = this.colOnScreen
-//                     ? areColumnsMovingRight()
-//                         ? this.colOnScreen.left +
-//                         this.colOnScreen.width +
-//                         this.gridContext.cellMatrix.frozenLeftRange.width
-//                         : this.colOnScreen.left + this.gridContext.cellMatrix.frozenLeftRange.width
-//                     : -1;
-//             } else {
-//                 linePosition = this.colOnScreen
-//                     ? areColumnsMovingRight()
-//                         ? this.colOnScreen.left + this.colOnScreen.width
-//                         : this.colOnScreen.left
-//                     : -1;
-//             }
-//         } else if (this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0) {
-//             if (col.idx >= this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
-//                 linePosition = this.colOnScreen
-//                     ? areColumnsMovingRight()
-//                         ? this.colOnScreen.left + this.colOnScreen.width + cellMatrix.frozenLeftRange.width
-//                         : this.colOnScreen.left + cellMatrix.frozenLeftRange.width
-//                     : -1;
-//             } else {
-//                 linePosition = this.colOnScreen
-//                     ? areColumnsMovingRight()
-//                         ? this.colOnScreen.left + this.colOnScreen.width
-//                         : this.colOnScreen.left
-//                     : -1;
-//             }
-//         } else if (
-//             this.gridContext.cellMatrix.frozenRightRange.cols.length > 0 &&
-//             !(this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0)
-//         ) {
-//             if (col.idx >= this.gridContext.cellMatrix.frozenRightStart) {
-//                 linePosition = this.colOnScreen
-//                     ? areColumnsMovingRight()
-//                         ? (colLeft += cellMatrix.frozenLeftRange.width + cellMatrix.scrollableRange.width + col.width)
-//                         : this.colOnScreen.left +
-//                         this.gridContext.cellMatrix.frozenLeftRange.width +
-//                         cellMatrix.scrollableRange.width
-//                     : -1;
-//             } else {
-//                 linePosition = this.colOnScreen
-//                     ? areColumnsMovingRight()
-//                         ? this.colOnScreen.left +
-//                         this.colOnScreen.width +
-//                         this.gridContext.cellMatrix.frozenLeftRange.width
-//                         : this.colOnScreen.left + this.gridContext.cellMatrix.frozenLeftRange.width
-//                     : -1;
-//             }
-//         } else {
-//             linePosition = this.colOnScreen
-//                 ? areColumnsMovingRight()
-//                     ? this.colOnScreen.left + this.colOnScreen.width + this.gridContext.cellMatrix.frozenLeftRange.width
-//                     : this.colOnScreen.left + this.gridContext.cellMatrix.frozenLeftRange.width
-//                 : -1;
-//         }
-
-//         this.setLinePosition(linePosition);
-//     }
-
-//     renderGlobalPart = () => {
-//         const activeSelectedRange = Utilities.getActiveSelectionRange(
-//             this.gridContext.state.selectedRanges,
-//             this.gridContext.state.focusedLocation!
-//         );
-//         return (
-//             <>
-//                 {this.innerBehavior.renderGlobalPart()}
-//                 <LineAndShadow
-//                     onInitialized={(linePostion, shadowPosition) => {
-//                         this.setLinePosition = linePostion;
-//                         this.setShadowPosition = shadowPosition
-//                     }}
-//                     isVertical={true}
-//                     cellMatrix={this.gridContext.cellMatrix}
-//                     shadowSize={activeSelectedRange.width}
-//                 />
-//             </>
-//         )
-//     }
-// }
+        this.changeShadowPosition();
+    }
+}

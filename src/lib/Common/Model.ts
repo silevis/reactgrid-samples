@@ -27,6 +27,7 @@ export interface CellRenderProps {
     gridContext: GridContext;
     onCellDataChanged: (cellData: CellData) => void;
     isInEditMode: boolean;
+    location: Location;
 }
 
 

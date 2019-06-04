@@ -3,15 +3,17 @@ import { stopPropagationEventHandler } from './handleEvents';
 import { Cell, CellRenderProps, Location, CellMatrix, GridContext, CellData } from '../Common';
 import { getLocationFromClient, changeBehavior } from '../Functions';
 import { ColumnSelectionBehavior } from '../Behaviors/ColumnSelectionBehavior';
+import { stat } from 'fs';
+import { ColReorderBehavior } from '../Behaviors/ColReorderBehavior';
 
-export interface HeaderCellProps extends CellRenderProps {
-    shouldStartReorder: boolean;
-    shouldStartColResize: boolean;
-    customCss?: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
-    enableCheckBox: boolean;
-    checkBoxValue?: boolean;
-    readonly setCheckBoxValue?: (value: boolean) => void;
-}
+// export interface HeaderCellProps extends CellRenderProps {
+//     shouldStartReorder: boolean;
+//     shouldStartColResize: boolean;
+//     customCss?: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+//     enableCheckBox: boolean;
+//     checkBoxValue?: boolean;
+//     readonly setCheckBoxValue?: (value: boolean) => void;
+// }
 
 export let headerCellTouchStartTime: number;
 
@@ -33,7 +35,7 @@ export class ColumnHeaderCell implements Cell {
 
     shouldEnableEditMode = () => false;
 
-    renderContent: (props: HeaderCellProps) => React.ReactNode = (props) => {
+    renderContent: (props: CellRenderProps) => React.ReactNode = (props) => {
 
         let innerStyle = {
             background: '#eee',
@@ -44,12 +46,17 @@ export class ColumnHeaderCell implements Cell {
             height: '100%',
             alignItems: 'center'
         };
+        const state = props.gridContext.state;
 
         // if (!props.isInEditMode)
         return (
             <div style={innerStyle}
-                onPointerDown={_ => {
-                    changeBehavior(props.gridContext, new ColumnSelectionBehavior(props.gridContext))
+                onPointerDown={e => {
+                    if (state.selectionMode === 'column' && state.selectedIndexes.includes(props.location.col.idx)) {
+                        changeBehavior(props.gridContext, new ColReorderBehavior(props.gridContext, e))
+                    } else {
+                        changeBehavior(props.gridContext, new ColumnSelectionBehavior(props.gridContext))
+                    }
                 }}>
                 {props.cellData.textValue}
             </div>

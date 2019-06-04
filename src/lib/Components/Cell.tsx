@@ -17,7 +17,6 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
     let cellData = { ...cell.cellData };
 
     const controlKeyCodes = [keyCodes.ENTER, keyCodes.ESC];
-    const preserveValueKeyCodes = [0, keyCodes.ENTER];
 
     const style: React.CSSProperties = {
         boxSizing: 'border-box',
@@ -62,6 +61,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
                 onCellDataChanged: c => cellData = c,
                 gridContext: props.gridContext,
                 isInEditMode: isFocused && props.gridContext.state.isFocusedCellInEditMode,
+                location: props.location,
             })}
         </div>
     )

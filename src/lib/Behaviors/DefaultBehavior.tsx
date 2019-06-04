@@ -22,7 +22,6 @@ export class DefaultBehavior extends Behavior {
     }
 
     handlePointerMove(event: PointerEvent, location: Location): void {
-
     }
 
     handlePointerUp(event: PointerEvent, location: Location): void {
@@ -45,6 +44,7 @@ export class DefaultBehavior extends Behavior {
     }
 
     handleKeyDown(event: KeyboardEvent) {
+        console.log(getActiveSelectedRange(this.gridContext))
         handleKeyDown(this.gridContext, event)
     }
     handleKeyUp(event: KeyboardEvent): void {

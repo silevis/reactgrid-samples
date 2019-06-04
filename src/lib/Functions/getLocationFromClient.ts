@@ -1,4 +1,4 @@
-import { GridContext, Location, Row, Column, Direction  } from "../Common";
+import { GridContext, Location, Row, Column, Direction } from "../Common";
 
 export function getLocationFromClient(gridContext: GridContext, clientX: number, clientY: number, favorScrollableContent?: Direction): Location {
     const row = getRowFromClientY(gridContext, clientY, (favorScrollableContent === 'vertical' || favorScrollableContent === 'both'));
@@ -30,7 +30,7 @@ function getRowFromClientY(gridContext: GridContext, clientY: number, favorScrol
     }
 }
 
-function getColumnFromClientX(gridContext: GridContext, clientX: number, favorScrollableContent: boolean): Column {
+export function getColumnFromClientX(gridContext: GridContext, clientX: number, favorScrollableContent: boolean): Column {
     const cellMatrix = gridContext.cellMatrix;
     const visibleContentWidth = Math.min(gridContext.viewportElement.clientWidth, cellMatrix.width);
     const viewportX = clientX - gridContext.viewportElement.getBoundingClientRect().left;
