@@ -45,11 +45,11 @@ export interface Column {
 
     readonly width: number;
     readonly context: any;
-    readonly onDropRight?: (reorderedColumns: Column[]) => void;
-    readonly onDropLeft?: (reorderedColumns: Column[]) => void;
+    readonly onDropRight?: (reorderedColumns: Column[], targetColumn: Column) => void;
+    readonly onDropLeft?: (reorderedColumns: Column[], targetColumn: Column) => void;
     readonly onColResize?: (onColResize: Column, newColWidth: number) => void;
-    readonly canDropRight?: () => boolean;
-    readonly canDropLeft?: () => boolean;
+    readonly canDropRight?: (reorderedColumns?: Column[]) => boolean;
+    readonly canDropLeft?: (reorderedColumns?: Column[]) => boolean;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
@@ -57,10 +57,10 @@ export interface ColProps {
     readonly id?: string;
     readonly width: number;
     readonly context: any;
-    readonly canDropRight?: () => boolean;
-    readonly canDropLeft?: () => boolean;
-    readonly onDropRight?: (reorderedColumns: Column[]) => void;
-    readonly onDropLeft?: (reorderedColumns: Column[]) => void;
+    readonly canDropRight?: (reorderedColumns?: Column[]) => boolean;
+    readonly canDropLeft?: (reorderedColumns?: Column[]) => boolean;
+    readonly onDropRight?: (reorderedColumns: Column[], targetColumn: Column) => void;
+    readonly onDropLeft?: (reorderedColumns: Column[], targetColumn: Column) => void;
     readonly onColResize?: (resizedColumn: Column, newColWidth: number) => void;
 
 }

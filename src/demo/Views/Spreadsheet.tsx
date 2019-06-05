@@ -10,7 +10,7 @@ export class Spreadsheet extends React.Component<{}, { data: string[][] }> {
     constructor(props: {}) {
         super(props);
         this.state = {
-            data: Array(10).fill(0).map((_, ri) => Array(50).fill(0).map((_, ci) => (ri + 100) + ' - ' + (ci + 100)))
+            data: Array(10).fill(0).map((_, ri) => Array(20).fill(0).map((_, ci) => (ri + 100) + ' - ' + (ci + 100)))
         }
 
     }
@@ -21,7 +21,7 @@ export class Spreadsheet extends React.Component<{}, { data: string[][] }> {
         const cells: any = this.state.data.map((row, ri) =>
             row.map((value, ci) => new TextCell(value, v => { console.log(v); this.state.data[ri][ci] = v; this.setState(this.state); return true }))
         )
-        const columns: ColProps[] = this.state.data[0].map((_, id) => { return { width: 75, context: undefined, canDropRight: () => (id === 5 || id === 6) ? false : true, canDropLeft: () => (id === 5 || id === 6) ? false : true } });
+        const columns: ColProps[] = this.state.data[0].map((_, id) => { return { width: 75, context: undefined, onDropLeft: (cols, targetColumn) => this.reorderColumns(cols[0].idx, targetColumn.idx, cols.length), onDropRight: (cols, targetColumn) => this.reorderColumns(cols[0].idx, targetColumn.idx, cols.length) } });
         const rows: RowProps[] = this.state.data.map(_ => { return { height: 25, context: undefined } })
         // rows.map((_, i) => cells[i][0] = new RowHeaderCell(i.toString(), v => { console.log(v); this.state.data[i][0] = v; this.setState(this.state); return true }))
         columns.map((_, j) => cells[0][j] = new ColumnHeaderCell(j.toString(), v => { console.log(v); this.state.data[0][j] = v; this.setState(this.state); return true }))
@@ -36,4 +36,15 @@ export class Spreadsheet extends React.Component<{}, { data: string[][] }> {
             onValuesChanged={() => this.forceUpdate()}
         />
     }
+
+    reorderColumns(from: number, to: number, count: number) {
+        const data = this.state.data;
+        if (to > from) {
+            data.forEach(r => r.splice(to, 0, ...r.splice(from, count)));
+        } else {
+            data.forEach(r => r.splice(to, 0, ...r.splice(from, count)));
+        }
+        this.setState({ data })
+    }
+
 }
