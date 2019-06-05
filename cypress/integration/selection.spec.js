@@ -85,14 +85,14 @@ context('Selection', () => {
 
     it('Select many cell by shift + arrow press', () => {
         Utils.selectCell(500, 100);
-        Utils.keyDown(Constants.keyCodes.ArrowDown, 1, { shiftKey: true });
-        Utils.keyDown(Constants.keyCodes.ArrowDown, 1, { shiftKey: true });
-        Utils.keyDown(Constants.keyCodes.ArrowUp, 1, { shiftKey: true });
-        Utils.keyDown(Constants.keyCodes.ArrowUp, 1, { shiftKey: true });
-        Utils.keyDown(Constants.keyCodes.ArrowUp, 1, { shiftKey: true });
-        Utils.keyDown(Constants.keyCodes.ArrowLeft, 1, { shiftKey: true });
-        Utils.keyDown(Constants.keyCodes.ArrowRight, 1, { shiftKey: true });
-        Utils.keyDown(Constants.keyCodes.ArrowRight, 1, { shiftKey: true });
-        Utils.keyDown(Constants.keyCodes.ArrowRight, 1, { shiftKey: true });
+        Utils.keyDown(Constants.keyCodes.ArrowDown, 1, { shiftKey: true, force: true });
+        Utils.keyDown(Constants.keyCodes.ArrowDown, 1, { shiftKey: true, force: true });
+        Utils.keyDown(Constants.keyCodes.ArrowUp, 1, { shiftKey: true, force: true });
+        Utils.keyDown(Constants.keyCodes.ArrowUp, 1, { shiftKey: true, force: true });
+        Utils.keyDown(Constants.keyCodes.ArrowUp, 1, { shiftKey: true, force: true });
+        Utils.keyDown(Constants.keyCodes.ArrowLeft, 1, { shiftKey: true, force: true });
+        Utils.keyDown(Constants.keyCodes.ArrowRight, 1, { shiftKey: true, force: true });
+        Utils.keyDown(Constants.keyCodes.ArrowRight, 1, { shiftKey: true, force: true });
+        Utils.keyDown(Constants.keyCodes.ArrowRight, 1, { shiftKey: true, force: true });
     });
 });
