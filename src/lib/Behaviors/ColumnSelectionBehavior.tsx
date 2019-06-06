@@ -17,12 +17,10 @@ export class ColumnSelectionBehavior extends Behavior {
 
     handlePointerDown(event: PointerEvent, location: Location) {
         if (event.ctrlKey && this.gridContext.state.selectionMode === 'column') {
-            console.log('ctrlKet')
             // TODO remove column from selected indexes
         } if (event.shiftKey) {
             // TODO        
         } else {
-            console.log('tutaj')
             focusLocation(this.gridContext, location);
             selectColumn(this.gridContext, location.col, event.ctrlKey);
         }

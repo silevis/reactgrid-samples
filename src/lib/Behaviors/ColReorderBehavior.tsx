@@ -149,11 +149,11 @@ export class ColReorderBehavior extends Behavior {
                     : this.colOnScreen.idx - selectedCols[0].idx;
             if (isOnRightSideDrop) {
                 if (this.colOnScreen.onDropRight || this.colOnScreen.idx === cellMatrix.last.col.idx) {
-                    this.colOnScreen.onDropRight!(activeSelectedRange.cols);
+                    this.colOnScreen.onDropRight!(this.gridContext.state.selectedIndexes.sort());
                 }
             } else {
                 if (this.colOnScreen.onDropLeft) {
-                    this.colOnScreen.onDropLeft(activeSelectedRange.cols);
+                    this.colOnScreen.onDropLeft(this.gridContext.state.selectedIndexes.sort());
                 }
             }
 
@@ -288,7 +288,10 @@ export class ColReorderBehavior extends Behavior {
     }
 
     renderGlobalPart = () => {
-        const activeSelectedRange = getActiveSelectedRange(this.gridContext);
+        const ranges: any = this.gridContext.state.selectedRanges
+        const width = ranges[ranges.length - 1].last.col.right - ranges[0].first.col.left
+        console.log(ranges[ranges.length - 1].last.col.right)
+        console.log(ranges[0].first.col.left)
         return (
             <LineAndShadow
                 onInitialized={(linePostionSetter, shadowPositionSetter) => {
@@ -297,7 +300,7 @@ export class ColReorderBehavior extends Behavior {
                 }}
                 isVertical={true}
                 cellMatrix={this.gridContext.cellMatrix}
-                shadowSize={activeSelectedRange.width}
+                shadowSize={width}
             />
         )
     }
