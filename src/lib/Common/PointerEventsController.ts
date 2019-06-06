@@ -11,11 +11,11 @@ export class PointerEventsController {
     constructor(private gridContext: GridContext) { }
 
     public handlePointerDown = (event: PointerEvent) => {
-
         // TODO open context menu (long hold tap)
 
-        if (event.button !== 0)
+        if (event.button !== 0 && event.button !== undefined) {
             return
+        }
         window.addEventListener('pointermove', this.handlePointerMove as any);
         window.addEventListener('pointerup', this.handlePointerUp as any);
         const previousLocation = this.eventLocations[this.currentIndex];
@@ -42,8 +42,9 @@ export class PointerEventsController {
     }
 
     private handlePointerUp = (event: PointerEvent) => {
-        if (event.button !== 0)
+        if (event.button !== 0 && event.button !== undefined) {
             return
+        }
 
         window.removeEventListener('pointerup', this.handlePointerUp as any);
         window.removeEventListener('pointermove', this.handlePointerMove as any);
