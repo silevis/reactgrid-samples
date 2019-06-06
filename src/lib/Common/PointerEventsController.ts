@@ -24,7 +24,7 @@ export class PointerEventsController {
         this.currentIndex = 1 - this.currentIndex;
         this.eventTimestamps[this.currentIndex] = new Date().valueOf();
         this.eventLocations[this.currentIndex] = currentLocation;
-        if (event.pointerType !== 'touch' || isSameLocation(previousLocation, currentLocation)) {
+        if (event.pointerType === 'mouse' || isSameLocation(previousLocation, currentLocation)) {
             this.gridContext.currentBehavior.handlePointerDown(event, currentLocation);
         }
     }
@@ -52,7 +52,7 @@ export class PointerEventsController {
         const currentTimestamp = new Date().valueOf();
         const secondLastTimestamp = this.eventTimestamps[1 - this.currentIndex];
         this.gridContext.currentBehavior.handlePointerUp(event, currentLocation);
-        if (event.pointerType === 'touch' && isSameLocation(this.pointerDownLocation, currentLocation)) {
+        if (event.pointerType !== 'mouse' && isSameLocation(this.pointerDownLocation, currentLocation)) {
             focusLocation(this.gridContext, currentLocation, true);
         }
         if (currentTimestamp - secondLastTimestamp < 3500 && isSameLocation(currentLocation, this.eventLocations[0]) && isSameLocation(currentLocation, this.eventLocations[1])) {

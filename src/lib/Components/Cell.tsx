@@ -40,7 +40,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
         borderRight: borders.right
             ? 'solid 1px #ccc'
             : 'solid 1px #e5e5e5',
-        touchAction: isFocused ? 'none' : 'auto'
+        touchAction: isFocused ? 'none' : 'auto' // prevent scrolling
     }
     return (
 

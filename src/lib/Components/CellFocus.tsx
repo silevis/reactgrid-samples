@@ -16,7 +16,7 @@ export const CellFocus: React.FunctionComponent<CellFocusProps> = (props) =>
             width: props.location.col.width,
             height: props.location.row.height,
             border: 'solid 2px #3579f8',
-            pointerEvents: 'none'
+            pointerEvents: 'none' // prevent delegating events around cell
         }}
     />
 
