@@ -44,7 +44,6 @@ export class DefaultBehavior extends Behavior {
     }
 
     handleKeyDown(event: KeyboardEvent) {
-        console.log(getActiveSelectedRange(this.gridContext))
         handleKeyDown(this.gridContext, event)
     }
     handleKeyUp(event: KeyboardEvent): void {

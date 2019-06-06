@@ -80,13 +80,12 @@ export function handleKeyNavigationInsideSelection(gridContext: GridContext, eve
 }
 
 const moveFocusInsideSelectedRange = (direction: -1 | 1 | 'up' | 'down', gridContext: GridContext) => {
-    const focusedCell = gridContext.state.focusedLocation!;
-    //const selectedRange = Utilities.getActiveSelectionRange(gridContext.state.selectedRanges, focusedCell);
-    //const selectedRangeIdx = Utilities.getActiveSelectionIdx(gridContext.state.selectedRanges, focusedCell);
     const selectedRange = getActiveSelectedRange(gridContext)
-    const selectedRangeIdx = gridContext.state.activeSelectedRangeIdx;
+    const focusedCell = gridContext.state.focusedLocation!
+    const selectedRangeIdx = gridContext.state.activeSelectedRangeIdx
     const colCount = selectedRange.cols.length;
     const delta = direction === 'up' ? -colCount : direction === 'down' ? colCount : direction;
+
     const currentPosInRange =
         (focusedCell.row.idx - selectedRange.first.row.idx) * colCount +
         (focusedCell.col.idx - selectedRange.first.col.idx);
@@ -95,6 +94,7 @@ const moveFocusInsideSelectedRange = (direction: -1 | 1 | 'up' | 'down', gridCon
         const nextSelectionRangeIdx = (selectedRangeIdx + 1) % gridContext.state.selectedRanges.length;
         const nextSelection = gridContext.state.selectedRanges[nextSelectionRangeIdx];
         focusLocation(gridContext, { col: nextSelection.first.col, row: nextSelection.first.row }, false);
+        gridContext.setState({ activeSelectedRangeIdx: nextSelectionRangeIdx })
     } else {
         const newColIdx = selectedRange.first.col.idx + (newPosInRange % colCount);
         const newRowIdx = selectedRange.first.row.idx + Math.floor(newPosInRange / colCount);
