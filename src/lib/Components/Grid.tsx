@@ -143,9 +143,9 @@ export class Grid extends React.Component<GridProps, GridState> {
                     overflow: 'auto'
                 }}
                 onScroll={this.scrollHandler}
-                data-cy="dyna-grid"
             >
                 <div
+                    data-cy="dyna-grid"
                     // this tabIndex attracts 
                     tabIndex={0}
                     className="dg-content"
@@ -158,6 +158,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                     onCut={this.cutHandler}
                     onPaste={this.pasteHandler}
                     onPasteCapture={this.handlePasteCapture}
+
                 >
                     {matrix.frozenTopRange.height > 0 &&
                         <PaneRow
@@ -197,7 +198,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                         ref={this.hiddenElementRefHandler}
                     />
                 </div>
-            </div>
+            </div >
         );
     }
 
