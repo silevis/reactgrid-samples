@@ -1,6 +1,6 @@
 class Utils {
     visit() {
-        cy.visit('http://localhost:3001/');
+        cy.visit('http://localhost:3000/');
     }
 
     selectCell(clientX, clientY, customEventArgs) {
@@ -9,7 +9,7 @@ class Utils {
         } else {
             cy.get('[data-cy=dyna-grid]').trigger('pointerdown', clientX, clientY);
         }
-        cy.get('[data-cy=dyna-grid]').trigger('pointerup');
+        cy.get('body').trigger('pointerup', { force: true });
         cy.wait(100);
     }
 
@@ -31,7 +31,7 @@ class Utils {
         }
 
         cy.get('[data-cy=dyna-grid]').trigger('pointermove', toX, toY);
-        cy.get('[data-cy=dyna-grid]').trigger('pointerup');
+        cy.get('[data-cy=dyna-grid]').trigger('pointerup', { force: true });
         cy.wait(100);
     }
 
@@ -40,7 +40,7 @@ class Utils {
     }
 
     selectRangeByTouch(fromX, fromY, toX, toY, autoScroll = false) {
-        cy.get('[data-cy=dyna-grid]').click(fromX, fromY, { clientX: fromX, clientY: fromY });
+        cy.get('[data-cy=dyna-grid]').click(fromX, fromY, { clientX: fromX, clientY: fromY, force: true });
         cy.get('[data-cy=dyna-grid]').trigger('touchstart', fromX, fromY, {
             changedTouches: [{ clientX: fromX, clientY: fromY + 100 }]
         });
@@ -56,7 +56,7 @@ class Utils {
     fillCells(toX, toY) {
         cy.get('[data-cy=dg-fill-handle]').trigger('pointerdown', { force: true });
         cy.get('[data-cy=dyna-grid]').trigger('pointermove', { clientX: toX, clientY: toY });
-        cy.get('[data-cy=dyna-grid]').trigger('pointerup');
+        cy.get('[data-cy=dyna-grid]').trigger('pointerup', { force: true });
         cy.wait(100);
     }
 
@@ -177,8 +177,7 @@ class Utils {
             }
             times--;
         }
-        cy.get('[data-cy=dyna-grid]').trigger('keyup')
-        cy.wait(100);
+        cy.get('[data-cy=dyna-grid]').trigger('keyup', { force: true })
     }
 }
 var utils = new Utils();

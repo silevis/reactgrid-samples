@@ -1,9 +1,10 @@
-import { Location, Cell, Row, Column, ColProps, RowProps } from "./Model";
+import { Location, Cell, Row, Column, ColumnProps, RowProps } from "./Model";
 import { Range } from "./Range";
 
+// PUBLIC
 export interface CellMatrixProps {
     rows: RowProps[];
-    columns: ColProps[];
+    columns: ColumnProps[];
     cells: Cell[][];
     frozenTopRows?: number;
     frozenBottomRows?: number;
@@ -12,6 +13,7 @@ export interface CellMatrixProps {
     // focusLocation?: FocusLocation;
 }
 
+// INTERNAL
 export class CellMatrix {
     frozenTopRange: Range;
     frozenBottomRange: Range;
