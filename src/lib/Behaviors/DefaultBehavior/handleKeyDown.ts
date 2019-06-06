@@ -46,7 +46,7 @@ export function handleKeyDown(gridContext: GridContext, event: KeyboardEvent) {
     if (event.keyCode === keyCodes.ESC && gridContext.state.isFocusedCellInEditMode) {
         gridContext.lastKeyCode = event.keyCode;
         gridContext.setState({ isFocusedCellInEditMode: false })
-        gridContext.hiddenFocusElement.focus();
+        //gridContext.hiddenFocusElement.focus();
     }
     //event.stopPropagation();
     //event.preventDefault();

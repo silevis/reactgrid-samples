@@ -134,30 +134,37 @@ export class Grid extends React.Component<GridProps, GridState> {
             <div
                 className="dyna-grid dg-viewport"
                 ref={this.viewportElementRefHandler}
+                tabIndex={0}
                 style={{
                     ...this.props.style,
-                    MozUserSelect: 'none',
-                    WebkitUserSelect: 'none',
-                    msUserSelect: 'none',
-                    userSelect: 'none',
+                    MozUserSelect: 'text',
+                    WebkitUserSelect: 'text',
+                    msUserSelect: 'text',
+                    userSelect: 'text',
                     overflow: 'auto'
                 }}
                 onScroll={this.scrollHandler}
+                onPointerDown={this.pointerEventsController.handlePointerDown}
+                onContextMenu={this.handleContextMenu}
+                onKeyDown={this.keyDownHandler}
+                onKeyUp={this.keyUpHandler}
+                onCopy={this.copyHandler}
+                onCut={this.cutHandler}
+                onPaste={this.pasteHandler}
+                onPasteCapture={this.handlePasteCapture}
             >
                 <div
                     data-cy="dyna-grid"
-                    // this tabIndex attracts 
-                    tabIndex={0}
                     className="dg-content"
-                    style={{ width: matrix.width, height: matrix.height, position: 'relative', outline: 'none' }}
-                    onPointerDown={this.pointerEventsController.handlePointerDown}
-                    onContextMenu={this.handleContextMenu}
-                    onKeyDown={this.keyDownHandler}
-                    onKeyUp={this.keyUpHandler}
-                    onCopy={this.copyHandler}
-                    onCut={this.cutHandler}
-                    onPaste={this.pasteHandler}
-                    onPasteCapture={this.handlePasteCapture}
+                    style={{
+                        MozUserSelect: 'none',
+                        WebkitUserSelect: 'none',
+                        msUserSelect: 'none',
+                        userSelect: 'none',
+                        // pass all events to parent, it also needs to receive the first click to handle copy and paste events
+                        pointerEvents: 'none',
+                        width: matrix.width, height: matrix.height, position: 'relative', outline: 'none'
+                    }}
 
                 >
                     {matrix.frozenTopRange.height > 0 &&
@@ -188,16 +195,8 @@ export class Grid extends React.Component<GridProps, GridState> {
                             zIndex={3}
                         />}
                     {this.gridContext.currentBehavior.renderGlobalPart && this.gridContext.currentBehavior.renderGlobalPart()}
-                    <div
-                        className="dg-hidden-focus-element"
-                        contentEditable={true}
-                        style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }}
-                        onBlur={() => console.log('HFE: blur')}
-                        onFocus={() => console.log('HFE: focus')}
-                        onPaste={this.handlePasteOnHiddenElement}
-                        ref={this.hiddenElementRefHandler}
-                    />
                 </div>
+                .
             </div >
         );
     }

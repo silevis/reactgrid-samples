@@ -6,5 +6,5 @@ export function changeBehavior(gridContext: GridContext, behavior: Behavior) {
     gridContext.currentBehavior.dispose();
     gridContext.currentBehavior = behavior;
     gridContext.forceUpdate();
-    gridContext.hiddenFocusElement.focus();
+    //gridContext.hiddenFocusElement.focus();
 }
