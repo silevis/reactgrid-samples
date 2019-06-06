@@ -40,7 +40,7 @@ class Utils {
     }
 
     selectRangeByTouch(fromX, fromY, toX, toY, autoScroll = false) {
-        cy.get('[data-cy=dyna-grid]').click(fromX, fromY, { clientX: fromX, clientY: fromY });
+        cy.get('[data-cy=dyna-grid]').click(fromX, fromY, { clientX: fromX, clientY: fromY, force: true });
         cy.get('[data-cy=dyna-grid]').trigger('touchstart', fromX, fromY, {
             changedTouches: [{ clientX: fromX, clientY: fromY + 100 }]
         });

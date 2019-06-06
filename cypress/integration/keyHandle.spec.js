@@ -80,4 +80,50 @@ context('Keyboard', () => {
         Utils.keyDown(Constants.keyCodes.Enter, 10, { force: true });
         cy.wait(500);
     });
+
+
+    it('Enter key pressed should activate cell edit mode ', () => {
+        Utils.selectCell(100, 100);
+        cy.wait(500);
+        Utils.keyDown(Constants.keyCodes.Enter, 1, { force: true });
+    });
+
+    it('Delete key pressed should delete data from the cell ', () => {
+        Utils.selectCell(100, 100);
+        Utils.keyDown(Constants.keyCodes.Enter, 1, { force: true });
+        cy.wait(500);
+        cy.focused().type(Utils.randomText());
+        Utils.selectCell(100, 200);
+        cy.wait(500);
+        Utils.selectCell(100, 100);
+        Utils.keyDown(Constants.keyCodes.Delete, 1, { force: true });
+        cy.wait(500);
+    });
+
+    it('Backspace key pressed should delete data from the cell', () => {
+        Utils.selectCell(100, 100);
+        Utils.keyDown(Constants.keyCodes.Enter, 1, { force: true });
+        cy.wait(500);
+        cy.focused().type(Utils.randomText());
+        Utils.selectCell(100, 200);
+        cy.wait(500);
+        Utils.selectCell(100, 100);
+        Utils.keyDown(Constants.keyCodes.Backspace, 1, { force: true });
+        cy.wait(500);
+    });
+
+    it('Tab key pressed should exit from cell edit mode and move to next column ', () => {
+        Utils.selectCell(100, 100);
+        Utils.keyDown(Constants.keyCodes.Enter, 1, { force: true });
+        cy.wait(500);
+        Utils.keyDown(Constants.keyCodes.Tab, 1, { force: true });
+    });
+
+    it('Enter key pressed should exit from cell edit mode and move to next row', () => {
+        Utils.selectCell(100, 100);
+        Utils.keyDown(Constants.keyCodes.Enter, 1, { force: true });
+        cy.wait(500);
+        Utils.keyDown(Constants.keyCodes.Enter, 1, { force: true });
+    });
+
 });
