@@ -48,7 +48,7 @@ export class PointerEventsController {
         const currentTimestamp = new Date().valueOf();
         const secondLastTimestamp = this.eventTimestamps[1 - this.currentIndex];
         this.gridContext.currentBehavior.handlePointerUp(event, currentLocation);
-        if (currentTimestamp - secondLastTimestamp < 3500 && isSameLocation(currentLocation, this.eventLocations[0]) && isSameLocation(currentLocation, this.eventLocations[1])) {
+        if (currentTimestamp - secondLastTimestamp < 500 && isSameLocation(currentLocation, this.eventLocations[0]) && isSameLocation(currentLocation, this.eventLocations[1])) {
             this.gridContext.currentBehavior.handleDoubleClick(event, currentLocation)
         }
     }

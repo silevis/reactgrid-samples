@@ -16,17 +16,19 @@ export class ColumnSelectionBehavior extends Behavior {
     autoScrollDirection: Direction = 'horizontal';
 
     handlePointerDown(event: PointerEvent, location: Location) {
-        if (event.ctrlKey && this.gridContext.state.selectionMode === 'column' && this.gridContext.state.selectedIndexes.some(idx => idx === location.col.idx)) {
+        if (event.ctrlKey && this.gridContext.state.selectionMode === 'column') {
+            console.log('ctrlKet')
             // TODO remove column from selected indexes
         } if (event.shiftKey) {
             // TODO        
         } else {
+            console.log('tutaj')
             focusLocation(this.gridContext, location);
             selectColumn(this.gridContext, location.col, event.ctrlKey);
         }
     }
 
-    handlePointerMove(event: PointerEvent, location: Location) {
+    handlePointerEnter(event: PointerEvent, location: Location) {
         updateActiveSelectedColumns(this.gridContext, this.gridContext.state.focusedLocation!.col, location.col, event.ctrlKey);
     }
 

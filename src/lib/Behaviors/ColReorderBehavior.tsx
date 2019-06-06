@@ -36,7 +36,6 @@ export class ColReorderBehavior extends Behavior {
 
         this.positionX = positionX;
         this.lastAssignableColumn = undefined;
-
         if (
             this.gridContext.cellMatrix.frozenRightRange.cols.length > 0 &&
             this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0
@@ -45,7 +44,7 @@ export class ColReorderBehavior extends Behavior {
                 this.mouseOffset =
                     positionX -
                     activeSelectedRange.first.col.left -
-                    this.gridContext.cellMatrix.frozenLeftRange.width
+                    this.gridContext.cellMatrix.frozenRightRange.width
                 // - this.gridContext.state.scrollAreaWidth;
             } else if (colUnderCursor.idx > this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
                 this.mouseOffset =
@@ -96,11 +95,6 @@ export class ColReorderBehavior extends Behavior {
         const cellMatrix = this.gridContext.cellMatrix;
         let colUnderCursor = location.col
         if (colUnderCursor) {
-
-            if (colUnderCursor.idx === cellMatrix.cols[cellMatrix.last.col.idx].idx) {
-                colUnderCursor = cellMatrix.cols[cellMatrix.last.col.idx - 1];
-            }
-
             if (colUnderCursor !== this.colOnScreen) {
                 this.handleMouseEnterOnCol(colUnderCursor);
             }
@@ -137,8 +131,8 @@ export class ColReorderBehavior extends Behavior {
             const isOnRightSideDrop = activeSelectedRange.first.col.idx < this.colOnScreen.idx;
 
             // checking if the column is enabled to drop on certain side
-            if (this.colOnScreen.canDropRight && (isOnRightSideDrop && !this.colOnScreen.canDropRight()) ||
-                this.colOnScreen.canDropLeft && (!isOnRightSideDrop && !this.colOnScreen.canDropLeft())) {
+            if (this.colOnScreen.canDropRight && (isOnRightSideDrop && !this.colOnScreen.canDropRight(this.gridContext.state.selectedIndexes)) ||
+                this.colOnScreen.canDropLeft && (!isOnRightSideDrop && !this.colOnScreen.canDropLeft(this.gridContext.state.selectedIndexes))) {
 
                 if (this.lastAssignableColumn) {
                     this.colOnScreen = this.lastAssignableColumn;
@@ -155,11 +149,11 @@ export class ColReorderBehavior extends Behavior {
                     : this.colOnScreen.idx - selectedCols[0].idx;
             if (isOnRightSideDrop) {
                 if (this.colOnScreen.onDropRight || this.colOnScreen.idx === cellMatrix.last.col.idx) {
-                    this.colOnScreen.onDropRight!(activeSelectedRange.cols, this.colOnScreen);
+                    this.colOnScreen.onDropRight!(activeSelectedRange.cols);
                 }
             } else {
                 if (this.colOnScreen.onDropLeft) {
-                    this.colOnScreen.onDropLeft(activeSelectedRange.cols, this.colOnScreen);
+                    this.colOnScreen.onDropLeft(activeSelectedRange.cols);
                 }
             }
 
@@ -212,8 +206,8 @@ export class ColReorderBehavior extends Behavior {
                     : this.colOnScreen;
 
         // checking if the position line should be updated
-        if (col.canDropRight && (!col.canDropRight() && areColumnsMovingRight()) ||
-            col.canDropLeft && (!col.canDropLeft() && !areColumnsMovingRight()))
+        if (col.canDropRight && (!col.canDropRight(this.gridContext.state.selectedIndexes) && areColumnsMovingRight()) ||
+            col.canDropLeft && (!col.canDropLeft(this.gridContext.state.selectedIndexes) && !areColumnsMovingRight()))
             return
 
         let colLeft = col.left;
@@ -224,7 +218,6 @@ export class ColReorderBehavior extends Behavior {
             this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0
         ) {
             if (col.idx >= this.gridContext.cellMatrix.frozenRightRange.first.col.idx) {
-                console.log(1)
                 linePosition = this.colOnScreen
                     ? areColumnsMovingRight()
                         ? (colLeft += cellMatrix.frozenLeftRange.width + cellMatrix.scrollableRange.width + col.width)
@@ -233,7 +226,6 @@ export class ColReorderBehavior extends Behavior {
                         cellMatrix.scrollableRange.width
                     : -1;
             } else if (col.idx > this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
-                console.log(2)
                 linePosition = this.colOnScreen
                     ? areColumnsMovingRight()
                         ? this.colOnScreen.left +
@@ -242,7 +234,6 @@ export class ColReorderBehavior extends Behavior {
                         : this.colOnScreen.left + this.gridContext.cellMatrix.frozenLeftRange.width
                     : -1;
             } else {
-                console.log(3)
                 linePosition = this.colOnScreen
                     ? areColumnsMovingRight()
                         ? this.colOnScreen.left + this.colOnScreen.width
@@ -250,7 +241,6 @@ export class ColReorderBehavior extends Behavior {
                     : -1;
             }
         } else if (this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0) {
-            console.log(4)
             if (col.idx >= this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
                 linePosition = this.colOnScreen
                     ? areColumnsMovingRight()
@@ -258,7 +248,6 @@ export class ColReorderBehavior extends Behavior {
                         : this.colOnScreen.left + cellMatrix.frozenLeftRange.width
                     : -1;
             } else {
-                console.log(5)
                 linePosition = this.colOnScreen
                     ? areColumnsMovingRight()
                         ? this.colOnScreen.left + this.colOnScreen.width

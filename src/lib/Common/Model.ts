@@ -38,34 +38,38 @@ export interface Location {
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
+// INTERNAL
 export interface Column {
     readonly idx: number;
     readonly left: number;
     readonly right: number;
 
+    readonly id: string | number;
     readonly width: number;
-    readonly context: any;
-    readonly onDropRight?: (reorderedColumns: Column[], targetColumn: Column) => void;
-    readonly onDropLeft?: (reorderedColumns: Column[], targetColumn: Column) => void;
-    readonly onColResize?: (onColResize: Column, newColWidth: number) => void;
-    readonly canDropRight?: (reorderedColumns?: Column[]) => boolean;
-    readonly canDropLeft?: (reorderedColumns?: Column[]) => boolean;
+    readonly context?: any;
+    readonly canDropRight?: (columnContexts: any[]) => boolean;
+    readonly canDropLeft?: (columnContexts: any[]) => boolean;
+    readonly onDropRight?: (columnContexts: any[]) => void;
+    readonly onDropLeft?: (columnContexts: any[]) => void;
+    readonly onResize?: (column: Column, newWidth: number) => void;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
-export interface ColProps {
-    readonly id?: string;
+// PUBLIC
+export interface ColumnProps {
+    readonly id: string | number;
     readonly width: number;
-    readonly context: any;
-    readonly canDropRight?: (reorderedColumns?: Column[]) => boolean;
-    readonly canDropLeft?: (reorderedColumns?: Column[]) => boolean;
-    readonly onDropRight?: (reorderedColumns: Column[], targetColumn: Column) => void;
-    readonly onDropLeft?: (reorderedColumns: Column[], targetColumn: Column) => void;
-    readonly onColResize?: (resizedColumn: Column, newColWidth: number) => void;
+    readonly context?: any;
+    readonly canDropRight?: (columnContexts: any[]) => boolean;
+    readonly canDropLeft?: (columnContexts: any[]) => boolean;
+    readonly onDropRight?: (columnContexts: any[]) => void;
+    readonly onDropLeft?: (columnContexts: any[]) => void;
+    readonly onResize?: (columnContext: any, newColWidth: number) => void;
 
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
+// INTERNAL
 export interface Row {
     readonly idx: number;
     readonly top: number;
@@ -78,8 +82,8 @@ export interface Row {
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
+
 export interface RowProps {
-    readonly id?: string;
     readonly height: number;
     readonly context: any;
     readonly onDropBelow?: (reorderedRows: Row[], targetRow: Row) => void;
