@@ -2,7 +2,7 @@ import * as React from "react";
 import { GridContext, GridController, CellMatrix } from "../Common";
 import { Range, Location, SelectionMode, } from "../Common";
 import { PaneRow } from "./PaneRow";
-import { refresh } from "../Functions";
+import { refresh, focusLocation } from "../Functions";
 import { KeyboardEvent, ClipboardEvent, PointerEvent } from "../Common";
 import { PointerEventsController } from "../Common/PointerEventsController";
 import { FillHandle } from "./FillHandle";
@@ -61,7 +61,7 @@ export class Grid extends React.Component<GridProps, GridState> {
     //     // TODO improve calculation of visibleCols & visibleRows
     //     const visibleCols = matrix.scrollableRange.cols.filter(
     //         col => col.right >= scrollLeft && col.left <= scrollLeft + scrollAreaWidth
-    //     );
+    //     );ff
     //     const visibleRows = matrix.scrollableRange.rows.filter(
     //         row => row.bottom >= scrollTop && row.top <= scrollTop + scrollAreaHeight
     //     );
@@ -78,6 +78,25 @@ export class Grid extends React.Component<GridProps, GridState> {
 
     // }
 
+    static getDerivedStateFromProps(nextProps: GridProps, prevState: GridState) {
+
+        // TODO Check it!!!!
+        return {
+            selectedRanges: Grid.updateSelectionRangeWidthsAndHeights(nextProps, prevState),
+        };
+    }
+
+    private static updateSelectionRangeWidthsAndHeights(nextProps: GridProps, prevState: GridState) {
+        let selectedRanges = [];
+        for (let i = 0; i < prevState.selectedRanges.length; i++) {
+            selectedRanges.push(
+                nextProps.cellMatrix.getRange(prevState.selectedRanges[i].first, prevState.selectedRanges[i].last)
+            );
+        }
+        return selectedRanges;
+    }
+
+
     componentDidMount() {
         window.addEventListener('resize', this.windowResizeHandler);
         this.props.onInitialized && this.props.onInitialized(new GridController(this));
@@ -87,7 +106,17 @@ export class Grid extends React.Component<GridProps, GridState> {
         window.removeEventListener('resize', this.windowResizeHandler);
     }
 
-    componentDidUpdate(oldprops: GridProps) {
+    componentDidUpdate(oldProps: GridProps) {
+        // TODO Check it!!!!
+
+        const nextProps = this.props;
+        if (this.state.focusedLocation) {
+            const oldLocation = oldProps.cellMatrix.getLocation(this.state.focusedLocation.row.idx, this.state.focusedLocation.col.idx)
+            const newLocation = nextProps.cellMatrix.getLocation(this.state.focusedLocation.row.idx, this.state.focusedLocation.col.idx)
+            if (oldLocation.col.width !== newLocation.col.width) {
+                focusLocation(this.gridContext, nextProps.cellMatrix.getLocation(this.state.focusedLocation.row.idx, this.state.focusedLocation.col.idx), false)
+            }
+        }
         // const cellMatrix = this.props.cellMatrix;
         // this.forceNewFocusLocation(oldprops);
         // if (!(this.state.currentBehavior instanceof DefaultGridBehavior)) {
@@ -162,7 +191,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                         msUserSelect: 'none',
                         userSelect: 'none',
                         // pass all events to parent, it also needs to receive the first click to handle copy and paste events
-                        pointerEvents: 'none',
+                        // pointerEvents: 'none',
                         width: matrix.width, height: matrix.height, position: 'relative', outline: 'none'
                     }}
 

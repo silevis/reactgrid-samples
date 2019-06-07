@@ -290,8 +290,6 @@ export class ColReorderBehavior extends Behavior {
     renderGlobalPart = () => {
         const ranges: any = this.gridContext.state.selectedRanges
         const width = ranges[ranges.length - 1].last.col.right - ranges[0].first.col.left
-        console.log(ranges[ranges.length - 1].last.col.right)
-        console.log(ranges[0].first.col.left)
         return (
             <LineAndShadow
                 onInitialized={(linePostionSetter, shadowPositionSetter) => {

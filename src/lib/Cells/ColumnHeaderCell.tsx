@@ -1,10 +1,12 @@
 import * as React from 'react';
-import { stopPropagationEventHandler } from './handleEvents';
-import { Cell, CellRenderProps, Location, CellMatrix, GridContext, CellData } from '../Common';
-import { getLocationFromClient, changeBehavior } from '../Functions';
+import { Cell, CellRenderProps, GridContext, CellData } from '../Common';
+import { changeBehavior } from '../Functions';
 import { ColumnSelectionBehavior } from '../Behaviors/ColumnSelectionBehavior';
-import { stat } from 'fs';
 import { ColReorderBehavior } from '../Behaviors/ColReorderBehavior';
+import { useState } from 'react';
+import { getColumnFromClientX } from '../Functions/getLocationFromClient';
+import { ResizeColumnBehavior } from '../Behaviors/ResizeColumnBehavior';
+// import { ResizeColumnBehavior } from '../Behaviors/ResizeColumnBehavior';
 
 // export interface HeaderCellProps extends CellRenderProps {
 //     shouldStartReorder: boolean;
@@ -44,11 +46,10 @@ export class ColumnHeaderCell implements Cell {
             justifyContent: 'space-between',
             width: '100%',
             height: '100%',
-            alignItems: 'center'
+            alignItems: 'center',
         };
         const state = props.gridContext.state;
-
-        // if (!props.isInEditMode)
+        const [isResizerHover, setIsResizeHover] = useState(false);
         return (
             <div style={innerStyle}
                 onPointerDown={e => {
@@ -59,7 +60,31 @@ export class ColumnHeaderCell implements Cell {
                     }
                 }}>
                 {props.cellData.textValue}
-            </div>
+                <div
+                    style={{
+                        position: 'relative',
+                        right: 0,
+                        width: 10,
+                        height: '100%',
+                    }}
+                    onPointerDown={e => this.startResizingColumn(e, props.gridContext)}
+
+                >
+                    <div
+                        onClick={e => e.stopPropagation()}
+                        onMouseEnter={() => setIsResizeHover(true)}
+                        onMouseOut={() => setIsResizeHover(false)}
+                        style={{
+                            width: this.resizeDivWidth,
+                            height: '100%',
+                            cursor: isResizerHover ? 'w-resize' : 'default',
+                            background: isResizerHover ? '#3498db' : '#eee',
+                            position: 'absolute',
+                            right: 0
+                        }}
+                    />
+                </div>
+            </div >
         )
 
         // return (
@@ -85,5 +110,11 @@ export class ColumnHeaderCell implements Cell {
         //     onPointerDown={e => e.stopPropagation()}
         // />
         // )
+    }
+
+    private startResizingColumn(e: any, gridContext: GridContext) {
+        const column = getColumnFromClientX(gridContext, e.clientX, false);
+        e.stopPropagation();
+        changeBehavior(gridContext, new ResizeColumnBehavior(gridContext, column, e));
     }
 }

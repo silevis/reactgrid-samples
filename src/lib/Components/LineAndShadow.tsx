@@ -42,6 +42,7 @@ export class LineAndShadow extends React.Component<LineAndShadowProps, LineAndSh
                         left: isVertical ? this.state.shadowPosition : 0,
                         width: isVertical ? shadowSize : cellMatrix.width,
                         height: isVertical ? cellMatrix.height : shadowSize,
+                        zIndex: 4
                     }}
                 />
                 <div
@@ -52,6 +53,7 @@ export class LineAndShadow extends React.Component<LineAndShadowProps, LineAndSh
                         left: isVertical ? this.state.linePosition : 0,
                         width: isVertical ? 2 : cellMatrix.width,
                         height: isVertical ? cellMatrix.height : 2,
+                        zIndex: 4
                     }}
                 />
             </>
