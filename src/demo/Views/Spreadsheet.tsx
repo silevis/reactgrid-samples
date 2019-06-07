@@ -10,7 +10,7 @@ export class Spreadsheet extends React.Component<{}, { data: string[][] }> {
     constructor(props: {}) {
         super(props);
         this.state = {
-            data: Array(12).fill(0).map((_, ri) => Array(12).fill(0).map((_, ci) => (ri + 100) + ' - ' + (ci + 100)))
+            data: Array(12).fill(0).map((_, ri) => Array(16).fill(0).map((_, ci) => (ri + 100) + ' - ' + (ci + 100)))
         }
 
     }
@@ -26,7 +26,7 @@ export class Spreadsheet extends React.Component<{}, { data: string[][] }> {
         // rows.map((_, i) => cells[i][0] = new RowHeaderCell(i.toString(), v => { console.log(v); this.state.data[i][0] = v; this.setState(this.state); return true }))
         columns.map((_, j) => cells[0][j] = new ColumnHeaderCell(j.toString(), v => { console.log(v); this.state.data[0][j] = v; this.setState(this.state); return true }))
         // cells[0][0] = new ColumnHeaderCell('', v => { console.log(v); this.state.data[0][0] = v; this.setState(this.state); return true })
-        return new CellMatrix({ frozenTopRows: 2, frozenLeftColumns: 2, frozenBottomRows: 2, frozenRightColumns: 2, rows, columns, cells: cells })
+        return new CellMatrix({ frozenTopRows: 2, frozenLeftColumns: 3, frozenBottomRows: 2, frozenRightColumns: 3, rows, columns, cells: cells })
     }
 
     private calculateColumnReorder = (row: string[], colIdxs: number[], direction: string, destination: number) => {
