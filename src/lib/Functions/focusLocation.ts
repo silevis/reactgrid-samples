@@ -8,11 +8,8 @@ export function focusLocation(gridContext: GridContext, location: Location, rese
     // cell.onFocusChanged(location);
     // TODO external event needed?
     // TODO move resetSelection out to an other function
-    //gridContext.viewportElement.focus();
-    //gridContext.viewportElement.click();
-    //gridContext.viewportElement.focus();
 
-    //document.execCommand('selectAll', false, undefined);
+    gridContext.hiddenFocusElement.focus();
     if (resetSelection) {
         gridContext.setState({
             focusedLocation: location,

@@ -1,7 +1,7 @@
 import { Grid, GridState } from "../Components/Grid";
 import { CellMatrix } from "./CellMatrix";
 import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
-import { Behavior, CellData } from ".";
+import { Behavior } from ".";
 
 // INTERNAL
 export class GridContext {

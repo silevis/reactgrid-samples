@@ -10,6 +10,8 @@ export class PointerEventsController {
 
     constructor(private gridContext: GridContext) { }
 
+    // TODO Handle PointerCancel
+
     public handlePointerDown = (event: PointerEvent) => {
         // TODO open context menu (long hold tap)
 
