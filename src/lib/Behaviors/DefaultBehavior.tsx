@@ -116,7 +116,7 @@ export class DefaultBehavior extends Behavior {
         // this.grid.preventFocusChange = false;
         event.preventDefault()
         this.gridContext.commitChanges()
-        this.gridContext.hiddenFocusElement.focus();
+        //this.gridContext.hiddenFocusElement.focus();
     }
 
     private copySelectedRangeToClipboard(removeValues = false) {
@@ -147,6 +147,6 @@ export class DefaultBehavior extends Behavior {
         document.execCommand('selectAll', false, undefined)
         document.execCommand('copy')
         document.body.removeChild(div)
-        this.gridContext.hiddenFocusElement.focus();
+        //this.gridContext.hiddenFocusElement.focus();
     }
 }

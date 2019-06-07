@@ -146,10 +146,10 @@ export class Grid extends React.Component<GridProps, GridState> {
             >
                 <div
                     data-cy="dyna-grid"
-                    // this tabIndex attracts 
-                    tabIndex={0}
                     className="dg-content"
-                    style={{ width: matrix.width, height: matrix.height, position: 'relative', outline: 'none' }}
+                    style={{
+                        width: matrix.width, height: matrix.height, position: 'relative', outline: 'none'
+                    }}
                     onPointerDown={this.pointerEventsController.handlePointerDown}
                     onContextMenu={this.handleContextMenu}
                     onKeyDown={this.keyDownHandler}
@@ -158,7 +158,6 @@ export class Grid extends React.Component<GridProps, GridState> {
                     onCut={this.cutHandler}
                     onPaste={this.pasteHandler}
                     onPasteCapture={this.handlePasteCapture}
-
                 >
                     {matrix.frozenTopRange.height > 0 &&
                         <PaneRow
@@ -188,15 +187,7 @@ export class Grid extends React.Component<GridProps, GridState> {
                             zIndex={3}
                         />}
                     {this.gridContext.currentBehavior.renderGlobalPart && this.gridContext.currentBehavior.renderGlobalPart()}
-                    <div
-                        className="dg-hidden-focus-element"
-                        contentEditable={true}
-                        style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }}
-                        onBlur={() => console.log('HFE: blur')}
-                        onFocus={() => console.log('HFE: focus')}
-                        onPaste={this.handlePasteOnHiddenElement}
-                        ref={this.hiddenElementRefHandler}
-                    />
+                    <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} />
                 </div>
             </div >
         );
@@ -206,7 +197,8 @@ export class Grid extends React.Component<GridProps, GridState> {
         this.gridContext.viewportElement = viewportElement;
         refresh(this.gridContext);
     }
-    private hiddenElementRefHandler = (hiddenFocusElement: HTMLDivElement) => {
+
+    private hiddenElementRefHandler = (hiddenFocusElement: HTMLInputElement) => {
         this.gridContext.hiddenFocusElement = hiddenFocusElement;
     }
 
@@ -230,8 +222,8 @@ export class Grid extends React.Component<GridProps, GridState> {
 
     keyDownHandler = (event: KeyboardEvent) => this.gridContext.currentBehavior.handleKeyDown(event);
     keyUpHandler = (event: KeyboardEvent) => this.gridContext.currentBehavior.handleKeyUp(event);
-    copyHandler = (event: ClipboardEvent) => this.gridContext.currentBehavior.handleCopy(event);
-    pasteHandler = (event: ClipboardEvent) => this.gridContext.currentBehavior.handlePaste(event);
+    copyHandler = (event: ClipboardEvent) => { console.log('copy'); this.gridContext.currentBehavior.handleCopy(event); }
+    pasteHandler = (event: ClipboardEvent) => { console.log('paste'); this.gridContext.currentBehavior.handlePaste(event); }
     cutHandler = (event: ClipboardEvent) => this.gridContext.currentBehavior.handleCut(event);
     handleContextMenu = (event: React.MouseEvent) => this.gridContext.currentBehavior.handleContextMenu(event);
 
