@@ -1,53 +1,17 @@
 pipeline {
   agent any
   stages {
-    // stage('npm') {	
-    //   steps {	
-    //     bat 'npm install'	
-    //   }
-    // }
-
     stage('update files') {
       steps {
         script {
-          // powershell 'Remove-Item -Recurse -Force node_modules'
-          // if (env.CHANGE_ID) {
-          //   fileOperations([fileCopyOperation(	
-          //     excludes: "",
-          //     flattenFiles: false,	
-          //     includes: "**/*",	
-          //     targetLocation: "c:/users/lenovo/desktop/dynagrid-for-testing"	
-          //   )])
-          //   dir(path: 'c:/users/lenovo/desktop/dynagrid-for-testing') {
-          //     bat "npm install"
-          //   }
-          // }
           if (env.BRANCH_NAME == 'cleanup') {
-            // fileOperations([fileCopyOperation(	
-            //   excludes: "",
-            //   flattenFiles: false,	
-            //   includes: "**/*",	
-            //   targetLocation: "c:/users/lenovo/desktop/dynagrid"	
-            // )])
-            // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-            //   powershell "git pull origin cleanup"
-            // }
+            dir(path: 'c:/users/lenovo/desktop/dynagrid') {
+              bat "git pull https://eb2eb8995fd97fa2c5f31aab23b0cd798e2f3505@github.com/silevis/dynagrid.git cleanup"
+            }
           }
         }
       }
     }
-    
-    // stage('tests') {
-    //   steps {
-    //     script {
-    //       if (env.CHANGE_ID) { // if pipeline is triggered by pull request
-    //         dir(path: 'c:/users/lenovo/desktop/dynagrid-for-testing') {
-    //           bat "npm run test:automatic"
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
   }
 
   options {
@@ -55,16 +19,6 @@ pipeline {
   }
 
   post {
-    success {
-      script {
-        if (env.BRANCH_NAME == 'cleanup') {
-          dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-            bat "npm publish"
-          }
-        }
-       }  
-    }
-
     cleanup {
       /* clean up our workspace */
       deleteDir()
