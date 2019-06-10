@@ -1,12 +1,36 @@
 pipeline {
-  agent any
+  agent any;
   stages {
-    stage('update files') {
+    stage('pull changes') {
       steps {
         script {
           if (env.BRANCH_NAME == 'cleanup') {
             dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-              bat "git pull https://eb2eb8995fd97fa2c5f31aab23b0cd798e2f3505@github.com/silevis/dynagrid.git cleanup"
+              bat 'git pull https://eb2eb8995fd97fa2c5f31aab23b0cd798e2f3505@github.com/silevis/dynagrid.git cleanup';
+            }
+          }
+        }
+      }
+    }
+
+    stage('npm install') {
+      steps {
+        script {
+          if (env.BRANCH_NAME == 'cleanup') {
+            dir(path: 'c:/users/lenovo/desktop/dynagrid') {
+              bat 'npm install';
+            }
+          }
+        }
+      }
+    }
+
+    stage('test') {
+      steps {
+        script {
+          if (env.BRANCH_NAME == 'cleanup') {
+            dir(path: 'c:/users/lenovo/desktop/dynagrid') {
+              bat 'npm run test:automatic';
             }
           }
         }
@@ -15,7 +39,7 @@ pipeline {
   }
 
   options {
-    disableConcurrentBuilds()
+    disableConcurrentBuilds();
   }
 
   post {
@@ -23,22 +47,22 @@ pipeline {
       /* clean up our workspace */
       deleteDir()
       dir("${workspace}@tmp") {
-        deleteDir()
+        deleteDir();
       }
       dir("${workspace}@script") {
-        deleteDir()
+        deleteDir();
       }
       dir("${workspace}@script@tmp") {
-        deleteDir()
+        deleteDir();
       }
     }
 
     failure {
-      emailext(to: 'piotr.mikosza@silevis.com', subject: "${env.JOB_NAME} ended with failure!", body: "Somethin was wrong! \n\nConsole: ${env.BUILD_URL}.\n\n")
+      emailext(to: 'piotr.mikosza@silevis.com', subject: "${env.JOB_NAME} ended with failure!", body: "Somethin was wrong! \n\nConsole: ${env.BUILD_URL}.\n\n");
     }
   }
 
   tools {
-    nodejs 'node-v10.15.3'
+    nodejs 'node-v10.15.3';
   }
 }
