@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { GridContext, Range, PointerEvent, CellMatrix, Behavior, Row, Column, Location } from "../Common";
+import { GridContext, Range, PointerEvent, CellMatrix, Behavior, Row, Column, Location, DataChange } from "../Common";
 import { getLocationFromClient, resetToDefaultBehavior } from "../Functions";
 import { PartialArea } from '../Components/PartialArea';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
+import { trySetDataAndAppendChange } from '../Functions/trySetData';
 
 type Direction = '' | 'left' | 'right' | 'up' | 'down';
 
@@ -75,7 +76,7 @@ export class FillHandleBehavior extends Behavior {
                             ? cellMatrix.last.col.idx
                             : selectedRange.last.col.idx + 1
                     ),
-                    cellMatrix.getLocation(selectedRange.last.row.idx, location.col.idx)
+                    new Location(selectedRange.last.row, location.col)
                 );
             case 'left':
                 return cellMatrix.getRange(
@@ -105,14 +106,14 @@ export class FillHandleBehavior extends Behavior {
                             : selectedRange.last.row.idx + 1,
                         selectedRange.first.col.idx
                     ),
-                    cellMatrix.getLocation(location.row.idx, selectedRange.last.col.idx)
+                    new Location(location.row, selectedRange.last.col)
                 );
         }
         return undefined;
     }
 
     handlePointerUp(event: PointerEvent) {
-
+        const dataChanges: DataChange[] = [];
         const activeSelectedRange = getActiveSelectedRange(this.gridContext);
         const cellMatrix = this.gridContext.cellMatrix;
         let values: any[];
@@ -129,7 +130,7 @@ export class FillHandleBehavior extends Behavior {
                 );
                 this.fillRange.rows.forEach((row: Row, i: number) =>
                     this.fillRange!.cols.forEach((col: Column) => {
-                        new Location(row, col).cell.trySetData(values[i].cellData);
+                        trySetDataAndAppendChange(new Location(row, col), values[i].cellData, dataChanges)
                     })
                 );
                 this.gridContext.setState({
@@ -141,9 +142,8 @@ export class FillHandleBehavior extends Behavior {
                     new Location(row, activeSelectedRange.first.col).cell
                 );
                 this.fillRange.rows.forEach((row: Row, i: number) =>
-                    this.fillRange!.cols.forEach(
-                        (col: Column) =>
-                            new Location(row, col).cell.trySetData(values[i].cellData)
+                    this.fillRange!.cols.forEach((col: Column) =>
+                        trySetDataAndAppendChange(new Location(row, col), values[i].cellData, dataChanges)
                     )
                 );
                 this.gridContext.setState({
@@ -155,9 +155,8 @@ export class FillHandleBehavior extends Behavior {
                     new Location(activeSelectedRange.first.row, col).cell
                 );
                 this.fillRange.rows.forEach((row: Row) =>
-                    this.fillRange!.cols.forEach(
-                        (col: Column, i: number) =>
-                            new Location(row, col).cell.trySetData(values[i].cellData)
+                    this.fillRange!.cols.forEach((col: Column, i: number) =>
+                        trySetDataAndAppendChange(new Location(row, col), values[i].cellData, dataChanges)
                     )
                 );
                 this.gridContext.setState({
@@ -169,9 +168,8 @@ export class FillHandleBehavior extends Behavior {
                     new Location(activeSelectedRange.last.row, col).cell
                 );
                 this.fillRange.rows.forEach((row: Row) =>
-                    this.fillRange!.cols.forEach(
-                        (col: Column, i: number) =>
-                            new Location(row, col).cell.trySetData(values[i].cellData)
+                    this.fillRange!.cols.forEach((col: Column, i: number) =>
+                        trySetDataAndAppendChange(new Location(row, col), values[i].cellData, dataChanges)
                     )
                 );
                 this.gridContext.setState({
@@ -180,7 +178,7 @@ export class FillHandleBehavior extends Behavior {
                 });
                 break;
         }
-        this.gridContext.commitChanges();
+        this.gridContext.commitChanges(dataChanges);
         resetToDefaultBehavior(this.gridContext);
     }
 

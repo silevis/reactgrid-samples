@@ -1,6 +1,6 @@
 import { keyCodes } from '../../Common/Constants';
 import { focusLocation } from '../../Functions';
-import { GridContext, KeyboardEvent } from '../../Common';
+import { GridContext, KeyboardEvent, Location } from '../../Common';
 import { getActiveSelectedRange } from '../../Functions/getActiveSelectedRange';
 
 export function handleKeyNavigationInsideSelection(gridContext: GridContext, event: KeyboardEvent) {
@@ -16,11 +16,7 @@ export function handleKeyNavigationInsideSelection(gridContext: GridContext, eve
             focusedCell.col.idx === 0 &&
             focusedCell.row.idx === activeSelectedRange.first.row.idx
         ) {
-            const cell = cellMatrix.getLocation(
-                activeSelectedRange.last.row.idx,
-                activeSelectedRange.last.col.idx
-            );
-            focusLocation(gridContext, cell, false);
+            focusLocation(gridContext, new Location(activeSelectedRange.last.row, activeSelectedRange.last.col), false);
         } else {
             // TODO WHAT WITH THAT?
             moveFocusInsideSelectedRange(-1, gridContext);
@@ -30,11 +26,7 @@ export function handleKeyNavigationInsideSelection(gridContext: GridContext, eve
             focusedCell.col.idx === activeSelectedRange.first.col.idx &&
             focusedCell.row.idx === activeSelectedRange.first.row.idx
         ) {
-            const cell = cellMatrix.getLocation(
-                activeSelectedRange.last.row.idx,
-                activeSelectedRange.last.col.idx
-            );
-            focusLocation(gridContext, cell, false);
+            focusLocation(gridContext, new Location(activeSelectedRange.last.row, activeSelectedRange.last.col), false);
         }
         event.preventDefault();
     } else if (event.keyCode === keyCodes.ENTER && !event.shiftKey) {
@@ -45,32 +37,24 @@ export function handleKeyNavigationInsideSelection(gridContext: GridContext, eve
         // TODO WHAT WITH THAT?
         moveFocusInsideSelectedRange('up', gridContext);
         if (focusedCell.row.idx === activeSelectedRange.first.row.idx) {
-            const cell = cellMatrix.getLocation(
-                activeSelectedRange.last.row.idx,
-                focusedCell.col.idx
-            );
-            focusLocation(gridContext, cell, false);
+            focusLocation(gridContext, new Location(activeSelectedRange.last.row, focusedCell.col), false);
         }
     } else if (!event.shiftKey && event.keyCode === keyCodes.LEFT_ARROW && focusedCell.col.idx > 0) {
-        const cell = cellMatrix.getLocation(focusedCell.row.idx, focusedCell.col.idx - 1);
-        focusLocation(gridContext, cell);
+        focusLocation(gridContext, cellMatrix.getLocation(focusedCell.row.idx, focusedCell.col.idx - 1));
     } else if (
         !event.shiftKey &&
         event.keyCode === keyCodes.RIGHT_ARROW &&
         focusedCell.col.idx < cellMatrix.last.col.idx
     ) {
-        const cell = cellMatrix.getLocation(focusedCell.row.idx, focusedCell.col.idx + 1);
-        focusLocation(gridContext, cell);
+        focusLocation(gridContext, cellMatrix.getLocation(focusedCell.row.idx, focusedCell.col.idx + 1));
     } else if (!event.shiftKey && event.keyCode === keyCodes.UP_ARROW && focusedCell.row.idx > 0) {
-        const cell = cellMatrix.getLocation(focusedCell.row.idx - 1, focusedCell.col.idx);
-        focusLocation(gridContext, cell);
+        focusLocation(gridContext, cellMatrix.getLocation(focusedCell.row.idx - 1, focusedCell.col.idx));
     } else if (
         !event.shiftKey &&
         event.keyCode === keyCodes.DOWN_ARROW &&
         focusedCell.row.idx < cellMatrix.last.row.idx
     ) {
-        const cell = cellMatrix.getLocation(focusedCell.row.idx + 1, focusedCell.col.idx);
-        focusLocation(gridContext, cell);
+        focusLocation(gridContext, cellMatrix.getLocation(focusedCell.row.idx + 1, focusedCell.col.idx));
     } else {
         // TODO 
         // return this.innerBehavior.handleKeyDown(event);
@@ -93,15 +77,14 @@ const moveFocusInsideSelectedRange = (direction: -1 | 1 | 'up' | 'down', gridCon
     if (newPosInRange === 0) {
         const nextSelectionRangeIdx = (selectedRangeIdx + 1) % gridContext.state.selectedRanges.length;
         const nextSelection = gridContext.state.selectedRanges[nextSelectionRangeIdx];
-        focusLocation(gridContext, { col: nextSelection.first.col, row: nextSelection.first.row }, false);
+        focusLocation(gridContext, new Location(nextSelection.first.row, nextSelection.first.col), false);
         gridContext.setState({ activeSelectedRangeIdx: nextSelectionRangeIdx })
     } else {
         const newColIdx = selectedRange.first.col.idx + (newPosInRange % colCount);
         const newRowIdx = selectedRange.first.row.idx + Math.floor(newPosInRange / colCount);
-        const location = gridContext.cellMatrix.getLocation(newRowIdx, newColIdx);
         focusLocation(
             gridContext,
-            location,
+            gridContext.cellMatrix.getLocation(newRowIdx, newColIdx),
             selectedRange ? (selectedRange.cols.length > 1 || selectedRange.rows.length > 1 ? false : true) : true
         );
     }
