@@ -17,6 +17,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
     let cellData = { ...cell.cellData };
 
     const style: React.CSSProperties = {
+        ...cell.customStyle,
         boxSizing: 'border-box',
         whiteSpace: 'nowrap',
         position: 'absolute',
@@ -41,16 +42,14 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
         touchAction: isFocused ? 'none' : 'auto' // prevent scrolling
     }
     return (
-
         <div
-            key={location.row.idx + '-' + location.col.idx}
             className="cell"
             style={style}
             onBlur={() => {
                 if (props.gridContext.lastKeyCode === keyCodes.ESC) {
 
                     props.gridContext.state.focusedLocation!.cell.trySetData(cellData)
-                    props.gridContext.commitChanges([{}])
+                    props.gridContext.commitChanges()
 
                 }
             }}

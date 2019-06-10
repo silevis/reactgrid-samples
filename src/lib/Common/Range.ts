@@ -7,8 +7,8 @@ export class Range {
     readonly last!: Location;
 
     constructor(public readonly cols: Column[], public readonly rows: Row[]) {
-        this.first = { row: this.rows[0], col: this.cols[0] };
-        this.last = { row: this.rows[this.rows.length - 1], col: this.cols[this.cols.length - 1] };
+        this.first = new Location(this.rows[0], this.cols[0]);
+        this.last = new Location(this.rows[this.rows.length - 1], this.cols[this.cols.length - 1]);
         this.height = this.rows.map(c => c.height).reduce((a, b) => a + b, 0);
         this.width = this.cols.map(c => c.width).reduce((a, b) => a + b, 0);
     }

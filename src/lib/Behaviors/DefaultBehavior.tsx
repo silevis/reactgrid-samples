@@ -1,4 +1,4 @@
-import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, CellData } from "../Common";
+import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, CellData, DataChange } from "../Common";
 import { handleKeyDown as handleKeyDown } from "./DefaultBehavior/handleKeyDown";
 import { changeBehavior } from "../Functions";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
@@ -47,6 +47,7 @@ export class DefaultBehavior extends Behavior {
     handleKeyDown(event: KeyboardEvent) {
         handleKeyDown(this.gridContext, event)
     }
+
     handleKeyUp(event: KeyboardEvent): void {
         if (event.keyCode === keyCodes.TAB || event.keyCode === keyCodes.ENTER) {
             event.preventDefault();
@@ -55,6 +56,7 @@ export class DefaultBehavior extends Behavior {
         }
 
     }
+
     handleCopy(event: ClipboardEvent): void {
         // this.grid.preventFocusChange = true;
         this.copySelectedRangeToClipboard()
@@ -62,6 +64,7 @@ export class DefaultBehavior extends Behavior {
         // this.grid.preventFocusChange = false;
         event.preventDefault()
     }
+
     handlePaste(event: ClipboardEvent): void {
         const activeSelectedRange = getActiveSelectedRange(this.gridContext)
         if (!activeSelectedRange) {
@@ -85,10 +88,12 @@ export class DefaultBehavior extends Behavior {
         } else {
             pasteContent = event.clipboardData.getData('text/plain').split('\n').map(line => line.split('\t').map(t => ({ text: t, data: t, type: 'string' })))
         }
+        const dataChanges: DataChange[] = [];
+
         if (pasteContent.length === 1 && pasteContent[0].length === 1) {
             activeSelectedRange.rows.forEach(row =>
                 activeSelectedRange.cols.forEach(col => {
-                    row.cells[col.idx].trySetData(pasteContent[0][0])
+                    trySetDataAndAppendChange(new Location(row, col), pasteContent[0][0], dataChanges)
                 })
             )
         } else {
@@ -100,27 +105,27 @@ export class DefaultBehavior extends Behavior {
                     const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx
                     if (rowIdx <= cellMatrix.last.row.idx && colIdx <= cellMatrix.last.col.idx) {
                         lastLocation = cellMatrix.getLocation(rowIdx, colIdx)
-                        trySetDataAndAppendChange(lastLocation.cell.trySetData(pasteValue)
-
+                        trySetDataAndAppendChange(lastLocation, pasteValue, dataChanges)
                     }
                 })
             )
             this.gridContext.setState({ selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, lastLocation!)] })
         }
         event.preventDefault()
-        this.gridContext.commitChanges()
+        this.gridContext.commitChanges(dataChanges);
     }
+
     handleCut(event: ClipboardEvent): void {
         // this.grid.preventFocusChange = true;
         this.copySelectedRangeToClipboard(true)
         // this.grid.preventFocusChange = false;
         event.preventDefault()
-        this.gridContext.commitChanges()
         //this.gridContext.hiddenFocusElement.focus();
     }
 
     private copySelectedRangeToClipboard(removeValues = false) {
 
+        const dataChanges: DataChange[] = [];
         const div = document.createElement('div')
         const table = document.createElement('table')
         table.setAttribute('empty-cells', 'show')
@@ -130,17 +135,16 @@ export class DefaultBehavior extends Behavior {
             const tableRow = table.insertRow()
             activeSelectedRange.cols.forEach(col => {
                 const tableCell = tableRow.insertCell()
-                const gridCell = row.cells[col.idx];
-                tableCell.textContent = (gridCell.cellData ? gridCell.cellData.text : '')  // for undefined values
-                if (!gridCell.cellData) {
+                const location = new Location(row, col)
+                tableCell.textContent = (location.cell.cellData ? location.cell.cellData.text : '')  // for undefined values
+                if (!location.cell.cellData) {
                     tableCell.innerHTML = '<img>';
                 }
-                tableCell.setAttribute('data-data', JSON.stringify(gridCell.cellData.data))
-                tableCell.setAttribute('data-type', gridCell.cellData.type)
+                tableCell.setAttribute('data-data', JSON.stringify(location.cell.cellData.data))
+                tableCell.setAttribute('data-type', location.cell.cellData.type)
                 tableCell.style.border = '1px solid #D3D3D3'
                 if (removeValues) {
-
-                    trgridCell.trySetData({ text: '', data: '', type: 'string' })
+                    trySetDataAndAppendChange(location, { text: '', data: '', type: 'string' }, dataChanges);
                 }
             })
         })

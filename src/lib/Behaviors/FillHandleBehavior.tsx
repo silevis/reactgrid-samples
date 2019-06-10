@@ -112,11 +112,12 @@ export class FillHandleBehavior extends Behavior {
     }
 
     handlePointerUp(event: PointerEvent) {
+
         const activeSelectedRange = getActiveSelectedRange(this.gridContext);
         const cellMatrix = this.gridContext.cellMatrix;
         let values: any[];
         if (!activeSelectedRange || this.fillRange === undefined) {
-            this.gridContext.commitChanges();
+            //this.gridContext.commitChanges();
             resetToDefaultBehavior(this.gridContext);
             return;
         }

@@ -1,4 +1,4 @@
-import { Cell, CellMatrixProps } from "./PublicModel";
+import { CellMatrixProps } from "./PublicModel";
 import { Range } from "./Range";
 import { Column, Row, Location } from ".";
 
