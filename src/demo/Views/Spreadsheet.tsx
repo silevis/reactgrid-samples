@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { movable, RowProps, CellMatrix, Cell } from '../../lib/Common';
+import { ColumnProps, RowProps, CellMatrix, Cell } from '../../lib/Common';
 import { TextCell } from '../../lib/Cells/TextCell';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
-import { ColumnHeaderCell } from '../../lib/Cells/ColumnHeaderCell';
+import { ColumnHeaderCell } from '../../lib/Cells/HeaderCell';
 
 export class Spreadsheet extends React.Component<{}, { data: string[][] }> {
     constructor(props: {}) {
@@ -15,9 +15,9 @@ export class Spreadsheet extends React.Component<{}, { data: string[][] }> {
 
     private generateCellMatrix() {
         const cells: any = this.state.data.map((row, ri) =>
-            row.map((value, ci) => new TextCell(value, v => { this.state.data[ri][ci] = v; return true }))
-        )
-        const columns: movable[] = this.state.data[0].map((c, idx) => { return { id: idx, width: 120, onDropLeft: (cols) => this.reorderColumns(cols, idx), onDropRight: (cols) => this.reorderColumns(cols, idx) } });
+            row.map((value, ci) => new TextCell(value)
+            )
+        const columns: ColumnProps[] = this.state.data[0].map((c, idx) => { return { id: idx, width: 120, onDropLeft: (cols) => this.reorderColumns(cols, idx), onDropRight: (cols) => this.reorderColumns(cols, idx) } });
         const rows: RowProps[] = this.state.data.map((_, idx) => ({ id: idx, height: 25 }))
         columns.forEach((_, j) => cells[0][j] = new ColumnHeaderCell(j.toString()))
         return new CellMatrix({ frozenTopRows: 2, frozenLeftColumns: 2, frozenBottomRows: 2, frozenRightColumns: 2, rows, columns, cells })
