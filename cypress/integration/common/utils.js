@@ -9,7 +9,7 @@ class Utils {
         } else {
             cy.get('[data-cy=dyna-grid]').trigger('pointerdown', clientX, clientY);
         }
-        cy.get('body').trigger('pointerup', { force: true });
+        cy.get('[data-cy=dyna-grid]').trigger('pointerup', { force: true });
         cy.wait(100);
     }
 
@@ -55,7 +55,7 @@ class Utils {
 
     fillCells(toX, toY) {
         cy.get('[data-cy=dg-fill-handle]').trigger('pointerdown', { force: true });
-        cy.get('[data-cy=dyna-grid]').trigger('pointermove', { clientX: toX, clientY: toY });
+        cy.get('[data-cy=dyna-grid]').trigger('pointermove', { clientX: toX, clientY: toY, force: true });
         cy.get('[data-cy=dyna-grid]').trigger('pointerup', { force: true });
         cy.wait(100);
     }
