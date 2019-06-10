@@ -5,7 +5,6 @@ import { ColumnSelectionBehavior } from '../Behaviors/ColumnSelectionBehavior';
 import { ColReorderBehavior } from '../Behaviors/ColReorderBehavior';
 
 export class ColumnHeaderCell implements Cell {
-    customStyle: React.CSSProperties = {};
     cellData: CellData;
 
     constructor(value: string) {
@@ -18,21 +17,7 @@ export class ColumnHeaderCell implements Cell {
 
     shouldEnableEditMode = () => false;
 
-    renderContent: (props: CellRenderProps) => React.ReactNode = (props) => {
+    customStyle: React.CSSProperties = { background: '#eee' };
 
-        return (
-            <div style={{
-                background: '#eee',
-                cursor: /*props.isSelected ? '-webkit-grab' : 'default',*/ 'default',
-                display: 'flex',
-                justifyContent: 'space-between',
-                width: '100%',
-                height: '100%',
-                alignItems: 'center'
-            }}
-            >
-                {this.cellData.text}
-            </div>
-        )
-    }
+    renderContent: (props: CellRenderProps) => React.ReactNode = (props) => this.cellData.text
 }
