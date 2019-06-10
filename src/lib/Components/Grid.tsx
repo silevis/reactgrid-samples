@@ -2,11 +2,9 @@ import * as React from "react";
 import { GridContext, GridController, CellMatrix } from "../Common";
 import { Range, Location, SelectionMode, } from "../Common";
 import { PaneRow } from "./PaneRow";
-import { refresh, focusLocation } from "../Functions";
-import { KeyboardEvent, ClipboardEvent, PointerEvent } from "../Common";
+import { refresh } from "../Functions";
+import { KeyboardEvent, ClipboardEvent } from "../Common";
 import { PointerEventsController } from "../Common/PointerEventsController";
-import { FillHandle } from "./FillHandle";
-import { timingSafeEqual } from "crypto";
 
 
 interface GridProps {
@@ -78,23 +76,21 @@ export class Grid extends React.Component<GridProps, GridState> {
 
     // }
 
-    static getDerivedStateFromProps(nextProps: GridProps, prevState: GridState) {
+    // static getDerivedStateFromProps(nextProps: GridProps, prevState: GridState) {
+    //     return {
+    //         selectedRanges: Grid.updateSelectionRangeWidthsAndHeights(nextProps, prevState),
+    //     };
+    // }
 
-        // TODO Check it!!!!
-        return {
-            selectedRanges: Grid.updateSelectionRangeWidthsAndHeights(nextProps, prevState),
-        };
-    }
-
-    private static updateSelectionRangeWidthsAndHeights(nextProps: GridProps, prevState: GridState) {
-        let selectedRanges = [];
-        for (let i = 0; i < prevState.selectedRanges.length; i++) {
-            selectedRanges.push(
-                nextProps.cellMatrix.getRange(prevState.selectedRanges[i].first, prevState.selectedRanges[i].last)
-            );
-        }
-        return selectedRanges;
-    }
+    // private static updateSelectionRangeWidthsAndHeights(nextProps: GridProps, prevState: GridState) {
+    //     let selectedRanges = [];
+    //     for (let i = 0; i < prevState.selectedRanges.length; i++) {
+    //         selectedRanges.push(
+    //             nextProps.cellMatrix.getRange(prevState.selectedRanges[i].first, prevState.selectedRanges[i].last)
+    //         );
+    //     }
+    //     return selectedRanges;
+    // }
 
 
     componentDidMount() {
@@ -107,16 +103,16 @@ export class Grid extends React.Component<GridProps, GridState> {
     }
 
     componentDidUpdate(oldProps: GridProps) {
-        // TODO Check it!!!!
+        // const nextProps: GridProps = this.props;
+        // if (this.state.focusedLocation) {
+        //     const oldLocation = oldProps.cellMatrix.getLocation(this.state.focusedLocation.row.idx, this.state.focusedLocation.col.idx)
+        //     const newLocation = nextProps.cellMatrix.getLocation(this.state.focusedLocation.row.idx, this.state.focusedLocation.col.idx)
+        //     if (oldLocation.col.width !== newLocation.col.width) {
+        //         focusLocation(this.gridContext, nextProps.cellMatrix.getLocation(this.state.focusedLocation.row.idx, this.state.focusedLocation.col.idx), false)
+        //     }
+        // }
 
-        const nextProps = this.props;
-        if (this.state.focusedLocation) {
-            const oldLocation = oldProps.cellMatrix.getLocation(this.state.focusedLocation.row.idx, this.state.focusedLocation.col.idx)
-            const newLocation = nextProps.cellMatrix.getLocation(this.state.focusedLocation.row.idx, this.state.focusedLocation.col.idx)
-            if (oldLocation.col.width !== newLocation.col.width) {
-                focusLocation(this.gridContext, nextProps.cellMatrix.getLocation(this.state.focusedLocation.row.idx, this.state.focusedLocation.col.idx), false)
-            }
-        }
+
         // const cellMatrix = this.props.cellMatrix;
         // this.forceNewFocusLocation(oldprops);
         // if (!(this.state.currentBehavior instanceof DefaultGridBehavior)) {

@@ -43,16 +43,8 @@ export class ResizeColumnBehavior extends Behavior {
         this.setLinePosition(-1);
         if (this.resizedColumn.onResize) {
             this.resizedColumn.onResize(this.resizedColumn, newWidth);
-            // let location = Object.assign([], this.gridContext.state.focusedLocation, {
-            //     col: { ...this.gridContext.state.focusedLocation!.col, width: newWidth }
-            // })
-            // console.log(location)
-            // focusLocation(this.gridContext, location!, true);
         }
         this.gridContext.commitChanges()
-
-        //location.col.width = newWidth;
-
         window.removeEventListener('pointermove', this.moveHandler);
         window.removeEventListener('pointerup', this.mouseUpAndTouchEndHandler);
     }
