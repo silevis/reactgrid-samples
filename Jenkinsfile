@@ -15,16 +15,24 @@ pipeline {
 
     stage('npm install') {
       steps {
-        dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-          bat 'npm install';
+        script {
+          if (env.BRANCH_NAME == 'cleanup') {
+            dir(path: 'c:/users/lenovo/desktop/dynagrid') {
+              bat 'npm install';
+            }
+          }
         }
       }
     }
 
     stage('test') {
       steps {
-        dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-          bat 'npm run test:automatic';
+        script {
+          if (env.BRANCH_NAME == 'cleanup') {
+            dir(path: 'c:/users/lenovo/desktop/dynagrid') {
+              bat 'npm run test:automatic';
+            }
+          }
         }
       }
     }
