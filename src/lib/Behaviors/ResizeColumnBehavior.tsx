@@ -6,8 +6,6 @@ import { LineAndShadow } from "../Components/LineAndShadow";
 import * as React from 'react';
 
 export class ResizeColumnBehavior extends Behavior {
-    private moveHandler = this.handleMove.bind(this);
-    private mouseUpAndTouchEndHandler = this.handleMouseUpAndTouchEnd.bind(this);
     private minColumnWidth: number = 40;
     private frozenColumnsWidth: number;
     private setLinePosition: (position: number) => void = _ => { };
@@ -18,12 +16,9 @@ export class ResizeColumnBehavior extends Behavior {
         this.frozenColumnsWidth = gridContext.cellMatrix.frozenLeftRange.width;
 
         // this.gridContext.setState({ linePosition: resizedColumn.left + resizedColumn.width + this.frozenColumnsWidth, lineOrientation: 'vertical' })
-        console.log(event.type)
-        window.addEventListener('pointermove', this.moveHandler);
-        window.addEventListener('pointerup', this.mouseUpAndTouchEndHandler);
     }
 
-    handleMove(event: PointerEvent) {
+    handlePointerMove = (event: any) => {
         const positionX = event.clientX;
         if ((positionX) >= this.gridContext.viewportElement!.clientWidth - this.gridContext.cellMatrix.frozenRightRange.width) {
             this.setLinePosition(positionX);
@@ -34,7 +29,7 @@ export class ResizeColumnBehavior extends Behavior {
         }
     }
 
-    private handleMouseUpAndTouchEnd(event: PointerEvent) {
+    handlePointerUp = (event: any) => {
         const positionX = event.clientX
         const mousePosition = (positionX + this.gridContext.viewportElement!.scrollLeft > (this.resizedColumn.left + this.minColumnWidth + this.frozenColumnsWidth)) ?
             positionX + this.gridContext.viewportElement!.scrollLeft : this.resizedColumn.left + this.minColumnWidth + this.frozenColumnsWidth;
@@ -45,9 +40,8 @@ export class ResizeColumnBehavior extends Behavior {
             this.resizedColumn.onResize(this.resizedColumn, newWidth);
         }
         this.gridContext.commitChanges()
-        window.removeEventListener('pointermove', this.moveHandler);
-        window.removeEventListener('pointerup', this.mouseUpAndTouchEndHandler);
     }
+
 
     renderGlobalPart = () => {
         return (
