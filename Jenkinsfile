@@ -3,9 +3,11 @@ pipeline {
   stages {
     stage('pull changes') {
       steps {
-        if (env.BRANCH_NAME == 'cleanup') {
-          dir(path: 'c:/users/lenovo/desktop/dynagrid') {
-            bat 'git pull https://eb2eb8995fd97fa2c5f31aab23b0cd798e2f3505@github.com/silevis/dynagrid.git cleanup';
+        script {
+          if (env.BRANCH_NAME == 'cleanup') {
+            dir(path: 'c:/users/lenovo/desktop/dynagrid') {
+              bat 'git pull https://eb2eb8995fd97fa2c5f31aab23b0cd798e2f3505@github.com/silevis/dynagrid.git cleanup';
+            }
           }
         }
       }
