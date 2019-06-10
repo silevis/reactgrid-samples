@@ -49,14 +49,16 @@ export class ColumnHeaderCell implements Cell {
             alignItems: 'center',
         };
         const state = props.gridContext.state;
-        const [isResizerHover, setIsResizeHover] = useState(false);
+        const [isResize, setIsResize] = useState(false);
         return (
             <div style={innerStyle}
                 onPointerDown={e => {
-                    if (state.selectionMode === 'column' && state.selectedIndexes.includes(props.location.col.idx)) {
-                        changeBehavior(props.gridContext, new ColReorderBehavior(props.gridContext, e))
-                    } else {
-                        changeBehavior(props.gridContext, new ColumnSelectionBehavior(props.gridContext))
+                    if (!isResize) {
+                        if (state.selectionMode === 'column' && state.selectedIndexes.includes(props.location.col.idx)) {
+                            changeBehavior(props.gridContext, new ColReorderBehavior(props.gridContext, e))
+                        } else {
+                            changeBehavior(props.gridContext, new ColumnSelectionBehavior(props.gridContext))
+                        }
                     }
                 }}>
                 {props.cellData.textValue}
@@ -68,17 +70,16 @@ export class ColumnHeaderCell implements Cell {
                         height: '100%',
                     }}
                     onPointerDown={e => this.startResizingColumn(e, props.gridContext)}
-
                 >
                     <div
                         onClick={e => e.stopPropagation()}
-                        onMouseEnter={() => setIsResizeHover(true)}
-                        onMouseOut={() => setIsResizeHover(false)}
+                        onMouseEnter={() => setIsResize(true)}
+                        onMouseOut={() => setIsResize(false)}
                         style={{
                             width: this.resizeDivWidth,
                             height: '100%',
-                            cursor: isResizerHover ? 'w-resize' : 'default',
-                            background: isResizerHover ? '#3498db' : '#eee',
+                            cursor: isResize ? 'w-resize' : 'default',
+                            background: isResize ? '#3498db' : '#eee',
                             position: 'absolute',
                             right: 0
                         }}
@@ -114,7 +115,6 @@ export class ColumnHeaderCell implements Cell {
 
     private startResizingColumn(e: any, gridContext: GridContext) {
         const column = getColumnFromClientX(gridContext, e.clientX, false);
-        e.stopPropagation();
         changeBehavior(gridContext, new ResizeColumnBehavior(gridContext, column, e));
     }
 }

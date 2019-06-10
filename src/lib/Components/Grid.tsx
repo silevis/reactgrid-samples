@@ -2,7 +2,7 @@ import * as React from "react";
 import { GridContext, GridController, CellMatrix } from "../Common";
 import { Range, Location, SelectionMode, } from "../Common";
 import { PaneRow } from "./PaneRow";
-import { refresh } from "../Functions";
+import { refresh, focusLocation } from "../Functions";
 import { KeyboardEvent, ClipboardEvent } from "../Common";
 import { PointerEventsController } from "../Common/PointerEventsController";
 
