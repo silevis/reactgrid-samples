@@ -172,12 +172,16 @@ export class ColReorderBehavior extends Behavior {
                     cellMatrix.getLocation(cellMatrix.rows.length - 1, endColIdx)
                 )
             ];
-
+            const range = cellMatrix.getRange(
+                cellMatrix.getLocation(0, startColIdx),
+                cellMatrix.getLocation(cellMatrix.rows.length - 1, endColIdx)
+            )
             this.gridContext.setState({
                 focusedLocation: cell,
                 isFocusedCellInEditMode: false,
                 // selectedColsIdx,
-                selectedRanges
+                selectedRanges,
+                selectedIndexes: range.cols.map(col => col.idx)
             });
         }
 
