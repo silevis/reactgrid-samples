@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { GridContext, Range, Location, PointerEvent, CellMatrix, Behavior, Row, Column } from "../Common";
+import { GridContext, Range, PointerEvent, CellMatrix, Behavior, Row, Column, Location } from "../Common";
 import { getLocationFromClient, resetToDefaultBehavior } from "../Functions";
 import { PartialArea } from '../Components/PartialArea';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
@@ -137,62 +137,45 @@ export class FillHandleBehavior extends Behavior {
                 break;
             case 'left':
                 values = activeSelectedRange.rows.map((row: Row) =>
-                    this.gridContext.cellMatrix.getCell({ row, col: activeSelectedRange.first.col })
+                    new Location(row, activeSelectedRange.first.col).cell
                 );
                 this.fillRange.rows.forEach((row: Row, i: number) =>
                     this.fillRange!.cols.forEach(
                         (col: Column) =>
-                            cellMatrix.getCell({ row, col }) &&
-                            cellMatrix.getCell({ row, col }).trySetData(values[i].cellData)
+                            new Location(row, col).cell.trySetData(values[i].cellData)
                     )
                 );
                 this.gridContext.setState({
-                    selectedRanges: [
-                        cellMatrix.getRange(activeSelectedRange.last, {
-                            row: activeSelectedRange.first.row,
-                            col: this.currentLocation!.col
-                        })
-                    ]
+                    selectedRanges: [cellMatrix.getRange(activeSelectedRange.last, new Location(activeSelectedRange.first.row, this.currentLocation!.col))]
                 });
                 break;
             case 'up':
                 values = activeSelectedRange.cols.map((col: Column) =>
-                    this.gridContext.cellMatrix.getCell({ row: activeSelectedRange.first.row, col })
+                    new Location(activeSelectedRange.first.row, col).cell
                 );
                 this.fillRange.rows.forEach((row: Row) =>
                     this.fillRange!.cols.forEach(
                         (col: Column, i: number) =>
-                            cellMatrix.getCell({ row, col }) &&
-                            cellMatrix.getCell({ row, col }).trySetData(values[i].cellData)
+                            new Location(row, col).cell.trySetData(values[i].cellData)
                     )
                 );
                 this.gridContext.setState({
-                    selectedRanges: [
-                        cellMatrix.getRange(activeSelectedRange.last, {
-                            row: this.currentLocation!.row,
-                            col: activeSelectedRange.first.col
-                        })
-                    ]
+                    selectedRanges: [cellMatrix.getRange(activeSelectedRange.last, new Location(this.currentLocation!.row, activeSelectedRange.first.col))]
                 });
                 break;
             case 'down':
                 values = activeSelectedRange.cols.map((col: Column) =>
-                    this.gridContext.cellMatrix.getCell({ row: activeSelectedRange.last.row, col })
+                    new Location(activeSelectedRange.last.row, col).cell
                 );
                 this.fillRange.rows.forEach((row: Row) =>
                     this.fillRange!.cols.forEach(
                         (col: Column, i: number) =>
-                            cellMatrix.getCell({ row, col }) &&
-                            cellMatrix.getCell({ row, col }).trySetData(values[i].cellData)
+                            new Location(row, col).cell.trySetData(values[i].cellData)
                     )
                 );
                 this.gridContext.setState({
                     selectedRanges: [
-                        cellMatrix.getRange(activeSelectedRange.first, {
-                            row: this.currentLocation!.row,
-                            col: activeSelectedRange.last.col
-                        })
-                    ]
+                        cellMatrix.getRange(activeSelectedRange.first, new Location(this.currentLocation!.row, activeSelectedRange.last.col))]
                 });
                 break;
         }
