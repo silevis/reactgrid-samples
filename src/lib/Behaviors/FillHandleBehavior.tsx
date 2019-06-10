@@ -124,21 +124,15 @@ export class FillHandleBehavior extends Behavior {
         switch (this.fillDirection) {
             case 'right':
                 values = activeSelectedRange.rows.map((row: Row) =>
-                    this.gridContext.cellMatrix.getCell({ row, col: activeSelectedRange.last.col })
+                    new Location(row, activeSelectedRange.last.col).cell
                 );
                 this.fillRange.rows.forEach((row: Row, i: number) =>
                     this.fillRange!.cols.forEach((col: Column) => {
-                        cellMatrix.getCell({ row, col }) &&
-                            cellMatrix.getCell({ row, col }).trySetData(values[i].cellData);
+                        new Location(row, col).cell.trySetData(values[i].cellData);
                     })
                 );
                 this.gridContext.setState({
-                    selectedRanges: [
-                        cellMatrix.getRange(activeSelectedRange.first, {
-                            row: activeSelectedRange.last.row,
-                            col: this.currentLocation!.col
-                        })
-                    ]
+                    selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, new Location(activeSelectedRange.last.row, this.currentLocation!.col))]
                 });
                 break;
             case 'left':

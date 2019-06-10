@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { GridContext, Row, Column, Borders } from "../Common";
-import { CellRenderer } from './Cell';
+import { GridContext, Row, Column, Borders, Location } from "../Common";
+import { CellRenderer } from './CellRenderer';
 
 export interface RowRendererProps {
     gridContext: GridContext,
@@ -17,6 +17,6 @@ export class RowRenderer extends React.Component<RowRendererProps, {}> {
 
     render() {
         const lastColIdx = this.props.columns[this.props.columns.length - 1].idx;
-        return this.props.columns.map((col) => <CellRenderer key={this.props.row.idx + '-' + col.idx} borders={{ ...this.props.borders, left: this.props.borders.left && col.left === 0, right: this.props.borders.right && col.idx === lastColIdx }} gridContext={this.props.gridContext} location={{ col, row: this.props.row }} />)
+        return this.props.columns.map((col) => <CellRenderer key={this.props.row.idx + '-' + col.idx} borders={{ ...this.props.borders, left: this.props.borders.left && col.left === 0, right: this.props.borders.right && col.idx === lastColIdx }} gridContext={this.props.gridContext} location={new Location(this.props.row, col)} />)
     }
 }

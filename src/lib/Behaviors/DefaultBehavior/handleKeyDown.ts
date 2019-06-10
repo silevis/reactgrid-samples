@@ -1,4 +1,4 @@
-import { GridContext, KeyboardEvent, keyCodes, Row, Column } from "../../Common";
+import { GridContext, KeyboardEvent, keyCodes, Row, Column, DataChange } from "../../Common";
 import { focusLocation } from "../../Functions";
 import { handleResizeSelectionWithKeys } from "./handleResizeSelectionWithKeys";
 import { handleKeyNavigationInsideSelection as handleKeyNavigationInsideSelection } from "./handleKeyNavigationInsideSelection";
@@ -37,7 +37,7 @@ export function handleKeyDown(gridContext: GridContext, event: KeyboardEvent) {
 
     if (!event.ctrlKey && !gridContext.state.isFocusedCellInEditMode && (event.keyCode == keyCodes.ENTER || (event.keyCode >= keyCodes.ZERO && event.keyCode <= keyCodes.Z) || (event.keyCode >= keyCodes.NUM_PAD_0 && event.keyCode <= keyCodes.DIVIDE) || (event.keyCode >= keyCodes.SEMI_COLON && event.keyCode <= keyCodes.SINGLE_QUOTE) || event.keyCode === keyCodes.SPACE)) {
         // TODO call shouldEnableEditMode on current cell
-        if (gridContext.cellMatrix.getCell(gridContext.state.focusedLocation!).shouldEnableEditMode(event.keyCode))
+        if (gridContext.state.focusedLocation!.cell.shouldEnableEditMode(event.keyCode))
             gridContext.setState({ isFocusedCellInEditMode: true })
         gridContext.lastKeyCode = event.keyCode;
 
@@ -232,17 +232,20 @@ const handleEnterKey = (event: KeyboardEvent, gridContext: GridContext) => {
 }
 
 const handleSpecialKeys = (event: KeyboardEvent, gridContext: GridContext) => {
-    const focusedLocation = gridContext.state.focusedLocation!;
-    const cellMatrix = gridContext.cellMatrix;
     if (event.keyCode === keyCodes.DELETE || event.keyCode === keyCodes.BACKSPACE) {
+        const changes: DataChange[] = []
         gridContext.state.selectedRanges.forEach(range => {
             range.rows.forEach((row: Row) =>
-                range.cols.forEach((col: Column) =>
-                    cellMatrix.getCell({ row, col }).trySetData({ textValue: '', data: null, type: 'string' })
+                range.cols.forEach((col: Column) => {
+                    if (row.cells[col.idx].trySetData({ text: '', data: null, type: 'string' })) {
+
+                    }
+                }
+
 
                 )
             );
         });
-        gridContext.commitChanges();
+        gridContext.commitChanges(changes);
     }
 }

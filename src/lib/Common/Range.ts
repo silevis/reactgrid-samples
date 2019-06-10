@@ -1,4 +1,4 @@
-import { Column, Row, Location } from "./Model";
+import { Column, Row, Location } from ".";
 
 export class Range {
     readonly width: number = 0;

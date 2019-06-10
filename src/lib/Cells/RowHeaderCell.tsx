@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { stopPropagationEventHandler } from './handleEvents';
-// import './Cell.css';
-import { Cell, CellRenderProps, Location, CellMatrix, GridContext, CellData } from '../Common';
-import { getLocationFromClient, changeBehavior } from '../Functions';
+import { Cell, CellRenderProps, CellData } from '../Common';
+import { changeBehavior } from '../Functions';
 import { RowSelectionBehavior } from '../Behaviors/RowSelectionBehavior';
 
 export interface HeaderCellProps extends CellRenderProps {
@@ -32,11 +30,11 @@ export class RowHeaderCell implements Cell {
         value: string,
         private onValueChanged: (value: string) => boolean,
     ) {
-        this.cellData = { textValue: value, data: value, type: 'string' }
+        this.cellData = { text: value, data: value, type: 'string' }
     }
 
     trySetData(cellData: CellData) {
-        return this.onValueChanged(cellData.textValue);
+        return this.onValueChanged(cellData.text);
     }
 
     shouldEnableEditMode = () => true;
@@ -86,7 +84,7 @@ export class RowHeaderCell implements Cell {
                 onPointerDown={_ => {
                     changeBehavior(props.gridContext, new RowSelectionBehavior(props.gridContext));
                 }}>
-                {props.cellData.textValue}
+                {props.currentCellData.text}
             </div>
             //         {
             //     props.shouldStartColResize && this.orientationAllowsResizing() && (

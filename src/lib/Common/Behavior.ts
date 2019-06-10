@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Range, Location } from "./";
 import { KeyboardEvent, ClipboardEvent, PointerEvent } from "./domEvents";
-import { Direction } from "./Model";
+import { Direction } from "./PublicModel";
 
 // IMPORTANT !! PLEASE DO NOT INTRODUCE CHANGE WITHOUT TALKING TO ARCHITECT !!
 export abstract class Behavior {

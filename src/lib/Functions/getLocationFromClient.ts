@@ -3,7 +3,7 @@ import { GridContext, Location, Row, Column, Direction } from "../Common";
 export function getLocationFromClient(gridContext: GridContext, clientX: number, clientY: number, favorScrollableContent?: Direction): Location {
     const row = getRowFromClientY(gridContext, clientY, (favorScrollableContent === 'vertical' || favorScrollableContent === 'both'));
     const col = getColumnFromClientX(gridContext, clientX, (favorScrollableContent === 'horizontal' || favorScrollableContent === 'both'));
-    return { row, col };
+    return new Location(row, col);
 }
 
 function getRowFromClientY(gridContext: GridContext, clientY: number, favorScrollableContent: boolean): Row {
@@ -30,7 +30,7 @@ function getRowFromClientY(gridContext: GridContext, clientY: number, favorScrol
     }
 }
 
-export function getColumnFromClientX(gridContext: GridContext, clientX: number, favorScrollableContent: boolean): Column {
+function getColumnFromClientX(gridContext: GridContext, clientX: number, favorScrollableContent: boolean): Column {
     const cellMatrix = gridContext.cellMatrix;
     const visibleContentWidth = Math.min(gridContext.viewportElement.clientWidth, cellMatrix.width);
     const viewportX = clientX - gridContext.viewportElement.getBoundingClientRect().left;

@@ -1,4 +1,4 @@
-import { GridContext, Range, Column, Row } from "../Common";
+import { GridContext, Range, Column, Row, Location } from "../Common";
 
 export function selectRange(gridContext: GridContext, range: Range, incremental: boolean) {
     gridContext.setState({
@@ -20,7 +20,7 @@ export function updateActiveSelectedRange(gridContext: GridContext, range: Range
 export function selectColumn(gridContext: GridContext, column: Column, incremental: boolean) {
     const firstRow = gridContext.cellMatrix.first.row;
     const lastRow = gridContext.cellMatrix.last.row;
-    const range = gridContext.cellMatrix.getRange({ col: column, row: firstRow }, { col: column, row: lastRow })
+    const range = gridContext.cellMatrix.getRange(new Location(firstRow, column), new Location(lastRow, column))
     gridContext.setState({
         selectionMode: 'column',
         // TODO Ranges have to be re-calculated durring render
@@ -34,7 +34,7 @@ export function updateActiveSelectedColumns(gridContext: GridContext, firstColum
 
     const firstRow = gridContext.cellMatrix.first.row;
     const lastRow = gridContext.cellMatrix.last.row;
-    const range = gridContext.cellMatrix.getRange({ col: firstColumn, row: firstRow }, { col: lastColumn, row: lastRow })
+    const range = gridContext.cellMatrix.getRange(new Location(firstRow, firstColumn), new Location(lastRow, lastColumn))
     gridContext.setState({
         selectionMode: 'column',
         // TODO Ranges have to be re-calculated during render
@@ -46,7 +46,7 @@ export function updateActiveSelectedColumns(gridContext: GridContext, firstColum
 export function selectRow(gridContext: GridContext, row: Row, incremental: boolean) {
     const firstCol = gridContext.cellMatrix.first.col;
     const lastCol = gridContext.cellMatrix.last.col;
-    const range = gridContext.cellMatrix.getRange({ col: firstCol, row: row }, { col: lastCol, row: row })
+    const range = gridContext.cellMatrix.getRange(new Location(row, firstCol), new Location(row, lastCol))
     gridContext.setState({
         selectionMode: 'row',
         // TODO Ranges have to be re-calculated durring render
@@ -60,7 +60,7 @@ export function updateActiveSelectedRows(gridContext: GridContext, firstRow: Row
 
     const firstCol = gridContext.cellMatrix.first.col;
     const lastCol = gridContext.cellMatrix.last.col;
-    const range = gridContext.cellMatrix.getRange({ col: firstCol, row: firstRow }, { col: lastCol, row: lastRow })
+    const range = gridContext.cellMatrix.getRange(new Location(firstRow, firstCol), new Location(lastRow, lastCol))
     gridContext.setState({
         selectionMode: 'row',
         // TODO Ranges have to be re-calculated durring render

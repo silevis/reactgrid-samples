@@ -1,5 +1,5 @@
 // import { keyCodes } from "../Common";
-import { CellRendererProps } from "../Components/Cell";
+import { CellRendererProps } from "../Components/CellRenderer";
 
 export const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, props: CellRendererProps, type?: string) => {
     // let cell = undefined;

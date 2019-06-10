@@ -1,16 +1,17 @@
-import { Grid, GridState } from "../Components/Grid";
+import { DynaGrid, GridState } from "../Components/DynaGrid";
 import { CellMatrix } from "./CellMatrix";
 import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
-import { Behavior } from ".";
+import { Behavior, DataChange } from ".";
+import { Grid } from "..";
 
 // INTERNAL
 export class GridContext {
-    constructor(private grid: Grid) { }
+    constructor(private grid: DynaGrid) { }
     get state(): GridState { return this.grid.state; }
-    get cellMatrix(): CellMatrix { return this.grid.props.cellMatrix }
+    get cellMatrix(): CellMatrix { return this.grid.state.cellMatrix }
     setState(state: Partial<GridState>) { this.grid.setState(state as GridState); };
     forceUpdate() { this.grid.forceUpdate(); }
-    commitChanges() { this.grid.props.onValuesChanged && this.grid.props.onValuesChanged() }
+    commitChanges(changes: DataChange[]) { this.grid.props.onDataChanged && this.grid.props.onDataChanged(changes) }
     hiddenFocusElement!: HTMLDivElement;
     viewportElement!: HTMLDivElement;
     // currentBehavior cannot be in state, because setState() updates state asyncronously

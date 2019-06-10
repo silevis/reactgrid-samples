@@ -1,10 +1,8 @@
 import * as React from 'react';
-import { Column, GridContext, Behavior, CellMatrix, Cell, Location, Range } from '../Common';
-import { Grid } from '../Components/Grid';
+import { Column, GridContext, Behavior, CellMatrix, Location, Range } from '../Common';
 import { resetToDefaultBehavior } from '../Functions';
 import { LineAndShadow } from '../Components/LineAndShadow';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
-import { getColumnFromClientX } from '../Functions/getLocationFromClient';
 
 export let columnIsMoving: boolean = false;
 export class ColReorderBehavior extends Behavior {
@@ -28,7 +26,7 @@ export class ColReorderBehavior extends Behavior {
     constructor(private gridContext: GridContext, event: any) {
         super();
         const activeSelectedRange = getActiveSelectedRange(gridContext);
-
+        // TODO pass the target location to this constructor
         this.target = this.gridContext.cellMatrix.cols.filter(
             (c: Column) =>
                 c.idx < activeSelectedRange.cols[0].idx ||
@@ -163,8 +161,6 @@ export class ColReorderBehavior extends Behavior {
                 }
             }
 
-            const selectedColsIdx = [selectedCols[0].idx + positionChange];
-
             const startColIdx = selectedCols[0].idx + positionChange;
             const endColIdx = selectedCols[selectedCols.length - 1].idx + positionChange;
             const cell = cellMatrix.getLocation(
@@ -187,7 +183,6 @@ export class ColReorderBehavior extends Behavior {
             });
         }
 
-        this.gridContext.commitChanges();
         resetToDefaultBehavior(this.gridContext);
     }
 

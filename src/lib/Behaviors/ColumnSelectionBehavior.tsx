@@ -13,8 +13,6 @@ export class ColumnSelectionBehavior extends Behavior {
         super();
     }
 
-    autoScrollDirection: Direction = 'horizontal';
-
     handlePointerDown(event: PointerEvent, location: Location) {
         if (event.ctrlKey && this.gridContext.state.selectionMode === 'column') {
             // TODO remove column from selected indexes

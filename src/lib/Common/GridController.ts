@@ -1,8 +1,8 @@
-import { Grid } from "../Components/Grid";
+import { DynaGrid } from "../Components/DynaGrid";
 
 // PUBLIC
 export class GridController {
-    constructor(private grid: Grid) { }
+    constructor(private grid: DynaGrid) { }
     print(title: string) { }
     ;
 }

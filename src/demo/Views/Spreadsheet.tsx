@@ -1,35 +1,29 @@
 import * as React from 'react'
-import { ColumnProps, RowProps, CellMatrix, Cell } from '../../lib/Common';
+import { movable, RowProps, CellMatrix, Cell } from '../../lib/Common';
 import { TextCell } from '../../lib/Cells/TextCell';
-import { Grid } from '../../lib/Components/Grid';
+import { DynaGrid } from '../../lib/Components/DynaGrid';
 import { ColumnHeaderCell } from '../../lib/Cells/ColumnHeaderCell';
-import { RowHeaderCell } from '../../lib/Cells/RowHeaderCell';
-import { SSL_OP_EPHEMERAL_RSA } from 'constants';
 
 export class Spreadsheet extends React.Component<{}, { data: string[][] }> {
     constructor(props: {}) {
         super(props);
         this.state = {
-            data: Array(12).fill(0).map((_, ri) => Array(16).fill(0).map((_, ci) => (ri + 100) + ' - ' + (ci + 100)))
+            data: Array(1000).fill(0).map((_, ri) => Array(25).fill(0).map((_, ci) => (ri + 100) + ' - ' + (ci + 100)))
         }
 
     }
 
-
-
     private generateCellMatrix() {
         const cells: any = this.state.data.map((row, ri) =>
-            row.map((value, ci) => new TextCell(value, v => { /*console.log(v);*/ this.state.data[ri][ci] = v; this.setState(this.state); return true }))
+            row.map((value, ci) => new TextCell(value, v => { this.state.data[ri][ci] = v; return true }))
         )
-        const columns: ColumnProps[] = this.state.data[0].map((c, idx) => { return { id: idx, width: 75, context: idx, onDropLeft: (cols) => this.reorderColumns(cols, idx), onDropRight: (cols) => this.reorderColumns(cols, idx) } });
-        const rows: RowProps[] = this.state.data.map(_ => { return { height: 25, context: undefined } })
-        // rows.map((_, i) => cells[i][0] = new RowHeaderCell(i.toString(), v => { console.log(v); this.state.data[i][0] = v; this.setState(this.state); return true }))
-        columns.map((_, j) => cells[0][j] = new ColumnHeaderCell(j.toString(), v => { /*console.log(v);*/ this.state.data[0][j] = v; this.setState(this.state); return true }))
-        // cells[0][0] = new ColumnHeaderCell('', v => { console.log(v); this.state.data[0][0] = v; this.setState(this.state); return true })
-        return new CellMatrix({ frozenTopRows: 2, frozenLeftColumns: 3, frozenBottomRows: 2, frozenRightColumns: 3, rows, columns, cells: cells })
+        const columns: movable[] = this.state.data[0].map((c, idx) => { return { id: idx, width: 120, onDropLeft: (cols) => this.reorderColumns(cols, idx), onDropRight: (cols) => this.reorderColumns(cols, idx) } });
+        const rows: RowProps[] = this.state.data.map((_, idx) => ({ id: idx, height: 25 }))
+        columns.forEach((_, j) => cells[0][j] = new ColumnHeaderCell(j.toString()))
+        return new CellMatrix({ frozenTopRows: 2, frozenLeftColumns: 2, frozenBottomRows: 2, frozenRightColumns: 2, rows, columns, cells })
     }
 
-    private calculateColumnReorder = (row: string[], colIdxs: number[], direction: string, destination: number) => {
+    private calculateColumnReorder(row: string[], colIdxs: number[], direction: string, destination: number) {
         const movedColumns: string[] = row.filter((_, idx) => colIdxs.includes(idx));
         const clearedRow: string[] = row.filter((_, idx) => !colIdxs.includes(idx));
         if (direction === 'right') {
@@ -40,10 +34,9 @@ export class Spreadsheet extends React.Component<{}, { data: string[][] }> {
     }
 
     render() {
-        // console.log('render spreadsheet')
-        return <Grid style={{ position: 'absolute', top: 40, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
-            cellMatrix={this.generateCellMatrix()}
-            onValuesChanged={() => this.forceUpdate()}
+        return <DynaGrid style={{ position: 'absolute', top: 40, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
+            cellMatrixProps={this.generateCellMatrix()}
+            onValuesChangesCommited={this.forceUpdate}
         />
     }
 

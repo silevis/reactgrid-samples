@@ -1,17 +1,16 @@
-import { GridContext, Range } from "../Common";
+import { GridContext, Range, Location } from "../Common";
 
 export function selectRows(gridContext: GridContext, selectedRowsIdx: number[]): Range[] {
-    let selectedRows: Range[] = [];
-    if (selectedRowsIdx.length > 0) {
-        const cellMatrix = gridContext.cellMatrix;
-        selectedRowsIdx.forEach(id => {
-            let location = cellMatrix.getLocation(id + 1, cellMatrix.cols[0].idx);
-            let range = cellMatrix.getRange(location, {
-                row: location.row,
-                col: cellMatrix.cols[cellMatrix.cols.length - 1]
-            });
-            selectedRows.push(range);
-        });
-    }
-    return selectedRows;
+    //     let selectedRows: Range[] = [];
+    //     if (selectedRowsIdx.length > 0) {
+    //         const cellMatrix = gridContext.cellMatrix;
+    //         selectedRowsIdx.forEach(id => {
+    //             let location = cellMatrix.getLocation(id + 1, cellMatrix.cols[0].idx);
+    //             let range = cellMatrix.getRange(location, new Location(location.row, cellMatrix.last.col))
+    //         });
+    //         selectedRows.push(range);
+    //     });
+    // }
+    // return selectedRows;
+    return []
 }

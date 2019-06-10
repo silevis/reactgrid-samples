@@ -1,6 +1,9 @@
 import { Column, Row, Range, GridContext } from "../Common";
 
-export function refresh(gridContext: GridContext) {
+
+
+
+export function recalcVisibleRange(gridContext: GridContext) {
     const matrix = gridContext.cellMatrix;
     const { scrollTop, scrollLeft, clientWidth, clientHeight } = gridContext.viewportElement;
     const scrollAreaWidth = clientWidth - matrix.frozenLeftRange.width - matrix.frozenRightRange.width;

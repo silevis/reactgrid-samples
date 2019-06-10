@@ -11,12 +11,10 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
     const state = props.gridContext.state;
     const location = props.location;
     const borders = props.borders;
-    const cell = props.gridContext.cellMatrix.getCell(props.location);
+    const cell = props.location.cell;
     const isFocused = (state.focusedLocation !== undefined) && (state.focusedLocation.col.idx === props.location.col.idx && state.focusedLocation.row.idx === props.location.row.idx);
 
     let cellData = { ...cell.cellData };
-
-    const controlKeyCodes = [keyCodes.ENTER, keyCodes.ESC];
 
     const style: React.CSSProperties = {
         boxSizing: 'border-box',
@@ -49,20 +47,18 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
             className="cell"
             style={style}
             onBlur={() => {
-                if (props.gridContext.lastKeyCode != keyCodes.ESC) {
-                    props.gridContext.cellMatrix.getCell(props.gridContext.state.focusedLocation!).trySetData(cellData);
-                    props.gridContext.commitChanges()
+                if (props.gridContext.lastKeyCode === keyCodes.ESC) {
+
+                    props.gridContext.state.focusedLocation!.cell.trySetData(cellData)
+                    props.gridContext.commitChanges([{}])
 
                 }
             }}
-            onKeyDown={e => !controlKeyCodes.includes(e.keyCode) ? e.stopPropagation() : null}
+            onKeyDown={e => { if ([keyCodes.ENTER, keyCodes.ESC].includes(e.keyCode)) e.stopPropagation() }}
         >
             {cell.renderContent({
-                cellData: cellData,
-                onCellDataChanged: c => cellData = c,
-                gridContext: props.gridContext,
                 isInEditMode: isFocused && props.gridContext.state.isFocusedCellInEditMode,
-                location: props.location,
+                lastKeyCode: props.gridContext.lastKeyCode
             })}
         </div>
     )

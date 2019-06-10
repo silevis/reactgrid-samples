@@ -11,8 +11,6 @@ export class CellSelectionBehavior extends Behavior {
         super()
     }
 
-    autoScrollDirection: Direction = 'both';
-
     handlePointerDown(event: PointerEvent, location: Location) {
 
         if (event.shiftKey && this.gridContext.state.focusedLocation) {

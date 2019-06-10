@@ -3,6 +3,7 @@ export * from "./CellMatrix";
 export * from "./Constants";
 export * from "./GridContext";
 export * from "./GridController";
-export * from "./Model";
+export * from "./PublicModel";
+export * from "./InternalModel";
 export * from "./Range";
 export * from "./domEvents";

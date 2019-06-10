@@ -5,4 +5,4 @@ export { print } from './print';
 export { resetToDefaultBehavior } from './resetToDefaultBehavior';
 export { scrollIntoView } from './scrollIntoView';
 export { selectRows } from './selectRows';
-export { refresh } from './refresh';
+export { recalcVisibleRange } from './recalcVisibleRange';
