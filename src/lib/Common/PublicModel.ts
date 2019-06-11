@@ -26,9 +26,11 @@ export interface CellId {
 }
 
 export interface DataChange {
-    readonly cellId: CellId;
-    readonly initialCellData: CellData;
-    readonly newCellData: CellData;
+    readonly rowId: Id;
+    readonly columnId: Id;
+    readonly type: string;
+    readonly initialData: any;
+    readonly newData: any;
 }
 
 export interface CellMatrixProps {
@@ -72,7 +74,7 @@ export interface CellRenderProps {
     readonly lastKeyCode: number;
 }
 
-export type Id = string | number;
+export type Id = number | string;
 
 export interface ColumnProps {
     readonly id: Id;

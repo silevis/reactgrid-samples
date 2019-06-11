@@ -1,7 +1,8 @@
-import { GridContext, KeyboardEvent, keyCodes, Row, Column, DataChange } from "../../Common";
+import { GridContext, KeyboardEvent, keyCodes, Row, Column, DataChange, Location } from "../../Common";
 import { focusLocation } from "../../Functions";
 import { handleResizeSelectionWithKeys } from "./handleResizeSelectionWithKeys";
 import { handleKeyNavigationInsideSelection as handleKeyNavigationInsideSelection } from "./handleKeyNavigationInsideSelection";
+import { trySetDataAndAppendChange } from "../../Functions/trySetDataAndAppendChange";
 
 export function handleKeyDown(gridContext: GridContext, event: KeyboardEvent) {
     const focusedLocation = gridContext.state.focusedLocation!;
@@ -233,19 +234,14 @@ const handleEnterKey = (event: KeyboardEvent, gridContext: GridContext) => {
 
 const handleSpecialKeys = (event: KeyboardEvent, gridContext: GridContext) => {
     if (event.keyCode === keyCodes.DELETE || event.keyCode === keyCodes.BACKSPACE) {
-        const changes: DataChange[] = []
-        gridContext.state.selectedRanges.forEach(range => {
+        const dataChanges: DataChange[] = []
+        gridContext.state.selectedRanges.forEach(range =>
             range.rows.forEach((row: Row) =>
-                range.cols.forEach((col: Column) => {
-                    if (row.cells[col.idx].trySetData({ text: '', data: null, type: 'string' })) {
-
-                    }
-                }
-
-
+                range.cols.forEach((col: Column) =>
+                    trySetDataAndAppendChange(new Location(row, col), { text: '', data: null, type: 'string' }, dataChanges)
                 )
-            );
-        });
-        gridContext.commitChanges(changes);
+            )
+        );
+        gridContext.commitChanges(dataChanges);
     }
 }

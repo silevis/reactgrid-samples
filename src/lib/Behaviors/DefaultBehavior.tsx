@@ -3,7 +3,7 @@ import { handleKeyDown as handleKeyDown } from "./DefaultBehavior/handleKeyDown"
 import { changeBehavior } from "../Functions";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
 import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
-import { trySetDataAndAppendChange } from "../Functions/trySetData";
+import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChange";
 
 export class DefaultBehavior extends Behavior {
 

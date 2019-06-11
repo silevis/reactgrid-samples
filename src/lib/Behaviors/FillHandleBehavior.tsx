@@ -3,7 +3,7 @@ import { GridContext, Range, PointerEvent, CellMatrix, Behavior, Row, Column, Lo
 import { getLocationFromClient, resetToDefaultBehavior } from "../Functions";
 import { PartialArea } from '../Components/PartialArea';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
-import { trySetDataAndAppendChange } from '../Functions/trySetData';
+import { trySetDataAndAppendChange } from '../Functions/trySetDataAndAppendChange';
 
 type Direction = '' | 'left' | 'right' | 'up' | 'down';
 

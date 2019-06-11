@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Cell, CellRenderProps, CellData } from '../Common';
 
-export class ColumnHeaderCell implements Cell {
+export class HeaderCell implements Cell {
     cellData: CellData;
 
-    constructor(value: string) {
-        this.cellData = { text: value, data: value, type: 'string' }
+    constructor(title: string) {
+        this.cellData = { text: title, data: title, type: 'string' }
     }
 
     trySetData(cellData: CellData) {

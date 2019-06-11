@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { ColumnProps, RowProps, CellMatrix, Cell } from '../../lib/Common';
+import { ColumnProps, RowProps, CellMatrixProps, DataChange } from '../../lib/Common';
 import { TextCell } from '../../lib/Cells/TextCell';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
-import { ColumnHeaderCell } from '../../lib/Cells/HeaderCell';
+import { HeaderCell } from '../../lib/Cells/HeaderCell';
 
 export class Spreadsheet extends React.Component<{}, { data: string[][] }> {
     constructor(props: {}) {
@@ -10,17 +10,17 @@ export class Spreadsheet extends React.Component<{}, { data: string[][] }> {
         this.state = {
             data: Array(1000).fill(0).map((_, ri) => Array(25).fill(0).map((_, ci) => (ri + 100) + ' - ' + (ci + 100)))
         }
-
     }
 
-    private generateCellMatrix() {
-        const cells: any = this.state.data.map((row, ri) =>
-            row.map((value, ci) => new TextCell(value)
-            )
-        const columns: ColumnProps[] = this.state.data[0].map((c, idx) => { return { id: idx, width: 120, onDropLeft: (cols) => this.reorderColumns(cols, idx), onDropRight: (cols) => this.reorderColumns(cols, idx) } });
-        const rows: RowProps[] = this.state.data.map((_, idx) => ({ id: idx, height: 25 }))
-        columns.forEach((_, j) => cells[0][j] = new ColumnHeaderCell(j.toString()))
-        return new CellMatrix({ frozenTopRows: 2, frozenLeftColumns: 2, frozenBottomRows: 2, frozenRightColumns: 2, rows, columns, cells })
+    private generateCellMatrix(): CellMatrixProps {
+        const columns: ColumnProps[] = this.state.data[0].map((c, idx) => { return { id: idx, width: 120, onDropLeft: (cols) => this.reorderColumns(cols as number[], idx), onDropRight: (cols) => this.reorderColumns(cols as number[], idx), reorderable: true } });
+        const rows: RowProps[] = this.state.data.map((row, rowIdx) => ({
+            id: rowIdx,
+            height: 25,
+            reorderable: false,
+            cells: row.map((data) => rowIdx === 0 ? new HeaderCell(data) : new TextCell(data))
+        }))
+        return ({ frozenTopRows: 2, frozenLeftColumns: 2, frozenBottomRows: 2, frozenRightColumns: 2, rows, columns })
     }
 
     private calculateColumnReorder(row: string[], colIdxs: number[], direction: string, destination: number) {
@@ -34,10 +34,18 @@ export class Spreadsheet extends React.Component<{}, { data: string[][] }> {
     }
 
     render() {
-        return <DynaGrid style={{ position: 'absolute', top: 40, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
+        return <DynaGrid style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
             cellMatrixProps={this.generateCellMatrix()}
-            onValuesChangesCommited={this.forceUpdate}
+            onDataChanged={this.handleDataChanges}
         />
+    }
+
+    handleDataChanges(dataChanges: DataChange[]) {
+        const data = { ... this.state.data }
+        dataChanges.forEach(change => {
+            data[change.rowId as number][change.columnId as number] = change.newData as string;
+        })
+        this.setState({ data });
     }
 
     reorderColumns(colIdxs: number[], to: number) {
