@@ -50,14 +50,7 @@ export class ColumnHeaderCell implements Cell {
 
         // if (!props.isInEditMode)
         return (
-            <div style={innerStyle}
-                onPointerDown={e => {
-                    if (state.selectionMode === 'column' && state.selectedIndexes.includes(props.location.col.idx)) {
-                        changeBehavior(props.gridContext, new ColReorderBehavior(props.gridContext, e))
-                    } else {
-                        changeBehavior(props.gridContext, new ColumnSelectionBehavior(props.gridContext))
-                    }
-                }}>
+            <div style={innerStyle}>
                 {props.cellData.textValue}
             </div>
         )
