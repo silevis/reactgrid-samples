@@ -4,7 +4,7 @@ import { TextCell } from '../../lib/Cells/TextCell';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 import { HeaderCell } from '../../lib/Cells/HeaderCell';
 
-export class Spreadsheet extends React.Component<{}, { data: string[][] }> {
+export class Spreadsheet extends React.Component<{}, { data: string[][], width: number }> {
     constructor(props: {}) {
         super(props);
         this.state = {
@@ -60,4 +60,5 @@ export class Spreadsheet extends React.Component<{}, { data: string[][] }> {
         this.setState({ data })
     }
 
+    resizeColumn = (colIdx: number, width: number) => this.setState({ width })
 }
