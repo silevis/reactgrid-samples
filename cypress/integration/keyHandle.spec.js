@@ -92,7 +92,7 @@ context('Keyboard', () => {
         Utils.selectCell(100, 100);
         Utils.keyDown(Constants.keyCodes.Enter, 1, { force: true });
         cy.wait(500);
-        cy.focused().type(Utils.randomText());
+        cy.focused().type(Utils.randomText(), { force: true });
         Utils.selectCell(100, 200);
         cy.wait(500);
         Utils.selectCell(100, 100);
@@ -104,7 +104,7 @@ context('Keyboard', () => {
         Utils.selectCell(100, 100);
         Utils.keyDown(Constants.keyCodes.Enter, 1, { force: true });
         cy.wait(500);
-        cy.focused().type(Utils.randomText());
+        cy.focused().type(Utils.randomText(), { force: true });
         Utils.selectCell(100, 200);
         cy.wait(500);
         Utils.selectCell(100, 100);

@@ -35,9 +35,9 @@ export class LineAndShadow extends React.Component<LineAndShadowProps, LineAndSh
                 <div
                     style={{
                         position: 'absolute',
-                        background: '#666',
+                        background: '#000',
                         cursor: '-webkit-grabbing',
-                        opacity: 0.3,
+                        opacity: 0.1,
                         top: isVertical ? 0 : this.state.shadowPosition,
                         left: isVertical ? this.state.shadowPosition : 0,
                         width: isVertical ? shadowSize : cellMatrix.width,

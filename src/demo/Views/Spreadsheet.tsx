@@ -18,12 +18,12 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], width: 
 
     private generateCellMatrix() {
         const cells: any = this.state.data.map((row, ri) =>
-            row.map((value, ci) => new TextCell(value, v => { console.log(v); this.state.data[ri][ci] = v; this.setState(this.state); return true }))
+            row.map((value, ci) => new TextCell(value, v => { /*console.log(v);*/ this.state.data[ri][ci] = v; this.setState(this.state); return true }))
         )
         const columns: ColumnProps[] = this.state.data[0].map((c, idx) => { return { id: idx, width: this.state.width, context: idx, onDropLeft: (cols) => this.reorderColumns(cols, idx), onDropRight: (cols) => this.reorderColumns(cols, idx), onResize: (_, width) => this.resizeColumn(idx, width) } });
         const rows: RowProps[] = this.state.data.map(_ => { return { height: 25, context: undefined } })
         // rows.map((_, i) => cells[i][0] = new RowHeaderCell(i.toString(), v => { console.log(v); this.state.data[i][0] = v; this.setState(this.state); return true }))
-        columns.map((_, j) => cells[0][j] = new ColumnHeaderCell(j.toString(), v => { console.log(v); this.state.data[0][j] = v; this.setState(this.state); return true }))
+        columns.map((_, j) => cells[0][j] = new ColumnHeaderCell(j.toString(), v => { /*console.log(v);*/ this.state.data[0][j] = v; this.setState(this.state); return true }))
         // cells[0][0] = new ColumnHeaderCell('', v => { console.log(v); this.state.data[0][0] = v; this.setState(this.state); return true })
         return new CellMatrix({ frozenTopRows: 1, frozenLeftColumns: 1, frozenBottomRows: 1, frozenRightColumns: 1, rows, columns, cells: cells })
     }
@@ -39,7 +39,7 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], width: 
     }
 
     render() {
-        console.log('render spreadsheet')
+        // console.log('render spreadsheet')
         return <Grid style={{ position: 'absolute', top: 40, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
             cellMatrix={this.generateCellMatrix()}
             onValuesChanged={() => this.forceUpdate()}

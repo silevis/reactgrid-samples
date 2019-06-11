@@ -1,90 +1,68 @@
 pipeline {
-  agent any
+  agent any;
   stages {
-    // stage('npm') {	
-    //   steps {	
-    //     bat 'npm install'	
-    //   }
-    // }
-
-    stage('update files') {
+    stage('pull changes') {
       steps {
         script {
-          // powershell 'Remove-Item -Recurse -Force node_modules'
-          // if (env.CHANGE_ID) {
-          //   fileOperations([fileCopyOperation(	
-          //     excludes: "",
-          //     flattenFiles: false,	
-          //     includes: "**/*",	
-          //     targetLocation: "c:/users/lenovo/desktop/dynagrid-for-testing"	
-          //   )])
-          //   dir(path: 'c:/users/lenovo/desktop/dynagrid-for-testing') {
-          //     bat "npm install"
-          //   }
-          // }
           if (env.BRANCH_NAME == 'cleanup') {
-            // fileOperations([fileCopyOperation(	
-            //   excludes: "",
-            //   flattenFiles: false,	
-            //   includes: "**/*",	
-            //   targetLocation: "c:/users/lenovo/desktop/dynagrid"	
-            // )])
-            // dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-            //   powershell "git pull origin cleanup"
-            // }
+            dir(path: 'c:/users/lenovo/desktop/dynagrid') {
+              bat 'git pull https://eb2eb8995fd97fa2c5f31aab23b0cd798e2f3505@github.com/silevis/dynagrid.git cleanup';
+            }
           }
         }
       }
     }
-    
-    // stage('tests') {
-    //   steps {
-    //     script {
-    //       if (env.CHANGE_ID) { // if pipeline is triggered by pull request
-    //         dir(path: 'c:/users/lenovo/desktop/dynagrid-for-testing') {
-    //           bat "npm run test:automatic"
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+
+    stage('npm install') {
+      steps {
+        script {
+          if (env.BRANCH_NAME == 'cleanup') {
+            dir(path: 'c:/users/lenovo/desktop/dynagrid') {
+              bat 'npm install';
+            }
+          }
+        }
+      }
+    }
+
+    stage('test') {
+      steps {
+        script {
+          if (env.BRANCH_NAME == 'cleanup') {
+            dir(path: 'c:/users/lenovo/desktop/dynagrid') {
+              bat 'npm run test:automatic';
+            }
+          }
+        }
+      }
+    }
   }
 
   options {
-    disableConcurrentBuilds()
+    disableConcurrentBuilds();
   }
 
   post {
-    success {
-      script {
-        if (env.BRANCH_NAME == 'cleanup') {
-          dir(path: 'c:/users/lenovo/desktop/react-dyna-grid') {
-            bat "npm publish"
-          }
-        }
-       }  
-    }
-
     cleanup {
       /* clean up our workspace */
       deleteDir()
       dir("${workspace}@tmp") {
-        deleteDir()
+        deleteDir();
       }
       dir("${workspace}@script") {
-        deleteDir()
+        deleteDir();
       }
       dir("${workspace}@script@tmp") {
-        deleteDir()
+        deleteDir();
       }
     }
 
     failure {
-      emailext(to: 'piotr.mikosza@silevis.com', subject: "${env.JOB_NAME} ended with failure!", body: "Somethin was wrong! \n\nConsole: ${env.BUILD_URL}.\n\n")
+      emailext(to: 'piotr.mikosza@silevis.com', subject: "${env.JOB_NAME} ended with failure!", body: "Somethin was wrong! \n\nConsole: ${env.BUILD_URL}.\n\n");
     }
   }
 
   tools {
-    nodejs 'node-v10.15.3'
+    nodejs 'node-v10.15.3';
   }
 }

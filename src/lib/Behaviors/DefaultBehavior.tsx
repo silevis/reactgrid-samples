@@ -2,6 +2,8 @@ import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Ran
 import { handleKeyDown as handleKeyDown } from "./DefaultBehavior/handleKeyDown";
 import { changeBehavior } from "../Functions";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
+import { ColumnSelectionBehavior } from "./ColumnSelectionBehavior";
+import { ColReorderBehavior } from "./ColReorderBehavior";
 import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
 
 export class DefaultBehavior extends Behavior {
@@ -10,9 +12,22 @@ export class DefaultBehavior extends Behavior {
 
     handlePointerDown(event: PointerEvent, location: Location) {
         // changing behavior will disable all keyboard event handlers
-        const cellSelectionBehavior = new CellSelectionBehavior(this.gridContext);
-        changeBehavior(this.gridContext, cellSelectionBehavior);
-        cellSelectionBehavior.handlePointerDown(event, location);
+        if (location.row.idx == 0 && this.gridContext.state.selectedIndexes.find(i => i == location.col.idx)) {
+            const colReorderBehavior = new ColReorderBehavior(this.gridContext, event);
+            changeBehavior(this.gridContext, colReorderBehavior);
+            colReorderBehavior.handlePointerDown(event, location);
+
+        } else if (location.row.idx == 0) {
+            const columnSelectionBehavior = new ColumnSelectionBehavior(this.gridContext);
+            changeBehavior(this.gridContext, columnSelectionBehavior);
+            columnSelectionBehavior.handlePointerDown(event, location);
+
+        } else {
+            const cellSelectionBehavior = new CellSelectionBehavior(this.gridContext);
+            changeBehavior(this.gridContext, cellSelectionBehavior);
+            cellSelectionBehavior.handlePointerDown(event, location);
+
+        }
     }
 
     handleContextMenu(event: PointerEvent): void {

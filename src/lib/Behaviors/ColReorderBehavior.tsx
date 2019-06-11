@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { Column, GridContext, Behavior, CellMatrix, Cell, Location } from '../Common';
+import { Column, GridContext, Behavior, CellMatrix, Cell, Location, Range, keyCodes } from '../Common';
 import { Grid } from '../Components/Grid';
 import { resetToDefaultBehavior } from '../Functions';
 import { LineAndShadow } from '../Components/LineAndShadow';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
 import { getColumnFromClientX } from '../Functions/getLocationFromClient';
+import { throws } from 'assert';
 
 export let columnIsMoving: boolean = false;
 export class ColReorderBehavior extends Behavior {
@@ -13,6 +14,15 @@ export class ColReorderBehavior extends Behavior {
     private target: Column[];
     private positionX: number;
     private lastAssignableColumn: Column | undefined;
+    private sortedSelectedRanges = this.gridContext.state.selectedRanges.sort((a, b): number => {
+        if (a.first.col.idx < b.first.col.idx) {
+            return -1
+        } else if (a.first.col.idx > b.first.col.idx) {
+            return 1
+        } else {
+            return 0
+        }
+    })
     private setLinePosition: (position: number) => void = _ => { };
     private setShadowPosition: (position: number) => void = _ => { };
 
@@ -26,7 +36,6 @@ export class ColReorderBehavior extends Behavior {
                 c.idx > activeSelectedRange.cols[activeSelectedRange.cols.length - 1].idx
         );
 
-        const colUnderCursor = activeSelectedRange.first.col;
         const positionX =
             event.type === 'pointerdown'
                 ? event.clientX
@@ -34,57 +43,76 @@ export class ColReorderBehavior extends Behavior {
                     ? event.changedTouches[0].clientX
                     : null;
 
+        this.mouseOffset = 0;
         this.positionX = positionX;
         this.lastAssignableColumn = undefined;
-        if (
-            this.gridContext.cellMatrix.frozenRightRange.cols.length > 0 &&
-            this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0
-        ) {
-            if (colUnderCursor.idx >= this.gridContext.cellMatrix.frozenRightRange.first.col.idx) {
-                this.mouseOffset =
-                    positionX -
-                    activeSelectedRange.first.col.left -
-                    this.gridContext.cellMatrix.frozenRightRange.width
-                // - this.gridContext.state.scrollAreaWidth;
-            } else if (colUnderCursor.idx > this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
-                this.mouseOffset =
-                    positionX -
-                    activeSelectedRange.first.col.left -
-                    this.gridContext.cellMatrix.frozenLeftRange.width +
-                    this.gridContext.viewportElement.scrollLeft;
+
+        const chosenRange = this.sortedSelectedRanges.find(r => r.cols.includes(getColumnFromClientX(this.gridContext, this.positionX, false)))
+
+        if (chosenRange) {
+            const colUnderCursor = getColumnFromClientX(this.gridContext, this.positionX, false);
+            if (
+                this.gridContext.cellMatrix.frozenRightRange.cols.length > 0 &&
+                this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0
+            ) {
+
+                if (colUnderCursor.idx >= this.gridContext.cellMatrix.frozenRightRange.first.col.idx) {
+                    this.mouseOffset =
+                        positionX -
+                        this.gridContext.viewportElement.clientWidth -
+                        chosenRange.first.col.left +
+                        this.gridContext.cellMatrix.frozenRightRange.width
+                } else if (colUnderCursor.idx > this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
+                    this.mouseOffset =
+                        positionX -
+                        chosenRange.first.col.left -
+                        this.gridContext.cellMatrix.frozenLeftRange.width +
+                        this.gridContext.viewportElement.scrollLeft;
+                } else {
+                    this.mouseOffset = positionX - chosenRange.first.col.left;
+                }
+            } else if (
+                this.gridContext.cellMatrix.frozenRightRange.cols.length > 0 &&
+                !(this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0)
+            ) {
+                if (colUnderCursor.idx >= this.gridContext.cellMatrix.frozenRightRange.first.col.idx) {
+                    this.mouseOffset =
+                        positionX -
+                        chosenRange.first.col.left -
+                        this.gridContext.cellMatrix.frozenLeftRange.width
+                } else {
+                    this.mouseOffset =
+                        positionX -
+                        chosenRange.first.col.left -
+                        this.gridContext.cellMatrix.frozenLeftRange.width +
+                        this.gridContext.viewportElement.scrollLeft;
+                }
+            } else if (this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0) {
+                if (colUnderCursor.idx > this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
+                    this.mouseOffset =
+                        positionX -
+                        chosenRange.first.col.left -
+                        this.gridContext.cellMatrix.frozenLeftRange.width +
+                        this.gridContext.viewportElement.scrollLeft;
+                } else {
+                    this.mouseOffset = positionX - chosenRange.first.col.left;
+                }
             } else {
-                this.mouseOffset = positionX - activeSelectedRange.first.col.left;
+                this.mouseOffset = positionX - chosenRange.first.col.left + this.gridContext.viewportElement.scrollLeft;
             }
-        } else if (
-            this.gridContext.cellMatrix.frozenRightRange.cols.length > 0 &&
-            !(this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0)
-        ) {
-            if (colUnderCursor.idx >= this.gridContext.cellMatrix.frozenRightRange.first.col.idx) {
-                this.mouseOffset =
-                    positionX -
-                    activeSelectedRange.first.col.left -
-                    this.gridContext.cellMatrix.frozenLeftRange.width
-                // - this.gridContext.state.scrollAreaWidth;
-            } else {
-                this.mouseOffset =
-                    positionX -
-                    activeSelectedRange.first.col.left -
-                    this.gridContext.cellMatrix.frozenLeftRange.width +
-                    this.gridContext.viewportElement.scrollLeft;
-            }
-        } else if (this.gridContext.cellMatrix.frozenLeftRange.cols.length > 0) {
-            if (colUnderCursor.idx > this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
-                this.mouseOffset =
-                    positionX -
-                    activeSelectedRange.first.col.left -
-                    this.gridContext.cellMatrix.frozenLeftRange.width +
-                    this.gridContext.viewportElement.scrollLeft;
-            } else {
-                this.mouseOffset = positionX - activeSelectedRange.first.col.left;
-            }
+
+            this.sortedSelectedRanges.forEach(r => {
+                if (r == chosenRange || chosenRange === undefined) {
+                    return
+                }
+                if (r.first.col.idx < chosenRange.first.col.idx) {
+                    this.mouseOffset += r.width
+                }
+            })
         } else {
-            this.mouseOffset = positionX - activeSelectedRange.first.col.left + this.gridContext.viewportElement.scrollLeft;
+            resetToDefaultBehavior(this.gridContext);
         }
+
     }
 
     dispose = () => {
@@ -105,19 +133,19 @@ export class ColReorderBehavior extends Behavior {
     private calculateShadowPosition(cellMatrix: CellMatrix) {
         const viewportElement = this.gridContext.viewportElement;
         const mousePosition = this.positionX + viewportElement.scrollLeft;
-        const activeSelectedRange = getActiveSelectedRange(this.gridContext);
+        const rangesWidth = this.sortedSelectedRanges.map(r => r.width).reduce((a, b) => a + b, 0)
+
         if (this.positionX - this.mouseOffset <= cellMatrix.first.col.left && viewportElement.scrollLeft === 0) {
             return cellMatrix.first.col.left;
         } else if (
-            this.positionX - this.mouseOffset + activeSelectedRange.width + viewportElement.scrollLeft >=
+            this.positionX - this.mouseOffset + rangesWidth + viewportElement.scrollLeft >=
             cellMatrix.width
         ) {
-            return cellMatrix.width - activeSelectedRange.width
+            return cellMatrix.width - rangesWidth
         } else {
             return mousePosition - this.mouseOffset;
         }
     }
-
 
     handlePointerUp = (e: any) => {
         const activeSelectedRange = getActiveSelectedRange(this.gridContext);
@@ -230,6 +258,7 @@ export class ColReorderBehavior extends Behavior {
                         cellMatrix.scrollableRange.width
                     : -1;
             } else if (col.idx > this.gridContext.cellMatrix.frozenLeftRange.last.col.idx) {
+                // TODO floating position line
                 linePosition = this.colOnScreen
                     ? areColumnsMovingRight()
                         ? this.colOnScreen.left +
@@ -292,8 +321,8 @@ export class ColReorderBehavior extends Behavior {
     }
 
     renderGlobalPart = () => {
-        const ranges: any = this.gridContext.state.selectedRanges
-        const width = ranges[ranges.length - 1].last.col.right - ranges[0].first.col.left
+        const ranges: Range[] = this.sortedSelectedRanges;
+        const shadowWidth = ranges.map(r => r.width).reduce((a, b) => a + b, 0)
         return (
             <LineAndShadow
                 onInitialized={(linePostionSetter, shadowPositionSetter) => {
@@ -302,7 +331,7 @@ export class ColReorderBehavior extends Behavior {
                 }}
                 isVertical={true}
                 cellMatrix={this.gridContext.cellMatrix}
-                shadowSize={width}
+                shadowSize={shadowWidth}
             />
         )
     }
@@ -315,4 +344,10 @@ export class ColReorderBehavior extends Behavior {
 
         this.changeShadowPosition(location);
     }
+    // handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    //     console.log('hejjj')
+    //     if (event.keyCode == keyCodes.ESC) {
+    //         resetToDefaultBehavior(this.gridContext);
+    //     }
+    // }
 }

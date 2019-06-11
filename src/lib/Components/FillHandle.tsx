@@ -21,7 +21,7 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
         }}
         data-cy="touch-fill-handle"
         onPointerDown={event => {
-            if (event.pointerType !== 'mouse') {
+            if (event.pointerType !== 'mouse' && event.pointerType !== undefined) { // !== undefined only for cypress tests
                 changeBehavior(props.gridContext, new FillHandleBehavior(props.gridContext))
             }
         }}
@@ -40,7 +40,7 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
             }}
             data-cy="dg-fill-handle"
             onPointerDown={event => {
-                if (event.pointerType === 'mouse') {
+                if (event.pointerType === 'mouse' || event.pointerType === undefined) { // === undefined only for cypress tests
                     changeBehavior(props.gridContext, new FillHandleBehavior(props.gridContext))
                 }
             }}
