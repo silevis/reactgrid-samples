@@ -4,18 +4,26 @@ import { TextCell } from '../../lib/Cells/TextCell';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 import { HeaderCell } from '../../lib/Cells/HeaderCell';
 
-export class Spreadsheet extends React.Component<{}, { data: string[][], width: number }> {
+export class Spreadsheet extends React.Component<{}, { data: string[][], widths: number[] }> {
     constructor(props: {}) {
         super(props);
         this.state = {
-
-            data: Array(15).fill(0).map((_, ri) => Array(30).fill(0).map((_, ci) => (ri + 100) + ' - ' + (ci + 100)))
+            widths: Array(30).fill(120),
+            data: Array(1000).fill(0).map((_, ri) => Array(30).fill(0).map((_, ci) => (ri + 100) + ' - ' + (ci + 100)))
 
         }
     }
 
     private generateCellMatrix(): CellMatrixProps {
-        const columns: ColumnProps[] = this.state.data[0].map((c, idx) => { return { id: idx, width: 120, onDropLeft: (cols) => this.reorderColumns(cols as number[], idx), onDropRight: (cols) => this.reorderColumns(cols as number[], idx), reorderable: true } });
+        const columns: ColumnProps[] = this.state.data[0].map((c, idx) => ({
+            id: idx,
+            width: this.state.widths[idx],
+            onDropLeft: (ids) => this.reorderColumns(ids as number[], idx),
+            onDropRight: (ids) => this.reorderColumns(ids as number[], idx),
+            reorderable: true,
+            resizable: true,
+            onResize: width => { this.state.widths[idx] = 120, this.forceUpdate(); }
+        }));
         const rows: RowProps[] = this.state.data.map((row, rowIdx) => ({
             id: rowIdx,
             height: 25,
@@ -59,6 +67,4 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], width: 
         }
         this.setState({ data })
     }
-
-    resizeColumn = (colIdx: number, width: number) => this.setState({ width })
 }

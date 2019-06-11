@@ -80,11 +80,12 @@ export interface ColumnProps {
     readonly id: Id;
     readonly width: number;
     readonly reorderable: boolean
+    readonly resizable: boolean
     readonly canDropLeft?: (columnIds: Id[]) => boolean;
     readonly canDropRight?: (columnIds: Id[]) => boolean;
     readonly onDropLeft?: (columnIds: Id[]) => void;
     readonly onDropRight?: (columnIds: Id[]) => void;
-    readonly onResize?: (columnId: Id, newWidth: number) => void;
+    readonly onResize?: (newWidth: number) => void;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
