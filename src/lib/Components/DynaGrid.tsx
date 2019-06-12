@@ -1,5 +1,5 @@
 import * as React from "react";
-import { GridContext, DynaGridProps, CellMatrix } from "../Common";
+import { GridContext, DynaGridProps, CellMatrix, PointerEvent } from "../Common";
 import { Range, Location, SelectionMode, } from "../Common";
 import { PaneRow } from "./PaneRow";
 import { recalcVisibleRange } from "../Functions";
@@ -147,7 +147,7 @@ export class DynaGrid extends React.Component<DynaGridProps, GridState> {
     copyHandler = (event: ClipboardEvent) => this.gridContext.currentBehavior.handleCopy(event);
     pasteHandler = (event: ClipboardEvent) => this.gridContext.currentBehavior.handlePaste(event);
     cutHandler = (event: ClipboardEvent) => this.gridContext.currentBehavior.handleCut(event);
-    handleContextMenu = (event: React.MouseEvent) => this.gridContext.currentBehavior.handleContextMenu(event);
+    handleContextMenu = (event: PointerEvent) => this.gridContext.currentBehavior.handleContextMenu(event);
 }
 
 

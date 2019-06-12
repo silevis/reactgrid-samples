@@ -1,7 +1,6 @@
 // import { DrawExternalFocusedLocationsBehavior } from './DefaultGridBehavior/DrawExternalFocusedLocationsBehavior';
 import { Column, Behavior, GridContext } from '../Common';
 import { resetToDefaultBehavior, getLocationFromClient, focusLocation } from '../Functions';
-import { Grid } from "../Components/Grid";
 import { LineAndShadow } from "../Components/LineAndShadow";
 import * as React from 'react';
 
@@ -37,9 +36,9 @@ export class ResizeColumnBehavior extends Behavior {
         resetToDefaultBehavior(this.gridContext);
         this.setLinePosition(-1);
         if (this.resizedColumn.onResize) {
-            this.resizedColumn.onResize(this.resizedColumn, newWidth);
+            this.resizedColumn.onResize(newWidth);
         }
-        this.gridContext.commitChanges()
+        // this.gridContext.commitChanges()
     }
 
 

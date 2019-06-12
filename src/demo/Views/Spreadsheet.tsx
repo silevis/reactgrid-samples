@@ -23,6 +23,7 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
             resizable: true,
             onResize: width => { this.state.widths[idx] = 120, this.forceUpdate(); }
         }));
+        console.log(this.state);
         const rows: RowProps[] = this.state.data.map((row, rowIdx) => ({
             id: rowIdx,
             height: 25,
@@ -45,12 +46,12 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
     render() {
         return <DynaGrid style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
             cellMatrixProps={this.generateCellMatrix()}
-            onDataChanged={this.handleDataChanges}
+            onDataChanged={changes => this.handleDataChanges(changes)}
         />
     }
 
     handleDataChanges(dataChanges: DataChange[]) {
-        const data = { ... this.state.data }
+        const data = this.state.data;
         dataChanges.forEach(change => {
             data[change.rowId as number][change.columnId as number] = change.newData as string;
         })
