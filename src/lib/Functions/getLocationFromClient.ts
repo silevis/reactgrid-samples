@@ -21,7 +21,7 @@ function getRow(gridContext: GridContext, viewportY: number, favorScrollableCont
         return [viewportY - row.top, row];
     }
     else if (viewportY >= bottomPaneTop && !(favorScrollableContent && scrollableContentY <= cellMatrix.scrollableRange.height)) {
-        const row = cellMatrix.frozenBottomRange.rows.find(row => row.bottom > viewportY - bottomPaneTop)!
+        const row = cellMatrix.frozenBottomRange.rows.find(row => row.bottom > viewportY - bottomPaneTop) || cellMatrix.last.row;
         return [viewportY - bottomPaneTop - row.top, row];
     }
     else {
@@ -42,7 +42,7 @@ function getColumn(gridContext: GridContext, viewportX: number, favorScrollableC
         return [viewportX - column.left, column];
     }
     else if (viewportX >= rightPaneLeft && !(favorScrollableContent && scrollableContentX <= cellMatrix.scrollableRange.width)) {
-        const column = cellMatrix.frozenRightRange.cols.find(col => col.right > viewportX - rightPaneLeft)!;
+        const column = cellMatrix.frozenRightRange.cols.find(col => col.right > viewportX - rightPaneLeft) || cellMatrix.last.col;
         return [viewportX - rightPaneLeft - column.left, column]
     }
     else {
