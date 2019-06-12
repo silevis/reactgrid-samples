@@ -36,10 +36,11 @@ export class RowReorderBehavior extends Behavior {
 
     getShadowPosition(location: PointerLocation): number {
         const y = location.viewportY - this.pointerOffset;
+        const max = Math.min(this.gridContext.viewportElement.clientHeight, this.gridContext.cellMatrix.height) - this.shadowWidth;
         if (y < 0) {
             return 0;
-        } else if (y + this.shadowWidth > this.gridContext.cellMatrix.width) {
-            return this.gridContext.cellMatrix.width - this.shadowWidth;
+        } else if (y > max) {
+            return max;
         }
         return y;
     }
