@@ -1,347 +1,97 @@
-export const x = 1;
-// import * as React from 'react';
-// import { DelegateBehavior } from "./DelegateBehavior";
-// import { AutoScrollBehavior } from './AutoScrollBehavior';
-// import { BasicGridBehavior } from './BasicGridBehavior';
-// import { CellMatrix } from '..';
-// import { Utilities } from '../Common/Utilities';
-// import { GridContext, Row } from '../Common';
-// import { getRowFromClientY, getLocationFromClient, resetToDefaultBehavior } from '../Functions';
-// import { LineAndShadow } from '../Components/LineAndShadow';
+import * as React from 'react';
+import { GridContext, Behavior, PointerEvent, PointerLocation, Id } from '../Common';
+import { resetToDefaultBehavior } from '../Functions';
+import { Line } from '../Components/Line';
+import { Shadow } from '../Components/Shadow';
 
-// export let rowIsMoving: boolean = false;
+export class RowReorderBehavior extends Behavior {
+    private initialRowIdx!: number;
+    private lastPossibleDropLocation?: PointerLocation;
+    private shadowWidth!: number;
+    private pointerOffset!: number;
+    private selectedIds!: Id[];
 
-// export class RowReorderBehavior extends AutoScrollBehavior {
-//     private moveHandler = this.handleMove.bind(this);
-//     private mouseUpAndTouchEndHandler = this.handleMouseUpAndTouchEnd.bind(this);
-//     private scrollHandler = this.handleScroll.bind(this);
-//     private rowOnScreen!: Row;
-//     private mouseOffset: number;
-//     private target: Row[];
-//     private mouseOffsetYRelativeToCell: number;
-//     private firstVisibleRowTop: any;
-//     private positionY: number;
-//     private linePosition: number = -1;
-//     private setLinePosition: (position: number) => void = _ => { };
-//     private setShadowPosition: (position: number) => void = _ => { };
+    private setLinePosition: (position: number) => void = _ => { };
+    private setShadowPosition: (position: number) => void = _ => { };
 
+    constructor(private gridContext: GridContext) { super(); }
 
-//     constructor(event: any, gridContext: GridContext) {
-//         super(new AutoScrollBehavior(new BasicGridBehavior(gridContext), 'vertical'));
-//         const activeSelectedRange = Utilities.getActiveSelectionRange(
-//             gridContext.state.selectedRanges,
-//             gridContext.state.focusedLocation!
-//         );
-//         this.target = gridContext.cellMatrix.rows.filter(
-//             (r: Row) =>
-//                 r.idx < activeSelectedRange.rows[0].idx ||
-//                 r.idx > activeSelectedRange.rows[activeSelectedRange.rows.length - 1].idx
-//         );
-//         const rowUnderCursor = activeSelectedRange.first.row;
-//         this.positionY =
-//             event.type === 'mousedown'
-//                 ? event.clientY
-//                 : event.type === 'touchstart'
-//                     ? event.changedTouches[0].clientY
-//                     : null;
+    handlePointerDown(event: PointerEvent, location: PointerLocation) {
+        this.initialRowIdx = location.row.idx;
+        this.lastPossibleDropLocation = location;
 
-//         this.mouseOffsetYRelativeToCell =
-//             this.positionY - document.elementFromPoint(0, this.positionY)!.getBoundingClientRect().top;
+        const indexes = this.gridContext.state.selectedIndexes.sort();
+        const rows = indexes.map(i => this.gridContext.cellMatrix.rows[i]);
+        this.shadowWidth = rows.reduce((sum, row) => sum + row.height, 0);
+        const upperIndexes = indexes.filter(i => i < location.row.idx);
+        const upperRows = upperIndexes.map(i => this.gridContext.cellMatrix.rows[i]);
+        const upperRowsWidth = upperRows.reduce((sum, row) => sum + row.height, 0);
+        this.pointerOffset = upperRowsWidth + location.cellY;
+        this.selectedIds = rows.map(r => r.id);
+    }
 
-//         if (
-//             gridContext.cellMatrix.frozenBottomRange.rows.length > 0 &&
-//             gridContext.cellMatrix.frozenTopRange.rows.length > 0
-//         ) {
-//             if (rowUnderCursor.idx >= gridContext.cellMatrix.frozenBottomStart) {
-//                 this.mouseOffset =
-//                     this.positionY -
-//                     activeSelectedRange.first.row.top -
-//                     gridContext.cellMatrix.frozenTopRange.height
-//                     // - gridContext.state.scrollAreaHeight;
-//             } else if (rowUnderCursor.idx > gridContext.cellMatrix.frozenTopRange.last.row.idx) {
-//                 this.mouseOffset =
-//                     this.positionY -
-//                     activeSelectedRange.first.row.top -
-//                     gridContext.cellMatrix.frozenTopRange.height +
-//                     gridContext.state.gridElement.scrollTop;
-//             } else {
-//                 this.mouseOffset = this.positionY - activeSelectedRange.first.row.top;
-//             }
-//         } else if (
-//             gridContext.cellMatrix.frozenBottomRange.rows.length > 0 &&
-//             !(gridContext.cellMatrix.frozenTopRange.rows.length > 0)
-//         ) {
-//             if (rowUnderCursor.idx >= gridContext.cellMatrix.frozenBottomStart) {
-//                 this.mouseOffset =
-//                     this.positionY -
-//                     activeSelectedRange.first.row.top -
-//                     gridContext.cellMatrix.frozenTopRange.height
-//                     // - gridContext.state.scrollAreaHeight;
-//             } else {
-//                 this.mouseOffset =
-//                     this.positionY -
-//                     activeSelectedRange.first.row.top -
-//                     gridContext.cellMatrix.frozenTopRange.height +
-//                     gridContext.state.gridElement.scrollTop;
-//             }
-//         } else if (gridContext.cellMatrix.frozenTopRange.rows.length > 0) {
-//             if (rowUnderCursor.idx > gridContext.cellMatrix.frozenTopRange.last.row.idx) {
-//                 this.mouseOffset =
-//                     this.positionY -
-//                     activeSelectedRange.first.row.top -
-//                     gridContext.cellMatrix.frozenTopRange.height +
-//                     gridContext.state.gridElement.scrollTop;
-//             } else {
-//                 this.mouseOffset = this.positionY - activeSelectedRange.first.row.top;
-//             }
-//         } else {
-//             this.mouseOffset = this.positionY - activeSelectedRange.first.row.top + gridContext.state.gridElement.scrollTop;
-//         }
+    handlePointerMove(event: PointerEvent, location: PointerLocation) {
+        this.setShadowPosition(this.getShadowPosition(location))
+    }
 
-//         if (event.type === 'mousedown') {
-//             window.addEventListener('mousemove', this.moveHandler);
-//             window.addEventListener('mouseup', this.mouseUpAndTouchEndHandler);
-//         } else if (event.type === 'touchstart') {
-//             window.addEventListener('touchmove', this.moveHandler);
-//             window.addEventListener('touchend', this.mouseUpAndTouchEndHandler);
-//             rowIsMoving = true;
-//         }
-//         gridContext.state.gridElement.addEventListener('scroll', this.scrollHandler);
-//     }
+    getShadowPosition(location: PointerLocation): number {
+        const y = location.viewportY - this.pointerOffset;
+        if (y < 0) {
+            return 0;
+        } else if (y + this.shadowWidth > this.gridContext.cellMatrix.width) {
+            return this.gridContext.cellMatrix.width - this.shadowWidth;
+        }
+        return y;
+    }
 
-//     dispose = () => {
-//         this.innerBehavior.dispose();
-//         window.removeEventListener('mousemove', this.moveHandler);
-//         window.removeEventListener('mouseup', this.mouseUpAndTouchEndHandler);
-//         window.removeEventListener('touchmove', this.moveHandler);
-//         window.removeEventListener('touchend', this.mouseUpAndTouchEndHandler);
-//         this.gridContext.state.gridElement.removeEventListener('scroll', this.scrollHandler);
-//         rowIsMoving = false;
-//     };
+    handlePointerEnter(event: PointerEvent, location: PointerLocation) {
+        const dropLocation = this.getLastPossibleDropLocation(location)
+        if (!dropLocation) return;
+        const drawRight = dropLocation.row.idx > this.initialRowIdx;
+        this.setLinePosition(dropLocation.viewportY - dropLocation.cellY + (drawRight ? dropLocation.row.height : 0))
+    }
 
-//     private handleScroll() {
-//         this.changeShadowPosition();
-//     }
+    getLastPossibleDropLocation(currentLocation: PointerLocation): PointerLocation | undefined {
+        const position = currentLocation.row.idx <= this.initialRowIdx ? 'before' : 'after'
+        if (!currentLocation.row.canDrop || currentLocation.row.canDrop(this.selectedIds, position)) {
+            return this.lastPossibleDropLocation = currentLocation;
+        }
+        return this.lastPossibleDropLocation;
+    }
 
-//     private changeShadowPosition() {
-//         const gridElement = this.gridContext.state.gridElement;
-//         const cellMatrix = this.gridContext.cellMatrix;
-//         const mousePosition = this.positionY + gridElement.scrollTop;
-//         const topBorder = gridElement.offsetTop + cellMatrix.frozenTopRange.first.row.height;
-//         const hiddenScrollableRangeHeight = gridElement.scrollHeight - gridElement.clientHeight;
-//         const lastRowTop = cellMatrix.last.row.top;
+    handlePointerUp(event: PointerEvent, location: PointerLocation) {
+        if (this.lastPossibleDropLocation && this.lastPossibleDropLocation.row.onDrop) {
+            const isBefore = this.lastPossibleDropLocation.row.idx <= this.initialRowIdx;
+            this.lastPossibleDropLocation.row.onDrop(this.selectedIds, isBefore ? 'before' : 'after');
+            this.gridContext.setState({
+                //focusedLocation: cell,
+                //isFocusedCellInEditMode: false,
+                selectedRanges: [],
+                selectedIndexes: [] // TODO this.gridContext.cellMatrix.cols.map(col => col.idx)
+            });
+        }
+        resetToDefaultBehavior(this.gridContext);
+    }
 
-//         let rowUnderCursor = getRowFromClientY(this.gridContext, this.positionY);
-
-//         if (rowUnderCursor) {
-//             if (rowUnderCursor.idx === 0) {
-//                 rowUnderCursor = cellMatrix.rows[cellMatrix.frozenTopRange.rows.length];
-//             }
-
-//             if (rowUnderCursor.idx === cellMatrix.rows[cellMatrix.last.row.idx].idx) {
-//                 rowUnderCursor = cellMatrix.rows[cellMatrix.last.row.idx - 1];
-//             }
-
-//             if (rowUnderCursor !== this.rowOnScreen) {
-//                 this.handleMouseEnterOnRow(rowUnderCursor);
-//             }
-//         }
-
-//         this.firstVisibleRowTop = getLocationFromClient(
-//             this.gridContext,
-//             0,
-//             gridElement.offsetTop + cellMatrix.frozenTopRange.height + 25
-//         ).row.top;
-//         let shadowPosition;
-
-//         if (this.positionY - this.mouseOffsetYRelativeToCell <= topBorder && gridElement.scrollTop === 0) {
-//             shadowPosition = this.firstVisibleRowTop + cellMatrix.frozenTopRange.height;
-//         } else if (
-//             this.positionY -
-//             this.mouseOffsetYRelativeToCell +
-//             gridElement.scrollTop +
-//             cellMatrix.frozenTopRange.height -
-//             gridElement.offsetTop >
-//             lastRowTop &&
-//             this.positionY -
-//             this.mouseOffsetYRelativeToCell +
-//             hiddenScrollableRangeHeight +
-//             cellMatrix.frozenTopRange.height -
-//             gridElement.offsetTop >=
-//             this.linePosition
-//         ) {
-//             shadowPosition = lastRowTop;
-//         } else {
-//             shadowPosition = mousePosition - this.mouseOffset;
-//         }
-
-//         this.setShadowPosition(shadowPosition);
-//     }
-
-//     private handleMove(event: any) {
-//         this.positionY =
-//             event.type === 'mousemove'
-//                 ? event.clientY
-//                 : event.type === 'touchmove'
-//                     ? event.changedTouches[0].clientY
-//                     : null;
-
-//         this.changeShadowPosition();
-//     }
-
-//     private handleMouseUpAndTouchEnd() {
-//         const activeSelectedRange = Utilities.getActiveSelectionRange(
-//             this.gridContext.state.selectedRanges,
-//             this.gridContext.state.focusedLocation!
-//         );
-//         const cellMatrix = this.gridContext.cellMatrix;
-//         const selectedRows = activeSelectedRange.rows;
-
-//         if (!this.rowOnScreen) {
-//             this.setLinePosition(-1);
-//             this.setShadowPosition(-1);
-//         } else {
-//             const positionChange =
-//                 this.rowOnScreen.idx > selectedRows[0].idx
-//                     ? this.rowOnScreen.idx - selectedRows[selectedRows.length - 1].idx
-//                     : this.rowOnScreen.idx - selectedRows[0].idx;
-//             const isOnBelowSideDrop = activeSelectedRange.first.row.idx < this.rowOnScreen.idx;
-//             if (isOnBelowSideDrop) {
-//                 if (this.rowOnScreen.onDropBelow) {
-//                     this.rowOnScreen.onDropBelow(activeSelectedRange.rows, this.rowOnScreen);
-//                 }
-//             } else {
-//                 if (this.rowOnScreen.onDropAbove) {
-//                     this.rowOnScreen.onDropAbove(activeSelectedRange.rows, this.rowOnScreen);
-//                 }
-//             }
-
-//             const selectedRowsIdx = [selectedRows[0].idx + positionChange];
-
-//             const startRowIdx = selectedRows[0].idx + positionChange;
-//             const endRowIdx = selectedRows[selectedRows.length - 1].idx + positionChange;
-//             const cell = cellMatrix.getLocation(
-//                 activeSelectedRange.first.row.idx + positionChange,
-//                 this.gridContext.state.focusedLocation!.col.idx
-//             );
-
-//             const selectedRanges = [
-//                 cellMatrix.getRange(
-//                     cellMatrix.getLocation(startRowIdx, 0),
-//                     cellMatrix.getLocation(endRowIdx, cellMatrix.cols.length - 1)
-//                 )
-//             ];
-
-//             this.gridContext.setState({
-//                 focusedLocation: cell,
-//                 isFocusedCellInEditMode: false,
-//                 // selectedRowsIdx,
-//                 selectedRanges
-//             });
-//         }
-//         this.setLinePosition(-1);
-//         this.setShadowPosition(-1);
-//         this.gridContext.commitChanges();
-
-//         if (event!.type === 'mouseup') {
-//             resetToDefaultBehavior(this.gridContext);
-//         }
-//     }
-
-//     private handleMouseEnterOnRow(row: Row) {
-//         const activeSelectedRange = Utilities.getActiveSelectionRange(
-//             this.gridContext.state.selectedRanges,
-//             this.gridContext.state.focusedLocation!
-//         );
-//         const isTargetRow = (row: Row) => {
-//             return this.target.some(r => r === row);
-//         };
-//         const isSelectedRow = (row: Row) => {
-//             return activeSelectedRange.rows.some((r: Row) => r === row);
-//         };
-//         const areRowsMovingDown = () => {
-//             return activeSelectedRange.first.row.idx < this.rowOnScreen.idx;
-//         };
-//         this.rowOnScreen = isTargetRow(row) ? row : isSelectedRow(row) ? activeSelectedRange.rows[0] : this.rowOnScreen;
-//         let rowTop = row.top;
-//         const cellMatrix: CellMatrix = this.gridContext.cellMatrix;
-//         if (
-//             this.gridContext.cellMatrix.frozenBottomRange.rows.length > 0 &&
-//             this.gridContext.cellMatrix.frozenTopRange.rows.length > 0
-//         ) {
-//             if (row.idx >= this.gridContext.cellMatrix.frozenBottomStart) {
-//                 this.linePosition = this.rowOnScreen
-//                     ? areRowsMovingDown()
-//                         ? (rowTop += cellMatrix.frozenTopRange.height + cellMatrix.scrollableRange.height + row.height)
-//                         : this.rowOnScreen.top + cellMatrix.frozenTopRange.height + cellMatrix.scrollableRange.height
-//                     : -1;
-//             } else if (row.idx > cellMatrix.frozenTopRange.last.row.idx) {
-//                 this.linePosition = this.rowOnScreen
-//                     ? areRowsMovingDown()
-//                         ? this.rowOnScreen.top + this.rowOnScreen.height + cellMatrix.frozenTopRange.height
-//                         : this.rowOnScreen.top + cellMatrix.frozenTopRange.height
-//                     : -1;
-//             } else {
-//                 this.linePosition = this.rowOnScreen
-//                     ? areRowsMovingDown()
-//                         ? this.rowOnScreen.top + this.rowOnScreen.height
-//                         : this.rowOnScreen.top
-//                     : -1;
-//             }
-//         } else if (cellMatrix.frozenTopRange.rows.length > 0) {
-//             if (row.idx >= cellMatrix.frozenTopRange.last.row.idx) {
-//                 this.linePosition = this.rowOnScreen
-//                     ? areRowsMovingDown()
-//                         ? row.idx === cellMatrix.last.row.idx
-//                             ? this.rowOnScreen.top + this.rowOnScreen.height
-//                             : this.rowOnScreen.top + this.rowOnScreen.height + cellMatrix.frozenTopRange.height
-//                         : row.idx === 0
-//                             ? this.firstVisibleRowTop + cellMatrix.frozenTopRange.height
-//                             : this.rowOnScreen.top + cellMatrix.frozenTopRange.height
-//                     : -1;
-//             }
-//         } else if (cellMatrix.frozenBottomRange.rows.length > 0 && !(cellMatrix.frozenTopRange.rows.length > 0)) {
-//             if (row.idx >= cellMatrix.frozenBottomStart) {
-//                 this.linePosition = this.rowOnScreen
-//                     ? areRowsMovingDown()
-//                         ? (rowTop += cellMatrix.frozenTopRange.height + cellMatrix.scrollableRange.height + row.height)
-//                         : this.rowOnScreen.top + cellMatrix.frozenTopRange.height + cellMatrix.scrollableRange.height
-//                     : -1;
-//             } else {
-//                 this.linePosition = this.rowOnScreen
-//                     ? areRowsMovingDown()
-//                         ? this.rowOnScreen.top + this.rowOnScreen.height + cellMatrix.frozenTopRange.height
-//                         : this.rowOnScreen.top + cellMatrix.frozenTopRange.height
-//                     : -1;
-//             }
-//         } else {
-//             this.linePosition = this.rowOnScreen
-//                 ? areRowsMovingDown()
-//                     ? this.rowOnScreen.top + this.rowOnScreen.height + cellMatrix.frozenTopRange.height
-//                     : this.rowOnScreen.top + cellMatrix.frozenTopRange.height
-//                 : -1;
-//         }
-
-//         this.setLinePosition(this.linePosition);
-//     }
-
-//     renderGlobalPart = () => {
-//         const activeSelectedRange = Utilities.getActiveSelectionRange(
-//             this.gridContext.state.selectedRanges,
-//             this.gridContext.state.focusedLocation!
-//         );
-//         return <>
-//             {this.innerBehavior.renderGlobalPart()}
-//             <LineAndShadow 
-//                 onInitialized={(linePostion, shadowPosition) => { 
-//                     this.setLinePosition = linePostion; 
-//                     this.setShadowPosition = shadowPosition 
-//                 }} 
-//                 isVertical={false} 
-//                 cellMatrix={this.gridContext.cellMatrix} 
-//                 shadowSize={activeSelectedRange.height}
-//             />
-//         </>
-//     }
-// }
-
+    renderGlobalPart() {
+        return (
+            <>
+                <Line
+                    onInitialized={(linePostionSetter) => {
+                        this.setLinePosition = linePostionSetter;
+                    }}
+                    isVertical={false}
+                    cellMatrix={this.gridContext.cellMatrix}
+                />
+                <Shadow
+                    onInitialized={(shadowPostionSetter) => {
+                        this.setShadowPosition = shadowPostionSetter;
+                    }}
+                    isVertical={false}
+                    cellMatrix={this.gridContext.cellMatrix}
+                    shadowSize={this.shadowWidth}
+                />
+            </>
+        )
+    }
+}

@@ -4,6 +4,8 @@ import { changeBehavior } from "../Functions";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
 import { ColumnSelectionBehavior } from "./ColumnSelectionBehavior";
 import { ColumnReorderBehavior } from "./ColumnReorderBehavior";
+import { RowSelectionBehavior } from "./RowSelectionBehavior";
+import { RowReorderBehavior } from "./RowReorderBehavior";
 import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
 import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChange";
 
@@ -17,17 +19,23 @@ export class DefaultBehavior extends Behavior {
             const colReorderBehavior = new ColumnReorderBehavior(this.gridContext);
             changeBehavior(this.gridContext, colReorderBehavior);
             colReorderBehavior.handlePointerDown(event, location);
-
         } else if (location.row.idx == 0) {
             const columnSelectionBehavior = new ColumnSelectionBehavior(this.gridContext);
             changeBehavior(this.gridContext, columnSelectionBehavior);
             columnSelectionBehavior.handlePointerDown(event, location);
-
+        } else if (location.col.idx == 0 && this.gridContext.state.selectedIndexes.includes(location.row.idx)) {
+            console.log('ROW REORDER')
+            const columnSelectionBehavior = new RowReorderBehavior(this.gridContext);
+            changeBehavior(this.gridContext, columnSelectionBehavior);
+            columnSelectionBehavior.handlePointerDown(event, location);
+        } else if (location.col.idx == 0) {
+            const columnSelectionBehavior = new RowSelectionBehavior(this.gridContext);
+            changeBehavior(this.gridContext, columnSelectionBehavior);
+            columnSelectionBehavior.handlePointerDown(event, location);
         } else {
             const cellSelectionBehavior = new CellSelectionBehavior(this.gridContext);
             changeBehavior(this.gridContext, cellSelectionBehavior);
             cellSelectionBehavior.handlePointerDown(event, location);
-
         }
     }
 

@@ -26,8 +26,9 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
         const rows: RowProps[] = this.state.data.map((row, rowIdx) => ({
             id: rowIdx,
             height: 25,
-            reorderable: false,
-            cells: row.map((data) => rowIdx === 0 ? new HeaderCell(data) : new TextCell(data))
+            onDrop: (ids) => this.reorderRows(ids as number[], rowIdx),
+            reorderable: true,
+            cells: row.map((data, colIdx) => (rowIdx === 0 || colIdx === 0) ? new HeaderCell(data) : new TextCell(data))
         }))
         return ({ frozenTopRows: 2, frozenLeftColumns: 2, frozenBottomRows: 2, frozenRightColumns: 2, rows, columns })
     }
@@ -65,5 +66,15 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
             data = data.map(r => this.calculateColumnReorder(r, colIdxs, 'left', to));
         }
         this.setState({ data })
+    }
+
+    reorderRows(rowIdxs: number[], to: number) {
+        const data = [...this.state.data];
+        const movedRows = data.filter((_, idx) => rowIdxs.includes(idx));
+        const clearedData = data.filter((_, idx) => !rowIdxs.includes(idx));
+        if (to > rowIdxs[0])
+            to = to - rowIdxs.length + 1
+        clearedData.splice(to, 0, ...movedRows)
+        this.setState({ data: clearedData })
     }
 }
