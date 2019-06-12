@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { GridContext, Behavior, PointerEvent, PointerLocation, Id } from '../Common';
 import { resetToDefaultBehavior } from '../Functions';
-import { LineAndShadow } from '../Components/LineAndShadow';
+import { Line } from '../Components/Line';
+import { Shadow } from '../Components/Shadow';
 
 export class ColumnReorderBehavior extends Behavior {
     private initialColumnIdx!: number;
@@ -34,6 +35,7 @@ export class ColumnReorderBehavior extends Behavior {
     }
 
     getShadowPosition(location: PointerLocation): number {
+        console.log(location)
         const x = location.viewportX - this.pointerOffset;
         if (x < 0) {
             return 0;
@@ -74,15 +76,23 @@ export class ColumnReorderBehavior extends Behavior {
 
     renderGlobalPart() {
         return (
-            <LineAndShadow
-                onInitialized={(linePostionSetter, shadowPositionSetter) => {
-                    this.setLinePosition = linePostionSetter;
-                    this.setShadowPosition = shadowPositionSetter
-                }}
-                isVertical={true}
-                cellMatrix={this.gridContext.cellMatrix}
-                shadowSize={this.shadowWidth}
-            />
+            <>
+                <Line
+                    onInitialized={(linePostionSetter) => {
+                        this.setLinePosition = linePostionSetter;
+                    }}
+                    isVertical={true}
+                    cellMatrix={this.gridContext.cellMatrix}
+                />
+                <Shadow
+                    onInitialized={(shadowPostionSetter) => {
+                        this.setShadowPosition = shadowPostionSetter;
+                    }}
+                    isVertical={true}
+                    cellMatrix={this.gridContext.cellMatrix}
+                    shadowSize={this.shadowWidth}
+                />
+            </>
         )
     }
 }

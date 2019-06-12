@@ -8,8 +8,8 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
     constructor(props: {}) {
         super(props);
         this.state = {
-            widths: Array(30).fill(120),
-            data: Array(1000).fill(0).map((_, ri) => Array(30).fill(0).map((_, ci) => (ri + 100) + ' - ' + (ci + 100)))
+            widths: Array(50).fill(120),
+            data: Array(50).fill(0).map((_, ri) => Array(50).fill(0).map((_, ci) => (ri + 100) + ' - ' + (ci + 100)))
 
         }
     }
@@ -23,7 +23,6 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
             resizable: true,
             onResize: width => { this.state.widths[idx] = 120, this.forceUpdate(); }
         }));
-        console.log(this.state);
         const rows: RowProps[] = this.state.data.map((row, rowIdx) => ({
             id: rowIdx,
             height: 25,
