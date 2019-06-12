@@ -35,7 +35,6 @@ export class ColumnReorderBehavior extends Behavior {
     }
 
     getShadowPosition(location: PointerLocation): number {
-        console.log(location)
         const x = location.viewportX - this.pointerOffset;
         if (x < 0) {
             return 0;

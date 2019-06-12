@@ -104,9 +104,9 @@ export class DynaGrid extends React.Component<DynaGridProps, GridState> {
                             borders={{ top: true }}
                             zIndex={3}
                         />}
-                    {this.gridContext.currentBehavior.renderGlobalPart && this.gridContext.currentBehavior.renderGlobalPart()}
-                    <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} />
                 </div>
+                {this.gridContext.currentBehavior.renderGlobalPart && this.gridContext.currentBehavior.renderGlobalPart()}
+                <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} />
             </div >
         );
     }

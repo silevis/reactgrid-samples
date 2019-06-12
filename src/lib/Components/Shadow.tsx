@@ -30,7 +30,7 @@ export class Shadow extends React.Component<ShadowProps, ShadowState> {
             shadowPosition !== -1 &&
             <div
                 style={{
-                    position: 'absolute',
+                    position: 'fixed',
                     background: '#000',
                     cursor: '-webkit-grabbing',
                     opacity: 0.1,
