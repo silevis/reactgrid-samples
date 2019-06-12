@@ -16,21 +16,18 @@ function getRow(gridContext: GridContext, viewportY: number, favorScrollableCont
     const bottomPaneTop = visibleContentHeight - cellMatrix.frozenBottomRange.height;
     const scrollableContentY = viewportY - cellMatrix.frozenTopRange.height + gridContext.viewportElement.scrollTop;
 
-    if (viewportY < 0) {
-        return [0, cellMatrix.first.row];
-    }
-    else if (viewportY >= visibleContentHeight) {
-        return [0, cellMatrix.last.row];
-    }
-    else if (viewportY < cellMatrix.frozenTopRange.height && !(favorScrollableContent && scrollableContentY >= 0)) {
-        return [0, cellMatrix.frozenTopRange.rows.find(row => row.bottom > viewportY)!];
+    if (viewportY < cellMatrix.frozenTopRange.height && !(favorScrollableContent && scrollableContentY >= 0)) {
+        const row = cellMatrix.frozenTopRange.rows.find(row => row.bottom > viewportY)!;
+        return [viewportY - row.top, row];
     }
     else if (viewportY >= bottomPaneTop && !(favorScrollableContent && scrollableContentY <= cellMatrix.scrollableRange.height)) {
-        return [0, cellMatrix.frozenBottomRange.rows.find(row => row.bottom > viewportY - bottomPaneTop)!];
+        const row = cellMatrix.frozenBottomRange.rows.find(row => row.bottom > viewportY - bottomPaneTop)!
+        return [viewportY - bottomPaneTop - row.top, row];
     }
     else {
         // TODO find is expensive, quickfind?
-        return [0, cellMatrix.scrollableRange.rows.find(row => row.bottom >= scrollableContentY)!];
+        const row = cellMatrix.scrollableRange.rows.find(row => row.bottom >= scrollableContentY)!;
+        return [scrollableContentY - row.top, row];
     }
 }
 
