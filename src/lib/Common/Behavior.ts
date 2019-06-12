@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Range, Location } from "./";
+import { Range, PointerLocation } from "./";
 import { KeyboardEvent, ClipboardEvent, PointerEvent } from "./domEvents";
 import { Direction } from "./PublicModel";
 
@@ -10,12 +10,12 @@ export abstract class Behavior {
     handleCopy(event: ClipboardEvent): void { }
     handlePaste(event: ClipboardEvent): void { }
     handleCut(event: ClipboardEvent): void { }
-    handlePointerEnter(event: PointerEvent, location: Location): void { }
-    handlePointerDown(event: PointerEvent, location: Location): void { }
-    handlePointerMove(event: PointerEvent, location: Location): void { }
-    handlePointerUp(event: PointerEvent, location: Location): void { }
-    handleDoubleClick(event: PointerEvent, location: Location): void { }
-    handleContextMenu(event: React.MouseEvent): void { }
+    handlePointerEnter(event: PointerEvent, location: PointerLocation): void { }
+    handlePointerDown(event: PointerEvent, location: PointerLocation): void { }
+    handlePointerMove(event: PointerEvent, location: PointerLocation): void { }
+    handlePointerUp(event: PointerEvent, location: PointerLocation): void { }
+    handleDoubleClick(event: PointerEvent, location: PointerLocation): void { }
+    handleContextMenu(event: PointerEvent): void { event.preventDefault(); event.stopPropagation(); }
     renderPanePart(pane: Range): React.ReactNode { return undefined; }
     renderGlobalPart(): React.ReactNode { return undefined; }
     dispose(): void { }

@@ -26,7 +26,27 @@ export interface Borders {
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export class Location {
-    constructor(public readonly row: Row, public readonly col: Column) { }
+    constructor(
+        public readonly row: Row,
+        public readonly col: Column
+    ) { }
     get cell() { return this.row.cells[this.col.idx] };
+    equals(location?: Location) {
+        return location && this.col.idx === location.col.idx && this.row.idx === location.row.idx;
+    }
 }
+
+export class PointerLocation extends Location {
+    constructor(
+        public readonly row: Row,
+        public readonly col: Column,
+        public readonly viewportX: number,
+        public readonly viewportY: number,
+        public readonly cellX: number,
+        public readonly cellY: number) {
+        super(row, col);
+    }
+}
+
+
 

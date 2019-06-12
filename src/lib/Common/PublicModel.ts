@@ -76,15 +76,15 @@ export interface CellRenderProps {
 
 export type Id = number | string;
 
+export type DropPosition = 'before' | 'on' | 'after'
+
 export interface ColumnProps {
     readonly id: Id;
     readonly width: number;
     readonly reorderable: boolean
     readonly resizable: boolean
-    readonly canDropLeft?: (columnIds: Id[]) => boolean;
-    readonly canDropRight?: (columnIds: Id[]) => boolean;
-    readonly onDropLeft?: (columnIds: Id[]) => void;
-    readonly onDropRight?: (columnIds: Id[]) => void;
+    readonly canDrop?: (columnIds: Id[], position: DropPosition) => boolean;
+    readonly onDrop?: (columnIds: Id[], position: DropPosition) => void;
     readonly onResize?: (newWidth: number) => void;
 }
 
@@ -94,10 +94,8 @@ export interface RowProps {
     readonly cells: Cell[];
     readonly height: number;
     readonly reorderable: boolean;
-    readonly canDropAbove?: (rowIds: Id[]) => boolean;
-    readonly canDropBelow?: (rowIds: Id[]) => boolean;
-    readonly onDropAbove?: (rowIds: Id[]) => void;
-    readonly onDropBelow?: (rowIds: Id[]) => void;
+    readonly canDrop?: (rowIds: Id[], position: DropPosition) => boolean;
+    readonly onDrop?: (rowIds: Id[], position: DropPosition) => void;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 

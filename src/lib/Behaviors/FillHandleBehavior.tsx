@@ -8,7 +8,6 @@ import { trySetDataAndAppendChange } from '../Functions/trySetDataAndAppendChang
 type Direction = '' | 'left' | 'right' | 'up' | 'down';
 
 export class FillHandleBehavior extends Behavior {
-    private currentLocation?: Location;
     private fillDirection: Direction = '';
     private fillRange?: Range;
 
@@ -16,22 +15,17 @@ export class FillHandleBehavior extends Behavior {
         super();
     }
 
-    handlePointerMove(event: PointerEvent) {
+    handlePointerEnter(event: PointerEvent, location: Location) {
         const selectedRange = getActiveSelectedRange(this.gridContext);
-        const pointerLocation = getLocationFromClient(this.gridContext, event.clientX, event.clientY);
-        if ((this.currentLocation && this.currentLocation.col === pointerLocation.col && this.currentLocation.row === pointerLocation.row)) {
-            return;
-        }
-        this.currentLocation = pointerLocation;
-        this.fillDirection = this.getFillDirection(selectedRange, pointerLocation)
-        this.fillRange = this.getFillRange(this.gridContext.cellMatrix, selectedRange, pointerLocation, this.fillDirection)
+        this.fillDirection = this.getFillDirection(selectedRange, location)
+        this.fillRange = this.getFillRange(this.gridContext.cellMatrix, selectedRange, location, this.fillDirection)
         this.gridContext.forceUpdate();
     }
 
     private getFillDirection(selectedRange: Range, pointerLocation: Location) {
 
         // active selection
-        let differences: { direction: Direction; value: number }[] = [];
+        const differences: { direction: Direction; value: number }[] = [];
         differences.push({ direction: '', value: 0 });
         differences.push({
             direction: 'up',
@@ -112,7 +106,7 @@ export class FillHandleBehavior extends Behavior {
         return undefined;
     }
 
-    handlePointerUp(event: PointerEvent) {
+    handlePointerUp(event: PointerEvent, location: Location) {
         const dataChanges: DataChange[] = [];
         const activeSelectedRange = getActiveSelectedRange(this.gridContext);
         const cellMatrix = this.gridContext.cellMatrix;
@@ -134,7 +128,7 @@ export class FillHandleBehavior extends Behavior {
                     })
                 );
                 this.gridContext.setState({
-                    selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, new Location(activeSelectedRange.last.row, this.currentLocation!.col))]
+                    selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, new Location(activeSelectedRange.last.row, location.col))]
                 });
                 break;
             case 'left':
@@ -147,7 +141,7 @@ export class FillHandleBehavior extends Behavior {
                     )
                 );
                 this.gridContext.setState({
-                    selectedRanges: [cellMatrix.getRange(activeSelectedRange.last, new Location(activeSelectedRange.first.row, this.currentLocation!.col))]
+                    selectedRanges: [cellMatrix.getRange(activeSelectedRange.last, new Location(activeSelectedRange.first.row, location.col))]
                 });
                 break;
             case 'up':
@@ -160,7 +154,7 @@ export class FillHandleBehavior extends Behavior {
                     )
                 );
                 this.gridContext.setState({
-                    selectedRanges: [cellMatrix.getRange(activeSelectedRange.last, new Location(this.currentLocation!.row, activeSelectedRange.first.col))]
+                    selectedRanges: [cellMatrix.getRange(activeSelectedRange.last, new Location(location.row, activeSelectedRange.first.col))]
                 });
                 break;
             case 'down':
@@ -174,7 +168,7 @@ export class FillHandleBehavior extends Behavior {
                 );
                 this.gridContext.setState({
                     selectedRanges: [
-                        cellMatrix.getRange(activeSelectedRange.first, new Location(this.currentLocation!.row, activeSelectedRange.last.col))]
+                        cellMatrix.getRange(activeSelectedRange.first, new Location(location.row, activeSelectedRange.last.col))]
                 });
                 break;
         }

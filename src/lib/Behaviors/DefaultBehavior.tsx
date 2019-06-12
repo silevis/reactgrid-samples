@@ -1,9 +1,9 @@
-import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, CellData, DataChange } from "../Common";
+import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, CellData, DataChange, PointerLocation } from "../Common";
 import { handleKeyDown as handleKeyDown } from "./DefaultBehavior/handleKeyDown";
 import { changeBehavior } from "../Functions";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
 import { ColumnSelectionBehavior } from "./ColumnSelectionBehavior";
-import { ColReorderBehavior } from "./ColReorderBehavior";
+import { ColumnReorderBehavior } from "./ColumnReorderBehavior";
 import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
 import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChange";
 
@@ -11,10 +11,10 @@ export class DefaultBehavior extends Behavior {
 
     constructor(private gridContext: GridContext) { super(); }
 
-    handlePointerDown(event: PointerEvent, location: Location) {
+    handlePointerDown(event: PointerEvent, location: PointerLocation) {
         // changing behavior will disable all keyboard event handlers
-        if (location.row.idx == 0 && this.gridContext.state.selectedIndexes.find(i => i == location.col.idx)) {
-            const colReorderBehavior = new ColReorderBehavior(this.gridContext, event);
+        if (location.row.idx == 0 && this.gridContext.state.selectedIndexes.includes(location.col.idx)) {
+            const colReorderBehavior = new ColumnReorderBehavior(this.gridContext);
             changeBehavior(this.gridContext, colReorderBehavior);
             colReorderBehavior.handlePointerDown(event, location);
 
@@ -49,9 +49,7 @@ export class DefaultBehavior extends Behavior {
             event.stopPropagation();
         } else {
             if (
-                this.gridContext.state.focusedLocation &&
-                this.gridContext.state.focusedLocation.col.idx === location.col.idx &&
-                this.gridContext.state.focusedLocation.row.idx === location.row.idx
+                location.equals(this.gridContext.state.focusedLocation)
             ) {
                 this.gridContext.lastKeyCode = 0;
                 setTimeout(() => this.gridContext.setState({ isFocusedCellInEditMode: true }));
