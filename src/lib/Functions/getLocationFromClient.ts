@@ -12,21 +12,22 @@ export function getLocationFromClient(gridContext: GridContext, clientX: number,
 function getRow(gridContext: GridContext, viewportY: number, favorScrollableContent: boolean): [number, Row] {
     const cellMatrix = gridContext.cellMatrix;
     const visibleContentHeight = Math.min(gridContext.viewportElement.clientHeight, cellMatrix.height);
-
     const bottomPaneTop = visibleContentHeight - cellMatrix.frozenBottomRange.height;
-    const scrollableContentY = viewportY - cellMatrix.frozenTopRange.height + gridContext.viewportElement.scrollTop;
+    const scrollTop = gridContext.viewportElement.scrollTop;
+    const maxScrollTop = cellMatrix.scrollableRange.height - visibleContentHeight + cellMatrix.frozenTopRange.height + cellMatrix.frozenBottomRange.height - 1;
 
-    if (viewportY < cellMatrix.frozenTopRange.height && !(favorScrollableContent && scrollableContentY >= 0)) {
+    if (viewportY < cellMatrix.frozenTopRange.height && !(favorScrollableContent && scrollTop > 0)) {
         const row = cellMatrix.frozenTopRange.rows.find(row => row.bottom > viewportY)!;
         return [viewportY - row.top, row];
     }
-    else if (viewportY >= bottomPaneTop && !(favorScrollableContent && scrollableContentY <= cellMatrix.scrollableRange.height)) {
+    else if (viewportY >= bottomPaneTop && !(favorScrollableContent && scrollTop < maxScrollTop)) {
         const row = cellMatrix.frozenBottomRange.rows.find(row => row.bottom > viewportY - bottomPaneTop) || cellMatrix.last.row;
         return [viewportY - bottomPaneTop - row.top, row];
     }
     else {
         // TODO find is expensive, quickfind?
-        const row = cellMatrix.scrollableRange.rows.find(row => row.bottom >= scrollableContentY)!;
+        const scrollableContentY = viewportY - cellMatrix.frozenTopRange.height + gridContext.viewportElement.scrollTop;
+        const row = cellMatrix.scrollableRange.rows.find(row => row.bottom >= scrollableContentY) || cellMatrix.scrollableRange.last.row;
         return [scrollableContentY - row.top, row];
     }
 }
@@ -35,19 +36,21 @@ function getColumn(gridContext: GridContext, viewportX: number, favorScrollableC
     const cellMatrix = gridContext.cellMatrix;
     const visibleContentWidth = Math.min(gridContext.viewportElement.clientWidth, cellMatrix.width);
     const rightPaneLeft = visibleContentWidth - cellMatrix.frozenRightRange.width;
-    const scrollableContentX = viewportX - cellMatrix.frozenLeftRange.width + gridContext.viewportElement.scrollLeft;
+    const scrollLeft = gridContext.viewportElement.scrollLeft;
+    const maxScrollLeft = cellMatrix.scrollableRange.width - visibleContentWidth + cellMatrix.frozenLeftRange.width + cellMatrix.frozenRightRange.width - 1;
 
-    if (viewportX < cellMatrix.frozenLeftRange.width && !(favorScrollableContent && scrollableContentX >= 0)) {
+    if (viewportX < cellMatrix.frozenLeftRange.width && !(favorScrollableContent && scrollLeft > 0)) {
         const column = cellMatrix.frozenLeftRange.cols.find(col => col.right > viewportX)!;
         return [viewportX - column.left, column];
     }
-    else if (viewportX >= rightPaneLeft && !(favorScrollableContent && scrollableContentX <= cellMatrix.scrollableRange.width)) {
+    else if (viewportX >= rightPaneLeft && !(favorScrollableContent && scrollLeft < maxScrollLeft)) {
         const column = cellMatrix.frozenRightRange.cols.find(col => col.right > viewportX - rightPaneLeft) || cellMatrix.last.col;
         return [viewportX - rightPaneLeft - column.left, column]
     }
     else {
         // TODO find is expensive, quickfind ?
-        const column = cellMatrix.scrollableRange.cols.find(col => col.right >= scrollableContentX)!;
+        const scrollableContentX = viewportX - cellMatrix.frozenLeftRange.width + scrollLeft;
+        const column = cellMatrix.scrollableRange.cols.find(col => col.right >= scrollableContentX) || cellMatrix.scrollableRange.last.col;
         return [scrollableContentX - column.left, column];
     }
 }
