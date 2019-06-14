@@ -1,5 +1,4 @@
-import { Behavior } from "../Common/Behavior";
-import { State } from "../Common/State";
+import { State, Behavior } from "../Common";
 
 export function changeBehavior(state: State, behavior: Behavior): State {
     state.currentBehavior.dispose();
