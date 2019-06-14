@@ -8,7 +8,7 @@ import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
 
-    private pointerEventsController = new PointerEventsController()
+    private pointerEventsController = new PointerEventsController(() => this.state, this.updateOnNewState.bind(this))
 
     state = new State();
 

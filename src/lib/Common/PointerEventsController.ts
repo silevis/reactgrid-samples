@@ -3,6 +3,9 @@ import { getLocationFromClient, scrollIntoView, focusLocation, changeBehavior } 
 import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
 
 export class PointerEventsController {
+
+    constructor(private readonly getState: () => State, private readonly onStateChanged: (state: State) => void) { }
+
     private eventTimestamps: number[] = [0, 0];
     private eventLocations: Array<Location | undefined> = [undefined, undefined]
     private currentIndex: number = 0;
@@ -31,7 +34,8 @@ export class PointerEventsController {
     }
 
     // TODO! Bug here: state not passed 
-    private handlePointerMove = (event: PointerEvent, state: State): State => {
+    private handlePointerMove = (event: PointerEvent): void => {
+        let state = this.getState()
         const autoScrollDirection = state.currentBehavior.autoScrollDirection;
         const currentLocation = getLocationFromClient(state, event.clientX, event.clientY, autoScrollDirection);
         scrollIntoView(state, currentLocation, autoScrollDirection);
@@ -41,27 +45,31 @@ export class PointerEventsController {
         if (!currentLocation.equals(previousLocation)) {
             state = state.currentBehavior.handlePointerEnter(event, currentLocation, state);
         }
-        return state;
+        this.onStateChanged(state);
     }
 
-    private handlePointerUp = (event: PointerEvent, state: State): State => {
-        if (event.button !== 0 && event.button !== undefined) {
-            return state;
-        }
+    private handlePointerUp = (event: PointerEvent): void => {
+
+        if (event.button !== 0 && event.button !== undefined)
+            return
+
+        let state = this.getState();
 
         window.removeEventListener('pointerup', this.handlePointerUp as any);
         window.removeEventListener('pointermove', this.handlePointerMove as any);
         const currentLocation = getLocationFromClient(state, event.clientX, event.clientY);
         const currentTimestamp = new Date().valueOf();
         const secondLastTimestamp = this.eventTimestamps[1 - this.currentIndex];
-        state.currentBehavior.handlePointerUp(event, currentLocation, state);
+        state = state.currentBehavior.handlePointerUp(event, currentLocation, state);
         if (event.pointerType !== 'mouse' && currentLocation.equals(this.pointerDownLocation) && event.pointerType !== undefined) { // !== undefined only for cypress tests
             state = focusLocation(state, currentLocation, true);
         }
         if (currentTimestamp - secondLastTimestamp < 500 && currentLocation.equals(this.eventLocations[0]) && currentLocation.equals(this.eventLocations[1])) {
             state = state.currentBehavior.handleDoubleClick(event, currentLocation, state)
         }
-        return changeBehavior(state, new DefaultBehavior());
+        state = changeBehavior(state, new DefaultBehavior());
+        this.onStateChanged(state);
+
     }
 }
 
