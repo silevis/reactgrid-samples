@@ -1,14 +1,14 @@
 import * as React from "react";
-import { GridContext, Borders, Location, keyCodes, CellData } from "../Common";
+import { State, Borders, Location, keyCodes } from "../Common";
 
 export interface CellRendererProps {
-    gridContext: GridContext
+    state: State
     location: Location,
     borders: Borders,
 }
 
 export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) => {
-    const state = props.gridContext.state;
+    const state = props.state;
     const location = props.location;
     const cell = location.cell;
     const borders = props.borders;
@@ -45,10 +45,10 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
             className="cell"
             style={style}
             onBlur={() => {
-                if (props.gridContext.lastKeyCode === keyCodes.ESC) {
+                if (props.state.lastKeyCode === keyCodes.ESC) {
                     cell.trySetData(initialCellData)
                 } else {
-                    props.gridContext.commitChanges([{
+                    props.state.commitChanges([{
                         initialData: initialCellData.data,
                         newData: cell.cellData.data,
                         type: cell.cellData.type,
@@ -61,8 +61,8 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
             onKeyDown={e => { if ([keyCodes.ENTER, keyCodes.ESC].includes(e.keyCode)) e.stopPropagation() }}
         >
             {cell.renderContent({
-                isInEditMode: isFocused && props.gridContext.state.isFocusedCellInEditMode,
-                lastKeyCode: props.gridContext.lastKeyCode
+                isInEditMode: isFocused && props.state.isFocusedCellInEditMode,
+                lastKeyCode: props.state.lastKeyCode
             })}
         </div>
     )

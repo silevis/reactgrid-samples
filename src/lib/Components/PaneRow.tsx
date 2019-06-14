@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Pane } from "./Pane";
-import { GridContext, Borders, Range } from "../Common";
+import { State, Borders, Range } from "../Common";
 
 export interface PaneRowProps {
     id: string,
-    gridContext: GridContext,
+    state: State,
     style: React.CSSProperties,
     range: Range,
     borders: Borders,
@@ -12,8 +12,8 @@ export interface PaneRowProps {
 }
 
 export const PaneRow: React.FunctionComponent<PaneRowProps> = (props) => {
-    const matrix = props.gridContext.cellMatrix;
-    const state = props.gridContext.state
+    const matrix = props.state.cellMatrix;
+    const state = props.state
     return (
         <div
             className="dg-pane-row"
@@ -30,7 +30,7 @@ export const PaneRow: React.FunctionComponent<PaneRowProps> = (props) => {
             {matrix.frozenLeftRange.width > 0 &&
                 <Pane
                     id={props.id + 'L'}
-                    gridContext={props.gridContext}
+                    state={props.state}
                     style={{ background: 'white', left: 0, position: 'sticky', zIndex: props.zIndex + 1 }}
                     range={matrix.frozenLeftRange.slice(props.range, 'rows')}
                     borders={{ ...props.borders, right: true }}
@@ -39,7 +39,7 @@ export const PaneRow: React.FunctionComponent<PaneRowProps> = (props) => {
             {state.visibleRange && state.visibleRange.width > 0 &&
                 <Pane
                     id={props.id + 'C'}
-                    gridContext={props.gridContext}
+                    state={props.state}
                     style={{ width: matrix.scrollableRange.width }}
                     range={props.range.slice(state.visibleRange, 'columns')}
                     borders={{ ...props.borders, right: false, bottom: false }}
@@ -48,7 +48,7 @@ export const PaneRow: React.FunctionComponent<PaneRowProps> = (props) => {
             {matrix.frozenRightRange.width > 0 &&
                 <Pane
                     id={props.id + 'R'}
-                    gridContext={props.gridContext}
+                    state={props.state}
                     style={{ background: 'white', right: 0, position: 'sticky' }}
                     range={matrix.frozenRightRange.slice(props.range, 'rows')}
                     borders={{ ...props.borders, left: true }}

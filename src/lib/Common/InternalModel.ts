@@ -1,5 +1,6 @@
-import { RowProps, ColumnProps, DataChange } from ".";
-import { CellData } from "./PublicModel";
+import { RowProps, ColumnProps } from ".";
+
+
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 // INTERNAL

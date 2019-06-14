@@ -1,38 +1,18 @@
 import * as React from "react";
-import { GridContext, DynaGridProps, CellMatrix, PointerEvent } from "../Common";
-import { Range, Location, SelectionMode, } from "../Common";
+import { DynaGridProps, CellMatrix, PointerEvent, State } from "../Common";
 import { PaneRow } from "./PaneRow";
 import { recalcVisibleRange } from "../Functions";
 import { KeyboardEvent, ClipboardEvent } from "../Common";
 import { PointerEventsController } from "../Common/PointerEventsController";
 
+export class DynaGrid extends React.Component<DynaGridProps, State> {
 
-export class GridState {
+    //private this.state = new this.state(this);
+    private pointerEventsController = new PointerEventsController()
 
-    cellMatrix!: CellMatrix;
-    // SELECTION
-    selectionMode: SelectionMode = 'range';
-    selectedRanges: Range[] = [];
-    selectedIndexes: number[] = [];
-    focusedLocation?: Location;
-    activeSelectedRangeIdx: number = -1;
-    isFocusedCellInEditMode: boolean = false;
-    // VISIBLE RANGE
-    visibleRange?: Range;
-    minScrollTop: number = -1;
-    maxScrollTop: number = -1;
-    minScrollLeft: number = -1;
-    maxScrollLeft: number = -1;
-}
+    //this.state = new Gridthis.state();
 
-export class DynaGrid extends React.Component<DynaGridProps, GridState> {
-
-    private gridContext = new GridContext(this);
-    private pointerEventsController = new PointerEventsController(this.gridContext)
-
-    state = new GridState();
-
-    static getDerivedStateFromProps(props: DynaGridProps, state: GridState) {
+    static getDerivedStateFromProps(props: DynaGridProps, state: State) {
         //if (props.cellMatrixProps)
         return { ...state, cellMatrix: new CellMatrix(props.cellMatrixProps) };
     }
@@ -68,7 +48,7 @@ export class DynaGrid extends React.Component<DynaGridProps, GridState> {
                     style={{
                         width: matrix.width, height: matrix.height, position: 'relative', outline: 'none'
                     }}
-                    onPointerDown={this.pointerEventsController.handlePointerDown}
+                    onPointerDown={this.pointerDownHandler}
                     onContextMenu={this.handleContextMenu}
                     onKeyDown={this.keyDownHandler}
                     onKeyUp={this.keyUpHandler}
@@ -80,7 +60,7 @@ export class DynaGrid extends React.Component<DynaGridProps, GridState> {
                     {matrix.frozenTopRange.height > 0 &&
                         <PaneRow
                             id='T'
-                            gridContext={this.gridContext}
+                            state={this.state}
                             style={{ background: 'white', top: 0, position: 'sticky' }}
                             range={matrix.frozenTopRange}
                             borders={{ bottom: true }}
@@ -89,7 +69,7 @@ export class DynaGrid extends React.Component<DynaGridProps, GridState> {
                     {matrix.scrollableRange.height > 0 && this.state.visibleRange &&
                         <PaneRow
                             id='M'
-                            gridContext={this.gridContext}
+                            state={this.state}
                             style={{ height: matrix.scrollableRange.height }}
                             range={matrix.scrollableRange.slice(this.state.visibleRange, 'rows')}
                             borders={{}}
@@ -98,26 +78,21 @@ export class DynaGrid extends React.Component<DynaGridProps, GridState> {
                     {matrix.frozenBottomRange.height > 0 &&
                         <PaneRow
                             id='B'
-                            gridContext={this.gridContext}
+                            state={this.state}
                             style={{ background: 'white', bottom: 0, position: 'sticky' }}
                             range={matrix.frozenBottomRange}
                             borders={{ top: true }}
                             zIndex={3}
                         />}
                 </div>
-                {this.gridContext.currentBehavior.renderGlobalPart && this.gridContext.currentBehavior.renderGlobalPart()}
+                {/* {this.state.currentBehavior.renderGlobalPart && this.state.currentBehavior.renderGlobalPart()} */}
                 <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} />
             </div >
         );
     }
 
-    private viewportElementRefHandler = (viewportElement: HTMLDivElement) => {
-        this.gridContext.viewportElement = viewportElement;
-        recalcVisibleRange(this.gridContext);
-    }
-
     private hiddenElementRefHandler = (hiddenFocusElement: HTMLInputElement) => {
-        this.gridContext.hiddenFocusElement = hiddenFocusElement;
+        (this.state as State).hiddenFocusElement = hiddenFocusElement;
     }
 
     private pasteCaptureHandler = (event: ClipboardEvent) => {
@@ -129,25 +104,31 @@ export class DynaGrid extends React.Component<DynaGridProps, GridState> {
     }
 
     private scrollHandler = () => {
-        const { scrollTop, scrollLeft } = this.gridContext.viewportElement;
+        const { scrollTop, scrollLeft } = this.state.viewportElement;
         if (
             scrollTop < this.state.minScrollTop || scrollTop > this.state.maxScrollTop ||
             scrollLeft < this.state.minScrollLeft || scrollLeft > this.state.maxScrollLeft
         ) {
-            recalcVisibleRange(this.gridContext);
+            this.updateOnNewState(recalcVisibleRange(this.state));
         }
     }
 
-    private windowResizeHandler = () => {
-        recalcVisibleRange(this.gridContext);
-    }
+    private viewportElementRefHandler = (viewportElement: HTMLDivElement) => this.updateOnNewState(recalcVisibleRange({ ...this.state, viewportElement }));
+    private pointerDownHandler = (event: PointerEvent) => this.updateOnNewState(this.pointerEventsController.handlePointerDown(event, this.state));
+    private windowResizeHandler = () => this.updateOnNewState(recalcVisibleRange(this.state));
+    private keyDownHandler = (event: KeyboardEvent) => this.updateOnNewState(this.state.currentBehavior.handleKeyDown(event, this.state));
+    private keyUpHandler = (event: KeyboardEvent) => this.updateOnNewState(this.state.currentBehavior.handleKeyUp(event, this.state));
+    private copyHandler = (event: ClipboardEvent) => this.updateOnNewState(this.state.currentBehavior.handleCopy(event, this.state));
+    private pasteHandler = (event: ClipboardEvent) => this.updateOnNewState(this.state.currentBehavior.handlePaste(event, this.state));
+    private cutHandler = (event: ClipboardEvent) => this.updateOnNewState(this.state.currentBehavior.handleCut(event, this.state));
+    private handleContextMenu = (event: PointerEvent) => this.state.currentBehavior.handleContextMenu(event);
 
-    keyDownHandler = (event: KeyboardEvent) => this.gridContext.currentBehavior.handleKeyDown(event);
-    keyUpHandler = (event: KeyboardEvent) => this.gridContext.currentBehavior.handleKeyUp(event);
-    copyHandler = (event: ClipboardEvent) => this.gridContext.currentBehavior.handleCopy(event);
-    pasteHandler = (event: ClipboardEvent) => this.gridContext.currentBehavior.handlePaste(event);
-    cutHandler = (event: ClipboardEvent) => this.gridContext.currentBehavior.handleCut(event);
-    handleContextMenu = (event: PointerEvent) => this.gridContext.currentBehavior.handleContextMenu(event);
+    private updateOnNewState(state: State) {
+        if (this.state === this.state) return;
+        this.setState(this.state);
+        // TODO pop changes form state
+        //commitChanges(changes: DataChange[]) { this.grid.props.onDataChanged && this.grid.props.onDataChanged(changes) }
+    }
 }
 
 

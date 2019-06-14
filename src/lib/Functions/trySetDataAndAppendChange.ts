@@ -1,9 +1,9 @@
-import { CellData, DataChange, Location } from "../Common";
+import { CellData, DataChange, Location, State } from "../Common";
 
-export function trySetDataAndAppendChange(location: Location, cellData: CellData, dataChanges: DataChange[]): DataChange[] {
+export function trySetDataAndAppendChange(location: Location, cellData: CellData, state: State): State {
     const initialCellData = location.cell.cellData.data;
     if (location.cell.trySetData(cellData)) {
-        dataChanges.push({
+        state.queuedDataChanges.push({
             initialData: initialCellData,
             newData: location.cell.cellData.data,
             type: location.cell.cellData.type,
@@ -11,5 +11,5 @@ export function trySetDataAndAppendChange(location: Location, cellData: CellData
             columnId: location.col.id
         })
     }
-    return dataChanges;
+    return state;
 }

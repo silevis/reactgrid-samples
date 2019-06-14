@@ -1,9 +1,9 @@
-import { GridContext, KeyboardEvent, keyCodes } from "../../Common";
+import { State, KeyboardEvent, keyCodes } from "../../Common";
 import { scrollIntoView } from "../../Functions";
 
-export function handleResizeSelectionWithKeys(gridContext: GridContext, event: KeyboardEvent) {
-    const activeSelectedRange = gridContext.state.selectedRanges[gridContext.state.activeSelectedRangeIdx]
-    const focusedCell = gridContext.state.focusedLocation!;
+export function handleResizeSelectionWithKeys(state: State, event: KeyboardEvent) {
+    const activeSelectedRange = state.selectedRanges[state.activeSelectedRangeIdx]
+    const focusedCell = state.focusedLocation!;
     if (event.keyCode === keyCodes.UP_ARROW && event.shiftKey && activeSelectedRange.first.row.idx > 0) {
         if (activeSelectedRange.last.row.idx > focusedCell.row.idx) {
             resizeSelection(
@@ -12,7 +12,7 @@ export function handleResizeSelectionWithKeys(gridContext: GridContext, event: K
                 activeSelectedRange.first.row.idx,
                 activeSelectedRange.last.row.idx - 1,
                 true,
-                gridContext,
+                state,
                 event
             );
         } else {
@@ -22,14 +22,14 @@ export function handleResizeSelectionWithKeys(gridContext: GridContext, event: K
                 activeSelectedRange.last.row.idx,
                 activeSelectedRange.first.row.idx - 1,
                 true,
-                gridContext,
+                state,
                 event
             );
         }
     } else if (
         event.keyCode === keyCodes.DOWN_ARROW &&
         event.shiftKey &&
-        activeSelectedRange.last.row.idx < gridContext.cellMatrix.last.row.idx
+        activeSelectedRange.last.row.idx < state.cellMatrix.last.row.idx
     ) {
         if (activeSelectedRange.first.row.idx < focusedCell.row.idx) {
             resizeSelection(
@@ -38,7 +38,7 @@ export function handleResizeSelectionWithKeys(gridContext: GridContext, event: K
                 activeSelectedRange.last.row.idx,
                 activeSelectedRange.first.row.idx + 1,
                 true,
-                gridContext,
+                state,
                 event
             );
         } else {
@@ -48,7 +48,7 @@ export function handleResizeSelectionWithKeys(gridContext: GridContext, event: K
                 activeSelectedRange.first.row.idx,
                 activeSelectedRange.last.row.idx + 1,
                 true,
-                gridContext,
+                state,
                 event
             );
         }
@@ -60,7 +60,7 @@ export function handleResizeSelectionWithKeys(gridContext: GridContext, event: K
                 activeSelectedRange.first.row.idx,
                 activeSelectedRange.last.row.idx,
                 true,
-                gridContext
+                state
             );
         } else {
             resizeSelection(
@@ -69,13 +69,13 @@ export function handleResizeSelectionWithKeys(gridContext: GridContext, event: K
                 activeSelectedRange.last.row.idx,
                 activeSelectedRange.first.row.idx,
                 true,
-                gridContext
+                state
             );
         }
     } else if (
         event.keyCode === keyCodes.RIGHT_ARROW &&
         event.shiftKey &&
-        activeSelectedRange.last.col.idx < gridContext.cellMatrix.last.col.idx
+        activeSelectedRange.last.col.idx < state.cellMatrix.last.col.idx
     ) {
         if (activeSelectedRange.first.col.idx < focusedCell.col.idx) {
             resizeSelection(
@@ -84,7 +84,7 @@ export function handleResizeSelectionWithKeys(gridContext: GridContext, event: K
                 activeSelectedRange.last.row.idx,
                 activeSelectedRange.first.row.idx,
                 true,
-                gridContext
+                state
             );
         } else {
             resizeSelection(
@@ -93,39 +93,39 @@ export function handleResizeSelectionWithKeys(gridContext: GridContext, event: K
                 activeSelectedRange.first.row.idx,
                 activeSelectedRange.last.row.idx,
                 true,
-                gridContext
+                state
             );
         }
     } else if (event.ctrlKey && event.keyCode === keyCodes.A) {
         resizeSelection(
             0,
-            gridContext.cellMatrix.last.col.idx,
+            state.cellMatrix.last.col.idx,
             0,
-            gridContext.cellMatrix.last.row.idx,
+            state.cellMatrix.last.row.idx,
             false,
-            gridContext
+            state
         );
     } else if (event.ctrlKey && event.keyCode === keyCodes.SPACE) {
         resizeSelection(
             activeSelectedRange.first.col.idx,
             activeSelectedRange.last.col.idx,
             0,
-            gridContext.cellMatrix.last.row.idx,
+            state.cellMatrix.last.row.idx,
             false,
-            gridContext
+            state
         );
     } else if (event.shiftKey && event.keyCode === keyCodes.SPACE) {
         resizeSelection(
             0,
-            gridContext.cellMatrix.last.col.idx,
+            state.cellMatrix.last.col.idx,
             activeSelectedRange.first.row.idx,
             activeSelectedRange.last.row.idx,
             false,
-            gridContext
+            state
         );
-    } else if (event.shiftKey && event.keyCode === keyCodes.PAGE_UP && !gridContext.state.isFocusedCellInEditMode) {
-        const rowsOnScreen = gridContext.cellMatrix.rows.filter(
-            r => r.top < gridContext.viewportElement.clientHeight
+    } else if (event.shiftKey && event.keyCode === keyCodes.PAGE_UP && !state.isFocusedCellInEditMode) {
+        const rowsOnScreen = state.cellMatrix.rows.filter(
+            r => r.top < state.viewportElement.clientHeight
         );
         if (activeSelectedRange.first.row.idx >= focusedCell.row.idx) {
             resizeSelection(
@@ -136,7 +136,7 @@ export function handleResizeSelectionWithKeys(gridContext: GridContext, event: K
                     ? activeSelectedRange.last.row.idx - rowsOnScreen.length
                     : 0,
                 true,
-                gridContext
+                state
             );
         } else {
             resizeSelection(
@@ -147,34 +147,34 @@ export function handleResizeSelectionWithKeys(gridContext: GridContext, event: K
                     ? activeSelectedRange.first.row.idx - rowsOnScreen.length
                     : 0,
                 true,
-                gridContext
+                state
             );
         }
     } else if (event.shiftKey && event.keyCode === keyCodes.PAGE_DOWN) {
-        const rowsOnScreen = gridContext.cellMatrix.rows.filter(
-            r => r.top < gridContext.viewportElement.clientHeight
+        const rowsOnScreen = state.cellMatrix.rows.filter(
+            r => r.top < state.viewportElement.clientHeight
         );
         if (activeSelectedRange.first.row.idx >= focusedCell.row.idx) {
             resizeSelection(
                 activeSelectedRange.first.col.idx,
                 activeSelectedRange.last.col.idx,
                 activeSelectedRange.first.row.idx,
-                activeSelectedRange.last.row.idx + rowsOnScreen.length < gridContext.cellMatrix.rows.length
+                activeSelectedRange.last.row.idx + rowsOnScreen.length < state.cellMatrix.rows.length
                     ? activeSelectedRange.last.row.idx + rowsOnScreen.length
-                    : gridContext.cellMatrix.rows.length - 1,
+                    : State.cellMatrix.rows.length - 1,
                 true,
-                gridContext
+                state
             );
         } else {
             resizeSelection(
                 activeSelectedRange.last.col.idx,
                 activeSelectedRange.first.col.idx,
                 activeSelectedRange.last.row.idx,
-                activeSelectedRange.first.row.idx + rowsOnScreen.length < gridContext.cellMatrix.rows.length
+                activeSelectedRange.first.row.idx + rowsOnScreen.length < state.cellMatrix.rows.length
                     ? activeSelectedRange.first.row.idx + rowsOnScreen.length
-                    : gridContext.cellMatrix.rows.length - 1,
+                    : State.cellMatrix.rows.length - 1,
                 true,
-                gridContext
+                state
             );
         }
     } else if (event.ctrlKey && event.shiftKey && event.keyCode === keyCodes.HOME) {
@@ -184,16 +184,16 @@ export function handleResizeSelectionWithKeys(gridContext: GridContext, event: K
             0,
             activeSelectedRange.last.row.idx,
             true,
-            gridContext
+            state
         );
     } else if (event.ctrlKey && event.shiftKey && event.keyCode === keyCodes.END) {
         resizeSelection(
             activeSelectedRange.first.col.idx,
             activeSelectedRange.last.col.idx,
             activeSelectedRange.first.row.idx,
-            gridContext.cellMatrix.last.row.idx,
+            state.cellMatrix.last.row.idx,
             false,
-            gridContext
+            state
         );
     } else if (event.shiftKey && event.keyCode === keyCodes.HOME) {
         resizeSelection(
@@ -202,16 +202,16 @@ export function handleResizeSelectionWithKeys(gridContext: GridContext, event: K
             activeSelectedRange.first.row.idx,
             activeSelectedRange.last.row.idx,
             true,
-            gridContext
+            state
         );
     } else if (event.shiftKey && event.keyCode === keyCodes.END) {
         resizeSelection(
             activeSelectedRange.first.col.idx,
-            gridContext.cellMatrix.last.col.idx,
+            state.cellMatrix.last.col.idx,
             activeSelectedRange.first.row.idx,
             activeSelectedRange.last.row.idx,
             true,
-            gridContext
+            state
         );
     } else {
         // TODO 
@@ -229,17 +229,17 @@ const resizeSelection = (
     firstRowIdx: number,
     lastRowIdx: number,
     scroll = true,
-    gridContext: GridContext,
+    state: State,
     event?: React.KeyboardEvent<HTMLDivElement>,
 ) => {
-    const start = gridContext.cellMatrix.getLocation(firstRowIdx, firstColIdx);
-    const end = gridContext.cellMatrix.getLocation(lastRowIdx, lastColIdx);
-    let selectedRanges = gridContext.state.selectedRanges.slice();
-    selectedRanges[gridContext.state.activeSelectedRangeIdx] = gridContext.cellMatrix.getRange(start, end);
-    gridContext.setState({
+    const start = state.cellMatrix.getLocation(firstRowIdx, firstColIdx);
+    const end = state.cellMatrix.getLocation(lastRowIdx, lastColIdx);
+    let selectedRanges = state.selectedRanges.slice();
+    selectedRanges[state.activeSelectedRangeIdx] = state.cellMatrix.getRange(start, end);
+    return {
         selectedRanges: selectedRanges
     });
     if (scroll) {
-        scrollIntoView(gridContext, end);
+        scrollIntoView(state, end);
     }
 }

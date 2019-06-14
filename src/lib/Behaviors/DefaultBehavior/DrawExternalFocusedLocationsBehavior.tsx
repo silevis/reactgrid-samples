@@ -11,8 +11,8 @@ export const x = 1;
 
 //     renderPartialAreaForPane(pane: Range) {
 //         let focuses: { range: Range; color: string }[] = [];
-//         for (let el of this.gridContext.usersFocuses) { // ?
-//             let location = this.gridContext.cellMatrix.getLocation(el.rowIdx, el.colIdx);
+//         for (let el of state.usersFocuses) { // ?
+//             let location = state.cellMatrix.getLocation(el.rowIdx, el.colIdx);
 //             let range = new Range([location.col], [location.row]);
 //             let element: { range: Range; color: string } = { range: range, color: el.color };
 //             focuses.push(element);

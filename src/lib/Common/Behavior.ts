@@ -1,23 +1,21 @@
 import * as React from "react";
-import { Range, PointerLocation } from "./";
+import { PointerLocation, State } from "./";
 import { KeyboardEvent, ClipboardEvent, PointerEvent } from "./domEvents";
 import { Direction } from "./PublicModel";
 
 // IMPORTANT !! PLEASE DO NOT INTRODUCE CHANGE WITHOUT TALKING TO ARCHITECT !!
 export abstract class Behavior {
-    handleKeyDown(event: KeyboardEvent): void { }
-    handleKeyUp(event: KeyboardEvent): void { }
-    handleCopy(event: ClipboardEvent): void { }
-    handlePaste(event: ClipboardEvent): void { }
-    handleCut(event: ClipboardEvent): void { }
-    handlePointerEnter(event: PointerEvent, location: PointerLocation): void { }
-    handlePointerDown(event: PointerEvent, location: PointerLocation): void { }
-    handlePointerMove(event: PointerEvent, location: PointerLocation): void { }
-    handlePointerUp(event: PointerEvent, location: PointerLocation): void { }
-    handleDoubleClick(event: PointerEvent, location: PointerLocation): void { }
+    handleKeyDown(event: KeyboardEvent, state: State): State { return state }
+    handleKeyUp(event: KeyboardEvent, state: State): State { return state }
+    handleCopy(event: ClipboardEvent, state: State): State { return state }
+    handlePaste(event: ClipboardEvent, state: State): State { return state }
+    handleCut(event: ClipboardEvent, state: State): State { return state }
+    handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State { return state }
+    handlePointerEnter(event: PointerEvent, location: PointerLocation, state: State): State { return state }
+    handlePointerMove(event: PointerEvent, location: PointerLocation, state: State): State { return state }
+    handlePointerUp(event: PointerEvent, location: PointerLocation, state: State): State { return state }
+    handleDoubleClick(event: PointerEvent, location: PointerLocation, state: State): State { return state }
     handleContextMenu(event: PointerEvent): void { event.preventDefault(); event.stopPropagation(); }
-    renderPanePart(pane: Range): React.ReactNode { return undefined; }
-    renderGlobalPart(): React.ReactNode { return undefined; }
     dispose(): void { }
     autoScrollDirection: Direction = 'both';
 }

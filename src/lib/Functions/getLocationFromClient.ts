@@ -1,19 +1,19 @@
-import { GridContext, PointerLocation, Row, Column, Direction } from "../Common";
+import { PointerLocation, Row, Column, Direction, State } from "../Common";
 
-export function getLocationFromClient(gridContext: GridContext, clientX: number, clientY: number, favorScrollableContent?: Direction): PointerLocation {
-    const viewportX = clientX - gridContext.viewportElement.getBoundingClientRect().left;
-    const viewportY = clientY - gridContext.viewportElement.getBoundingClientRect().top;
+export function getLocationFromClient(state: State, clientX: number, clientY: number, favorScrollableContent?: Direction): PointerLocation {
+    const viewportX = clientX - state.viewportElement.getBoundingClientRect().left;
+    const viewportY = clientY - state.viewportElement.getBoundingClientRect().top;
 
-    const [cellY, row] = getRow(gridContext, viewportY, (favorScrollableContent === 'vertical' || favorScrollableContent === 'both'));
-    const [cellX, col] = getColumn(gridContext, viewportX, (favorScrollableContent === 'horizontal' || favorScrollableContent === 'both'));
+    const [cellY, row] = getRow(state, viewportY, (favorScrollableContent === 'vertical' || favorScrollableContent === 'both'));
+    const [cellX, col] = getColumn(state, viewportX, (favorScrollableContent === 'horizontal' || favorScrollableContent === 'both'));
     return new PointerLocation(row, col, viewportX, viewportY, cellX, cellY);
 }
 
-function getRow(gridContext: GridContext, viewportY: number, favorScrollableContent: boolean): [number, Row] {
-    const cellMatrix = gridContext.cellMatrix;
-    const visibleContentHeight = Math.min(gridContext.viewportElement.clientHeight, cellMatrix.height);
+function getRow(state: State, viewportY: number, favorScrollableContent: boolean): [number, Row] {
+    const cellMatrix = state.cellMatrix;
+    const visibleContentHeight = Math.min(state.viewportElement.clientHeight, cellMatrix.height);
     const bottomPaneTop = visibleContentHeight - cellMatrix.frozenBottomRange.height;
-    const scrollTop = gridContext.viewportElement.scrollTop;
+    const scrollTop = state.viewportElement.scrollTop;
     const maxScrollTop = cellMatrix.scrollableRange.height - visibleContentHeight + cellMatrix.frozenTopRange.height + cellMatrix.frozenBottomRange.height - 1;
 
     if (viewportY < cellMatrix.frozenTopRange.height && !(favorScrollableContent && scrollTop > 0)) {
@@ -26,17 +26,17 @@ function getRow(gridContext: GridContext, viewportY: number, favorScrollableCont
     }
     else {
         // TODO find is expensive, quickfind?
-        const scrollableContentY = viewportY - cellMatrix.frozenTopRange.height + gridContext.viewportElement.scrollTop;
+        const scrollableContentY = viewportY - cellMatrix.frozenTopRange.height + state.viewportElement.scrollTop;
         const row = cellMatrix.scrollableRange.rows.find(row => row.bottom >= scrollableContentY) || cellMatrix.scrollableRange.last.row;
         return [scrollableContentY - row.top, row];
     }
 }
 
-function getColumn(gridContext: GridContext, viewportX: number, favorScrollableContent: boolean): [number, Column] {
-    const cellMatrix = gridContext.cellMatrix;
-    const visibleContentWidth = Math.min(gridContext.viewportElement.clientWidth, cellMatrix.width);
+function getColumn(state: State, viewportX: number, favorScrollableContent: boolean): [number, Column] {
+    const cellMatrix = state.cellMatrix;
+    const visibleContentWidth = Math.min(state.viewportElement.clientWidth, cellMatrix.width);
     const rightPaneLeft = visibleContentWidth - cellMatrix.frozenRightRange.width;
-    const scrollLeft = gridContext.viewportElement.scrollLeft;
+    const scrollLeft = state.viewportElement.scrollLeft;
     const maxScrollLeft = cellMatrix.scrollableRange.width - visibleContentWidth + cellMatrix.frozenLeftRange.width + cellMatrix.frozenRightRange.width - 1;
 
     if (viewportX < cellMatrix.frozenLeftRange.width && !(favorScrollableContent && scrollLeft > 0)) {

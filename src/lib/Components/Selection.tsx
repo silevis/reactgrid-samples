@@ -14,7 +14,7 @@ export const x = 1;
 //         return (
 //             <>
 //                 {this.innerBehavior.renderPanePart(pane)}
-//                 {this.gridContext.state.selectedRanges.map(range => <PartialArea pane={pane} area={range} style={{ border: '1px solid #3579f8', backgroundColor: 'rgba(53, 121, 248, 0.1)' }} />)}
+//                 {state.selectedRanges.map(range => <PartialArea pane={pane} area={range} style={{ border: '1px solid #3579f8', backgroundColor: 'rgba(53, 121, 248, 0.1)' }} />)}
 //             </>
 //         );
 //     };

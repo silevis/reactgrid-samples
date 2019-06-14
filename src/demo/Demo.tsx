@@ -187,32 +187,32 @@ export default class Demo extends React.Component<{}, { gridType: 'planning' | '
     render() {
         return <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', top: 0, bottom: 0, right: 0, left: 0, fontFamily: ' Sans-Serif' }}>
             {/* <div>
-                <input type="radio" name="gridType" checked={this.state.gridType === 'spreadsheet'} onChange={_ => this.setState({ gridType: 'spreadsheet' })} /> Spreadsheet
-                <input type="radio" name="gridType" checked={this.state.gridType === 'vertical'} onChange={_ => this.setState({ gridType: 'vertical' })} /> VerticalDataGrid
-                <input type="radio" name="gridType" checked={this.state.gridType === 'horizontal'} onChange={_ => this.setState({ gridType: 'horizontal' })} /> HorizontalDataGrid
-                <input type="radio" name="gridType" checked={this.state.gridType === 'planning'} onChange={_ => this.setState({ gridType: 'planning' })} /> PlanningDataGrid
-                <input type="radio" name="gridType" checked={this.state.gridType === 'pivot'} onChange={_ => this.setState({ gridType: 'pivot' })} /> Pivot Grid
+                <input type="radio" name="gridType" checked={state.gridType === 'spreadsheet'} onChange={_ => this.setState({ gridType: 'spreadsheet' })} /> Spreadsheet
+                <input type="radio" name="gridType" checked={state.gridType === 'vertical'} onChange={_ => this.setState({ gridType: 'vertical' })} /> VerticalDataGrid
+                <input type="radio" name="gridType" checked={state.gridType === 'horizontal'} onChange={_ => this.setState({ gridType: 'horizontal' })} /> HorizontalDataGrid
+                <input type="radio" name="gridType" checked={state.gridType === 'planning'} onChange={_ => this.setState({ gridType: 'planning' })} /> PlanningDataGrid
+                <input type="radio" name="gridType" checked={state.gridType === 'pivot'} onChange={_ => this.setState({ gridType: 'pivot' })} /> Pivot Grid
             </div> */}
             <div style={{ position: 'relative', flexGrow: 1, }}>
 
-                {/* {this.state.gridType === 'vertical' && <VerticalDataGrid
+                {/* {state.gridType === 'vertical' && <VerticalDataGrid
                     records={this.records}
                     fields={this.fields}
                 />}
 
-                {this.state.gridType === 'horizontal' && <HorizontalDataGrid
+                {state.gridType === 'horizontal' && <HorizontalDataGrid
                     records={this.records}
                     fields={this.fields}
                 />} */}
                 {<Spreadsheet />}
 
-                {/* {this.state.gridType === 'planning' && <PlanningDataGrid
+                {/* {state.gridType === 'planning' && <PlanningDataGrid
                     groups={this.planningGroups}
                     items={this.planningItems}
                     records={this.planningRecords}
                 />}
 
-                {this.state.gridType === 'pivot' && <PivotGrid />} */}
+                {state.gridType === 'pivot' && <PivotGrid />} */}
             </div>
         </div>
 

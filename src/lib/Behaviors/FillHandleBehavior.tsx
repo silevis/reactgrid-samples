@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { GridContext, Range, PointerEvent, CellMatrix, Behavior, Row, Column, Location, DataChange } from "../Common";
+import { State, Range, PointerEvent, CellMatrix, Behavior, Row, Column, Location, DataChange } from "../Common";
 import { getLocationFromClient, resetToDefaultBehavior } from "../Functions";
 import { PartialArea } from '../Components/PartialArea';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
@@ -11,15 +11,11 @@ export class FillHandleBehavior extends Behavior {
     private fillDirection: Direction = '';
     private fillRange?: Range;
 
-    constructor(private gridContext: GridContext) {
-        super();
-    }
-
-    handlePointerEnter(event: PointerEvent, location: Location) {
-        const selectedRange = getActiveSelectedRange(this.gridContext);
+    handlePointerEnter(event: PointerEvent, location: Location, state: State): State {
+        const selectedRange = getActiveSelectedRange(state);
         this.fillDirection = this.getFillDirection(selectedRange, location)
-        this.fillRange = this.getFillRange(this.gridContext.cellMatrix, selectedRange, location, this.fillDirection)
-        this.gridContext.forceUpdate();
+        this.fillRange = this.getFillRange(state.cellMatrix, selectedRange, location, this.fillDirection)
+        return state;
     }
 
     private getFillDirection(selectedRange: Range, pointerLocation: Location) {
@@ -106,15 +102,14 @@ export class FillHandleBehavior extends Behavior {
         return undefined;
     }
 
-    handlePointerUp(event: PointerEvent, location: Location) {
+    handlePointerUp(event: PointerEvent, location: Location, state: State): State {
         const dataChanges: DataChange[] = [];
-        const activeSelectedRange = getActiveSelectedRange(this.gridContext);
-        const cellMatrix = this.gridContext.cellMatrix;
+        const activeSelectedRange = getActiveSelectedRange(state);
+        const cellMatrix = state.cellMatrix;
         let values: any[];
         if (!activeSelectedRange || this.fillRange === undefined) {
-            //this.gridContext.commitChanges();
-            resetToDefaultBehavior(this.gridContext);
-            return;
+            //state.commitChanges();
+            return state;
         }
 
         switch (this.fillDirection) {
@@ -124,12 +119,13 @@ export class FillHandleBehavior extends Behavior {
                 );
                 this.fillRange.rows.forEach((row: Row, i: number) =>
                     this.fillRange!.cols.forEach((col: Column) => {
-                        trySetDataAndAppendChange(new Location(row, col), values[i].cellData, dataChanges)
+                        state = trySetDataAndAppendChange(new Location(row, col), values[i].cellData, state)
                     })
                 );
-                this.gridContext.setState({
+                state = {
+                    ...state,
                     selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, new Location(activeSelectedRange.last.row, location.col))]
-                });
+                };
                 break;
             case 'left':
                 values = activeSelectedRange.rows.map((row: Row) =>
@@ -137,12 +133,13 @@ export class FillHandleBehavior extends Behavior {
                 );
                 this.fillRange.rows.forEach((row: Row, i: number) =>
                     this.fillRange!.cols.forEach((col: Column) =>
-                        trySetDataAndAppendChange(new Location(row, col), values[i].cellData, dataChanges)
+                        state = trySetDataAndAppendChange(new Location(row, col), values[i].cellData, state)
                     )
                 );
-                this.gridContext.setState({
+                state = {
+                    ...state,
                     selectedRanges: [cellMatrix.getRange(activeSelectedRange.last, new Location(activeSelectedRange.first.row, location.col))]
-                });
+                };
                 break;
             case 'up':
                 values = activeSelectedRange.cols.map((col: Column) =>
@@ -150,12 +147,13 @@ export class FillHandleBehavior extends Behavior {
                 );
                 this.fillRange.rows.forEach((row: Row) =>
                     this.fillRange!.cols.forEach((col: Column, i: number) =>
-                        trySetDataAndAppendChange(new Location(row, col), values[i].cellData, dataChanges)
+                        state = trySetDataAndAppendChange(new Location(row, col), values[i].cellData, state)
                     )
                 );
-                this.gridContext.setState({
+                state = {
+                    ...state,
                     selectedRanges: [cellMatrix.getRange(activeSelectedRange.last, new Location(location.row, activeSelectedRange.first.col))]
-                });
+                };
                 break;
             case 'down':
                 values = activeSelectedRange.cols.map((col: Column) =>
@@ -163,17 +161,17 @@ export class FillHandleBehavior extends Behavior {
                 );
                 this.fillRange.rows.forEach((row: Row) =>
                     this.fillRange!.cols.forEach((col: Column, i: number) =>
-                        trySetDataAndAppendChange(new Location(row, col), values[i].cellData, dataChanges)
+                        state = trySetDataAndAppendChange(new Location(row, col), values[i].cellData, state)
                     )
                 );
-                this.gridContext.setState({
+                state = {
+                    ...state,
                     selectedRanges: [
                         cellMatrix.getRange(activeSelectedRange.first, new Location(location.row, activeSelectedRange.last.col))]
-                });
+                };
                 break;
         }
-        this.gridContext.commitChanges(dataChanges);
-        resetToDefaultBehavior(this.gridContext);
+        return state;
     }
 
     renderPanePart(pane: Range): React.ReactNode {

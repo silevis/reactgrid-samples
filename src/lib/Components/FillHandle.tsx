@@ -1,10 +1,8 @@
 import * as React from "react";
-import { Location, GridContext } from "../Common";
-import { changeBehavior } from "../Functions";
-import { FillHandleBehavior } from "../Behaviors/FillHandleBehavior";
+import { Location, State } from "../Common";
 
 interface FillHandleProps {
-    gridContext: GridContext,
+    state: State,
     location: Location
 }
 
@@ -20,11 +18,11 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
             background: 'rgba(255, 255, 255, 0.01)'
         }}
         data-cy="touch-fill-handle"
-        onPointerDown={event => {
-            if (event.pointerType !== 'mouse' && event.pointerType !== undefined) { // !== undefined only for cypress tests
-                changeBehavior(props.gridContext, new FillHandleBehavior(props.gridContext))
-            }
-        }}
+    // onPointerDown={event => {
+    //     if (event.pointerType !== 'mouse' && event.pointerType !== undefined) { // !== undefined only for cypress tests
+    //         changeBehavior(props.state, new FillHandleBehavior(props.state))
+    //     }
+    // }}
     >
         <div
             className="dg-fill-handle"
@@ -39,10 +37,10 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
                 cursor: 'crosshair'
             }}
             data-cy="dg-fill-handle"
-            onPointerDown={event => {
-                if (event.pointerType === 'mouse' || event.pointerType === undefined) { // === undefined only for cypress tests
-                    changeBehavior(props.gridContext, new FillHandleBehavior(props.gridContext))
-                }
-            }}
+        // onPointerDown={event => {
+        //     if (event.pointerType === 'mouse' || event.pointerType === undefined) { // === undefined only for cypress tests
+        //         changeBehavior(props.state, new FillHandleBehavior(props.state))
+        //     }
+        // }}
         />
     </div>

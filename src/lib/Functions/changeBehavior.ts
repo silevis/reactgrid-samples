@@ -1,10 +1,11 @@
 import { Behavior } from "../Common/Behavior";
-import { GridContext } from "../Common/GridContext";
+import { State } from "../Common/state";
 
-
-export function changeBehavior(gridContext: GridContext, behavior: Behavior) {
-    gridContext.currentBehavior.dispose();
-    gridContext.currentBehavior = behavior;
-    gridContext.forceUpdate();
-    gridContext.hiddenFocusElement.focus();
+export function changeBehavior(state: State, behavior: Behavior): State {
+    state.currentBehavior.dispose();
+    state.hiddenFocusElement.focus();
+    return {
+        ...state,
+        currentBehavior: behavior
+    }
 }

@@ -1,70 +1,75 @@
-import { GridContext, Range, Column, Row, Location } from "../Common";
+import { State, Range, Column, Row, Location } from "../Common";
 
-export function selectRange(gridContext: GridContext, range: Range, incremental: boolean) {
-    gridContext.setState({
+export function selectRange(state: State, range: Range, incremental: boolean): State {
+    return {
+        ...state,
         selectionMode: 'range',
-        selectedRanges: (incremental ? gridContext.state.selectedRanges : []).concat([range]),
+        selectedRanges: (incremental ? state.selectedRanges : []).concat([range]),
         selectedIndexes: [],
-        activeSelectedRangeIdx: incremental ? gridContext.state.selectedRanges.length : 0
-
-    });
+        activeSelectedRangeIdx: incremental ? state.selectedRanges.length : 0
+    };
 }
 
-export function updateActiveSelectedRange(gridContext: GridContext, range: Range) {
-    gridContext.setState({
+export function updateActiveSelectedRange(state: State, range: Range): State {
+    return {
+        ...state,
         // replace active selected range in selectedRanges
-        selectedRanges: Object.assign([], gridContext.state.selectedRanges, { [gridContext.state.activeSelectedRangeIdx]: range })
-    })
+        selectedRanges: Object.assign([], state.selectedRanges, { [state.activeSelectedRangeIdx]: range })
+    }
 }
 
-export function selectColumn(gridContext: GridContext, column: Column, incremental: boolean) {
-    const firstRow = gridContext.cellMatrix.first.row;
-    const lastRow = gridContext.cellMatrix.last.row;
-    const range = gridContext.cellMatrix.getRange(new Location(firstRow, column), new Location(lastRow, column))
-    gridContext.setState({
+export function selectColumn(state: State, column: Column, incremental: boolean): State {
+    const firstRow = state.cellMatrix.first.row;
+    const lastRow = state.cellMatrix.last.row;
+    const range = state.cellMatrix.getRange(new Location(firstRow, column), new Location(lastRow, column))
+    return {
+        ...state,
         selectionMode: 'column',
         // TODO Ranges have to be re-calculated durring render
-        selectedRanges: (incremental && gridContext.state.selectionMode === 'column' ? gridContext.state.selectedRanges : []).concat(range),
-        selectedIndexes: (incremental && gridContext.state.selectionMode === 'column' ? gridContext.state.selectedIndexes : []).concat(column.idx)
-    });
+        selectedRanges: (incremental && state.selectionMode === 'column' ? state.selectedRanges : []).concat(range),
+        selectedIndexes: (incremental && state.selectionMode === 'column' ? state.selectedIndexes : []).concat(column.idx)
+    };
 }
 
-export function updateActiveSelectedColumns(gridContext: GridContext, firstColumn: Column, lastColumn: Column, incremental: boolean) {
+export function updateActiveSelectedColumns(state: State, firstColumn: Column, lastColumn: Column, incremental: boolean): State {
     // TODO THIS! 
 
-    const firstRow = gridContext.cellMatrix.first.row;
-    const lastRow = gridContext.cellMatrix.last.row;
-    const range = gridContext.cellMatrix.getRange(new Location(firstRow, firstColumn), new Location(lastRow, lastColumn))
-    gridContext.setState({
+    const firstRow = state.cellMatrix.first.row;
+    const lastRow = state.cellMatrix.last.row;
+    const range = state.cellMatrix.getRange(new Location(firstRow, firstColumn), new Location(lastRow, lastColumn))
+    return {
+        ...state,
         selectionMode: 'column',
         // TODO Ranges have to be re-calculated during render
         selectedRanges: [range],
         selectedIndexes: range.cols.map(col => col.idx)
-    });
+    };
 }
 
-export function selectRow(gridContext: GridContext, row: Row, incremental: boolean) {
-    const firstCol = gridContext.cellMatrix.first.col;
-    const lastCol = gridContext.cellMatrix.last.col;
-    const range = gridContext.cellMatrix.getRange(new Location(row, firstCol), new Location(row, lastCol))
-    gridContext.setState({
+export function selectRow(state: State, row: Row, incremental: boolean): State {
+    const firstCol = state.cellMatrix.first.col;
+    const lastCol = state.cellMatrix.last.col;
+    const range = state.cellMatrix.getRange(new Location(row, firstCol), new Location(row, lastCol))
+    return {
+        ...state,
         selectionMode: 'row',
         // TODO Ranges have to be re-calculated durring render
-        selectedRanges: (incremental && gridContext.state.selectionMode === 'row' ? gridContext.state.selectedRanges : []).concat(range),
-        selectedIndexes: (incremental && gridContext.state.selectionMode === 'row' ? gridContext.state.selectedIndexes : []).concat(row.idx)
-    });
+        selectedRanges: (incremental && state.selectionMode === 'row' ? state.selectedRanges : []).concat(range),
+        selectedIndexes: (incremental && state.selectionMode === 'row' ? state.selectedIndexes : []).concat(row.idx)
+    };
 }
 
-export function updateActiveSelectedRows(gridContext: GridContext, firstRow: Row, lastRow: Row, incremental: boolean) {
+export function updateActiveSelectedRows(state: State, firstRow: Row, lastRow: Row, incremental: boolean): State {
     // TODO THIS! 
 
-    const firstCol = gridContext.cellMatrix.first.col;
-    const lastCol = gridContext.cellMatrix.last.col;
-    const range = gridContext.cellMatrix.getRange(new Location(firstRow, firstCol), new Location(lastRow, lastCol))
-    gridContext.setState({
+    const firstCol = state.cellMatrix.first.col;
+    const lastCol = state.cellMatrix.last.col;
+    const range = state.cellMatrix.getRange(new Location(firstRow, firstCol), new Location(lastRow, lastCol))
+    return {
+        ...state,
         selectionMode: 'row',
         // TODO Ranges have to be re-calculated durring render
         selectedRanges: [range],
         selectedIndexes: range.rows.map(row => row.idx)
-    });
+    };
 }

@@ -1,8 +1,8 @@
-import { GridContext } from "../Common/GridContext";
+import { State } from "../Common/state";
 
-export function print(gridContext: GridContext, title: string) {
+export function print(state: State, title: string) {
     // let printIframe = document.createElement('iframe');
-    // const printTable = generatePrintTable(gridContext);
+    // const printTable = generatePrintTable(state);
     // document.body.appendChild(printIframe);
     // if (printIframe.contentWindow && printIframe.contentDocument) {
     //     printIframe.contentWindow.document.open();
@@ -17,8 +17,8 @@ export function print(gridContext: GridContext, title: string) {
     // }
 };
 
-function generatePrintTable(gridContext: GridContext) {
-    // const cellMatrix = gridContext.cellMatrix;
+function generatePrintTable(state: State) {
+    // const cellMatrix = state.cellMatrix;
     // const borderStyle = '1px solid';
     // const table = document.createElement('table');
     // table.style.border = borderStyle;

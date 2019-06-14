@@ -1,22 +1,22 @@
-import { GridContext, Location, Column, Row, Direction } from "../Common";
+import { State, Location, Column, Row, Direction } from "../Common";
 
-export function scrollIntoView(gridContext: GridContext, location: Location, direction: Direction = 'both') {
+export function scrollIntoView(state: State, location: Location, direction: Direction = 'both') {
 
-    const top = getScrollTop(gridContext, location.row, direction === 'horizontal');
-    const left = getScrollLeft(gridContext, location.col, direction === 'vertical');
+    const top = getScrollTop(state, location.row, direction === 'horizontal');
+    const left = getScrollLeft(state, location.col, direction === 'vertical');
 
-    gridContext.viewportElement.scrollTo({ top, left, behavior: 'auto' });
+    state.viewportElement.scrollTo({ top, left, behavior: 'auto' });
 }
 
-function getScrollTop(gridContext: GridContext, row: Row, dontChange: boolean): number {
-    const { scrollTop, clientHeight } = gridContext.viewportElement;
+function getScrollTop(state: State, row: Row, dontChange: boolean): number {
+    const { scrollTop, clientHeight } = state.viewportElement;
     if (dontChange || !row)
         return scrollTop;
 
-    const { frozenTopRange, frozenBottomRange } = gridContext.cellMatrix;
+    const { frozenTopRange, frozenBottomRange } = state.cellMatrix;
 
     const isRowOnFrozenPane = row.idx <= frozenTopRange.last.row.idx || row.idx >= frozenBottomRange.first.row.idx;
-    const visibleContentHeight = Math.min(clientHeight, gridContext.cellMatrix.height);
+    const visibleContentHeight = Math.min(clientHeight, state.cellMatrix.height);
     const visibleScrollAreaHeight = visibleContentHeight - frozenTopRange.height - frozenBottomRange.height;
     const isRowBelowTopPane = row.top < scrollTop;
 
@@ -29,15 +29,15 @@ function getScrollTop(gridContext: GridContext, row: Row, dontChange: boolean): 
         return row.bottom - visibleScrollAreaHeight;
 }
 
-function getScrollLeft(gridContext: GridContext, column: Column, dontChange: boolean): number {
-    const { scrollLeft, clientWidth } = gridContext.viewportElement;
+function getScrollLeft(state: State, column: Column, dontChange: boolean): number {
+    const { scrollLeft, clientWidth } = state.viewportElement;
     if (dontChange || !column)
         return scrollLeft
 
-    const { frozenLeftRange, frozenRightRange } = gridContext.cellMatrix;
+    const { frozenLeftRange, frozenRightRange } = state.cellMatrix;
 
     const isColumnOnFrozenPane = column.idx <= frozenLeftRange.last.col.idx || column.idx >= frozenRightRange.first.col.idx;
-    const visibleContentWidth = Math.min(clientWidth, gridContext.cellMatrix.width);
+    const visibleContentWidth = Math.min(clientWidth, state.cellMatrix.width);
     const visibleScrollAreaWidth = visibleContentWidth - frozenLeftRange.width - frozenRightRange.width;
     const isColumnBelowLeftPane = column.left < scrollLeft;
 

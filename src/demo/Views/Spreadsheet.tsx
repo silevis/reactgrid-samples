@@ -7,7 +7,7 @@ import { HeaderCell } from '../../lib/Cells/HeaderCell';
 export class Spreadsheet extends React.Component<{}, { data: string[][], widths: number[] }> {
     constructor(props: {}) {
         super(props);
-        this.state = {
+        state = {
             widths: Array(10).fill(120),
             data: Array(10).fill(0).map((_, ri) => Array(10).fill(0).map((_, ci) => (ri + 100) + ' - ' + (ci + 100)))
 
@@ -15,15 +15,15 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
     }
 
     private generateCellMatrix(): CellMatrixProps {
-        const columns: ColumnProps[] = this.state.data[0].map((c, idx) => ({
+        const columns: ColumnProps[] = state.data[0].map((c, idx) => ({
             id: idx,
-            width: this.state.widths[idx],
+            width: state.widths[idx],
             onDrop: (ids) => this.reorderColumns(ids as number[], idx),
             reorderable: true,
             resizable: true,
-            onResize: width => { this.state.widths[idx] = 120, this.forceUpdate(); }
+            onResize: width => { state.widths[idx] = 120, this.forceUpdate(); }
         }));
-        const rows: RowProps[] = this.state.data.map((row, rowIdx) => ({
+        const rows: RowProps[] = state.data.map((row, rowIdx) => ({
             id: rowIdx,
             height: 25,
             onDrop: (ids) => this.reorderRows(ids as number[], rowIdx),
@@ -51,7 +51,7 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
     }
 
     handleDataChanges(dataChanges: DataChange[]) {
-        const data = this.state.data;
+        const data = state.data;
         dataChanges.forEach(change => {
             data[change.rowId as number][change.columnId as number] = change.newData as string;
         })
@@ -59,7 +59,7 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
     }
 
     reorderColumns(colIdxs: number[], to: number) {
-        let data = [...this.state.data];
+        let data = [...state.data];
         if (to > colIdxs[0]) {
             data = data.map(r => this.calculateColumnReorder(r, colIdxs, 'right', to));
         } else {
@@ -69,7 +69,7 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
     }
 
     reorderRows(rowIdxs: number[], to: number) {
-        const data = [...this.state.data];
+        const data = [...state.data];
         const movedRows = data.filter((_, idx) => rowIdxs.includes(idx));
         const clearedData = data.filter((_, idx) => !rowIdxs.includes(idx));
         if (to > rowIdxs[0])

@@ -1,4 +1,4 @@
-import { GridContext, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, CellData, DataChange, PointerLocation } from "../Common";
+import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, CellData, DataChange, PointerLocation } from "../Common";
 import { handleKeyDown as handleKeyDown } from "./DefaultBehavior/handleKeyDown";
 import { changeBehavior } from "../Functions";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
@@ -11,85 +11,74 @@ import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChang
 
 export class DefaultBehavior extends Behavior {
 
-    constructor(private gridContext: GridContext) { super(); }
-
-    handlePointerDown(event: PointerEvent, location: PointerLocation) {
+    handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
         // changing behavior will disable all keyboard event handlers
-        if (location.row.idx == 0 && this.gridContext.state.selectedIndexes.includes(location.col.idx)) {
-            const colReorderBehavior = new ColumnReorderBehavior(this.gridContext);
-            changeBehavior(this.gridContext, colReorderBehavior);
-            colReorderBehavior.handlePointerDown(event, location);
+        if (location.row.idx == 0 && state.selectedIndexes.includes(location.col.idx)) {
+            const colReorderBehavior = new ColumnReorderBehavior();
+            state = changeBehavior(state, colReorderBehavior);
+            return colReorderBehavior.handlePointerDown(event, location, state);
         } else if (location.row.idx == 0) {
-            const columnSelectionBehavior = new ColumnSelectionBehavior(this.gridContext);
-            changeBehavior(this.gridContext, columnSelectionBehavior);
-            columnSelectionBehavior.handlePointerDown(event, location);
-        } else if (location.col.idx == 0 && this.gridContext.state.selectedIndexes.includes(location.row.idx)) {
-            console.log('ROW REORDER')
-            const columnSelectionBehavior = new RowReorderBehavior(this.gridContext);
-            changeBehavior(this.gridContext, columnSelectionBehavior);
-            columnSelectionBehavior.handlePointerDown(event, location);
+            const columnSelectionBehavior = new ColumnSelectionBehavior();
+            state = changeBehavior(state, columnSelectionBehavior);
+            return columnSelectionBehavior.handlePointerDown(event, location, state);
+        } else if (location.col.idx == 0 && state.selectedIndexes.includes(location.row.idx)) {
+            const columnSelectionBehavior = new RowReorderBehavior();
+            state = changeBehavior(state, columnSelectionBehavior);
+            return columnSelectionBehavior.handlePointerDown(event, location, state);
         } else if (location.col.idx == 0) {
-            const columnSelectionBehavior = new RowSelectionBehavior(this.gridContext);
-            changeBehavior(this.gridContext, columnSelectionBehavior);
-            columnSelectionBehavior.handlePointerDown(event, location);
+            const columnSelectionBehavior = new RowSelectionBehavior();
+            state = changeBehavior(state, columnSelectionBehavior);
+            return columnSelectionBehavior.handlePointerDown(event, location, state);
         } else {
-            const cellSelectionBehavior = new CellSelectionBehavior(this.gridContext);
-            changeBehavior(this.gridContext, cellSelectionBehavior);
-            cellSelectionBehavior.handlePointerDown(event, location);
+            const cellSelectionBehavior = new CellSelectionBehavior();
+            state = changeBehavior(state, cellSelectionBehavior);
+            return cellSelectionBehavior.handlePointerDown(event, location, state);
         }
+        return state;
     }
 
     handleContextMenu(event: PointerEvent): void {
         event.preventDefault();
-        //changeBehavior(this.gridContext, new DrawContextMenuBehavior(this.gridContext, event))
+        //changeBehavior(state, new DrawContextMenuBehavior(state, event))
         //event.persist();
     }
 
-    handlePointerMove(event: PointerEvent, location: Location): void {
-    }
-
-    handlePointerUp(event: PointerEvent, location: Location): void {
-    }
-
-    handleDoubleClick(event: PointerEvent, location: Location): void {
-        if (this.gridContext.state.isFocusedCellInEditMode /*|| this.grid.state.isFocusedCellReadOnly*/) {
+    handleDoubleClick(event: PointerEvent, location: Location, state: State): State {
+        if (state.isFocusedCellInEditMode /*|| this.grid.state.isFocusedCellReadOnly*/) {
             event.preventDefault();
             event.stopPropagation();
-        } else {
-            if (
-                location.equals(this.gridContext.state.focusedLocation)
-            ) {
-                this.gridContext.lastKeyCode = 0;
-                setTimeout(() => this.gridContext.setState({ isFocusedCellInEditMode: true }));
-            }
+        } else if (location.equals(state.focusedLocation)) {
+            return {
+                ...state,
+                lastKeyCode: 0,
+                isFocusedCellInEditMode: true
+            };
         }
+        return state;
     }
 
-    handleKeyDown(event: KeyboardEvent) {
-        handleKeyDown(this.gridContext, event)
+    handleKeyDown(event: KeyboardEvent, state: State): State {
+        return handleKeyDown(state, event);
     }
 
-    handleKeyUp(event: KeyboardEvent): void {
+    handleKeyUp(event: KeyboardEvent, state: State): State {
         if (event.keyCode === keyCodes.TAB || event.keyCode === keyCodes.ENTER) {
             event.preventDefault();
             event.stopPropagation();
-            return;
         }
-
+        return state;
     }
 
-    handleCopy(event: ClipboardEvent): void {
-        // this.grid.preventFocusChange = true;
-        this.copySelectedRangeToClipboard()
-        // this.grid.hiddenFocusElement.focus()
-        // this.grid.preventFocusChange = false;
+    handleCopy(event: ClipboardEvent, state: State): State {
+        this.copySelectedRangeToClipboard(state);
         event.preventDefault()
+        return state;
     }
 
-    handlePaste(event: ClipboardEvent): void {
-        const activeSelectedRange = getActiveSelectedRange(this.gridContext)
+    handlePaste(event: ClipboardEvent, state: State): State {
+        const activeSelectedRange = getActiveSelectedRange(state)
         if (!activeSelectedRange) {
-            return
+            return state;
         }
         let pasteContent: CellData[][] = [];
         const htmlData = event.clipboardData.getData('text/html');
@@ -114,44 +103,48 @@ export class DefaultBehavior extends Behavior {
         if (pasteContent.length === 1 && pasteContent[0].length === 1) {
             activeSelectedRange.rows.forEach(row =>
                 activeSelectedRange.cols.forEach(col => {
-                    trySetDataAndAppendChange(new Location(row, col), pasteContent[0][0], dataChanges)
+                    state = trySetDataAndAppendChange(new Location(row, col), pasteContent[0][0], state)
                 })
             )
         } else {
             let lastLocation: Location
-            const cellMatrix = this.gridContext.cellMatrix
+            const cellMatrix = state.cellMatrix
             pasteContent.forEach((row, pasteRowIdx) =>
                 row.forEach((pasteValue: CellData, pasteColIdx: number) => {
                     const rowIdx = activeSelectedRange.rows[0].idx + pasteRowIdx
                     const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx
                     if (rowIdx <= cellMatrix.last.row.idx && colIdx <= cellMatrix.last.col.idx) {
                         lastLocation = cellMatrix.getLocation(rowIdx, colIdx)
-                        trySetDataAndAppendChange(lastLocation, pasteValue, dataChanges)
+                        state = trySetDataAndAppendChange(lastLocation, pasteValue, state)
                     }
                 })
             )
-            this.gridContext.setState({ selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, lastLocation!)] })
+            return {
+                ...state,
+                selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, lastLocation!)]
+            }
         }
         event.preventDefault()
-        this.gridContext.commitChanges(dataChanges);
+        return state;
     }
 
-    handleCut(event: ClipboardEvent): void {
+    handleCut(event: ClipboardEvent, state: State): State {
         // this.grid.preventFocusChange = true;
-        this.copySelectedRangeToClipboard(true)
+        this.copySelectedRangeToClipboard(state, true)
         // this.grid.preventFocusChange = false;
         event.preventDefault()
-        //this.gridContext.hiddenFocusElement.focus();
+        //state.hiddenFocusElement.focus();
+        return state;
     }
 
-    private copySelectedRangeToClipboard(removeValues = false) {
+    private copySelectedRangeToClipboard(state: State, removeValues = false) {
 
         const dataChanges: DataChange[] = [];
         const div = document.createElement('div')
         const table = document.createElement('table')
         table.setAttribute('empty-cells', 'show')
         table.setAttribute('data-key', 'dynagrid')
-        const activeSelectedRange = getActiveSelectedRange(this.gridContext)
+        const activeSelectedRange = getActiveSelectedRange(state)
         activeSelectedRange.rows.forEach(row => {
             const tableRow = table.insertRow()
             activeSelectedRange.cols.forEach(col => {
@@ -165,7 +158,7 @@ export class DefaultBehavior extends Behavior {
                 tableCell.setAttribute('data-type', location.cell.cellData.type)
                 tableCell.style.border = '1px solid #D3D3D3'
                 if (removeValues) {
-                    trySetDataAndAppendChange(location, { text: '', data: '', type: 'string' }, dataChanges);
+                    state = trySetDataAndAppendChange(location, { text: '', data: '', type: 'string' }, state);
                 }
             })
         })
@@ -176,6 +169,5 @@ export class DefaultBehavior extends Behavior {
         document.execCommand('selectAll', false, undefined)
         document.execCommand('copy')
         document.body.removeChild(div)
-        //this.gridContext.hiddenFocusElement.focus();
     }
 }

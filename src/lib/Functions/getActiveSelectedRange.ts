@@ -1,5 +1,5 @@
-import { GridContext } from "../Common";
+import { State } from "../Common";
 
-export function getActiveSelectedRange(gridContext: GridContext) {
-    return gridContext.state.selectedRanges[gridContext.state.activeSelectedRangeIdx]
+export function getActiveSelectedRange(state: State) {
+    return state.selectedRanges[state.activeSelectedRangeIdx]
 }
