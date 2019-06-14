@@ -1,34 +1,35 @@
 import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, DataChange } from ".";
+import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // INTERNAL
-export interface State {
-    cellMatrix: CellMatrix
-    currentBehavior: Behavior
+export class State {
+    cellMatrix!: CellMatrix;
+    currentBehavior: Behavior = new DefaultBehavior();
 
-    hiddenFocusElement: HTMLDivElement
-    viewportElement: HTMLDivElement
-    lastKeyCode: number
-    queuedDataChanges: DataChange[]
+    hiddenFocusElement!: HTMLDivElement;
+    viewportElement!: HTMLDivElement;
+    lastKeyCode: number = 0;
+    queuedDataChanges: DataChange[] = [];
 
     // LINE AND SHADOW
-    lineOrientation: Orientation
-    linePosition: number
-    shadowSize: number
-    shadowPosition: number
+    lineOrientation: Orientation = 'horizontal';
+    linePosition: number = -1
+    shadowSize: number = 0;
+    shadowPosition: number = -1;
 
     // SELECTION
-    selectionMode: SelectionMode
-    selectedRanges: Range[]
-    selectedIndexes: number[]
+    selectionMode: SelectionMode = 'range'
+    selectedRanges: Range[] = [];
+    selectedIndexes: number[] = [];
     focusedLocation?: Location;
-    activeSelectedRangeIdx: number
-    isFocusedCellInEditMode: boolean
+    activeSelectedRangeIdx: number = 0;
+    isFocusedCellInEditMode: boolean = false;
 
     // VISIBLE RANGE
-    visibleRange: Range | undefined;
-    minScrollTop: number
-    maxScrollTop: number
-    minScrollLeft: number
-    maxScrollLeft: number
+    visibleRange!: Range;
+    minScrollTop: number = -1;
+    maxScrollTop: number = -1;
+    minScrollLeft: number = -1;
+    maxScrollLeft: number = -1;
 }

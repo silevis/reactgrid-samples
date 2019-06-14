@@ -7,10 +7,10 @@ import { PointerEventsController } from "../Common/PointerEventsController";
 import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
-    //private this.state = new this.state(this);
+
     private pointerEventsController = new PointerEventsController()
 
-    //this.state = new Gridthis.state();
+    state = new State();
 
     static getDerivedStateFromProps(props: DynaGridProps, state: State) {
         //if (props.cellMatrixProps)
@@ -113,7 +113,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
         }
     }
 
-    private viewportElementRefHandler = (viewportElement: HTMLDivElement) => this.updateOnNewState(recalcVisibleRange({ ...this.state, viewportElement }));
+    private viewportElementRefHandler = (viewportElement: HTMLDivElement) => viewportElement && this.updateOnNewState(recalcVisibleRange({ ...this.state, viewportElement }));
     private pointerDownHandler = (event: PointerEvent) => this.updateOnNewState(this.pointerEventsController.handlePointerDown(event, this.state));
     private windowResizeHandler = () => this.updateOnNewState(recalcVisibleRange(this.state));
     private keyDownHandler = (event: KeyboardEvent) => this.updateOnNewState(this.state.currentBehavior.handleKeyDown(event, this.state));
@@ -124,6 +124,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     private handleContextMenu = (event: PointerEvent) => this.state.currentBehavior.handleContextMenu(event);
 
     private updateOnNewState(state: State) {
+        console.log(state);
         if (state === this.state) return;
         this.setState(state);
         // TODO pop changes form state

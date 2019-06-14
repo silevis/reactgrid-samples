@@ -30,6 +30,7 @@ export class PointerEventsController {
         return state;
     }
 
+    // TODO! Bug here: state not passed 
     private handlePointerMove = (event: PointerEvent, state: State): State => {
         const autoScrollDirection = state.currentBehavior.autoScrollDirection;
         const currentLocation = getLocationFromClient(state, event.clientX, event.clientY, autoScrollDirection);
