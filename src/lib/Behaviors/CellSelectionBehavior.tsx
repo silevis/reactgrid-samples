@@ -1,4 +1,4 @@
-import { resetToDefaultBehavior, focusLocation, getLocationFromClient } from '../Functions';
+import { focusLocation, getLocationFromClient } from '../Functions';
 import { State, Location, Behavior, Direction } from '../Common';
 import { PointerEvent } from "../Common/domEvents";
 import { selectRange, updateActiveSelectedRange } from '../Functions/selectRange';

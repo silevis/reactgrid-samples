@@ -47,15 +47,16 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
             onBlur={() => {
                 if (props.state.lastKeyCode === keyCodes.ESC) {
                     cell.trySetData(initialCellData)
-                } else {
-                    props.state.commitChanges([{
-                        initialData: initialCellData.data,
-                        newData: cell.cellData.data,
-                        type: cell.cellData.type,
-                        rowId: location.row.id,
-                        columnId: location.col.id
-                    }])
                 }
+                // } else {
+                //     props.state.commitChanges([{
+                //         initialData: initialCellData.data,
+                //         newData: cell.cellData.data,
+                //         type: cell.cellData.type,
+                //         rowId: location.row.id,
+                //         columnId: location.col.id
+                //     }])
+                // }
 
             }}
             onKeyDown={e => { if ([keyCodes.ENTER, keyCodes.ESC].includes(e.keyCode)) e.stopPropagation() }}

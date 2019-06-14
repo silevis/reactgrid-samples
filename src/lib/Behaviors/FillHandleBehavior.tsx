@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { State, Range, PointerEvent, CellMatrix, Behavior, Row, Column, Location, DataChange } from "../Common";
-import { getLocationFromClient, resetToDefaultBehavior } from "../Functions";
+import { getLocationFromClient } from "../Functions";
 import { PartialArea } from '../Components/PartialArea';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
 import { trySetDataAndAppendChange } from '../Functions/trySetDataAndAppendChange';

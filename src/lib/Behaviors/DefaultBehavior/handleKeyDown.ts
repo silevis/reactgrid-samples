@@ -82,39 +82,40 @@ function focusCell(colIdx: number, rowIdx: number, state: State): State {
     return focusLocation(state, location);
 }
 
-const handleArrows = (event: KeyboardEvent, state: State) => {
+function handleArrows(event: KeyboardEvent, state: State): State {
     const focusedLocation = state.focusedLocation!;
     const cellMatrix = state.cellMatrix;
     if (!event.shiftKey) {
         if (event.keyCode === keyCodes.LEFT_ARROW && focusedLocation.col.idx > 0) {
-            focusCell(focusedLocation.col.idx - 1, focusedLocation.row.idx, state);
+            return focusCell(focusedLocation.col.idx - 1, focusedLocation.row.idx, state);
         } else if (
             event.keyCode === keyCodes.RIGHT_ARROW &&
             focusedLocation.col.idx < cellMatrix.last.col.idx
         ) {
-            focusCell(focusedLocation.col.idx + 1, focusedLocation.row.idx, state);
+            return focusCell(focusedLocation.col.idx + 1, focusedLocation.row.idx, state);
         } else if (event.keyCode === keyCodes.UP_ARROW && focusedLocation.row.idx > 0) {
-            focusCell(focusedLocation.col.idx, focusedLocation.row.idx - 1, state);
+            return focusCell(focusedLocation.col.idx, focusedLocation.row.idx - 1, state);
         } else if (
             event.keyCode === keyCodes.DOWN_ARROW &&
             focusedLocation.row.idx < cellMatrix.last.row.idx
         ) {
-            focusCell(focusedLocation.col.idx, focusedLocation.row.idx + 1, state);
+            return focusCell(focusedLocation.col.idx, focusedLocation.row.idx + 1, state);
         }
     }
+    return state
 }
 
-const handleSpecialNavKeys = (event: KeyboardEvent, state: State) => {
+function handleSpecialNavKeys(event: KeyboardEvent, state: State) {
     const focusedLocation = state.focusedLocation!;
     const cellMatrix = state.cellMatrix;
     if (event.ctrlKey && event.keyCode === keyCodes.HOME) {
-        focusCell(0, 0, state);
+        return focusCell(0, 0, state);
     } else if (event.keyCode === keyCodes.HOME) {
-        focusCell(0, focusedLocation.row.idx, state);
+        return focusCell(0, focusedLocation.row.idx, state);
     } else if (event.ctrlKey && event.keyCode === keyCodes.END) {
-        focusLocation(state, cellMatrix.last);
+        return focusLocation(state, cellMatrix.last);
     } else if (event.keyCode === keyCodes.END) {
-        focusCell(cellMatrix.cols.length - 1, focusedLocation.row.idx, state);
+        return focusCell(cellMatrix.cols.length - 1, focusedLocation.row.idx, state);
     } else if (
         !event.shiftKey &&
         event.keyCode === keyCodes.PAGE_UP &&
@@ -123,7 +124,7 @@ const handleSpecialNavKeys = (event: KeyboardEvent, state: State) => {
         const rowsOnScreen = cellMatrix.rows.filter(
             (r: Row) => r.top < state.viewportElement.clientHeight
         );
-        focusCell(
+        return focusCell(
             focusedLocation.col.idx,
             focusedLocation.row.idx - rowsOnScreen.length > 0
                 ? focusedLocation.row.idx - rowsOnScreen.length
@@ -138,7 +139,7 @@ const handleSpecialNavKeys = (event: KeyboardEvent, state: State) => {
                 1
             )
             .filter((r: Row) => r.top + r.height < state.viewportElement.clientHeight);
-        focusCell(
+        return focusCell(
             focusedLocation.col.idx,
             focusedLocation.row.idx + rowsOnScreen.length < cellMatrix.rows.length
                 ? focusedLocation.row.idx +
@@ -147,9 +148,10 @@ const handleSpecialNavKeys = (event: KeyboardEvent, state: State) => {
                 : cellMatrix.rows.length - 1, state
         );
     }
+    return state
 }
 
-const handleTabKey = (event: KeyboardEvent, state: State) => {
+function handleTabKey(event: KeyboardEvent, state: State) {
     const focusedLocation = state.focusedLocation!;
     const cellMatrix = state.cellMatrix;
     if (event.keyCode === keyCodes.TAB || event.keyCode === keyCodes.ENTER) {
@@ -160,7 +162,7 @@ const handleTabKey = (event: KeyboardEvent, state: State) => {
         !event.shiftKey &&
         focusedLocation.col.idx < cellMatrix.last.col.idx
     ) {
-        focusLocation(
+        return focusLocation(
             state,
             cellMatrix.getLocation(
                 focusedLocation.row.idx,
@@ -173,7 +175,7 @@ const handleTabKey = (event: KeyboardEvent, state: State) => {
         event.shiftKey &&
         focusedLocation.col.idx > 0
     ) {
-        focusLocation(
+        return focusLocation(
             state,
             cellMatrix.getLocation(
                 focusedLocation.row.idx,
@@ -182,9 +184,10 @@ const handleTabKey = (event: KeyboardEvent, state: State) => {
             true
         );
     }
+    return state
 }
 
-const handleEnterKey = (event: KeyboardEvent, state: State) => {
+function handleEnterKey(event: KeyboardEvent, state: State) {
     const focusedLocation = state.focusedLocation!;
     const cellMatrix = state.cellMatrix;
     if (
@@ -192,7 +195,7 @@ const handleEnterKey = (event: KeyboardEvent, state: State) => {
         state.isFocusedCellInEditMode &&
         focusedLocation.row.idx < cellMatrix.last.row.idx
     ) {
-        focusLocation(
+        return focusLocation(
             state,
             cellMatrix.getLocation(
                 focusedLocation.row.idx + 1,
@@ -205,7 +208,7 @@ const handleEnterKey = (event: KeyboardEvent, state: State) => {
         state.isFocusedCellInEditMode &&
         focusedLocation.row.idx > 0
     ) {
-        focusLocation(
+        return focusLocation(
             state,
             cellMatrix.getLocation(
                 focusedLocation.row.idx - 1,
@@ -219,27 +222,29 @@ const handleEnterKey = (event: KeyboardEvent, state: State) => {
         !state.isFocusedCellInEditMode
         // !state.isFocusedCellReadOnly 
     ) {
-        return { isFocusedCellInEditMode: true });
+        return { ...state, isFocusedCellInEditMode: true };
     } else if (event.shiftKey && event.keyCode === keyCodes.ENTER && focusedLocation.row.idx > 0) {
-        focusCell(focusedLocation.col.idx, focusedLocation.row.idx - 1, state);
+        return focusCell(focusedLocation.col.idx, focusedLocation.row.idx - 1, state);
     }
     else {
         // state.currentBehavior.handleKeyDown(event)
         // TODO
         // return this.innerBehavior.handleKeyDown(event);
     }
+    return state
 }
 
-const handleSpecialKeys = (event: KeyboardEvent, state: State) => {
+function handleSpecialKeys(event: KeyboardEvent, state: State) {
     if (event.keyCode === keyCodes.DELETE || event.keyCode === keyCodes.BACKSPACE) {
         const dataChanges: DataChange[] = []
         state.selectedRanges.forEach(range =>
             range.rows.forEach((row: Row) =>
                 range.cols.forEach((col: Column) =>
-                    trySetDataAndAppendChange(new Location(row, col), { text: '', data: null, type: 'string' }, state.dataChanges)
+                    trySetDataAndAppendChange(new Location(row, col), { text: '', data: null, type: 'string' }, state)
                 )
             )
         );
-        state.commitChanges(dataChanges);
+        return { ...state, dataChanges };
     }
+    return state
 }

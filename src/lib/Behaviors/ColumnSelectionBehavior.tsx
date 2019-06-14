@@ -1,4 +1,4 @@
-import { resetToDefaultBehavior, focusLocation } from '../Functions';
+import { focusLocation } from '../Functions';
 import { State, Location, Behavior, Direction } from '../Common';
 import { PointerEvent } from "../Common/domEvents";
 import { selectColumn, updateActiveSelectedColumns } from '../Functions/selectRange';
@@ -24,5 +24,4 @@ export class ColumnSelectionBehavior extends Behavior {
     handlePointerEnter(event: PointerEvent, location: Location, state: State): State {
         return updateActiveSelectedColumns(state, state.focusedLocation!.col, location.col, event.ctrlKey);
     }
-
-
+}

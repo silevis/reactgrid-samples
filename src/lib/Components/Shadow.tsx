@@ -25,7 +25,7 @@ export class Shadow extends React.Component<ShadowProps, ShadowState> {
 
     render() {
         const { shadowSize, isVertical, cellMatrix } = this.props;
-        const { shadowPosition } = state;
+        const { shadowPosition } = this.state;
         return (
             shadowPosition !== -1 &&
             <div
@@ -34,8 +34,8 @@ export class Shadow extends React.Component<ShadowProps, ShadowState> {
                     background: '#000',
                     cursor: '-webkit-grabbing',
                     opacity: 0.1,
-                    top: isVertical ? 0 : state.shadowPosition,
-                    left: isVertical ? state.shadowPosition : 0,
+                    top: isVertical ? 0 : this.state.shadowPosition,
+                    left: isVertical ? this.state.shadowPosition : 0,
                     width: isVertical ? shadowSize : cellMatrix.width,
                     height: isVertical ? cellMatrix.height : shadowSize,
                     zIndex: 4

@@ -26,7 +26,7 @@ export interface State {
     isFocusedCellInEditMode: boolean
 
     // VISIBLE RANGE
-    visibleRange: Range;
+    visibleRange: Range | undefined;
     minScrollTop: number
     maxScrollTop: number
     minScrollLeft: number

@@ -78,7 +78,7 @@ const moveFocusInsideSelectedRange = (direction: -1 | 1 | 'up' | 'down', state: 
         const nextSelectionRangeIdx = (selectedRangeIdx + 1) % state.selectedRanges.length;
         const nextSelection = state.selectedRanges[nextSelectionRangeIdx];
         state = focusLocation(state, new Location(nextSelection.first.row, nextSelection.first.col), false);
-        return { activeSelectedRangeIdx: nextSelectionRangeIdx })
+        return { activeSelectedRangeIdx: nextSelectionRangeIdx }
     } else {
         const newColIdx = selectedRange.first.col.idx + (newPosInRange % colCount);
         const newRowIdx = selectedRange.first.row.idx + Math.floor(newPosInRange / colCount);

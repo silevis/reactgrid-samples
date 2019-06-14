@@ -1,4 +1,4 @@
-import { State } from "../Common/state";
+import { State } from "../Common/State";
 
 export function print(state: State, title: string) {
     // let printIframe = document.createElement('iframe');

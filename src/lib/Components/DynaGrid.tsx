@@ -4,9 +4,9 @@ import { PaneRow } from "./PaneRow";
 import { recalcVisibleRange } from "../Functions";
 import { KeyboardEvent, ClipboardEvent } from "../Common";
 import { PointerEventsController } from "../Common/PointerEventsController";
+import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
-
     //private this.state = new this.state(this);
     private pointerEventsController = new PointerEventsController()
 
@@ -124,12 +124,9 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     private handleContextMenu = (event: PointerEvent) => this.state.currentBehavior.handleContextMenu(event);
 
     private updateOnNewState(state: State) {
-        if (this.state === this.state) return;
-        this.setState(this.state);
+        if (state === this.state) return;
+        this.setState(state);
         // TODO pop changes form state
-        //commitChanges(changes: DataChange[]) { this.grid.props.onDataChanged && this.grid.props.onDataChanged(changes) }
+        // commitChanges(changes: DataChange[]) { this.grid.props.onDataChanged && this.grid.props.onDataChanged(changes) }
     }
 }
-
-
-

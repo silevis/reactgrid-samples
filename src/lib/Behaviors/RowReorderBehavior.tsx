@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { State, Behavior, PointerEvent, PointerLocation, Id } from '../Common';
-import { resetToDefaultBehavior } from '../Functions';
+// import { resetToDefaultBehavior } from '../Functions';
 import { Line } from '../Components/Line';
 import { Shadow } from '../Components/Shadow';
 
@@ -58,26 +58,28 @@ export class RowReorderBehavior extends Behavior {
             ...state,
             linePosition: dropLocation.viewportY - dropLocation.cellY + (drawRight ? dropLocation.row.height : 0)
         }
-
-        getLastPossibleDropLocation(currentLocation: PointerLocation): PointerLocation | undefined {
-            const position = currentLocation.row.idx <= this.initialRowIdx ? 'before' : 'after'
-            if (!currentLocation.row.canDrop || currentLocation.row.canDrop(this.selectedIds, position)) {
-                return this.lastPossibleDropLocation = currentLocation;
-            }
-            return this.lastPossibleDropLocation;
-        }
-
-        handlePointerUp(event: PointerEvent, location: PointerLocation, state: State): State {
-            if (this.lastPossibleDropLocation && this.lastPossibleDropLocation.row.onDrop) {
-                const isBefore = this.lastPossibleDropLocation.row.idx <= this.initialRowIdx;
-                this.lastPossibleDropLocation.row.onDrop(this.selectedIds, isBefore ? 'before' : 'after');
-                return {
-                    ...state,
-                    //focusedLocation: cell,
-                    //isFocusedCellInEditMode: false,
-                    selectedRanges: [],
-                    selectedIndexes: [] // TODO state.cellMatrix.cols.map(col => col.idx)
-                };
-            }
-        }
     }
+
+    getLastPossibleDropLocation(currentLocation: PointerLocation): PointerLocation | undefined {
+        const position = currentLocation.row.idx <= this.initialRowIdx ? 'before' : 'after'
+        if (!currentLocation.row.canDrop || currentLocation.row.canDrop(this.selectedIds, position)) {
+            return this.lastPossibleDropLocation = currentLocation;
+        }
+        return this.lastPossibleDropLocation;
+    }
+
+    handlePointerUp(event: PointerEvent, location: PointerLocation, state: State): State {
+        if (this.lastPossibleDropLocation && this.lastPossibleDropLocation.row.onDrop) {
+            const isBefore = this.lastPossibleDropLocation.row.idx <= this.initialRowIdx;
+            this.lastPossibleDropLocation.row.onDrop(this.selectedIds, isBefore ? 'before' : 'after');
+            return {
+                ...state,
+                //focusedLocation: cell,
+                //isFocusedCellInEditMode: false,
+                selectedRanges: [],
+                selectedIndexes: [] // TODO state.cellMatrix.cols.map(col => col.idx)
+            };
+        }
+        return state
+    }
+}
