@@ -34,7 +34,6 @@ export class DefaultBehavior extends Behavior {
             state = changeBehavior(state, cellSelectionBehavior);
             return cellSelectionBehavior.handlePointerDown(event, location, state);
         }
-        return state;
     }
 
     handleContextMenu(event: PointerEvent): void {
@@ -98,7 +97,6 @@ export class DefaultBehavior extends Behavior {
         } else {
             pasteContent = event.clipboardData.getData('text/plain').split('\n').map(line => line.split('\t').map(t => ({ text: t, data: t, type: 'string' })))
         }
-        const dataChanges: DataChange[] = [];
 
         if (pasteContent.length === 1 && pasteContent[0].length === 1) {
             activeSelectedRange.rows.forEach(row =>
@@ -125,7 +123,7 @@ export class DefaultBehavior extends Behavior {
             }
         }
         event.preventDefault()
-        return state;
+        return { ...state };
     }
 
     handleCut(event: ClipboardEvent, state: State): State {
@@ -134,12 +132,11 @@ export class DefaultBehavior extends Behavior {
         // this.grid.preventFocusChange = false;
         event.preventDefault()
         //state.hiddenFocusElement.focus();
-        return state;
+        return { ...state };
     }
 
     private copySelectedRangeToClipboard(state: State, removeValues = false) {
 
-        const dataChanges: DataChange[] = [];
         const div = document.createElement('div')
         const table = document.createElement('table')
         table.setAttribute('empty-cells', 'show')

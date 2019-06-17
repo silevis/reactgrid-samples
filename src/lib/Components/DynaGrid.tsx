@@ -83,9 +83,9 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                             borders={{ top: true }}
                             zIndex={3}
                         />}
+                    <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} />
                 </div>
                 {/* {this.state.currentBehavior.renderGlobalPart && this.state.currentBehavior.renderGlobalPart()} */}
-                <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} />
             </div >
         );
     }
@@ -123,7 +123,6 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     private handleContextMenu = (event: PointerEvent) => this.state.currentBehavior.handleContextMenu(event);
 
     private updateOnNewState(state: State) {
-        console.log(state);
         if (state === this.state) return;
         this.setState(state);
         // TODO pop changes form state
