@@ -1,16 +1,15 @@
 import * as React from "react";
-import { DynaGridProps, CellMatrix, PointerEvent, State } from "../Common";
+import { DynaGridProps, CellMatrix, PointerEvent, State, AsyncStateUpdate as AsyncStateUpdater } from "../Common";
 import { PaneRow } from "./PaneRow";
 import { recalcVisibleRange } from "../Functions";
 import { KeyboardEvent, ClipboardEvent } from "../Common";
 import { PointerEventsController } from "../Common/PointerEventsController";
-import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
+    private stateUpdater: AsyncStateUpdater = modifier => this.updateOnNewState(modifier(this.state));
+    private pointerEventsController = new PointerEventsController(this.stateUpdater)
 
-    private pointerEventsController = new PointerEventsController(() => this.state, this.updateOnNewState.bind(this))
-
-    state = new State();
+    state = new State(this.stateUpdater);
 
     static getDerivedStateFromProps(props: DynaGridProps, state: State) {
         //if (props.cellMatrixProps)

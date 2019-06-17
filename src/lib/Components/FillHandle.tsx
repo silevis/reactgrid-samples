@@ -1,5 +1,7 @@
 import * as React from "react";
 import { Location, State } from "../Common";
+import { changeBehavior } from "../Functions";
+import { FillHandleBehavior } from "../Behaviors/FillHandleBehavior";
 
 interface FillHandleProps {
     state: State,
@@ -18,11 +20,12 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
             background: 'rgba(255, 255, 255, 0.01)'
         }}
         data-cy="touch-fill-handle"
-    // onPointerDown={event => {
-    //     if (event.pointerType !== 'mouse' && event.pointerType !== undefined) { // !== undefined only for cypress tests
-    //         changeBehavior(props.state, new FillHandleBehavior(props.state))
-    //     }
-    // }}
+        onPointerDown={event => {
+            if (event.pointerType !== 'mouse' && event.pointerType !== undefined) { // !== undefined only for cypress tests
+                props.state.updateState(state => changeBehavior(state, new FillHandleBehavior()));
+                event.stopPropagation();
+            }
+        }}
     >
         <div
             className="dg-fill-handle"
@@ -37,10 +40,15 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
                 cursor: 'crosshair'
             }}
             data-cy="dg-fill-handle"
-        // onPointerDown={event => {
-        //     if (event.pointerType === 'mouse' || event.pointerType === undefined) { // === undefined only for cypress tests
-        //         changeBehavior(props.state, new FillHandleBehavior(props.state))
-        //     }
-        // }}
+            onPointerDown={event => {
+                console.log(event)
+                event.preventDefault();
+                event.stopPropagation();
+                console.log(event.pointerType)
+                if (event.pointerType === 'mouse' && event.pointerType === undefined) { // !== undefined only for cypress tests
+                    props.state.updateState(state => changeBehavior(state, new FillHandleBehavior()));
+
+                }
+            }}
         />
     </div>

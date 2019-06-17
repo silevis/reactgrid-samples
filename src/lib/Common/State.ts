@@ -3,14 +3,19 @@ import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // INTERNAL
+
+export type AsyncStateUpdate = (modifier: (state: State) => State) => void;
+
 export class State {
-    cellMatrix!: CellMatrix;
-    currentBehavior: Behavior = new DefaultBehavior();
+    constructor(public readonly updateState: AsyncStateUpdate) { }
+
+    readonly cellMatrix!: CellMatrix;
+    readonly currentBehavior: Behavior = new DefaultBehavior();
 
     hiddenFocusElement!: HTMLDivElement;
-    viewportElement!: HTMLDivElement;
+    readonly viewportElement!: HTMLDivElement;
     lastKeyCode: number = 0;
-    queuedDataChanges: DataChange[] = [];
+    readonly queuedDataChanges: DataChange[] = [];
 
     // LINE AND SHADOW
     lineOrientation: Orientation = 'horizontal';
