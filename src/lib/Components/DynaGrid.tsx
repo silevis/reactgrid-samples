@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DynaGridProps, CellMatrix, PointerEvent, State, AsyncStateUpdate as AsyncStateUpdater } from "../Common";
+import { DynaGridProps, CellMatrix, PointerEvent, State, AsyncStateUpdate as AsyncStateUpdater, Cell } from "../Common";
 import { PaneRow } from "./PaneRow";
 import { recalcVisibleRange } from "../Functions";
 import { KeyboardEvent, ClipboardEvent } from "../Common";
@@ -12,8 +12,12 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     state = new State(this.stateUpdater);
 
     static getDerivedStateFromProps(props: DynaGridProps, state: State) {
-        //if (props.cellMatrixProps)
-        return { ...state, cellMatrix: new CellMatrix(props.cellMatrixProps) };
+        if (state.isFocusedCellInEditMode && state.focusedLocation && state.prevState && !state.prevState.isFocusedCellInEditMode) {
+            state.prevState = undefined;
+            return { ...state, cellMatrix: new CellMatrix(props.cellMatrixProps), editedCell: { ...state.focusedLocation.cell }, prevState: state };
+        }
+        state.prevState = undefined;
+        return { ...state, cellMatrix: new CellMatrix(props.cellMatrixProps), prevState: state };
     }
 
     componentDidMount() {
@@ -83,9 +87,11 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                             borders={{ top: true }}
                             zIndex={3}
                         />}
-                    <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} />
+                    <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} onFocus={() => console.trace('hfe')} />
+
                 </div>
                 {/* {this.state.currentBehavior.renderGlobalPart && this.state.currentBehavior.renderGlobalPart()} */}
+                {/* {this.state.isFocusedCellInEditMode && this.renderEditor(this.state.editedCell!)} */}
             </div >
         );
     }

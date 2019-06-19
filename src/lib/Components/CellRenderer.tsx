@@ -45,26 +45,26 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
             className="cell"
             style={style}
             onBlur={() => {
-                if (props.state.lastKeyCode === keyCodes.ESC) {
-                    cell.trySetData(initialCellData)
+                if (props.state.lastKeyCode === keyCodes.ESC && props.state.editedCell) {
+                    // cell.trySetData(props.state.editedCell)
+                } else {
+                    props.state.queuedDataChanges.push({
+                        initialData: initialCellData.data,
+                        newData: cell.cellData.data,
+                        type: cell.cellData.type,
+                        rowId: location.row.id,
+                        columnId: location.col.id
+                    })
                 }
-                // } else {
-                //     props.state.commitChanges([{
-                //         initialData: initialCellData.data,
-                //         newData: cell.cellData.data,
-                //         type: cell.cellData.type,
-                //         rowId: location.row.id,
-                //         columnId: location.col.id
-                //     }])
-                // }
-
             }}
-            onKeyDown={e => { if ([keyCodes.ENTER, keyCodes.ESC].includes(e.keyCode)) e.stopPropagation() }}
+            onKeyDown={e => { if (![keyCodes.ENTER, keyCodes.ESC].includes(e.keyCode)) e.stopPropagation() }}
         >
-            {cell.renderContent({
-                isInEditMode: isFocused && props.state.isFocusedCellInEditMode,
-                lastKeyCode: props.state.lastKeyCode
-            })}
-        </div>
+            {
+                cell.renderContent({
+                    isInEditMode: isFocused && props.state.isFocusedCellInEditMode,
+                    lastKeyCode: props.state.lastKeyCode
+                })
+            }
+        </div >
     )
 }

@@ -12,6 +12,7 @@ import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChang
 export class DefaultBehavior extends Behavior {
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
+        state.lastKeyCode = 0;
         // changing behavior will disable all keyboard event handlers
         if (location.row.idx == 0 && state.selectedIndexes.includes(location.col.idx)) {
             const colReorderBehavior = new ColumnReorderBehavior();
@@ -49,7 +50,6 @@ export class DefaultBehavior extends Behavior {
         } else if (location.equals(state.focusedLocation)) {
             return {
                 ...state,
-                lastKeyCode: 0,
                 isFocusedCellInEditMode: true
             };
         }

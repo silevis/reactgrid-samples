@@ -1,5 +1,6 @@
 import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, DataChange } from ".";
 import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
+import { CellData, Cell } from "./PublicModel";
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // INTERNAL
@@ -8,7 +9,7 @@ export type AsyncStateUpdate = (modifier: (state: State) => State) => void;
 
 export class State {
     constructor(public readonly updateState: AsyncStateUpdate) { }
-
+    prevState?: State;
     readonly cellMatrix!: CellMatrix;
     readonly currentBehavior: Behavior = new DefaultBehavior();
 
@@ -16,6 +17,7 @@ export class State {
     readonly viewportElement!: HTMLDivElement;
     lastKeyCode: number = 0;
     readonly queuedDataChanges: DataChange[] = [];
+    editedCell?: Cell;
 
     // LINE AND SHADOW
     lineOrientation: Orientation = 'horizontal';
