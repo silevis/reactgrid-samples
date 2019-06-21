@@ -16,11 +16,22 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     static getDerivedStateFromProps(props: DynaGridProps, state: State) {
         if (state.isFocusedCellInEditMode && state.focusedLocation) {
             state.prevState = undefined;
-            return { ...state, cellMatrix: new CellMatrix(props.cellMatrixProps), editedCell: { ...state.focusedLocation.cell }, prevState: state };
+            return {
+                ...state,
+                cellMatrix: new CellMatrix(props.cellMatrixProps),
+                editedCell: { ...state.focusedLocation.cell },
+                prevState: state,
+                cellTemplates: { ...state.cellTemplates, ...props.cellTemplates }
+            };
         }
         state.prevState = undefined;
         state.editedCell = undefined;
-        return { ...state, cellMatrix: new CellMatrix(props.cellMatrixProps), prevState: state };
+        return {
+            ...state,
+            cellMatrix: new CellMatrix(props.cellMatrixProps),
+            prevState: state,
+            cellTemplates: { ...state.cellTemplates, ...props.cellTemplates }
+        };
     }
 
     componentDidMount() {

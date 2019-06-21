@@ -47,6 +47,7 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
         return <DynaGrid style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
             cellMatrixProps={this.generateCellMatrix()}
             onDataChanged={changes => this.handleDataChanges(changes)}
+            cellTemplates={{}}
         />
     }
 

@@ -1,15 +1,11 @@
 import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, DataChange } from ".";
 import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
-import { CellData, CellTemplate } from "./PublicModel";
+import { CellData, ICellTemplates } from "./PublicModel";
 import { TextCell } from "../Cells/TextCell";
 import { HeaderCell } from "../Cells/HeaderCell";
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // INTERNAL
-
-interface ICellTemplates {
-    [key: string]: CellTemplate;
-}
 
 export type AsyncStateUpdate = (modifier: (state: State) => State) => void;
 

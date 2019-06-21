@@ -7,6 +7,7 @@ export type SelectionMode = 'row' | 'column' | 'range';
 export interface DynaGridProps {
     readonly cellMatrixProps: CellMatrixProps;
     readonly style?: React.CSSProperties;
+    readonly cellTemplates?: ICellTemplates
     //readonly additionalFocusses: ;
     //usersFocuses: { colIdx: number; rowIdx: number; color: string }[];
     //readonly onInitialized?: (grid: GridController) => void;
@@ -18,6 +19,10 @@ export interface DynaGridProps {
     // readonly onContextMenuRequested?: (menuOptions: MenuOption[]) => void
     // readonly onRowDeletionRequested? : (rowIds: Id[]) => void
     // readonly onColumnDeletionRequested? : (colIds: Id[]) => void
+}
+
+export interface ICellTemplates {
+    [key: string]: CellTemplate;
 }
 
 export interface CellId {
