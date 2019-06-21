@@ -147,12 +147,12 @@ export class DefaultBehavior extends Behavior {
             activeSelectedRange.cols.forEach(col => {
                 const tableCell = tableRow.insertCell()
                 const location = new Location(row, col)
-                tableCell.textContent = (location.cell.cellData ? location.cell.cellData.text : '')  // for undefined values
-                if (!location.cell.cellData) {
+                tableCell.textContent = (location.cell ? location.cell.text : '')  // for undefined values
+                if (!location.cell) {
                     tableCell.innerHTML = '<img>';
                 }
-                tableCell.setAttribute('data-data', JSON.stringify(location.cell.cellData.data))
-                tableCell.setAttribute('data-type', location.cell.cellData.type)
+                tableCell.setAttribute('data-data', JSON.stringify(location.cell.data))
+                tableCell.setAttribute('data-type', location.cell.type)
                 tableCell.style.border = '1px solid #D3D3D3'
                 if (removeValues) {
                     state = trySetDataAndAppendChange(location, { text: '', data: '', type: 'string' }, state);

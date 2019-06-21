@@ -34,7 +34,7 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
     }
     if (!event.ctrlKey && !state.isFocusedCellInEditMode && (event.keyCode == keyCodes.ENTER || (event.keyCode >= keyCodes.ZERO && event.keyCode <= keyCodes.Z) || (event.keyCode >= keyCodes.NUM_PAD_0 && event.keyCode <= keyCodes.DIVIDE) || (event.keyCode >= keyCodes.SEMI_COLON && event.keyCode <= keyCodes.SINGLE_QUOTE) || event.keyCode === keyCodes.SPACE)) {
         // TODO call shouldEnableEditMode on current cell
-        if (state.focusedLocation!.cell.shouldEnableEditMode(event.keyCode)) {
+        if (state.cellTemplates[focusedLocation.cell.type].shouldEnableEditMode(event.keyCode)) {
             return { ...state, isFocusedCellInEditMode: true }
         }
     }
@@ -243,7 +243,7 @@ function handleSpecialKeys(event: KeyboardEvent, state: State) {
         state.selectedRanges.forEach(range =>
             range.rows.forEach((row: Row) =>
                 range.cols.forEach((col: Column) =>
-                    trySetDataAndAppendChange(new Location(row, col), { text: '', data: null, type: 'string' }, state)
+                    trySetDataAndAppendChange(new Location(row, col), { text: '', data: null, type: 'text' }, state)
                 )
             )
         );

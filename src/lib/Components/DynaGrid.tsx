@@ -1,22 +1,25 @@
 import * as React from "react";
-import { DynaGridProps, CellMatrix, PointerEvent, State, AsyncStateUpdate as AsyncStateUpdater, Cell } from "../Common";
+import { DynaGridProps, CellMatrix, PointerEvent, State, AsyncStateUpdate as AsyncStateUpdater, CellTemplate } from "../Common";
 import { PaneRow } from "./PaneRow";
 import { recalcVisibleRange } from "../Functions";
 import { KeyboardEvent, ClipboardEvent } from "../Common";
 import { PointerEventsController } from "../Common/PointerEventsController";
+import { CellEditor } from "./CellEditor";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
+
     private stateUpdater: AsyncStateUpdater = modifier => this.updateOnNewState(modifier(this.state));
     private pointerEventsController = new PointerEventsController(this.stateUpdater)
 
     state = new State(this.stateUpdater);
 
     static getDerivedStateFromProps(props: DynaGridProps, state: State) {
-        if (state.isFocusedCellInEditMode && state.focusedLocation && state.prevState && !state.prevState.isFocusedCellInEditMode) {
+        if (state.isFocusedCellInEditMode && state.focusedLocation) {
             state.prevState = undefined;
             return { ...state, cellMatrix: new CellMatrix(props.cellMatrixProps), editedCell: { ...state.focusedLocation.cell }, prevState: state };
         }
         state.prevState = undefined;
+        state.editedCell = undefined;
         return { ...state, cellMatrix: new CellMatrix(props.cellMatrixProps), prevState: state };
     }
 
@@ -87,15 +90,13 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                             borders={{ top: true }}
                             zIndex={3}
                         />}
-                    <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} onFocus={() => console.trace('hfe')} />
-
+                    <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} />
+                    {this.state.isFocusedCellInEditMode && this.state.editedCell && <CellEditor state={this.state} />}
                 </div>
                 {/* {this.state.currentBehavior.renderGlobalPart && this.state.currentBehavior.renderGlobalPart()} */}
-                {/* {this.state.isFocusedCellInEditMode && this.renderEditor(this.state.editedCell!)} */}
             </div >
         );
     }
-
     private hiddenElementRefHandler = (hiddenFocusElement: HTMLInputElement) => {
         (this.state as State).hiddenFocusElement = hiddenFocusElement;
     }
@@ -132,6 +133,6 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
         if (state === this.state) return;
         this.setState(state);
         // TODO pop changes form state
-        // commitChanges(changes: DataChange[]) { this.grid.props.onDataChanged && this.grid.props.onDataChanged(changes) }
+        // commitChanges(changes: DataChange[]) {this.grid.props.onDataChanged && this.grid.props.onDataChanged(changes)}
     }
 }

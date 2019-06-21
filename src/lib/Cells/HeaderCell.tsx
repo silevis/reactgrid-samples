@@ -1,20 +1,15 @@
 import * as React from 'react';
-import { Cell, CellRenderProps, CellData } from '../Common';
+import { CellTemplate, CellRenderProps, CellData } from '../Common';
 
-export class HeaderCell implements Cell {
-    cellData: CellData;
-
-    constructor(title: string) {
-        this.cellData = { text: title, data: title, type: 'string' }
-    }
+export class HeaderCell implements CellTemplate {
 
     trySetData(cellData: CellData) {
-        return false;
+        return cellData;
     }
 
     shouldEnableEditMode = () => false;
 
     customStyle: React.CSSProperties = { background: '#eee' };
 
-    renderContent: (props: CellRenderProps) => React.ReactNode = (props) => this.cellData.text
+    renderContent: (props: CellRenderProps) => React.ReactNode = (props) => props.cellData.text
 }

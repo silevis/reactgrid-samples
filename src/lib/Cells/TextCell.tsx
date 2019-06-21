@@ -1,17 +1,11 @@
 import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
-import { CellRenderProps as CellRenderProps, Cell, CellData } from '../Common';
+import { CellRenderProps as CellRenderProps, CellTemplate, CellData } from '../Common';
 
-export class TextCell implements Cell {
-    cellData: CellData;
-
-    constructor(value: string) {
-        this.cellData = { text: value, data: value, type: 'string' }
-    }
+export class TextCell implements CellTemplate {
 
     trySetData(cellData: CellData) {
-        this.cellData = { text: cellData.text, data: cellData.text, type: 'string' }
-        return true;
+        return { text: cellData.text, data: cellData.text, type: 'string' }
     }
 
     shouldEnableEditMode = () => true
@@ -20,7 +14,7 @@ export class TextCell implements Cell {
 
     renderContent: (props: CellRenderProps) => React.ReactNode = (props) => {
         if (!props.isInEditMode)
-            return this.cellData.text;
+            return props.cellData.text;
 
         const preserveValueKeyCodes = [0, keyCodes.ENTER];
         return <input
@@ -37,8 +31,8 @@ export class TextCell implements Cell {
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
             }}
-            defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? this.cellData.text : ''}
-            onChange={e => this.cellData = { text: e.currentTarget.value, data: e.currentTarget.value, type: 'string' }}
+            defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? props.cellData.text : ''}
+            onChange={e => props.onCellDataChanged ? props.onCellDataChanged({ text: e.currentTarget.value, data: e.currentTarget.value, type: 'text' }) : console.log(e.currentTarget.value)}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}

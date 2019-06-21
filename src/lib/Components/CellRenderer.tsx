@@ -10,13 +10,12 @@ export interface CellRendererProps {
 export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) => {
     const state = props.state;
     const location = props.location;
-    const cell = location.cell;
+    const cellData = location.cell;
     const borders = props.borders;
     const isFocused = (state.focusedLocation !== undefined) && (state.focusedLocation.col.idx === props.location.col.idx && state.focusedLocation.row.idx === props.location.row.idx);
-    const initialCellData = cell.cellData;
 
     const style: React.CSSProperties = {
-        ...cell.customStyle,
+        // ...cell.customStyle,
         boxSizing: 'border-box',
         whiteSpace: 'nowrap',
         position: 'absolute',
@@ -44,24 +43,11 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
         <div
             className="cell"
             style={style}
-            onBlur={() => {
-                if (props.state.lastKeyCode === keyCodes.ESC && props.state.editedCell) {
-                    // cell.trySetData(props.state.editedCell)
-                } else {
-                    props.state.queuedDataChanges.push({
-                        initialData: initialCellData.data,
-                        newData: cell.cellData.data,
-                        type: cell.cellData.type,
-                        rowId: location.row.id,
-                        columnId: location.col.id
-                    })
-                }
-            }}
-            onKeyDown={e => { if (![keyCodes.ENTER, keyCodes.ESC].includes(e.keyCode)) e.stopPropagation() }}
         >
             {
-                cell.renderContent({
-                    isInEditMode: isFocused && props.state.isFocusedCellInEditMode,
+                state.cellTemplates[cellData.type].renderContent({
+                    cellData: cellData,
+                    isInEditMode: false,
                     lastKeyCode: props.state.lastKeyCode
                 })
             }

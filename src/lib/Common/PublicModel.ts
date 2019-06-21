@@ -44,16 +44,16 @@ export interface CellMatrixProps {
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 // This interface is used for the communication between DynaGrid and a cell
-export interface Cell {
+export interface CellTemplate {
     // Data stored in the cell
-    cellData: CellData;
+    cellData?: CellData;
     // Used by DynaGrid to pass data to a cell. Return true if successful.
-    trySetData(cellData: CellData): boolean;
+    trySetData(cellData: CellData): CellData;
     // Returns true, if the cell is able to switch into edit mode. 
     // The keyCode represents the key pressed on the keyboard, or 1 for a pointer event.
     shouldEnableEditMode(keyCode: number): boolean;
     // Custom styles applied to the cells div element
-    customStyle: React.CSSProperties;
+    customStyle?: React.CSSProperties;
     // Render the cell content
     renderContent(props: CellRenderProps): React.ReactNode;
 }
@@ -70,6 +70,8 @@ export interface CellData {
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface CellRenderProps {
+    cellData: CellData;
+    onCellDataChanged?(cellData: CellData): void;
     readonly isInEditMode: boolean;
     readonly lastKeyCode: number;
 }
@@ -91,7 +93,7 @@ export interface ColumnProps {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface RowProps {
     readonly id: Id;
-    readonly cells: Cell[];
+    cells: CellData[];
     readonly height: number;
     readonly reorderable: boolean;
     readonly canDrop?: (rowIds: Id[], position: DropPosition) => boolean;
