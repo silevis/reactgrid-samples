@@ -243,9 +243,8 @@ function handleEnterKey(event: KeyboardEvent, state: State) {
 }
 
 function handleSpecialKeys(event: KeyboardEvent, state: State) {
-    if (event.keyCode === keyCodes.DELETE || event.keyCode === keyCodes.BACKSPACE) {
+    if (!state.isFocusedCellInEditMode && (event.keyCode === keyCodes.DELETE || event.keyCode === keyCodes.BACKSPACE)) {
         const dataChanges: DataChange[] = []
-        console.log(state.selectedRanges)
         state.selectedRanges.forEach(range =>
             range.rows.forEach((row: Row) =>
                 range.cols.forEach((col: Column) =>
