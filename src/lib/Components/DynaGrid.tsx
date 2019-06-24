@@ -36,6 +36,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
 
     componentDidMount() {
         window.addEventListener('resize', this.windowResizeHandler);
+        this.props.cellMatrixProps.rows.forEach(r => r.cells.forEach(cd => cd.text = this.state.cellTemplates[cd.type].getText(cd)))
         //this.props.onInitialized && this.props.onInitialized(new GridController(this));
     }
 

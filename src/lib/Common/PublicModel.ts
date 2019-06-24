@@ -61,6 +61,8 @@ export interface CellTemplate {
     customStyle?: React.CSSProperties;
     // Render the cell content
     renderContent(props: CellRenderProps): React.ReactNode;
+    // Get the plain text value
+    getText(cellData: CellData): string;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
@@ -68,9 +70,9 @@ export interface CellData {
     // Data type stored in the cell
     readonly type: string;
     // Raw data 
-    readonly data: any;
+    data: any;
     // Text representation of the data
-    readonly text: string;
+    text: string;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 

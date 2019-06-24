@@ -32,8 +32,14 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
     if (isSpecialKeys(key)) {
         return handleSpecialKeys(event, state)
     }
-    if (!event.ctrlKey && !state.isFocusedCellInEditMode && (event.keyCode == keyCodes.ENTER || (event.keyCode >= keyCodes.ZERO && event.keyCode <= keyCodes.Z) || (event.keyCode >= keyCodes.NUM_PAD_0 && event.keyCode <= keyCodes.DIVIDE) || (event.keyCode >= keyCodes.SEMI_COLON && event.keyCode <= keyCodes.SINGLE_QUOTE) || event.keyCode === keyCodes.SPACE)) {
-        // TODO call shouldEnableEditMode on current cell
+    if (!event.ctrlKey &&
+        !state.isFocusedCellInEditMode &&
+        (event.keyCode == keyCodes.ENTER ||
+            (event.keyCode >= keyCodes.ZERO && event.keyCode <= keyCodes.Z) ||
+            (event.keyCode >= keyCodes.NUM_PAD_0 && event.keyCode <= keyCodes.DIVIDE) ||
+            (event.keyCode >= keyCodes.SEMI_COLON && event.keyCode <= keyCodes.SINGLE_QUOTE) ||
+            event.keyCode === keyCodes.SPACE)) {
+
         if (state.cellTemplates[focusedLocation.cell.type].shouldEnableEditMode(event.keyCode)) {
             return { ...state, isFocusedCellInEditMode: true }
         }

@@ -9,6 +9,10 @@ export class HeaderCell implements CellTemplate {
 
     shouldEnableEditMode = () => false;
 
+    getText(cellData: CellData) {
+        return cellData.data;
+    }
+
     customStyle: React.CSSProperties = { background: '#eee' };
 
     renderContent: (props: CellRenderProps) => React.ReactNode = (props) => props.cellData.text

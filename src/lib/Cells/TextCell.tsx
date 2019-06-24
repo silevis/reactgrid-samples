@@ -5,10 +5,14 @@ import { CellRenderProps as CellRenderProps, CellTemplate, CellData } from '../C
 export class TextCell implements CellTemplate {
 
     trySetData(cellData: CellData) {
-        return { text: cellData.text, data: cellData.text, type: 'string' }
+        return { text: cellData.text, data: cellData.text, type: 'text' }
     }
 
     shouldEnableEditMode = () => true
+
+    getText(cellData: CellData) {
+        return cellData.data;
+    }
 
     customStyle: React.CSSProperties = {};
 
@@ -32,7 +36,7 @@ export class TextCell implements CellTemplate {
                 }
             }}
             defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? props.cellData.text : ''}
-            onChange={e => props.onCellDataChanged ? props.onCellDataChanged({ text: e.currentTarget.value, data: e.currentTarget.value, type: 'text' }) : console.log(e.currentTarget.value)}
+            onChange={e => props.onCellDataChanged ? props.onCellDataChanged({ text: e.currentTarget.value, data: e.currentTarget.value, type: 'text' }) : null}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}

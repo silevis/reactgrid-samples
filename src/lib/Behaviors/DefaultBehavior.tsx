@@ -95,7 +95,7 @@ export class DefaultBehavior extends Behavior {
                 pasteContent.push(row)
             }
         } else {
-            pasteContent = event.clipboardData.getData('text/plain').split('\n').map(line => line.split('\t').map(t => ({ text: t, data: t, type: 'string' })))
+            pasteContent = event.clipboardData.getData('text/plain').split('\n').map(line => line.split('\t').map(t => ({ text: t, data: t, type: 'text' })))
         }
 
         if (pasteContent.length === 1 && pasteContent[0].length === 1) {

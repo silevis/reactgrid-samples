@@ -1,8 +1,6 @@
 import * as React from 'react'
 import { ColumnProps, RowProps, CellMatrixProps, DataChange } from '../../lib/Common';
-import { TextCell } from '../../lib/Cells/TextCell';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
-import { HeaderCell } from '../../lib/Cells/HeaderCell';
 
 export class Spreadsheet extends React.Component<{}, { data: string[][], widths: number[] }> {
     constructor(props: {}) {
