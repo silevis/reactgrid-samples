@@ -5,7 +5,7 @@ import { CellRenderProps as CellRenderProps, CellTemplate, CellData } from '../C
 export class TextCell implements CellTemplate {
 
     trySetData(cellData: CellData) {
-        return { text: cellData.text, data: cellData.text, type: 'text' }
+        return { text: this.getText(cellData), data: cellData.text, type: 'text' }
     }
 
     shouldEnableEditMode = () => true

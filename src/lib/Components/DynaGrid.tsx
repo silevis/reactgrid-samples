@@ -102,7 +102,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                             borders={{ top: true }}
                             zIndex={3}
                         />}
-                    <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} onFocus={() => console.log('hfe')} />
+                    <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} />
                     {this.state.isFocusedCellInEditMode && this.state.editedCell && <CellEditor state={this.state} />}
                 </div>
                 {/* {this.state.currentBehavior.renderGlobalPart && this.state.currentBehavior.renderGlobalPart()} */}

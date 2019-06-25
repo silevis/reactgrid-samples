@@ -1,5 +1,5 @@
 import * as React from "react";
-import { State, CellData, keyCodes } from "../Common";
+import { State, CellData, keyCodes, Location, CellMatrix } from "../Common";
 
 interface CellEditorProps {
     state: State;
@@ -7,11 +7,15 @@ interface CellEditorProps {
 
 export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
     const [cellData, setCellData] = React.useState(props.state.editedCell!)
+    const [position, setPosition] = React.useState({ left: 0, top: 0 })
     const location = props.state.focusedLocation!;
     let lastKeyCode = props.state.lastKeyCode;
+
+    React.useEffect(() => setPosition(calculateEditorPosition(location, props.state)), [])
+
     return (
         <div
-            style={{ boxSizing: 'border-box', position: 'fixed', top: 100, left: 240, height: location.row.height, width: location.col.width, border: '2px red solid' }}
+            style={{ boxSizing: 'border-box', position: 'fixed', top: position.top, left: position.left, height: location.row.height, width: location.col.width, border: '2px red solid' }}
             onBlur={() => { props.state.cellMatrix.rows[location.row.idx].cells[location.col.idx] = cellData }}
             onKeyDownCapture={e => lastKeyCode = e.keyCode}
             onKeyDown={e => {
@@ -28,4 +32,21 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
             })}
         </div>
     )
+}
+
+const calculateEditorPosition = (location: Location, state: State) => {
+    let x_offset = 0;
+    let y_offset = 0;
+    if (location.col.idx >= state.cellMatrix.frozenRightRange.first.col.idx) {
+        x_offset = Math.min(state.cellMatrix.width, state.viewportElement.clientWidth) - state.cellMatrix.frozenRightRange.width
+    } else if (location.col.idx > state.cellMatrix.frozenLeftRange.last.col.idx) {
+        x_offset = state.cellMatrix.frozenLeftRange.width - state.viewportElement.scrollLeft;
+    }
+
+    if (location.row.idx >= state.cellMatrix.frozenBottomRange.first.row.idx) {
+        y_offset = Math.min(state.cellMatrix.height, state.viewportElement.clientHeight) - state.cellMatrix.frozenBottomRange.height
+    } else if (location.row.idx > state.cellMatrix.frozenTopRange.last.row.idx) {
+        y_offset = state.cellMatrix.frozenTopRange.height - state.viewportElement.scrollTop;
+    }
+    return { left: location.col.left + x_offset, top: location.row.top + y_offset }
 }

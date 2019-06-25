@@ -72,7 +72,7 @@ export interface CellData {
     // Raw data 
     data: any;
     // Text representation of the data
-    text: string;
+    text?: string;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 

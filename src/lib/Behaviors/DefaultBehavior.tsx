@@ -147,7 +147,7 @@ export class DefaultBehavior extends Behavior {
             activeSelectedRange.cols.forEach(col => {
                 const tableCell = tableRow.insertCell()
                 const location = new Location(row, col)
-                tableCell.textContent = (location.cell ? location.cell.text : '')  // for undefined values
+                tableCell.textContent = (location.cell ? state.cellTemplates[location.cell.type].getText(location.cell) : null)  // for undefined values
                 if (!location.cell) {
                     tableCell.innerHTML = '<img>';
                 }
