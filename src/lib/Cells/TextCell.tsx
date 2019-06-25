@@ -18,7 +18,7 @@ export class TextCell implements CellTemplate {
 
     renderContent: (props: CellRenderProps) => React.ReactNode = (props) => {
         if (!props.isInEditMode)
-            return props.cellData.text;
+            return this.getText(props.cellData);
 
         const preserveValueKeyCodes = [0, keyCodes.ENTER];
         return <input
@@ -35,7 +35,7 @@ export class TextCell implements CellTemplate {
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
             }}
-            defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? props.cellData.text : ''}
+            defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? this.getText(props.cellData) : ''}
             onChange={e => props.onCellDataChanged ? props.onCellDataChanged({ text: e.currentTarget.value, data: e.currentTarget.value, type: 'text' }) : null}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}

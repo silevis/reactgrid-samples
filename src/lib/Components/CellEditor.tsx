@@ -6,16 +6,17 @@ interface CellEditorProps {
 }
 
 export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
+
+    React.useEffect(() => setPosition(calculateEditorPosition(location, props.state)), [])
+
     const [cellData, setCellData] = React.useState(props.state.editedCell!)
     const [position, setPosition] = React.useState({ left: 0, top: 0 })
     const location = props.state.focusedLocation!;
     let lastKeyCode = props.state.lastKeyCode;
 
-    React.useEffect(() => setPosition(calculateEditorPosition(location, props.state)), [])
-
     return (
         <div
-            style={{ boxSizing: 'border-box', position: 'fixed', top: position.top, left: position.left, height: location.row.height, width: location.col.width, border: '2px red solid' }}
+            style={{ boxSizing: 'border-box', position: 'fixed', top: position.top, left: position.left, height: location.row.height, width: location.col.width, border: '2px #3579f8 solid', boxShadow: '2px 3px 8px #999' }}
             onBlur={() => { props.state.cellMatrix.rows[location.row.idx].cells[location.col.idx] = cellData }}
             onKeyDownCapture={e => lastKeyCode = e.keyCode}
             onKeyDown={e => {

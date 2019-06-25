@@ -39,6 +39,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
             : 'solid 1px #e5e5e5',
         touchAction: isFocused ? 'none' : 'auto' // prevent scrolling
     }
+    console.log(cellData)
     return (
         <div
             className="cell"
