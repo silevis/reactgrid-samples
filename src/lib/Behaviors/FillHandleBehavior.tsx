@@ -119,7 +119,7 @@ export class FillHandleBehavior extends Behavior {
                 );
                 this.fillRange.rows.forEach((row: Row, i: number) =>
                     this.fillRange!.cols.forEach((col: Column) => {
-                        state = trySetDataAndAppendChange(new Location(row, col), values[i].cellData, state)
+                        state = trySetDataAndAppendChange(new Location(row, col), values[i].cellData, state.cellTemplates[values[i].type].cellDataToText(values[i].cellData), state)
                     })
                 );
                 state = {
@@ -133,7 +133,10 @@ export class FillHandleBehavior extends Behavior {
                 );
                 this.fillRange.rows.forEach((row: Row, i: number) =>
                     this.fillRange!.cols.forEach((col: Column) =>
-                        state = trySetDataAndAppendChange(new Location(row, col), values[i].cellData, state)
+                        state = trySetDataAndAppendChange(new Location(row, col),
+                            values[i].cellData,
+                            state.cellTemplates[values[i].type].cellDataToText(values[i].cellData),
+                            state)
                     )
                 );
                 state = {
@@ -147,7 +150,10 @@ export class FillHandleBehavior extends Behavior {
                 );
                 this.fillRange.rows.forEach((row: Row) =>
                     this.fillRange!.cols.forEach((col: Column, i: number) =>
-                        state = trySetDataAndAppendChange(new Location(row, col), values[i].cellData, state)
+                        state = trySetDataAndAppendChange(new Location(row, col),
+                            values[i].cellData,
+                            state.cellTemplates[values[i].type].cellDataToText(values[i].cellData),
+                            state)
                     )
                 );
                 state = {
@@ -161,7 +167,10 @@ export class FillHandleBehavior extends Behavior {
                 );
                 this.fillRange.rows.forEach((row: Row) =>
                     this.fillRange!.cols.forEach((col: Column, i: number) =>
-                        state = trySetDataAndAppendChange(new Location(row, col), values[i].cellData, state)
+                        state = trySetDataAndAppendChange(new Location(row, col),
+                            values[i].cellData,
+                            state.cellTemplates[values[i].type].cellDataToText(values[i].cellData),
+                            state)
                     )
                 );
                 state = {

@@ -22,7 +22,7 @@ export interface DynaGridProps {
 }
 
 export interface ICellTemplates {
-    [key: string]: CellTemplate;
+    [key: string]: CellTemplate<any>;
 }
 
 export interface CellId {
@@ -49,36 +49,34 @@ export interface CellMatrixProps {
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 // This interface is used for the communication between DynaGrid and a cell
-export interface CellTemplate {
-    // Data stored in the cell
-    cellData?: CellData;
-    // Used by DynaGrid to pass data to a cell. Return true if successful.
-    trySetData(cellData: CellData): CellData;
+export interface CellTemplate<TCellData> {
+    // Convert plain text to cell data
+    textToCellData(text: string): TCellData
+    // Convert cell data to plain text
+    cellDataToText(cellData: TCellData): string;
     // Returns true, if the cell is able to switch into edit mode. 
     // The keyCode represents the key pressed on the keyboard, or 1 for a pointer event.
     shouldEnableEditMode(keyCode: number): boolean;
     // Custom styles applied to the cells div element
     customStyle?: React.CSSProperties;
     // Render the cell content
-    renderContent(props: CellRenderProps): React.ReactNode;
-    // Get the plain text value
-    getText(cellData: CellData): string;
+    renderContent(props: CellRenderProps<TCellData>): React.ReactNode;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export interface CellData {
+export interface CellData<TCellData> {
     // Data type stored in the cell
     readonly type: string;
     // Raw data 
-    data: any;
+    data: TCellData;
     // Text representation of the data
-    text?: string;
+    //text?: string;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
-export interface CellRenderProps {
-    cellData: CellData;
-    onCellDataChanged?(cellData: CellData): void;
+export interface CellRenderProps<TCellData> {
+    cellData: TCellData;
+    onCellDataChanged?(cellData: TCellData): void;
     readonly isInEditMode: boolean;
     readonly lastKeyCode: number;
 }
@@ -100,7 +98,7 @@ export interface ColumnProps {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface RowProps {
     readonly id: Id;
-    cells: CellData[];
+    cells: CellData<any>[];
     readonly height: number;
     readonly reorderable: boolean;
     readonly canDrop?: (rowIds: Id[], position: DropPosition) => boolean;

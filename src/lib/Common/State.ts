@@ -1,8 +1,8 @@
 import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, DataChange } from ".";
 import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
 import { CellData, ICellTemplates } from "./PublicModel";
-import { TextCell } from "../Cells/TextCell";
-import { HeaderCell } from "../Cells/HeaderCell";
+import { TextCellTemplate } from "../Cells/TextCellTemplate";
+import { HeaderCell as HeaderCellTemplate } from "../Cells/HeaderCellTemplate";
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // INTERNAL
@@ -16,15 +16,15 @@ export class State {
     readonly currentBehavior: Behavior = new DefaultBehavior();
 
     cellTemplates: ICellTemplates = {
-        'text': new TextCell(),
-        'header': new HeaderCell(),
+        'text': new TextCellTemplate(),
+        'header': new HeaderCellTemplate(),
     }
 
     hiddenFocusElement!: HTMLDivElement;
     readonly viewportElement!: HTMLDivElement;
     lastKeyCode: number = 0;
     readonly queuedDataChanges: DataChange[] = [];
-    editedCell?: CellData;
+    editedCell?: CellData<any>;
 
     // LINE AND SHADOW
     lineOrientation: Orientation = 'horizontal';

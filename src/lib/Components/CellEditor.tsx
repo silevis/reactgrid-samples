@@ -16,7 +16,7 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
 
     return (
         <div
-            style={{ boxSizing: 'border-box', position: 'fixed', top: position.top, left: position.left, height: location.row.height, width: location.col.width, border: '2px #3579f8 solid', boxShadow: '2px 3px 8px #999' }}
+            style={{ boxSizing: 'border-box', position: 'fixed', top: position.top, left: position.left, height: location.row.height, width: location.col.width, border: '2px #3579f8 solid', boxShadow: '1px 1px 6px rgba(0, 0, 0, 0.2)' }}
             onBlur={() => { props.state.cellMatrix.rows[location.row.idx].cells[location.col.idx] = cellData }}
             onKeyDownCapture={e => lastKeyCode = e.keyCode}
             onKeyDown={e => {
@@ -26,10 +26,10 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
             }}
         >
             {props.state.cellTemplates[cellData.type].renderContent({
-                cellData: cellData,
+                cellData: cellData.data,
                 isInEditMode: true,
                 lastKeyCode: lastKeyCode,
-                onCellDataChanged: (cd: CellData) => { setCellData(cd) }
+                onCellDataChanged: (cd) => { setCellData({ data: cd, type: cellData.type }) }
             })}
         </div>
     )
