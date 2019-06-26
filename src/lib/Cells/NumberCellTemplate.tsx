@@ -20,8 +20,10 @@ export class NumberCellTemplate implements CellTemplate<number> {
     customStyle: React.CSSProperties = {};
 
     renderContent: (props: CellRenderProps<number>) => React.ReactNode = (props) => {
-        if (!props.isInEditMode)
-            return props.cellData;
+        if (!props.isInEditMode) {
+            return isNaN(props.cellData) ? '' : props.cellData;
+        }
+
 
         const preserveValueKeyCodes = [0, keyCodes.ENTER];
         return <input
@@ -38,7 +40,7 @@ export class NumberCellTemplate implements CellTemplate<number> {
                     // input.setSelectionRange(input.value.length, input.value.length);
                 }
             }}
-            defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? this.cellDataToText(props.cellData) : ''}
+            defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) && !isNaN(props.cellData) ? (this.cellDataToText(props.cellData)) : ''}
             onChange={e => props.onCellDataChanged ? props.onCellDataChanged(this.textToCellData(e.currentTarget.value)) : null}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}

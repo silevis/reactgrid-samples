@@ -95,7 +95,7 @@ export class DefaultBehavior extends Behavior {
                 for (let j = 0; j < cells[i].children.length; j++) {
                     const data = JSON.parse(cells[i].children[j].getAttribute('data-data')!)
                     const type = cells[i].children[j].getAttribute('data-type')
-                    const textValue = cells[i].children[j].innerHTML
+                    const textValue = data ? cells[i].children[j].innerHTML : '';
                     row.push({ text: textValue, data: data, type: type! })
                 }
                 pasteContent.push(row)
