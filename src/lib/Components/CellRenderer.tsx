@@ -46,7 +46,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
         >
             {
                 state.cellTemplates[cellData.type].renderContent({
-                    cellData: cellData.data,
+                    cellData: state.cellTemplates[cellData.type].validate(cellData.data),
                     isInEditMode: false,
                     lastKeyCode: props.state.lastKeyCode
                 })

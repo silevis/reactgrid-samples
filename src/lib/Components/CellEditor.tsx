@@ -1,5 +1,5 @@
 import * as React from "react";
-import { State, CellData, keyCodes, Location, CellMatrix } from "../Common";
+import { State, keyCodes, Location, CellMatrix } from "../Common";
 
 interface CellEditorProps {
     state: State;
@@ -9,7 +9,7 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
 
     React.useEffect(() => setPosition(calculateEditorPosition(location, props.state)), [])
 
-    const [cellData, setCellData] = React.useState(props.state.editedCell!)
+    const [cellData, setCellData] = React.useState(props.state.editedCellData!)
     const [position, setPosition] = React.useState({ left: 0, top: 0 })
     const location = props.state.focusedLocation!;
     let lastKeyCode = props.state.lastKeyCode;
@@ -17,16 +17,16 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
     return (
         <div
             style={{ boxSizing: 'border-box', position: 'fixed', top: position.top, left: position.left, height: location.row.height, width: location.col.width, border: '2px #3579f8 solid', boxShadow: '1px 1px 6px rgba(0, 0, 0, 0.2)' }}
-            onBlur={() => { props.state.cellMatrix.rows[location.row.idx].cells[location.col.idx] = cellData }}
-            onKeyDownCapture={e => lastKeyCode = e.keyCode}
+            onBlur={() => { if (lastKeyCode != keyCodes.ESC) props.state.cellMatrix.rows[location.row.idx].cells[location.col.idx] = cellData }}
             onKeyDown={e => {
+                lastKeyCode = e.keyCode
                 if (e.keyCode !== keyCodes.ENTER && e.keyCode !== keyCodes.ESC) {
                     e.stopPropagation()
                 }
             }}
         >
             {props.state.cellTemplates[cellData.type].renderContent({
-                cellData: cellData.data,
+                cellData: props.state.cellTemplates[cellData.type].validate(cellData.data),
                 isInEditMode: true,
                 lastKeyCode: lastKeyCode,
                 onCellDataChanged: (cd) => { setCellData({ data: cd, type: cellData.type }) }

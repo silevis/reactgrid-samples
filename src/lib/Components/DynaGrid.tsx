@@ -19,13 +19,13 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
             return {
                 ...state,
                 cellMatrix: new CellMatrix(props.cellMatrixProps),
-                editedCell: { ...state.focusedLocation.cell },
+                editedCellData: { ...state.focusedLocation.cell },
                 prevState: state,
                 cellTemplates: { ...state.cellTemplates, ...props.cellTemplates }
             };
         }
         state.prevState = undefined;
-        state.editedCell = undefined;
+        state.editedCellData = undefined;
         return {
             ...state,
             cellMatrix: new CellMatrix(props.cellMatrixProps),
@@ -102,7 +102,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                             zIndex={3}
                         />}
                     <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} />
-                    {this.state.isFocusedCellInEditMode && this.state.editedCell && <CellEditor state={this.state} />}
+                    {this.state.isFocusedCellInEditMode && this.state.editedCellData && <CellEditor state={this.state} />}
                 </div>
                 {/* {this.state.currentBehavior.renderGlobalPart && this.state.currentBehavior.renderGlobalPart()} */}
             </div >

@@ -50,6 +50,7 @@ export interface CellMatrixProps {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 // This interface is used for the communication between DynaGrid and a cell
 export interface CellTemplate<TCellData> {
+    validate(data: any): TCellData
     // Convert plain text to cell data
     textToCellData(text: string): TCellData
     // Convert cell data to plain text
@@ -63,15 +64,15 @@ export interface CellTemplate<TCellData> {
     renderContent(props: CellRenderProps<TCellData>): React.ReactNode;
 }
 
-// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export interface CellData<TCellData> {
-    // Data type stored in the cell
-    readonly type: string;
-    // Raw data 
-    data: TCellData;
-    // Text representation of the data
-    //text?: string;
-}
+// // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
+// export interface CellData<TCellData> {
+//     // Data type stored in the cell
+//     readonly type: string;
+//     // Raw data 
+//     readonly data: TCellData;
+//     // Text representation of the data
+//     ///readonly text: string;
+// }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface CellRenderProps<TCellData> {
@@ -98,7 +99,7 @@ export interface ColumnProps {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface RowProps {
     readonly id: Id;
-    cells: CellData<any>[];
+    cells: { type: string, data: any }[];
     readonly height: number;
     readonly reorderable: boolean;
     readonly canDrop?: (rowIds: Id[], position: DropPosition) => boolean;

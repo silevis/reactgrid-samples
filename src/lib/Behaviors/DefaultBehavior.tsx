@@ -1,4 +1,4 @@
-import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, CellData, DataChange, PointerLocation } from "../Common";
+import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, DataChange, PointerLocation } from "../Common";
 import { handleKeyDown as handleKeyDown } from "./DefaultBehavior/handleKeyDown";
 import { changeBehavior } from "../Functions";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
@@ -9,7 +9,9 @@ import { RowReorderBehavior } from "./RowReorderBehavior";
 import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
 import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChange";
 
-interface ClipboardData extends CellData<any> {
+interface ClipboardData {
+    type: string;
+    data: any;
     text: string;
 }
 
@@ -105,7 +107,7 @@ export class DefaultBehavior extends Behavior {
         if (pasteContent.length === 1 && pasteContent[0].length === 1) {
             activeSelectedRange.rows.forEach(row =>
                 activeSelectedRange.cols.forEach(col => {
-                    state = trySetDataAndAppendChange(new Location(row, col), pasteContent[0][0], pasteContent[0][0].text, state)
+                    state = trySetDataAndAppendChange(new Location(row, col), pasteContent[0][0].data, pasteContent[0][0].type, pasteContent[0][0].text, state)
                 })
             )
         } else {
@@ -113,11 +115,12 @@ export class DefaultBehavior extends Behavior {
             const cellMatrix = state.cellMatrix
             pasteContent.forEach((row, pasteRowIdx) =>
                 row.forEach((pasteValue: ClipboardData, pasteColIdx: number) => {
+                    console.log(pasteValue)
                     const rowIdx = activeSelectedRange.rows[0].idx + pasteRowIdx
                     const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx
                     if (rowIdx <= cellMatrix.last.row.idx && colIdx <= cellMatrix.last.col.idx) {
                         lastLocation = cellMatrix.getLocation(rowIdx, colIdx)
-                        state = trySetDataAndAppendChange(lastLocation, pasteValue, pasteValue.text, state)
+                        state = trySetDataAndAppendChange(lastLocation, pasteValue.data, pasteValue.type, pasteValue.text, state)
                     }
                 })
             )
@@ -151,15 +154,16 @@ export class DefaultBehavior extends Behavior {
             activeSelectedRange.cols.forEach(col => {
                 const tableCell = tableRow.insertCell()
                 const location = new Location(row, col)
-                tableCell.textContent = (location.cell ? state.cellTemplates[location.cell.type].cellDataToText(location.cell) : null)  // for undefined values
-                if (!location.cell) {
+                const data = state.cellTemplates[location.cell.type].validate(location.cell.data)
+                tableCell.textContent = data;  // for undefined values
+                if (!location.cell.data) {
                     tableCell.innerHTML = '<img>';
                 }
-                tableCell.setAttribute('data-data', JSON.stringify(location.cell.data))
+                tableCell.setAttribute('data-data', JSON.stringify(data))
                 tableCell.setAttribute('data-type', location.cell.type)
                 tableCell.style.border = '1px solid #D3D3D3'
                 if (removeValues) {
-                    state = trySetDataAndAppendChange(location, { data: '', type: 'text' }, '', state);
+                    state = trySetDataAndAppendChange(location, '', 'text', '', state);
                 }
             })
         })

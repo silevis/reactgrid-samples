@@ -248,7 +248,7 @@ function handleSpecialKeys(event: KeyboardEvent, state: State) {
         state.selectedRanges.forEach(range =>
             range.rows.forEach((row: Row) =>
                 range.cols.forEach((col: Column) =>
-                    trySetDataAndAppendChange(new Location(row, col), { data: null, type: 'text' }, '', state)
+                    trySetDataAndAppendChange(new Location(row, col), '', 'text', '', state)
                 )
             )
         );
