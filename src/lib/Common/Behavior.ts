@@ -2,6 +2,7 @@ import * as React from "react";
 import { PointerLocation, State } from "./";
 import { KeyboardEvent, ClipboardEvent, PointerEvent } from "./domEvents";
 import { Direction } from "./PublicModel";
+import { Range } from "./Range";
 
 // IMPORTANT !! PLEASE DO NOT INTRODUCE CHANGE WITHOUT TALKING TO ARCHITECT !!
 export abstract class Behavior {
@@ -16,6 +17,7 @@ export abstract class Behavior {
     handlePointerUp(event: PointerEvent, location: PointerLocation, state: State): State { return state }
     handleDoubleClick(event: PointerEvent, location: PointerLocation, state: State): State { return state }
     handleContextMenu(event: PointerEvent): void { event.preventDefault(); event.stopPropagation(); }
+    renderPanePart(pane: Range): React.ReactNode { return undefined }
     dispose(): void { }
     autoScrollDirection: Direction = 'both';
 }

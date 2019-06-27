@@ -8,6 +8,7 @@ import { PointerEventsController } from "../Common/PointerEventsController";
 export class DynaGrid extends React.Component<DynaGridProps, State> {
     private stateUpdater: AsyncStateUpdater = modifier => this.updateOnNewState(modifier(this.state));
     private pointerEventsController = new PointerEventsController(this.stateUpdater)
+    private currentState!: State;
 
     state = new State(this.stateUpdater);
 
@@ -87,7 +88,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                             borders={{ top: true }}
                             zIndex={3}
                         />}
-                    <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} onFocus={() => console.trace('hfe')} />
+                    <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} /*onFocus={() => console.trace('hfe')}*/ />
 
                 </div>
                 {/* {this.state.currentBehavior.renderGlobalPart && this.state.currentBehavior.renderGlobalPart()} */}
@@ -119,7 +120,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     }
 
     private viewportElementRefHandler = (viewportElement: HTMLDivElement) => viewportElement && this.updateOnNewState(recalcVisibleRange({ ...this.state, viewportElement }));
-    private pointerDownHandler = (event: PointerEvent) => this.updateOnNewState(this.pointerEventsController.handlePointerDown(event, this.state));
+    private pointerDownHandler = (event: PointerEvent) => this.updateOnNewState(this.pointerEventsController.handlePointerDown(event, this.currentState));
     private windowResizeHandler = () => this.updateOnNewState(recalcVisibleRange(this.state));
     private keyDownHandler = (event: KeyboardEvent) => this.updateOnNewState(this.state.currentBehavior.handleKeyDown(event, this.state));
     private keyUpHandler = (event: KeyboardEvent) => this.updateOnNewState(this.state.currentBehavior.handleKeyUp(event, this.state));
@@ -131,6 +132,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     private updateOnNewState(state: State) {
         if (state === this.state) return;
         this.setState(state);
+        this.currentState = state;
         // TODO pop changes form state
         // commitChanges(changes: DataChange[]) { this.grid.props.onDataChanged && this.grid.props.onDataChanged(changes) }
     }

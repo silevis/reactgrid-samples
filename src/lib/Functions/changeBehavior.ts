@@ -1,7 +1,7 @@
 import { State, Behavior } from "../Common";
 
 export function changeBehavior(state: State, behavior: Behavior): State {
-    // console.log(behavior)
+    console.log(behavior)
     state.currentBehavior.dispose();
     state.hiddenFocusElement.focus();
     return {

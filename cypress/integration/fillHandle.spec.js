@@ -19,6 +19,6 @@ context('Filling', () => {
         Utils.fillCells(500, 100);
         Utils.fillCells(700, 300);
         Utils.fillCells(500, 500);
-        Utils.fillCells(100, 300);
+        Utils.fillCells(200, 300);
     });
 });

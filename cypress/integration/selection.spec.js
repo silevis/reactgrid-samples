@@ -34,11 +34,11 @@ context('Selection', () => {
         Utils.selectCell(700, 10);
     });
 
-    it('Select columns with ctrl', () => {
-        Utils.selectCell(100, 10);
-        Utils.selectCell(500, 10, { ctrlKey: true });
-        Utils.selectCell(700, 10, { ctrlKey: true });
-    });
+    // it('Select columns with ctrl', () => {
+    //     Utils.selectCell(100, 10);
+    //     Utils.selectCell(500, 10, { ctrlKey: true });
+    //     Utils.selectCell(700, 10, { ctrlKey: true });
+    // });
 
     it('Select many colums', () => {
         Utils.selectRange(100, 10, 500, 10);
@@ -50,11 +50,11 @@ context('Selection', () => {
         Utils.selectCell(10, 500);
     });
 
-    it('Select rows with ctrl', () => {
-        Utils.selectCell(10, 50);
-        Utils.selectCell(10, 200, { ctrlKey: true });
-        Utils.selectCell(10, 500, { ctrlKey: true });
-    });
+    // it('Select rows with ctrl', () => {
+    //     Utils.selectCell(10, 50);
+    //     Utils.selectCell(10, 200, { ctrlKey: true });
+    //     Utils.selectCell(10, 500, { ctrlKey: true });
+    // });
 
     it('Select many rows', () => {
         Utils.selectRange(10, 50, 10, 500);
@@ -63,36 +63,31 @@ context('Selection', () => {
     it('Select many one cell ranges, ctrl key pressed', () => {
         Utils.selectCell(500, 100);
         Utils.selectCell(500, 200, { ctrlKey: true });
-        Utils.selectCell(100, 140, { ctrlKey: true });
-        Utils.selectCell(800, 140, { ctrlKey: true });
+        Utils.selectCell(200, 140, { ctrlKey: true });
+        Utils.selectCell(600, 350, { ctrlKey: true });
     });
 
     it('Select one range, selection range should be changed, shift key pressed', () => {
         Utils.selectCell(500, 100);
-        Utils.selectCell(100, 140, { shiftKey: true });
+        Utils.selectCell(200, 140, { shiftKey: true });
         Utils.selectCell(500, 300, { shiftKey: true });
         Utils.selectCell(800, 140, { shiftKey: true });
+        Utils.selectCell(500, 40, { shiftKey: true });
     });
 
-    it('Select many one cell ranges, shift key pressed', () => {
-        Utils.selectCell(500, 100);
+    // it('Select many one cell ranges, shift key pressed', () => {
+    //     Utils.selectCell(500, 100);
+    //     Utils.selectCell(500, 300, { ctrlKey: true });
+    //     Utils.selectCell(800, 140, { shiftKey: true });
+    //     Utils.selectCell(800, 330, { ctrlKey: true });
+    //     Utils.selectCell(600, 500, { shiftKey: true });
+    // });
 
-        Utils.selectCell(500, 300, { ctrlKey: true });
-        Utils.selectCell(800, 140, { shiftKey: true });
-        Utils.selectCell(800, 330, { ctrlKey: true });
-        Utils.selectCell(600, 500, { shiftKey: true });
-    });
-
-    it('Select many cell by shift + arrow press', () => {
-        Utils.selectCell(500, 100);
-        Utils.keyDown(Constants.keyCodes.ArrowDown, 1, { shiftKey: true, force: true });
-        Utils.keyDown(Constants.keyCodes.ArrowDown, 1, { shiftKey: true, force: true });
-        Utils.keyDown(Constants.keyCodes.ArrowUp, 1, { shiftKey: true, force: true });
-        Utils.keyDown(Constants.keyCodes.ArrowUp, 1, { shiftKey: true, force: true });
-        Utils.keyDown(Constants.keyCodes.ArrowUp, 1, { shiftKey: true, force: true });
-        Utils.keyDown(Constants.keyCodes.ArrowLeft, 1, { shiftKey: true, force: true });
-        Utils.keyDown(Constants.keyCodes.ArrowRight, 1, { shiftKey: true, force: true });
-        Utils.keyDown(Constants.keyCodes.ArrowRight, 1, { shiftKey: true, force: true });
-        Utils.keyDown(Constants.keyCodes.ArrowRight, 1, { shiftKey: true, force: true });
+    it('Shift key pressed + arrows should resize selection range', () => {
+        Utils.selectCell(300, 250);
+        for (var i = 0; i < 3; i++) Utils.keyDown(Constants.keyCodes.ArrowUp, { shiftKey: true, force: true });
+        for (var i = 0; i < 2; i++) Utils.keyDown(Constants.keyCodes.ArrowRight, { shiftKey: true, force: true });
+        for (var i = 0; i < 4; i++) Utils.keyDown(Constants.keyCodes.ArrowLeft, { shiftKey: true, force: true });
+        for (var i = 0; i < 6; i++) Utils.keyDown(Constants.keyCodes.ArrowDown, { shiftKey: true, force: true });
     });
 });

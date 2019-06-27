@@ -15,7 +15,7 @@ export class FillHandleBehavior extends Behavior {
         const selectedRange = getActiveSelectedRange(state);
         this.fillDirection = this.getFillDirection(selectedRange, location)
         this.fillRange = this.getFillRange(state.cellMatrix, selectedRange, location, this.fillDirection)
-        return state;
+        return { ...state };
     }
 
     private getFillDirection(selectedRange: Range, pointerLocation: Location) {

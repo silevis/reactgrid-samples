@@ -17,7 +17,7 @@ export const Pane: React.FunctionComponent<PaneProps> = (props) =>
     <div key={props.id} className="dg-pane" style={{ position: 'relative', width: props.range.width, height: '100%', ...props.style }}>
         {props.range.rows.map((row) => <RowRenderer key={row.idx} state={props.state} row={row} columns={props.range.cols} forceUpdate={true} borders={{ ...props.borders, top: props.borders.top && row.top === 0, bottom: props.borders.bottom && row.idx === props.range.last.row.idx }} />)}
         {renderSelectedRanges(props.state, props.range)}
-        {/* {props.state.currentBehavior.renderPanePart(props.range)} */}
+        {props.state.currentBehavior.renderPanePart(props.range)}
         {props.state.focusedLocation && props.range.contains(props.state.focusedLocation) &&
             <CellFocus location={props.state.focusedLocation} />}
         {props.state.selectedRanges[props.state.activeSelectedRangeIdx] && props.range.contains(props.state.selectedRanges[props.state.activeSelectedRangeIdx].last) &&

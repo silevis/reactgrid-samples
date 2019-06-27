@@ -10,7 +10,7 @@ class Utils {
             cy.get('[data-cy=dyna-grid]').trigger('pointerdown', clientX, clientY);
         }
         cy.get('[data-cy=dyna-grid]').trigger('pointerup', { force: true });
-        cy.wait(100);
+        cy.wait(200);
     }
 
     selectCellInEditMode(clientX, clientY) {
@@ -32,7 +32,7 @@ class Utils {
 
         cy.get('[data-cy=dyna-grid]').trigger('pointermove', toX, toY);
         cy.get('[data-cy=dyna-grid]').trigger('pointerup', { force: true });
-        cy.wait(100);
+        cy.wait(200);
     }
 
     selectCellByTouch(clientX, clientY) {
@@ -56,8 +56,9 @@ class Utils {
     fillCells(toX, toY) {
         cy.get('[data-cy=dg-fill-handle]').trigger('pointerdown', { force: true });
         cy.get('[data-cy=dyna-grid]').trigger('pointermove', { clientX: toX, clientY: toY, force: true });
-        cy.get('[data-cy=dyna-grid]').trigger('pointerup', { force: true });
-        cy.wait(100);
+        cy.wait(200);
+        cy.get('[data-cy=dyna-grid]').trigger('pointerup', { clientX: toX, clientY: toY, force: true });
+        cy.wait(200);
     }
 
     fillCellsByTouch(fromX, fromY, toX, toY, type, autoScroll = false) {
@@ -165,19 +166,17 @@ class Utils {
         }
     }
 
-    keyDown(keyCode, times = 1, customEventArgs) {
-        while (times > 0) {
-            if (customEventArgs != undefined) {
-                cy.get('[data-cy=dyna-grid]').trigger(
-                    'keydown',
-                    Object.assign({}, { keyCode: keyCode }, customEventArgs)
-                );
-            } else {
-                cy.get('[data-cy=dyna-grid]').trigger('keydown', { keyCode: keyCode });
-            }
-            times--;
+    keyDown(keyCode, customEventArgs) {
+        if (customEventArgs != undefined) {
+            cy.get('[data-cy=dyna-grid]').trigger(
+                'keydown',
+                Object.assign({}, { keyCode: keyCode }, customEventArgs)
+            );
+        } else {
+            cy.get('[data-cy=dyna-grid]').trigger('keydown', { keyCode: keyCode });
         }
         cy.get('[data-cy=dyna-grid]').trigger('keyup', { force: true })
+        cy.wait(200);
     }
 }
 var utils = new Utils();
