@@ -41,10 +41,8 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
             }}
             data-cy="dg-fill-handle"
             onPointerDown={event => {
-                console.log(event)
                 event.preventDefault();
                 event.stopPropagation();
-                console.log(event.pointerType)
                 if (event.pointerType === 'mouse' && event.pointerType === undefined) { // !== undefined only for cypress tests
                     props.state.updateState(state => changeBehavior(state, new FillHandleBehavior()));
 

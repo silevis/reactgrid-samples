@@ -4,6 +4,7 @@ import { ICellTemplates } from "./PublicModel";
 import { TextCellTemplate } from "../Cells/TextCellTemplate";
 import { HeaderCellTemplate } from "../Cells/HeaderCellTemplate";
 import { NumberCellTemplate } from "../Cells/NumberCellTemplate";
+import { CheckboxCellTemplate } from "../Cells/CheckboxCellTemplate";
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // INTERNAL
@@ -20,6 +21,7 @@ export class State {
         'text': new TextCellTemplate(),
         'number': new NumberCellTemplate(),
         'header': new HeaderCellTemplate(),
+        'checkbox': new CheckboxCellTemplate(),
     }
 
     hiddenFocusElement!: HTMLDivElement;

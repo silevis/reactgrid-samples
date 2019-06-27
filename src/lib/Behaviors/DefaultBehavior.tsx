@@ -115,7 +115,6 @@ export class DefaultBehavior extends Behavior {
             const cellMatrix = state.cellMatrix
             pasteContent.forEach((row, pasteRowIdx) =>
                 row.forEach((pasteValue: ClipboardData, pasteColIdx: number) => {
-                    console.log(pasteValue)
                     const rowIdx = activeSelectedRange.rows[0].idx + pasteRowIdx
                     const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx
                     if (rowIdx <= cellMatrix.last.row.idx && colIdx <= cellMatrix.last.col.idx) {
