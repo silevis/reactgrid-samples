@@ -1,15 +1,13 @@
 import * as React from 'react'
 import { ColumnProps, RowProps, CellMatrixProps, DataChange } from '../../lib/Common';
-import { TextCell } from '../../lib/Cells/TextCell';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
-import { HeaderCell } from '../../lib/Cells/HeaderCell';
 
 export class Spreadsheet extends React.Component<{}, { data: string[][], widths: number[] }> {
     constructor(props: {}) {
         super(props);
         this.state = {
             widths: Array(50).fill(120),
-            data: Array(100).fill(0).map((_, ri) => Array(50).fill(0).map((_, ci) => (ri + 100) + ' - ' + (ci + 100)))
+            data: Array(50).fill(0).map((_, ri) => Array(20).fill(0).map((_, ci) => (ri + 100) + ' - ' + (ci + 100)))
 
         }
     }
@@ -28,7 +26,7 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
             height: 25,
             onDrop: (ids) => this.reorderRows(ids as number[], rowIdx),
             reorderable: true,
-            cells: row.map((data, colIdx) => (rowIdx === 0 || colIdx === 0) ? new HeaderCell(data) : new TextCell(data))
+            cells: row.map((data, colIdx) => (rowIdx === 0 || colIdx === 0) ? { data: data, type: 'header' } : (rowIdx !== 0 && colIdx === 1) ? { data: data, type: 'number' } : { data: data, type: 'text' })
         }))
         return ({ frozenTopRows: 2, frozenLeftColumns: 2, frozenBottomRows: 2, frozenRightColumns: 2, rows, columns })
     }
@@ -47,6 +45,7 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
         return <DynaGrid style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
             cellMatrixProps={this.generateCellMatrix()}
             onDataChanged={changes => this.handleDataChanges(changes)}
+            cellTemplates={{}}
         />
     }
 

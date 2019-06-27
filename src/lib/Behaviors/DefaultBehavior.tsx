@@ -1,4 +1,4 @@
-import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, CellData, DataChange, PointerLocation } from "../Common";
+import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, DataChange, PointerLocation } from "../Common";
 import { handleKeyDown as handleKeyDown } from "./DefaultBehavior/handleKeyDown";
 import { changeBehavior } from "../Functions";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
@@ -8,6 +8,12 @@ import { RowSelectionBehavior } from "./RowSelectionBehavior";
 import { RowReorderBehavior } from "./RowReorderBehavior";
 import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
 import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChange";
+
+interface ClipboardData {
+    type: string;
+    data: any;
+    text: string;
+}
 
 export class DefaultBehavior extends Behavior {
 
@@ -79,41 +85,41 @@ export class DefaultBehavior extends Behavior {
         if (!activeSelectedRange) {
             return state;
         }
-        let pasteContent: CellData[][] = [];
+        let pasteContent: ClipboardData[][] = [];
         const htmlData = event.clipboardData.getData('text/html');
         const parsedData = new DOMParser().parseFromString(htmlData, 'text/html')
         if (htmlData && parsedData.body.firstElementChild!.getAttribute('data-key') === 'dynagrid') {
             const cells = parsedData.body.firstElementChild!.firstElementChild!.children
             for (let i = 0; i < cells.length; i++) {
-                const row: CellData[] = [];
+                const row: ClipboardData[] = [];
                 for (let j = 0; j < cells[i].children.length; j++) {
                     const data = JSON.parse(cells[i].children[j].getAttribute('data-data')!)
                     const type = cells[i].children[j].getAttribute('data-type')
-                    const textValue = cells[i].children[j].innerHTML
+                    const textValue = data ? cells[i].children[j].innerHTML : '';
                     row.push({ text: textValue, data: data, type: type! })
                 }
                 pasteContent.push(row)
             }
         } else {
-            pasteContent = event.clipboardData.getData('text/plain').split('\n').map(line => line.split('\t').map(t => ({ text: t, data: t, type: 'string' })))
+            pasteContent = event.clipboardData.getData('text/plain').split('\n').map(line => line.split('\t').map(t => ({ text: t, data: t, type: 'text' })))
         }
 
         if (pasteContent.length === 1 && pasteContent[0].length === 1) {
             activeSelectedRange.rows.forEach(row =>
                 activeSelectedRange.cols.forEach(col => {
-                    state = trySetDataAndAppendChange(new Location(row, col), pasteContent[0][0], state)
+                    state = trySetDataAndAppendChange(new Location(row, col), pasteContent[0][0].data, pasteContent[0][0].type, pasteContent[0][0].text, state)
                 })
             )
         } else {
             let lastLocation: Location
             const cellMatrix = state.cellMatrix
             pasteContent.forEach((row, pasteRowIdx) =>
-                row.forEach((pasteValue: CellData, pasteColIdx: number) => {
+                row.forEach((pasteValue: ClipboardData, pasteColIdx: number) => {
                     const rowIdx = activeSelectedRange.rows[0].idx + pasteRowIdx
                     const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx
                     if (rowIdx <= cellMatrix.last.row.idx && colIdx <= cellMatrix.last.col.idx) {
                         lastLocation = cellMatrix.getLocation(rowIdx, colIdx)
-                        state = trySetDataAndAppendChange(lastLocation, pasteValue, state)
+                        state = trySetDataAndAppendChange(lastLocation, pasteValue.data, pasteValue.type, pasteValue.text, state)
                     }
                 })
             )
@@ -147,15 +153,16 @@ export class DefaultBehavior extends Behavior {
             activeSelectedRange.cols.forEach(col => {
                 const tableCell = tableRow.insertCell()
                 const location = new Location(row, col)
-                tableCell.textContent = (location.cell.cellData ? location.cell.cellData.text : '')  // for undefined values
-                if (!location.cell.cellData) {
+                const data = state.cellTemplates[location.cell.type].validate(location.cell.data)
+                tableCell.textContent = data;  // for undefined values
+                if (!location.cell.data) {
                     tableCell.innerHTML = '<img>';
                 }
-                tableCell.setAttribute('data-data', JSON.stringify(location.cell.cellData.data))
-                tableCell.setAttribute('data-type', location.cell.cellData.type)
+                tableCell.setAttribute('data-data', JSON.stringify(data))
+                tableCell.setAttribute('data-type', location.cell.type)
                 tableCell.style.border = '1px solid #D3D3D3'
                 if (removeValues) {
-                    state = trySetDataAndAppendChange(location, { text: '', data: '', type: 'string' }, state);
+                    state = trySetDataAndAppendChange(location, '', 'text', '', state);
                 }
             })
         })

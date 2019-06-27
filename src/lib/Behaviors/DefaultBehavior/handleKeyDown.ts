@@ -32,9 +32,15 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
     if (isSpecialKeys(key)) {
         return handleSpecialKeys(event, state)
     }
-    if (!event.ctrlKey && !state.isFocusedCellInEditMode && (event.keyCode == keyCodes.ENTER || (event.keyCode >= keyCodes.ZERO && event.keyCode <= keyCodes.Z) || (event.keyCode >= keyCodes.NUM_PAD_0 && event.keyCode <= keyCodes.DIVIDE) || (event.keyCode >= keyCodes.SEMI_COLON && event.keyCode <= keyCodes.SINGLE_QUOTE) || event.keyCode === keyCodes.SPACE)) {
-        // TODO call shouldEnableEditMode on current cell
-        if (state.focusedLocation!.cell.shouldEnableEditMode(event.keyCode)) {
+    if (!event.ctrlKey &&
+        !state.isFocusedCellInEditMode &&
+        (event.keyCode == keyCodes.ENTER ||
+            (event.keyCode >= keyCodes.ZERO && event.keyCode <= keyCodes.Z) ||
+            (event.keyCode >= keyCodes.NUM_PAD_0 && event.keyCode <= keyCodes.DIVIDE) ||
+            (event.keyCode >= keyCodes.SEMI_COLON && event.keyCode <= keyCodes.SINGLE_QUOTE) ||
+            event.keyCode === keyCodes.SPACE)) {
+
+        if (state.cellTemplates[focusedLocation.cell.type].shouldEnableEditMode(event.keyCode)) {
             return { ...state, isFocusedCellInEditMode: true }
         }
     }
@@ -237,13 +243,12 @@ function handleEnterKey(event: KeyboardEvent, state: State) {
 }
 
 function handleSpecialKeys(event: KeyboardEvent, state: State) {
-    if (event.keyCode === keyCodes.DELETE || event.keyCode === keyCodes.BACKSPACE) {
+    if (!state.isFocusedCellInEditMode && (event.keyCode === keyCodes.DELETE || event.keyCode === keyCodes.BACKSPACE)) {
         const dataChanges: DataChange[] = []
-        console.log(state.selectedRanges)
         state.selectedRanges.forEach(range =>
             range.rows.forEach((row: Row) =>
                 range.cols.forEach((col: Column) =>
-                    trySetDataAndAppendChange(new Location(row, col), { text: '', data: null, type: 'string' }, state)
+                    trySetDataAndAppendChange(new Location(row, col), '', 'text', '', state)
                 )
             )
         );
