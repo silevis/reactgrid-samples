@@ -33,7 +33,6 @@ export class PointerEventsController {
     }
 
     private handlePointerMove = (event: PointerEvent): void => {
-        console.log('pointer move')
         this.updateState(state => {
             const autoScrollDirection = state.currentBehavior.autoScrollDirection;
             const currentLocation = getLocationFromClient(state, event.clientX, event.clientY, autoScrollDirection);
