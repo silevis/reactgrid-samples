@@ -103,7 +103,6 @@ export class FillHandleBehavior extends Behavior {
     }
 
     handlePointerUp(event: PointerEvent, location: Location, state: State): State {
-        const dataChanges: DataChange[] = [];
         const activeSelectedRange = getActiveSelectedRange(state);
         const cellMatrix = state.cellMatrix;
         let values: any[];
@@ -119,7 +118,13 @@ export class FillHandleBehavior extends Behavior {
                 );
                 this.fillRange.rows.forEach((row: Row, i: number) =>
                     this.fillRange!.cols.forEach((col: Column) => {
-                        state = trySetDataAndAppendChange(new Location(row, col), values[i].data, values[i].type, state.cellTemplates[values[i].type].cellDataToText(values[i].data), state)
+                        const data = state.cellTemplates[values[i].type].validate(values[i].data);
+                        state = trySetDataAndAppendChange(
+                            new Location(row, col),
+                            data,
+                            values[i].type,
+                            state.cellTemplates[values[i].type].cellDataToText(data),
+                            state)
                     })
                 );
                 state = {
@@ -132,13 +137,15 @@ export class FillHandleBehavior extends Behavior {
                     new Location(row, activeSelectedRange.first.col).cell
                 );
                 this.fillRange.rows.forEach((row: Row, i: number) =>
-                    this.fillRange!.cols.forEach((col: Column) =>
-                        state = trySetDataAndAppendChange(new Location(row, col),
-                            values[i].data,
+                    this.fillRange!.cols.forEach((col: Column) => {
+                        const data = state.cellTemplates[values[i].type].validate(values[i].data);
+                        state = trySetDataAndAppendChange(
+                            new Location(row, col),
+                            data,
                             values[i].type,
-                            state.cellTemplates[values[i].type].cellDataToText(values[i].data),
+                            state.cellTemplates[values[i].type].cellDataToText(data),
                             state)
-                    )
+                    })
                 );
                 state = {
                     ...state,
@@ -150,13 +157,15 @@ export class FillHandleBehavior extends Behavior {
                     new Location(activeSelectedRange.first.row, col).cell
                 );
                 this.fillRange.rows.forEach((row: Row) =>
-                    this.fillRange!.cols.forEach((col: Column, i: number) =>
-                        state = trySetDataAndAppendChange(new Location(row, col),
-                            values[i].data,
+                    this.fillRange!.cols.forEach((col: Column, i: number) => {
+                        const data = state.cellTemplates[values[i].type].validate(values[i].data);
+                        state = trySetDataAndAppendChange(
+                            new Location(row, col),
+                            data,
                             values[i].type,
-                            state.cellTemplates[values[i].type].cellDataToText(values[i].data),
+                            state.cellTemplates[values[i].type].cellDataToText(data),
                             state)
-                    )
+                    })
                 );
                 state = {
                     ...state,
@@ -168,13 +177,15 @@ export class FillHandleBehavior extends Behavior {
                     new Location(activeSelectedRange.last.row, col).cell
                 );
                 this.fillRange.rows.forEach((row: Row) =>
-                    this.fillRange!.cols.forEach((col: Column, i: number) =>
-                        state = trySetDataAndAppendChange(new Location(row, col),
-                            values[i].data,
+                    this.fillRange!.cols.forEach((col: Column, i: number) => {
+                        const data = state.cellTemplates[values[i].type].validate(values[i].data);
+                        state = trySetDataAndAppendChange(
+                            new Location(row, col),
+                            data,
                             values[i].type,
-                            state.cellTemplates[values[i].type].cellDataToText(values[i].data),
+                            state.cellTemplates[values[i].type].cellDataToText(data),
                             state)
-                    )
+                    })
                 );
                 state = {
                     ...state,

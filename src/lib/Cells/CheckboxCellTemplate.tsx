@@ -12,6 +12,7 @@ export class CheckboxCellTemplate implements CellTemplate<boolean> {
     }
 
     cellDataToText(cellData: boolean) {
+        console.log(cellData)
         return cellData.toString();
     }
 
