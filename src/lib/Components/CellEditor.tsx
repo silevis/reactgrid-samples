@@ -6,13 +6,12 @@ interface CellEditorProps {
 }
 
 export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
-
-    React.useEffect(() => setPosition(calculateEditorPosition(location, props.state)), [])
-
     const [cellData, setCellData] = React.useState(props.state.editedCellData!)
     const [position, setPosition] = React.useState({ left: 0, top: 0 })
     const location = props.state.focusedLocation!;
     let lastKeyCode = props.state.lastKeyCode;
+
+    React.useEffect(() => setPosition(calculateEditorPosition(location, props.state)), [])
 
     return (
         <div

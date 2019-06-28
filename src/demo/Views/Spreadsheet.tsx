@@ -26,7 +26,7 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
             height: 25,
             onDrop: (ids) => this.reorderRows(ids as number[], rowIdx),
             reorderable: true,
-            cells: row.map((data, colIdx) => (rowIdx === 0 || colIdx === 0) ? { data: data, type: 'header' } : (rowIdx !== 0 && colIdx === 1) ? { data: data, type: 'number' } : { data: data, type: 'text' })
+            cells: row.map((data, colIdx) => (rowIdx === 0 || colIdx === 0) ? { data: data, type: 'header' } : (rowIdx !== 0 && colIdx === 1) ? { data: data, type: 'checkbox' } : { data: data, type: 'text' })
         }))
         return ({ frozenTopRows: 2, frozenLeftColumns: 2, frozenBottomRows: 2, frozenRightColumns: 2, rows, columns })
     }

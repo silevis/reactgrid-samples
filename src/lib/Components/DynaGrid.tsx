@@ -45,6 +45,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     }
 
     render() {
+        console.log('render')
         const matrix = this.state.cellMatrix;
         return (
             <div

@@ -15,33 +15,27 @@ export class CheckboxCellTemplate implements CellTemplate<boolean> {
         return cellData.toString();
     }
 
-    shouldEnableEditMode = () => true
+    handleKeyDown(keyCode: number, cellData: boolean) {
+        if (keyCode == keyCodes.SPACE || keyCode == keyCodes.ENTER) {
+            cellData = !cellData
+        }
+        return { shouldEnableEditMode: false, cellData }
+    }
 
     customStyle: React.CSSProperties = {};
 
     renderContent: (props: CellRenderProps<boolean>) => React.ReactNode = (props) => {
-        console.log(props.cellData)
         return <input
             type="checkbox"
             style={{
-                width: '100%',
-                height: '100%',
-                border: 0,
-                fontSize: 16,
-                outline: 'none'
-            }}
-            ref={input => {
-                if (input) {
-                    input.focus();
-                    // input.setSelectionRange(input.value.length, input.value.length);
-                }
+                width: '20px',
+                height: '20px',
+                marginLeft: 'auto',
+                marginRight: 'auto',
+
             }}
             checked={props.cellData}
             onChange={() => { props.onCellDataChanged ? props.onCellDataChanged(!props.cellData) : null }}
-            onCopy={e => e.stopPropagation()}
-            onCut={e => e.stopPropagation()}
-            onPaste={e => e.stopPropagation()}
-            onPointerDown={e => e.stopPropagation()}
         />
     }
 }

@@ -10,6 +10,10 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
     state.lastKeyCode = event.keyCode;
     if (!focusedLocation) { return state }
 
+    if (focusedLocation.cell.data != state.cellTemplates[focusedLocation.cell.type].handleKeyDown(event.keyCode, focusedLocation.cell.data)) {
+        focusedLocation.cell.data = state.cellTemplates[focusedLocation.cell.type].handleKeyDown(event.keyCode, focusedLocation.cell.data).cellData
+    }
+
     if (!isSelectedOneCell(state) && !isArrowKey(key) && !isSpecialKeys(key)) {
         return handleKeyNavigationInsideSelection(state, event)
     } else {
@@ -39,10 +43,7 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
             (event.keyCode >= keyCodes.NUM_PAD_0 && event.keyCode <= keyCodes.DIVIDE) ||
             (event.keyCode >= keyCodes.SEMI_COLON && event.keyCode <= keyCodes.SINGLE_QUOTE) ||
             event.keyCode === keyCodes.SPACE)) {
-
-        if (state.cellTemplates[focusedLocation.cell.type].shouldEnableEditMode(event.keyCode)) {
-            return { ...state, isFocusedCellInEditMode: true }
-        }
+        return { ...state, isFocusedCellInEditMode: state.cellTemplates[focusedLocation.cell.type].handleKeyDown(event.keyCode, focusedLocation.cell.data).shouldEnableEditMode }
     }
     if (event.keyCode === keyCodes.ESC && state.isFocusedCellInEditMode) {
         return focusLocation(
@@ -230,7 +231,7 @@ function handleEnterKey(event: KeyboardEvent, state: State) {
         !state.isFocusedCellInEditMode
         // !state.isFocusedCellReadOnly 
     ) {
-        return { ...state, isFocusedCellInEditMode: true };
+        return { ...state, isFocusedCellInEditMode: state.cellTemplates[focusedLocation.cell.type].handleKeyDown(event.keyCode, focusedLocation.cell.data).shouldEnableEditMode };
     } else if (event.shiftKey && event.keyCode === keyCodes.ENTER && focusedLocation.row.idx > 0) {
         return focusCell(focusedLocation.col.idx, focusedLocation.row.idx - 1, state);
     }

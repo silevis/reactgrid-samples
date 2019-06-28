@@ -57,7 +57,11 @@ export interface CellTemplate<TCellData> {
     cellDataToText(cellData: TCellData): string;
     // Returns true, if the cell is able to switch into edit mode. 
     // The keyCode represents the key pressed on the keyboard, or 1 for a pointer event.
-    shouldEnableEditMode(keyCode: number): boolean;
+    //shouldEnableEditMode(keyCode: number): boolean;
+
+    // 
+    // The keyCode represents the key pressed on the keyboard, or 1 for a pointer event.
+    handleKeyDown(keyCode: number, cellData: TCellData): { shouldEnableEditMode: boolean, cellData: TCellData }
     // Custom styles applied to the cells div element
     customStyle?: React.CSSProperties;
     // Render the cell content
@@ -77,7 +81,7 @@ export interface CellTemplate<TCellData> {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface CellRenderProps<TCellData> {
     cellData: TCellData;
-    onCellDataChanged?(cellData: TCellData): void;
+    onCellDataChanged(cellData: TCellData): void;
     readonly isInEditMode: boolean;
     readonly lastKeyCode: number;
 }

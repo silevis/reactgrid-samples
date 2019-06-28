@@ -14,7 +14,9 @@ export class HeaderCellTemplate implements CellTemplate<string> {
         return cellData;
     }
 
-    shouldEnableEditMode = () => false;
+    handleKeyDown(keyCode: number, cellData: string) {
+        return { shouldEnableEditMode: false, cellData }
+    }
 
     customStyle: React.CSSProperties = { background: '#eee' };
 

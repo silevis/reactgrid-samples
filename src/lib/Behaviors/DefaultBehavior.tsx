@@ -56,7 +56,7 @@ export class DefaultBehavior extends Behavior {
         } else if (location.equals(state.focusedLocation)) {
             return {
                 ...state,
-                isFocusedCellInEditMode: true
+                isFocusedCellInEditMode: state.cellTemplates[state.focusedLocation!.cell.type].handleKeyDown(1, state.focusedLocation!.cell.data).shouldEnableEditMode
             };
         }
         return state;
