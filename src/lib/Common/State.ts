@@ -13,7 +13,6 @@ export type AsyncStateUpdate = (modifier: (state: State) => State) => void;
 
 export class State {
     constructor(public readonly updateState: AsyncStateUpdate) { }
-    prevState?: State;
     readonly cellMatrix!: CellMatrix;
     readonly currentBehavior: Behavior = new DefaultBehavior();
 
