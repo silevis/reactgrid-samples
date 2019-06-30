@@ -65,6 +65,7 @@ export class PointerEventsController {
             if (currentTimestamp - secondLastTimestamp < 500 && currentLocation.equals(this.eventLocations[0]) && currentLocation.equals(this.eventLocations[1])) {
                 state = state.currentBehavior.handleDoubleClick(event, currentLocation, state)
             }
+            state.hiddenFocusElement.focus();
             return { ...state, currentBehavior: new DefaultBehavior() };
         });
 

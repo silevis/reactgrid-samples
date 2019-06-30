@@ -16,6 +16,8 @@ export interface PaneProps {
 export const Pane: React.FunctionComponent<PaneProps> = (props) =>
     <div key={props.id} className="dg-pane" style={{ position: 'relative', width: props.range.width, height: '100%', ...props.style }}>
         {props.range.rows.map((row) => <RowRenderer key={row.idx} state={props.state} row={row} columns={props.range.cols} forceUpdate={true} borders={{ ...props.borders, top: props.borders.top && row.top === 0, bottom: props.borders.bottom && row.idx === props.range.last.row.idx }} />)}
+        {props.range.rows.map((row) => <div key={row.idx} style={{ position: 'absolute', boxSizing: 'border-box', top: row.top, height: row.height, width: '100%', borderBottom: '1px #e5e5e5 solid' }} />)}
+        {props.range.cols.map((col) => <div key={col.idx} style={{ position: 'absolute', boxSizing: 'border-box', left: col.left, width: col.width, height: '100%', borderRight: '1px #e5e5e5 solid' }} />)}
         {renderSelectedRanges(props.state, props.range)}
         {props.state.currentBehavior.renderPanePart(props.range)}
         {props.state.focusedLocation && props.range.contains(props.state.focusedLocation) &&

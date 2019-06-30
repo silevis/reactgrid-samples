@@ -31,14 +31,14 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
         height: location.row.height,
         // paddingLeft: 2,
         // paddingRight: 2,
-        borderTop: borders.top ? 'solid 1px #ccc' : '',
-        borderLeft: borders.left ? 'solid 1px #ccc' : '',
-        borderBottom: borders.bottom
-            ? 'solid 1px #ccc'
-            : 'solid 1px #e5e5e5',
-        borderRight: borders.right
-            ? 'solid 1px #ccc'
-            : 'solid 1px #e5e5e5',
+        //borderTop: borders.top ? 'solid 1px #ccc' : '',
+        //borderLeft: borders.left ? 'solid 1px #ccc' : '',
+        // borderBottom: borders.bottom
+        //     ? 'solid 1px #ccc'
+        //     : 'solid 1px #e5e5e5',
+        // borderRight: borders.right
+        //     ? 'solid 1px #ccc'
+        //     : 'solid 1px #e5e5e5',
         touchAction: isFocused ? 'none' : 'auto' // prevent scrolling
     }
     return (
