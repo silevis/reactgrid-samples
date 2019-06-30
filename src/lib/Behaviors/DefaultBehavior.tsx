@@ -1,6 +1,5 @@
-import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, DataChange, PointerLocation } from "../Common";
+import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, PointerLocation } from "../Common";
 import { handleKeyDown as handleKeyDown } from "./DefaultBehavior/handleKeyDown";
-import { changeBehavior } from "../Functions";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
 import { ColumnSelectionBehavior } from "./ColumnSelectionBehavior";
 import { ColumnReorderBehavior } from "./ColumnReorderBehavior";
@@ -18,28 +17,23 @@ interface ClipboardData {
 export class DefaultBehavior extends Behavior {
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
-        state.lastKeyCode = 0;
+        state = { ...state, lastKeyCode: 0, currentBehavior: this.getNewBehavior(event, location, state) }
+        return state.currentBehavior.handlePointerDown(event, location, state);
+
+    }
+
+    private getNewBehavior(event: PointerEvent, location: PointerLocation, state: State): Behavior {
         // changing behavior will disable all keyboard event handlers
         if (location.row.idx == 0 && state.selectedIndexes.includes(location.col.idx)) {
-            const colReorderBehavior = new ColumnReorderBehavior();
-            state = changeBehavior(state, colReorderBehavior);
-            return colReorderBehavior.handlePointerDown(event, location, state);
+            return new ColumnReorderBehavior();
         } else if (location.row.idx == 0) {
-            const columnSelectionBehavior = new ColumnSelectionBehavior();
-            state = changeBehavior(state, columnSelectionBehavior);
-            return columnSelectionBehavior.handlePointerDown(event, location, state);
+            return new ColumnSelectionBehavior();
         } else if (location.col.idx == 0 && state.selectedIndexes.includes(location.row.idx)) {
-            const columnSelectionBehavior = new RowReorderBehavior();
-            state = changeBehavior(state, columnSelectionBehavior);
-            return columnSelectionBehavior.handlePointerDown(event, location, state);
+            return new RowReorderBehavior();
         } else if (location.col.idx == 0) {
-            const columnSelectionBehavior = new RowSelectionBehavior();
-            state = changeBehavior(state, columnSelectionBehavior);
-            return columnSelectionBehavior.handlePointerDown(event, location, state);
+            return new RowSelectionBehavior();
         } else {
-            const cellSelectionBehavior = new CellSelectionBehavior();
-            state = changeBehavior(state, cellSelectionBehavior);
-            return cellSelectionBehavior.handlePointerDown(event, location, state);
+            return new CellSelectionBehavior();
         }
     }
 

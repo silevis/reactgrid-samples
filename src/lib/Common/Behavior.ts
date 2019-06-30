@@ -18,7 +18,6 @@ export abstract class Behavior {
     handleDoubleClick(event: PointerEvent, location: PointerLocation, state: State): State { return state }
     handleContextMenu(event: PointerEvent): void { event.preventDefault(); event.stopPropagation(); }
     renderPanePart(pane: Range): React.ReactNode { return undefined }
-    dispose(): void { }
     autoScrollDirection: Direction = 'both';
 }
 
