@@ -1,10 +1,10 @@
-import { PointerEvent, Location, State, AsyncStateUpdate } from ".";
+import { PointerEvent, Location, State, StateUpdater } from ".";
 import { getLocationFromClient, scrollIntoView, focusLocation, changeBehavior } from "../Functions";
 import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
 
 export class PointerEventsController {
 
-    constructor(private readonly updateState: AsyncStateUpdate) { }
+    constructor(private readonly updateState: StateUpdater) { }
 
     private eventTimestamps: number[] = [0, 0];
     private eventLocations: Array<Location | undefined> = [undefined, undefined]

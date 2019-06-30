@@ -1,6 +1,6 @@
 import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, DataChange } from ".";
 import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
-import { ICellTemplates } from "./PublicModel";
+import { CellTemplates } from "./PublicModel";
 import { TextCellTemplate } from "../Cells/TextCellTemplate";
 import { HeaderCellTemplate } from "../Cells/HeaderCellTemplate";
 import { NumberCellTemplate } from "../Cells/NumberCellTemplate";
@@ -9,14 +9,14 @@ import { CheckboxCellTemplate } from "../Cells/CheckboxCellTemplate";
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // INTERNAL
 
-export type AsyncStateUpdate = (modifier: (state: State) => State) => void;
+export type StateUpdater = (modifier: (state: State) => State) => void;
 
 export class State {
-    constructor(public readonly updateState: AsyncStateUpdate) { }
+    constructor(public readonly updateState: StateUpdater) { }
     readonly cellMatrix!: CellMatrix;
     readonly currentBehavior: Behavior = new DefaultBehavior();
 
-    cellTemplates: ICellTemplates = {
+    cellTemplates: CellTemplates = {
         'text': new TextCellTemplate(),
         'number': new NumberCellTemplate(),
         'header': new HeaderCellTemplate(),
