@@ -1,6 +1,7 @@
 import * as React from "react";
 import { State, Borders, Location, keyCodes } from "../Common";
 import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChange";
+import { selectColumn } from "../Functions/selectRange";
 
 export interface CellRendererProps {
     state: State
@@ -11,13 +12,13 @@ export interface CellRendererProps {
 export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) => {
     const state = { ...props.state };
     const location = props.location;
-    const cellData = location.cell;
+    const cell = location.cell;
     const borders = props.borders;
     const isFocused = (state.focusedLocation !== undefined) && (state.focusedLocation.col.idx === props.location.col.idx && state.focusedLocation.row.idx === props.location.row.idx);
     const lastKeyCode = props.state.lastKeyCode;
 
     const style: React.CSSProperties = {
-        ...state.cellTemplates[cellData.type].customStyle,
+        ...state.cellTemplates[cell.type].customStyle,
         boxSizing: 'border-box',
         whiteSpace: 'nowrap',
         position: 'absolute',
@@ -42,19 +43,31 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
         touchAction: isFocused ? 'none' : 'auto' // prevent scrolling
     }
     return (
-        <div
-            className="cell"
-            style={style}
-
-        >
+        <div className="cell" style={style}>
             {
-                state.cellTemplates[cellData.type].renderContent({
-                    cellData: state.cellTemplates[cellData.type].validate(cellData.data),
+                state.cellTemplates[cell.type].renderContent({
+                    cellData: state.cellTemplates[cell.type].validate(cell.data),
                     isInEditMode: false,
                     lastKeyCode: lastKeyCode,
-                    onCellDataChanged: (cd) => { props.state.updateState(state => trySetDataAndAppendChange(location, cd, cellData.type, state.cellTemplates[cellData.type].cellDataToText(cd), state)); }
+                    onCellDataChanged: (newCellData) => {
+                        const range = state.selectedRanges[state.activeSelectedRangeIdx];
+                        const selectedCells = range.rows.flatMap(row => range.cols.map(col => row.cells[col.idx]));
+                        console.log(selectedCells);
+                        if (selectedCells.every(c => c.type === cell.type)) {
+                            props.state.updateState(state => {
+                                range.rows.forEach(row =>
+                                    range.cols.forEach(col =>
+                                        state = trySetDataAndAppendChange(state, new Location(row, col), cell.type, newCellData, '')
+                                    )
+                                );
+                                return state;
+                            })
+                        }
+                    }
                 })
             }
         </div >
     )
 }
+
+

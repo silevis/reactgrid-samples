@@ -19,7 +19,6 @@ export class DefaultBehavior extends Behavior {
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
         state = { ...state, lastKeyCode: 0, currentBehavior: this.getNewBehavior(event, location, state) }
         return state.currentBehavior.handlePointerDown(event, location, state);
-
     }
 
     private getNewBehavior(event: PointerEvent, location: PointerLocation, state: State): Behavior {
@@ -101,7 +100,7 @@ export class DefaultBehavior extends Behavior {
         if (pasteContent.length === 1 && pasteContent[0].length === 1) {
             activeSelectedRange.rows.forEach(row =>
                 activeSelectedRange.cols.forEach(col => {
-                    state = trySetDataAndAppendChange(new Location(row, col), pasteContent[0][0].data, pasteContent[0][0].type, pasteContent[0][0].text, state)
+                    state = trySetDataAndAppendChange(state, new Location(row, col), pasteContent[0][0].type, pasteContent[0][0].data, pasteContent[0][0].text)
                 })
             )
         } else {
@@ -113,7 +112,7 @@ export class DefaultBehavior extends Behavior {
                     const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx
                     if (rowIdx <= cellMatrix.last.row.idx && colIdx <= cellMatrix.last.col.idx) {
                         lastLocation = cellMatrix.getLocation(rowIdx, colIdx)
-                        state = trySetDataAndAppendChange(lastLocation, pasteValue.data, pasteValue.type, pasteValue.text, state)
+                        state = trySetDataAndAppendChange(state, lastLocation, pasteValue.type, pasteValue.data, pasteValue.text)
                     }
                 })
             )
@@ -156,7 +155,7 @@ export class DefaultBehavior extends Behavior {
                 tableCell.setAttribute('data-type', location.cell.type)
                 tableCell.style.border = '1px solid #D3D3D3'
                 if (removeValues) {
-                    state = trySetDataAndAppendChange(location, '', 'text', '', state);
+                    state = trySetDataAndAppendChange(state, location, '', '', '');
                 }
             })
         })
