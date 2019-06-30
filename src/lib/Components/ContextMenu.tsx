@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { State, PointerEvent, Range, Behavior } from "../Common";
-import { getLocationFromClient, focusLocation, changeBehavior } from "../Functions";
 
 export class DrawContextMenuBehavior extends Behavior {
     constructor(private state: State, private event: PointerEvent) {

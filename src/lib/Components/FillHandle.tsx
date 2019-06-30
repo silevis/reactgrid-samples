@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Location, State } from "../Common";
-import { changeBehavior } from "../Functions";
 import { FillHandleBehavior } from "../Behaviors/FillHandleBehavior";
 
 interface FillHandleProps {
@@ -22,7 +21,7 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
         data-cy="touch-fill-handle"
         onPointerDown={event => {
             if (event.pointerType !== 'mouse' && event.pointerType !== undefined) { // !== undefined only for cypress tests
-                props.state.updateState(state => changeBehavior(state, new FillHandleBehavior()));
+                props.state.updateState(state => ({ ...state, currentBehavior: new FillHandleBehavior() }));
             }
         }}
     >
@@ -42,7 +41,7 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
             onPointerDown={event => {
                 event.preventDefault();
                 if (event.pointerType === 'mouse' || event.pointerType === undefined) { // !== undefined only for cypress tests
-                    props.state.updateState(state => changeBehavior(state, new FillHandleBehavior()));
+                    props.state.updateState(state => ({ ...state, currentBehavior: new FillHandleBehavior() }));
                 }
             }}
         />

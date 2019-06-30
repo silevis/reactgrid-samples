@@ -11,6 +11,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     private updateState: StateUpdater = modifier => this.updateOnNewState(modifier(this.state));
     private pointerEventsController = new PointerEventsController(this.updateState)
     state = new State(this.updateState);
+    private currentState: State = this.state;
 
     static getDerivedStateFromProps(props: DynaGridProps, state: State) {
         if (state.isFocusedCellInEditMode && state.focusedLocation) {
@@ -39,7 +40,6 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     }
 
     render() {
-        console.log('render')
         const matrix = this.state.cellMatrix;
         return (
             <div
@@ -126,7 +126,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     }
 
     private viewportElementRefHandler = (viewportElement: HTMLDivElement) => viewportElement && this.updateOnNewState(recalcVisibleRange({ ...this.state, viewportElement }));
-    private pointerDownHandler = (event: PointerEvent) => this.updateOnNewState(this.pointerEventsController.handlePointerDown(event, this.state));
+    private pointerDownHandler = (event: PointerEvent) => this.updateOnNewState(this.pointerEventsController.handlePointerDown(event, this.currentState));
     private windowResizeHandler = () => this.updateOnNewState(recalcVisibleRange(this.state));
     private keyDownHandler = (event: KeyboardEvent) => this.updateOnNewState(this.state.currentBehavior.handleKeyDown(event, this.state));
     private keyUpHandler = (event: KeyboardEvent) => this.updateOnNewState(this.state.currentBehavior.handleKeyUp(event, this.state));
@@ -138,8 +138,8 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     private updateOnNewState(state: State) {
         if (state === this.state) return;
         // Force state to update immediately (SetState updates async)
-        (this.state as State) = state;
-        this.forceUpdate();
+        this.currentState = state;
+        this.setState(state);
         // TODO pop changes form state
         // commitChanges(changes: DataChange[]) {this.grid.props.onDataChanged && this.grid.props.onDataChanged(changes)}
     }
