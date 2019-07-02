@@ -103,6 +103,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
             </div >
         );
     }
+
     private hiddenElementRefHandler = (hiddenFocusElement: HTMLInputElement) => {
         (this.state as State).hiddenFocusElement = hiddenFocusElement;
     }

@@ -1,10 +1,13 @@
+export const x = 1;
 import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
 import { CellRenderProps, CellTemplate } from '../Common';
 
-export class TextCellTemplate implements CellTemplate<string> {
+export class EmailCellTemplate implements CellTemplate<string> {
     validate(data: any): string {
-        return (typeof (data) === 'string') ? data : '';
+        const email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        data = data ? data.toString().replace(/\s+/g, '') : data;
+        return (email_regex.test(data)) ? data : '';
     }
 
     textToCellData(text: string): string {
@@ -26,6 +29,7 @@ export class TextCellTemplate implements CellTemplate<string> {
             return props.cellData;
         const preserveValueKeyCodes = [0, keyCodes.ENTER];
         return <input
+            type='email'
             style={{
                 width: '100%',
                 height: '100%',

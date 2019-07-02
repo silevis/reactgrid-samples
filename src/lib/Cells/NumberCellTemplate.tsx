@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
-import { CellRenderProps as CellRenderProps, CellTemplate } from '../Common';
+import { CellRenderProps, CellTemplate } from '../Common';
 
 export class NumberCellTemplate implements CellTemplate<number> {
     validate(data: any): number {

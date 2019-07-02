@@ -2,9 +2,11 @@ import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
 import { CellRenderProps, CellTemplate } from '../Common';
 
-export class TextCellTemplate implements CellTemplate<string> {
+export class TimeCellTemplate implements CellTemplate<string> {
     validate(data: any): string {
-        return (typeof (data) === 'string') ? data : '';
+        const time_regex = /^\d{2}\:\d{2}$/;
+        data = data ? data.toString().replace(/\s+/g, '') : data;
+        return (time_regex.test(data)) ? data : '';
     }
 
     textToCellData(text: string): string {
@@ -26,6 +28,7 @@ export class TextCellTemplate implements CellTemplate<string> {
             return props.cellData;
         const preserveValueKeyCodes = [0, keyCodes.ENTER];
         return <input
+            type='time'
             style={{
                 width: '100%',
                 height: '100%',
