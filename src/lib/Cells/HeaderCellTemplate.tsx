@@ -2,23 +2,25 @@ import * as React from 'react';
 import { CellTemplate, CellRenderProps } from '../Common';
 
 export class HeaderCellTemplate implements CellTemplate<string> {
+
     validate(data: any): string {
         return (typeof (data) === 'string') ? data : '';
     }
 
-    textToCellData(text: string): string {
-        return text;
-    }
 
-    cellDataToText(cellData: string) {
-        return cellData;
-    }
+textToCellData(text: string): string {
+    return text;
+}
 
-    handleKeyDown(keyCode: number, cellData: string) {
-        return { shouldEnableEditMode: false, cellData }
-    }
+cellDataToText(cellData: string) {
+    return cellData;
+}
 
-    customStyle: React.CSSProperties = { background: '#eee' };
+handleKeyDown(keyCode: number, cellData: string) {
+    return { shouldEnableEditMode: false, cellData }
+}
 
-    renderContent: (props: CellRenderProps<string>) => React.ReactNode = (props) => props.cellData
+customStyle: React.CSSProperties = { background: '#eee' };
+
+renderContent: (props: CellRenderProps<string>) => React.ReactNode = (props) => props.cellData
 }

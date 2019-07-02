@@ -1,4 +1,3 @@
-export { changeBehavior } from './changeBehavior';
 export { focusLocation } from './focusLocation';
 export { getLocationFromClient } from './getLocationFromClient';
 export { print } from './print';

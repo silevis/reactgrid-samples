@@ -1,10 +1,10 @@
-import { PointerEvent, Location, State, AsyncStateUpdate } from ".";
-import { getLocationFromClient, scrollIntoView, focusLocation, changeBehavior } from "../Functions";
+import { PointerEvent, Location, State, StateUpdater } from ".";
+import { getLocationFromClient, scrollIntoView, focusLocation } from "../Functions";
 import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
 
 export class PointerEventsController {
 
-    constructor(private readonly updateState: AsyncStateUpdate) { }
+    constructor(private readonly updateState: StateUpdater) { }
 
     private eventTimestamps: number[] = [0, 0];
     private eventLocations: Array<Location | undefined> = [undefined, undefined]
@@ -65,8 +65,8 @@ export class PointerEventsController {
             if (currentTimestamp - secondLastTimestamp < 500 && currentLocation.equals(this.eventLocations[0]) && currentLocation.equals(this.eventLocations[1])) {
                 state = state.currentBehavior.handleDoubleClick(event, currentLocation, state)
             }
-            state = changeBehavior(state, new DefaultBehavior());
-            return state;
+            state.hiddenFocusElement.focus();
+            return { ...state, currentBehavior: new DefaultBehavior() };
         });
 
 

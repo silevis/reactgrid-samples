@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DynaGridProps, CellMatrix, PointerEvent, State, AsyncStateUpdate as AsyncStateUpdater, CellTemplate } from "../Common";
+import { DynaGridProps, CellMatrix, PointerEvent, State, StateUpdater } from "../Common";
 import { PaneRow } from "./PaneRow";
 import { recalcVisibleRange } from "../Functions";
 import { KeyboardEvent, ClipboardEvent } from "../Common";
@@ -8,29 +8,24 @@ import { CellEditor } from "./CellEditor";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
 
-    private stateUpdater: AsyncStateUpdater = modifier => this.updateOnNewState(modifier(this.state));
-    private pointerEventsController = new PointerEventsController(this.stateUpdater)
-    private currentState!: State;
-
-    state = new State(this.stateUpdater);
+    private updateState: StateUpdater = modifier => this.updateOnNewState(modifier(this.state));
+    private pointerEventsController = new PointerEventsController(this.updateState)
+    state = new State(this.updateState);
+    private currentState: State = this.state;
 
     static getDerivedStateFromProps(props: DynaGridProps, state: State) {
         if (state.isFocusedCellInEditMode && state.focusedLocation) {
-            state.prevState = undefined;
             return {
                 ...state,
                 cellMatrix: new CellMatrix(props.cellMatrixProps),
                 editedCellData: { ...state.focusedLocation.cell },
-                prevState: state,
                 cellTemplates: { ...state.cellTemplates, ...props.cellTemplates }
             };
         }
-        state.prevState = undefined;
-        state.editedCellData = undefined;
         return {
             ...state,
             cellMatrix: new CellMatrix(props.cellMatrixProps),
-            prevState: state,
+            editedCellData: undefined,
             cellTemplates: { ...state.cellTemplates, ...props.cellTemplates }
         };
     }
@@ -45,7 +40,6 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     }
 
     render() {
-        console.log('render')
         const matrix = this.state.cellMatrix;
         return (
             <div
@@ -106,7 +100,6 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                     <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} />
                     {this.state.isFocusedCellInEditMode && this.state.editedCellData && <CellEditor state={this.state} />}
                 </div>
-                {/* {this.state.currentBehavior.renderGlobalPart && this.state.currentBehavior.renderGlobalPart()} */}
             </div >
         );
     }
@@ -144,8 +137,9 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
 
     private updateOnNewState(state: State) {
         if (state === this.state) return;
-        this.setState(state);
+        // Force state to update immediately (SetState updates async)
         this.currentState = state;
+        this.setState(state);
         // TODO pop changes form state
         // commitChanges(changes: DataChange[]) {this.grid.props.onDataChanged && this.grid.props.onDataChanged(changes)}
     }

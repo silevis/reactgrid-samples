@@ -7,7 +7,7 @@ export type SelectionMode = 'row' | 'column' | 'range';
 export interface DynaGridProps {
     readonly cellMatrixProps: CellMatrixProps;
     readonly style?: React.CSSProperties;
-    readonly cellTemplates?: ICellTemplates
+    readonly cellTemplates?: CellTemplates
     //readonly additionalFocusses: ;
     //usersFocuses: { colIdx: number; rowIdx: number; color: string }[];
     //readonly onInitialized?: (grid: GridController) => void;
@@ -21,7 +21,7 @@ export interface DynaGridProps {
     // readonly onColumnDeletionRequested? : (colIds: Id[]) => void
 }
 
-export interface ICellTemplates {
+export interface CellTemplates {
     [key: string]: CellTemplate<any>;
 }
 

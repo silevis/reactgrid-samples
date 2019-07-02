@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { State, Range, PointerEvent, CellMatrix, Behavior, Row, Column, Location, DataChange } from "../Common";
-import { getLocationFromClient } from "../Functions";
 import { PartialArea } from '../Components/PartialArea';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
 import { trySetDataAndAppendChange } from '../Functions/trySetDataAndAppendChange';
@@ -119,12 +118,7 @@ export class FillHandleBehavior extends Behavior {
                 this.fillRange.rows.forEach((row: Row, i: number) =>
                     this.fillRange!.cols.forEach((col: Column) => {
                         const data = state.cellTemplates[values[i].type].validate(values[i].data);
-                        state = trySetDataAndAppendChange(
-                            new Location(row, col),
-                            data,
-                            values[i].type,
-                            state.cellTemplates[values[i].type].cellDataToText(data),
-                            state)
+                        state = trySetDataAndAppendChange(state, new Location(row, col), values[i].type, data, state.cellTemplates[values[i].type].cellDataToText(data))
                     })
                 );
                 state = {
@@ -139,12 +133,7 @@ export class FillHandleBehavior extends Behavior {
                 this.fillRange.rows.forEach((row: Row, i: number) =>
                     this.fillRange!.cols.forEach((col: Column) => {
                         const data = state.cellTemplates[values[i].type].validate(values[i].data);
-                        state = trySetDataAndAppendChange(
-                            new Location(row, col),
-                            data,
-                            values[i].type,
-                            state.cellTemplates[values[i].type].cellDataToText(data),
-                            state)
+                        state = trySetDataAndAppendChange(state, new Location(row, col), values[i].type, data, state.cellTemplates[values[i].type].cellDataToText(data))
                     })
                 );
                 state = {
@@ -159,12 +148,7 @@ export class FillHandleBehavior extends Behavior {
                 this.fillRange.rows.forEach((row: Row) =>
                     this.fillRange!.cols.forEach((col: Column, i: number) => {
                         const data = state.cellTemplates[values[i].type].validate(values[i].data);
-                        state = trySetDataAndAppendChange(
-                            new Location(row, col),
-                            data,
-                            values[i].type,
-                            state.cellTemplates[values[i].type].cellDataToText(data),
-                            state)
+                        state = trySetDataAndAppendChange(state, new Location(row, col), values[i].type, data, state.cellTemplates[values[i].type].cellDataToText(data))
                     })
                 );
                 state = {
@@ -179,12 +163,7 @@ export class FillHandleBehavior extends Behavior {
                 this.fillRange.rows.forEach((row: Row) =>
                     this.fillRange!.cols.forEach((col: Column, i: number) => {
                         const data = state.cellTemplates[values[i].type].validate(values[i].data);
-                        state = trySetDataAndAppendChange(
-                            new Location(row, col),
-                            data,
-                            values[i].type,
-                            state.cellTemplates[values[i].type].cellDataToText(data),
-                            state)
+                        state = trySetDataAndAppendChange(state, new Location(row, col), values[i].type, data, state.cellTemplates[values[i].type].cellDataToText(data))
                     })
                 );
                 state = {

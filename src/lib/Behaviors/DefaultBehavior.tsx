@@ -1,6 +1,5 @@
-import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, DataChange, PointerLocation } from "../Common";
+import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, PointerLocation } from "../Common";
 import { handleKeyDown as handleKeyDown } from "./DefaultBehavior/handleKeyDown";
-import { changeBehavior } from "../Functions";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
 import { ColumnSelectionBehavior } from "./ColumnSelectionBehavior";
 import { ColumnReorderBehavior } from "./ColumnReorderBehavior";
@@ -18,28 +17,22 @@ interface ClipboardData {
 export class DefaultBehavior extends Behavior {
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
-        state.lastKeyCode = 0;
+        state = { ...state, lastKeyCode: 0, currentBehavior: this.getNewBehavior(event, location, state) }
+        return state.currentBehavior.handlePointerDown(event, location, state);
+    }
+
+    private getNewBehavior(event: PointerEvent, location: PointerLocation, state: State): Behavior {
         // changing behavior will disable all keyboard event handlers
         if (location.row.idx == 0 && state.selectedIndexes.includes(location.col.idx)) {
-            const colReorderBehavior = new ColumnReorderBehavior();
-            state = changeBehavior(state, colReorderBehavior);
-            return colReorderBehavior.handlePointerDown(event, location, state);
+            return new ColumnReorderBehavior();
         } else if (location.row.idx == 0) {
-            const columnSelectionBehavior = new ColumnSelectionBehavior();
-            state = changeBehavior(state, columnSelectionBehavior);
-            return columnSelectionBehavior.handlePointerDown(event, location, state);
+            return new ColumnSelectionBehavior();
         } else if (location.col.idx == 0 && state.selectedIndexes.includes(location.row.idx)) {
-            const columnSelectionBehavior = new RowReorderBehavior();
-            state = changeBehavior(state, columnSelectionBehavior);
-            return columnSelectionBehavior.handlePointerDown(event, location, state);
+            return new RowReorderBehavior();
         } else if (location.col.idx == 0) {
-            const columnSelectionBehavior = new RowSelectionBehavior();
-            state = changeBehavior(state, columnSelectionBehavior);
-            return columnSelectionBehavior.handlePointerDown(event, location, state);
+            return new RowSelectionBehavior();
         } else {
-            const cellSelectionBehavior = new CellSelectionBehavior();
-            state = changeBehavior(state, cellSelectionBehavior);
-            return cellSelectionBehavior.handlePointerDown(event, location, state);
+            return new CellSelectionBehavior();
         }
     }
 
@@ -107,7 +100,7 @@ export class DefaultBehavior extends Behavior {
         if (pasteContent.length === 1 && pasteContent[0].length === 1) {
             activeSelectedRange.rows.forEach(row =>
                 activeSelectedRange.cols.forEach(col => {
-                    state = trySetDataAndAppendChange(new Location(row, col), pasteContent[0][0].data, pasteContent[0][0].type, pasteContent[0][0].text, state)
+                    state = trySetDataAndAppendChange(state, new Location(row, col), pasteContent[0][0].type, pasteContent[0][0].data, pasteContent[0][0].text)
                 })
             )
         } else {
@@ -119,7 +112,7 @@ export class DefaultBehavior extends Behavior {
                     const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx
                     if (rowIdx <= cellMatrix.last.row.idx && colIdx <= cellMatrix.last.col.idx) {
                         lastLocation = cellMatrix.getLocation(rowIdx, colIdx)
-                        state = trySetDataAndAppendChange(lastLocation, pasteValue.data, pasteValue.type, pasteValue.text, state)
+                        state = trySetDataAndAppendChange(state, lastLocation, pasteValue.type, pasteValue.data, pasteValue.text)
                     }
                 })
             )
@@ -162,7 +155,7 @@ export class DefaultBehavior extends Behavior {
                 tableCell.setAttribute('data-type', location.cell.type)
                 tableCell.style.border = '1px solid #D3D3D3'
                 if (removeValues) {
-                    state = trySetDataAndAppendChange(location, '', 'text', '', state);
+                    state = trySetDataAndAppendChange(state, location, '', '', '');
                 }
             })
         })

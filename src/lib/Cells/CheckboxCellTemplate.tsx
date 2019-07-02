@@ -8,13 +8,11 @@ export class CheckboxCellTemplate implements CellTemplate<boolean> {
     }
 
     textToCellData(text: string): boolean {
-        if (text == 'true')
-            return true
-        return false;
+        return parseFloat(text) === 1;
     }
 
     cellDataToText(cellData: boolean) {
-        return cellData.toString();
+        return cellData ? '1' : '';
     }
 
     handleKeyDown(keyCode: number, cellData: boolean) {
