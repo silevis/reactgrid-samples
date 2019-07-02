@@ -8,18 +8,18 @@ export class CheckboxCellTemplate implements CellTemplate<boolean> {
     }
 
     textToCellData(text: string): boolean {
+        if (text == 'true')
+            return true
         return false;
     }
 
     cellDataToText(cellData: boolean) {
-        console.log(cellData)
         return cellData.toString();
     }
 
     handleKeyDown(keyCode: number, cellData: boolean) {
-        if (keyCode == keyCodes.SPACE || keyCode == keyCodes.ENTER) {
+        if (keyCode == keyCodes.SPACE || keyCode == keyCodes.ENTER)
             cellData = !this.validate(cellData)
-        }
         return { shouldEnableEditMode: false, cellData }
     }
 
