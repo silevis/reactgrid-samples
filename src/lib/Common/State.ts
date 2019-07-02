@@ -27,7 +27,7 @@ export class State {
     readonly viewportElement!: HTMLDivElement;
     lastKeyCode: number = 0;
     readonly queuedDataChanges: DataChange[] = [];
-    editedCellData?: any;
+    currentlyEditedCell?: any;
 
     // LINE AND SHADOW
     lineOrientation: Orientation = 'horizontal';

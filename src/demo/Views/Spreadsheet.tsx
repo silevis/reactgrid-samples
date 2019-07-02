@@ -6,8 +6,8 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
     constructor(props: {}) {
         super(props);
         this.state = {
-            widths: Array(50).fill(120),
-            data: Array(50).fill(0).map((_, ri) => Array(20).fill(0).map((_, ci) => (ri + 100) + ' - ' + (ci + 100)))
+            widths: Array(500).fill(120),
+            data: Array(500).fill(0).map((_, ri) => Array(20).fill(0).map((_, ci) => (ri + 100) + ' - ' + (ci + 100)))
 
         }
     }

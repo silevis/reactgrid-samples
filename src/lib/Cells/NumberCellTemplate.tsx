@@ -28,7 +28,11 @@ export class NumberCellTemplate implements CellTemplate<number> {
         const preserveValueKeyCodes = [0, keyCodes.ENTER];
 
         const validate = (keyCode: number) => {
-            if ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || keyCode === 190 || keyCode == 8) {
+            if (keyCode == 8 ||
+                (keyCode >= 37 && keyCode <= 40) ||
+                (keyCode >= 46 && keyCode <= 57) ||
+                (keyCode >= 96 && keyCode <= 105) ||
+                keyCode === 190) {
                 return true;
             }
             return false;
