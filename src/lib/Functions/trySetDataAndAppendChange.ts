@@ -5,9 +5,6 @@ export function trySetDataAndAppendChange(state: State, location: Location, type
     if (initialData === data)
         return state;
     const newData = (type === location.cell.type) ? data : state.cellTemplates[location.cell.type].textToCellData(text)
-    // TODO We shouldnt update the cell matrix here
-    state.cellMatrix.rows[location.row.idx].cells[location.col.idx].data = newData;
-
     state.queuedDataChanges.push({
         initialData,
         newData,
@@ -15,6 +12,5 @@ export function trySetDataAndAppendChange(state: State, location: Location, type
         rowId: location.row.id,
         columnId: location.col.id
     })
-
     return { ...state };
 }

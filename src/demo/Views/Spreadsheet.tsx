@@ -8,7 +8,6 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
         this.state = {
             widths: Array(500).fill(120),
             data: Array(500).fill(0).map((_, ri) => Array(20).fill(0).map((_, ci) => (ri + 100) + ' - ' + (ci + 100)))
-
         }
     }
 
@@ -26,7 +25,7 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
             height: 25,
             onDrop: (ids) => this.reorderRows(ids as number[], rowIdx),
             reorderable: true,
-            cells: row.map((data, colIdx) => (rowIdx === 0 || colIdx === 0) ? { data: data, type: 'header' } : (rowIdx !== 0 && colIdx === 1) ? { data: data, type: 'time' } : { data: data, type: 'text' })
+            cells: row.map((data, colIdx) => (rowIdx === 0 || colIdx === 0) ? { data: data, type: 'header' } : (rowIdx !== 0 && colIdx === 1) ? { data: data, type: 'checkbox' } : { data: data, type: 'text' })
         }))
         return ({ frozenTopRows: 2, frozenLeftColumns: 2, frozenBottomRows: 2, frozenRightColumns: 2, rows, columns })
     }

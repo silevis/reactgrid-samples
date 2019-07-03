@@ -163,6 +163,7 @@ export class FillHandleBehavior extends Behavior {
                 this.fillRange.rows.forEach((row: Row) =>
                     this.fillRange!.cols.forEach((col: Column, i: number) => {
                         const data = state.cellTemplates[values[i].type].validate(values[i].data);
+                        console.log(data)
                         state = trySetDataAndAppendChange(state, new Location(row, col), values[i].type, data, state.cellTemplates[values[i].type].cellDataToText(data))
                     })
                 );
@@ -180,7 +181,7 @@ export class FillHandleBehavior extends Behavior {
         return this.fillDirection && this.fillRange && pane.intersectsWith(this.fillRange) &&
             <PartialArea range={this.fillRange} pane={pane} style={{
                 backgroundColor: '',
-                borderTop: this.fillDirection === 'down' ? '' : '1px dashed #666',
+                borderTop: this.fillDirection === 'down' ? '' : '1px dashed ',
                 borderBottom: this.fillDirection === 'up' ? '' : '1px dashed #666',
                 borderLeft: this.fillDirection === 'right' ? '' : '1px dashed #666',
                 borderRight: this.fillDirection === 'left' ? '' : '1px dashed #666'

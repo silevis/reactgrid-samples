@@ -140,8 +140,9 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
         if (state === this.state) return;
         // Force state to update immediately (SetState updates async)
         this.currentState = state;
-        this.setState(state);
+        const dataChanges = state.queuedDataChanges;
+        this.setState({ ...state, queuedDataChanges: [] });
         // TODO pop changes form state
-        // commitChanges(changes: DataChange[]) {this.grid.props.onDataChanged && this.grid.props.onDataChanged(changes)}
+        this.props.onDataChanged && dataChanges.length > 0 && this.props.onDataChanged(dataChanges)
     }
 }
