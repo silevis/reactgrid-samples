@@ -33,7 +33,7 @@ export class CheckboxCellTemplate implements CellTemplate<boolean> {
                 marginRight: 'auto',
             }}
             checked={props.cellData}
-            onChange={() => { props.onCellDataChanged ? props.onCellDataChanged(!this.validate(props.cellData)) : null }}
+            onChange={() => props.onCellDataChanged ? props.onCellDataChanged(!this.validate(props.cellData)) : null}
         />
     }
 }

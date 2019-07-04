@@ -8,7 +8,6 @@ import { selectRange, updateActiveSelectedRange } from '../Functions/selectRange
 export class CellSelectionBehavior extends Behavior {
 
     handlePointerDown(event: PointerEvent, location: Location, state: State): State {
-
         if (event.shiftKey && state.focusedLocation) {
             const range = state.cellMatrix.getRange(state.focusedLocation, location);
             if (event.ctrlKey) {

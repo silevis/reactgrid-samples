@@ -42,7 +42,6 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
         //     : 'solid 1px #e5e5e5',
         touchAction: isFocused ? 'none' : 'auto' // prevent scrolling
     }
-    console.log(cell.data)
     return (
         <div className="cell" style={style}>
             {
@@ -51,20 +50,11 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
                     isInEditMode: false,
                     lastKeyCode: lastKeyCode,
                     onCellDataChanged: (newCellData) => {
-                        const range = state.selectedRanges[state.activeSelectedRangeIdx];
-                        const selectedCells = range.rows.flatMap(row => range.cols.map(col => row.cells[col.idx]));
-                        if (selectedCells.every(c => c.type === cell.type)) {
-                            props.state.updateState(state => {
-                                range.rows.forEach(row =>
-                                    range.cols.forEach(col => {
-                                        const loc = location.col.idx == col.idx && location.row.idx == row.idx ? location : new Location(row, col)
-                                        state = trySetDataAndAppendChange(state, loc, cell.type, newCellData, '')
-                                    }
-                                    )
-                                );
-                                return { ...state };
-                            })
-                        }
+                        props.state.updateState(state => trySetDataAndAppendChange(state,
+                            location,
+                            cell.type,
+                            newCellData,
+                            props.state.cellTemplates[cell.type].cellDataToText(newCellData)))
                     }
                 })
             }

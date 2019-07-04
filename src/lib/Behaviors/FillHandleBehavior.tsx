@@ -113,7 +113,7 @@ export class FillHandleBehavior extends Behavior {
         switch (this.fillDirection) {
             case 'right':
                 values = activeSelectedRange.rows.map((row: Row) =>
-                    new Location(row, activeSelectedRange.last.col).cell
+                    new Location(row, state.cellMatrix.cols[activeSelectedRange.last.col.idx]).cell
                 );
                 this.fillRange.rows.forEach((row: Row, i: number) =>
                     this.fillRange!.cols.forEach((col: Column) => {
@@ -128,7 +128,7 @@ export class FillHandleBehavior extends Behavior {
                 break;
             case 'left':
                 values = activeSelectedRange.rows.map((row: Row) =>
-                    new Location(row, activeSelectedRange.first.col).cell
+                    new Location(row, state.cellMatrix.cols[activeSelectedRange.last.col.idx]).cell
                 );
                 this.fillRange.rows.forEach((row: Row, i: number) =>
                     this.fillRange!.cols.forEach((col: Column) => {
@@ -143,7 +143,7 @@ export class FillHandleBehavior extends Behavior {
                 break;
             case 'up':
                 values = activeSelectedRange.cols.map((col: Column) =>
-                    new Location(activeSelectedRange.first.row, col).cell
+                    new Location(state.cellMatrix.rows[activeSelectedRange.last.row.idx], col).cell
                 );
                 this.fillRange.rows.forEach((row: Row) =>
                     this.fillRange!.cols.forEach((col: Column, i: number) => {
@@ -158,12 +158,11 @@ export class FillHandleBehavior extends Behavior {
                 break;
             case 'down':
                 values = activeSelectedRange.cols.map((col: Column) =>
-                    new Location(activeSelectedRange.last.row, col).cell
+                    new Location(state.cellMatrix.rows[activeSelectedRange.last.row.idx], col).cell
                 );
                 this.fillRange.rows.forEach((row: Row) =>
                     this.fillRange!.cols.forEach((col: Column, i: number) => {
                         const data = state.cellTemplates[values[i].type].validate(values[i].data);
-                        console.log(data)
                         state = trySetDataAndAppendChange(state, new Location(row, col), values[i].type, data, state.cellTemplates[values[i].type].cellDataToText(data))
                     })
                 );
@@ -181,7 +180,7 @@ export class FillHandleBehavior extends Behavior {
         return this.fillDirection && this.fillRange && pane.intersectsWith(this.fillRange) &&
             <PartialArea range={this.fillRange} pane={pane} style={{
                 backgroundColor: '',
-                borderTop: this.fillDirection === 'down' ? '' : '1px dashed ',
+                borderTop: this.fillDirection === 'down' ? '' : '1px dashed #666',
                 borderBottom: this.fillDirection === 'up' ? '' : '1px dashed #666',
                 borderLeft: this.fillDirection === 'right' ? '' : '1px dashed #666',
                 borderRight: this.fillDirection === 'left' ? '' : '1px dashed #666'

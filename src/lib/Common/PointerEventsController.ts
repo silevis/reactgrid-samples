@@ -68,8 +68,6 @@ export class PointerEventsController {
             state.hiddenFocusElement.focus();
             return { ...state, currentBehavior: new DefaultBehavior() };
         });
-
-
     }
 }
 
