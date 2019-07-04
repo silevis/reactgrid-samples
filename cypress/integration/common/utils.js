@@ -166,7 +166,7 @@ class Utils {
         }
     }
 
-    keyDown(keyCode, customEventArgs) {
+    keyDown(keyCode, customEventArgs, timeout = 200) {
         if (customEventArgs != undefined) {
             cy.get('[data-cy=dyna-grid]').trigger(
                 'keydown',
@@ -176,7 +176,7 @@ class Utils {
             cy.get('[data-cy=dyna-grid]').trigger('keydown', { keyCode: keyCode });
         }
         cy.get('[data-cy=dyna-grid]').trigger('keyup', { force: true })
-        cy.wait(200);
+        cy.wait(timeout);
     }
 }
 var utils = new Utils();
