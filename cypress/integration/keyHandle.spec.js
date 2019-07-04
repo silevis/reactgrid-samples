@@ -34,18 +34,25 @@ context('Keyboard', () => {
         for (var i = 0; i < 8; i++) Utils.keyDown(Constants.keyCodes.Tab, { shiftKey: true, force: true });
     });
 
-    // it('Navigate inside selected range', () => {
-    //     Utils.selectCell(200, 100);
-    //     for (var i = 0; i < 3; i++) Utils.keyDown(Constants.keyCodes.ArrowDown, { shiftKey: true, force: true });
-    //     for (var i = 0; i < 2; i++) Utils.keyDown(Constants.keyCodes.ArrowRight, { shiftKey: true, force: true });
-    //     for (var i = 0; i < 4; i++) Utils.keyDown(Constants.keyCodes.Tab, { force: true });
-    //     for (var i = 0; i < 2; i++) Utils.keyDown(Constants.keyCodes.Enter, { force: true });
-    //     Utils.selectCell(500, 200, { ctrlKey: true });
-    //     for (var i = 0; i < 3; i++) Utils.keyDown(Constants.keyCodes.ArrowDown, { shiftKey: true, force: true });
-    //     for (var i = 0; i < 2; i++) Utils.keyDown(Constants.keyCodes.ArrowRight, { shiftKey: true, force: true });
-    //     for (var i = 0; i < 30; i++) Utils.keyDown(Constants.keyCodes.Tab, { force: true });
-    //     for (var i = 0; i < 10; i++) Utils.keyDown(Constants.keyCodes.Enter, { force: true });
-    // });
+    it('Navigate inside selected range shift tab/enter or only tab/enter', () => {
+        Utils.selectCell(200, 100);
+        for (var i = 0; i < 2; i++) Utils.keyDown(Constants.keyCodes.ArrowDown, { shiftKey: true, force: true });
+        Utils.keyDown(Constants.keyCodes.ArrowRight, { shiftKey: true, force: true }, 50);
+        // for (var i = 0; i < 6; i++) Utils.keyDown(Constants.keyCodes.Tab, { force: true });
+        // for (var i = 0; i < 6; i++) Utils.keyDown(Constants.keyCodes.Tab, { shiftKey: true, force: true });
+        // for (var i = 0; i < 6; i++) Utils.keyDown(Constants.keyCodes.Enter, { force: true });
+        // for (var i = 0; i < 6; i++) Utils.keyDown(Constants.keyCodes.Enter, { shiftKey: true, force: true });
+        Utils.selectCell(500, 200, { ctrlKey: true });
+        for (var i = 0; i < 2; i++) Utils.keyDown(Constants.keyCodes.ArrowDown, { shiftKey: true, force: true }, 50);
+        Utils.keyDown(Constants.keyCodes.ArrowRight, { shiftKey: true, force: true }, 50);
+        Utils.selectCell(200, 500, { ctrlKey: true });
+        for (var i = 0; i < 2; i++) Utils.keyDown(Constants.keyCodes.ArrowDown, { shiftKey: true, force: true }, 50);
+        Utils.keyDown(Constants.keyCodes.ArrowRight, { shiftKey: true, force: true }, 50);
+        for (var i = 0; i < 18; i++) Utils.keyDown(Constants.keyCodes.Tab, { force: true }, 50);
+        for (var i = 0; i < 18; i++) Utils.keyDown(Constants.keyCodes.Tab, { shiftKey: true, force: true }, 50);
+        for (var i = 0; i < 18; i++) Utils.keyDown(Constants.keyCodes.Enter, { force: true }, 50);
+        for (var i = 0; i < 18; i++) Utils.keyDown(Constants.keyCodes.Enter, { shiftKey: true, force: true }, 50);
+    });
 
 
     it('Enter key pressed should activate cell edit mode ', () => {
