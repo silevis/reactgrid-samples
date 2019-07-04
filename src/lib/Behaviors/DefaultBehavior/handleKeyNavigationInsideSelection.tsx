@@ -4,89 +4,57 @@ import { State, KeyboardEvent, Location } from '../../Common';
 import { getActiveSelectedRange } from '../../Functions/getActiveSelectedRange';
 
 export function handleKeyNavigationInsideSelection(state: State, event: KeyboardEvent): State {
-    const focusedCell = state.focusedLocation!;
-    const cellMatrix = state.cellMatrix;
-    const activeSelectedRange = getActiveSelectedRange(state)
+    event.preventDefault();
     if (event.keyCode === keyCodes.TAB && !event.shiftKey) {
-        // TODO WHAT WITH THAT?
-        moveFocusInsideSelectedRange(1, state);
-        event.preventDefault();
+        return moveFocusInsideSelectedRange('right', state);
     } else if (event.keyCode === keyCodes.TAB && event.shiftKey) {
-        if (
-            focusedCell.col.idx === 0 &&
-            focusedCell.row.idx === activeSelectedRange.first.row.idx
-        ) {
-            focusLocation(state, new Location(activeSelectedRange.last.row, activeSelectedRange.last.col), false);
-        } else {
-            // TODO WHAT WITH THAT?
-            moveFocusInsideSelectedRange(-1, state);
-        }
-
-        if (
-            focusedCell.col.idx === activeSelectedRange.first.col.idx &&
-            focusedCell.row.idx === activeSelectedRange.first.row.idx
-        ) {
-            focusLocation(state, new Location(activeSelectedRange.last.row, activeSelectedRange.last.col), false);
-        }
-        event.preventDefault();
+        return moveFocusInsideSelectedRange('left', state);
     } else if (event.keyCode === keyCodes.ENTER && !event.shiftKey) {
-        // TODO WHAT WITH THAT?
-        moveFocusInsideSelectedRange('down', state);
-        event.preventDefault();
+        return moveFocusInsideSelectedRange('down', state);
     } else if (event.keyCode === keyCodes.ENTER && event.shiftKey) {
-        // TODO WHAT WITH THAT?
-        moveFocusInsideSelectedRange('up', state);
-        if (focusedCell.row.idx === activeSelectedRange.first.row.idx) {
-            focusLocation(state, new Location(activeSelectedRange.last.row, focusedCell.col), false);
-        }
-    } else if (!event.shiftKey && event.keyCode === keyCodes.LEFT_ARROW && focusedCell.col.idx > 0) {
-        focusLocation(state, cellMatrix.getLocation(focusedCell.row.idx, focusedCell.col.idx - 1));
-    } else if (
-        !event.shiftKey &&
-        event.keyCode === keyCodes.RIGHT_ARROW &&
-        focusedCell.col.idx < cellMatrix.last.col.idx
-    ) {
-        focusLocation(state, cellMatrix.getLocation(focusedCell.row.idx, focusedCell.col.idx + 1));
-    } else if (!event.shiftKey && event.keyCode === keyCodes.UP_ARROW && focusedCell.row.idx > 0) {
-        focusLocation(state, cellMatrix.getLocation(focusedCell.row.idx - 1, focusedCell.col.idx));
-    } else if (
-        !event.shiftKey &&
-        event.keyCode === keyCodes.DOWN_ARROW &&
-        focusedCell.row.idx < cellMatrix.last.row.idx
-    ) {
-        focusLocation(state, cellMatrix.getLocation(focusedCell.row.idx + 1, focusedCell.col.idx));
-    } else {
-        // TODO 
-        // return this.innerBehavior.handleKeyDown(event);
+        return moveFocusInsideSelectedRange('up', state);
     }
-    event.stopPropagation();
     return state;
 }
 
-const moveFocusInsideSelectedRange = (direction: -1 | 1 | 'up' | 'down', state: State) => {
-    const selectedRange = getActiveSelectedRange(state)
+export function moveFocusInsideSelectedRange(direction: 'left' | 'right' | 'up' | 'down', state: State): State {
+    const activeSelectedRange = getActiveSelectedRange(state)
     const focusedCell = state.focusedLocation!
     const selectedRangeIdx = state.activeSelectedRangeIdx
-    const colCount = selectedRange.cols.length;
-    const delta = direction === 'up' ? -colCount : direction === 'down' ? colCount : direction;
+    const colCount = activeSelectedRange.cols.length;
+    const rowCount = activeSelectedRange.rows.length;
+    const delta = direction === 'up' || direction === 'left' ? -1 : 1;
 
     const currentPosInRange =
-        (focusedCell.row.idx - selectedRange.first.row.idx) * colCount +
-        (focusedCell.col.idx - selectedRange.first.col.idx);
-    const newPosInRange = (currentPosInRange + delta) % (selectedRange.rows.length * selectedRange.cols.length);
-    if (newPosInRange === 0) {
+        direction === 'up' || direction === 'down'
+            ? (focusedCell.row.idx - activeSelectedRange.first.row.idx) +
+            (focusedCell.col.idx - activeSelectedRange.first.col.idx) * rowCount
+            : (focusedCell.row.idx - activeSelectedRange.first.row.idx) * colCount +
+            (focusedCell.col.idx - activeSelectedRange.first.col.idx);
+
+    const newPosInRange = (currentPosInRange + delta) % (activeSelectedRange.rows.length * activeSelectedRange.cols.length);
+
+    if ((newPosInRange < 0 && currentPosInRange === 0)) { // shift + tab/enter and first cell focused in active range
+        const nextSelectionRangeIdx = selectedRangeIdx === 0 ? state.selectedRanges.length - 1 : (selectedRangeIdx - 1) % state.selectedRanges.length;
+        const nextSelection = state.selectedRanges[nextSelectionRangeIdx];
+        state = focusLocation(state, new Location(nextSelection.last.row, nextSelection.last.col), false);
+        return { ...state, activeSelectedRangeIdx: nextSelectionRangeIdx }
+    } else if (newPosInRange === 0 && currentPosInRange === (activeSelectedRange.rows.length * activeSelectedRange.cols.length) - 1) { // tab/enter and last cell focused in active range
         const nextSelectionRangeIdx = (selectedRangeIdx + 1) % state.selectedRanges.length;
         const nextSelection = state.selectedRanges[nextSelectionRangeIdx];
         state = focusLocation(state, new Location(nextSelection.first.row, nextSelection.first.col), false);
-        return { activeSelectedRangeIdx: nextSelectionRangeIdx }
-    } else {
-        const newColIdx = selectedRange.first.col.idx + (newPosInRange % colCount);
-        const newRowIdx = selectedRange.first.row.idx + Math.floor(newPosInRange / colCount);
+        return { ...state, activeSelectedRangeIdx: nextSelectionRangeIdx }
+    } else { // tab/enter and all cells inside active range except last cell && shift + tab/enter and all cells inside active range except first cell
+        const focusedCellColIdxInRange = direction === 'up' || direction === 'down' ? Math.floor(newPosInRange / rowCount) : newPosInRange % colCount;
+        const focusedCellRowIdxInRange = direction === 'up' || direction === 'down' ? newPosInRange % rowCount : Math.floor(newPosInRange / colCount)
+        const focusedCellColIdx = activeSelectedRange.first.col.idx + focusedCellColIdxInRange;
+        const focusedCellRowIdx = activeSelectedRange.first.row.idx + focusedCellRowIdxInRange;
         state = focusLocation(
             state,
-            state.cellMatrix.getLocation(newRowIdx, newColIdx),
-            selectedRange ? (selectedRange.cols.length > 1 || selectedRange.rows.length > 1 ? false : true) : true
+            state.cellMatrix.getLocation(focusedCellRowIdx, focusedCellColIdx),
+            activeSelectedRange ? (activeSelectedRange.cols.length > 1 || activeSelectedRange.rows.length > 1 ? false : true) : true
         );
+        return state;
     }
 }
 
