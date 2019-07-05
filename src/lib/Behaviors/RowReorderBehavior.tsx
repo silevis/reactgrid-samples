@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { State, Behavior, PointerEvent, PointerLocation, Id } from '../Common';
 // import { resetToDefaultBehavior } from '../Functions';
-import { Line } from '../Components/Line';
-import { Shadow } from '../Components/Shadow';
 
 export class RowReorderBehavior extends Behavior {
     private initialRowIdx!: number;

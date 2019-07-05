@@ -5,7 +5,6 @@ interface LineProps {
     onInitialized: (linePositionSetter: (linePosition: number) => void) => void
     isVertical: boolean;
     cellMatrix: CellMatrix;
-    shadowSize?: number;
 }
 
 interface LineState {

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { State, Behavior, PointerEvent, PointerLocation, Id } from '../Common';
-import { Line } from '../Components/Line';
-import { Shadow } from '../Components/Shadow';
+
 
 export class ColumnReorderBehavior extends Behavior {
     private initialColumnIdx!: number;
@@ -33,7 +32,6 @@ export class ColumnReorderBehavior extends Behavior {
             ...state,
             shadowPosition: this.getShadowPosition(location, state)
         }
-
     }
 
     getShadowPosition(location: PointerLocation, state: State): number {
@@ -53,7 +51,7 @@ export class ColumnReorderBehavior extends Behavior {
         const drawRight = dropLocation.col.idx > this.initialColumnIdx;
         return {
             ...state,
-            linePosition: dropLocation.viewportX - dropLocation.cellX + (drawRight ? dropLocation.col.width : 0)
+            linePosition: dropLocation.viewportX - dropLocation.cellX + (drawRight ? dropLocation.col.width : 0) + state.viewportElement.scrollLeft
         }
     }
 
