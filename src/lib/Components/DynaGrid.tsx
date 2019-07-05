@@ -5,6 +5,8 @@ import { recalcVisibleRange } from "../Functions";
 import { KeyboardEvent, ClipboardEvent } from "../Common";
 import { PointerEventsController } from "../Common/PointerEventsController";
 import { CellEditor } from "./CellEditor";
+import { Line } from "./Line";
+import { Shadow } from "./Shadow";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
 
@@ -28,6 +30,10 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
             currentlyEditedCell: undefined,
             cellTemplates: { ...state.cellTemplates, ...props.cellTemplates }
         };
+    }
+
+    shouldComponentUpdate(nextProps: DynaGridProps, nextState: State) {
+        return true
     }
 
     componentDidMount() {
@@ -99,6 +105,8 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                         />}
                     <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} />
                     {this.state.isFocusedCellInEditMode && this.state.currentlyEditedCell && <CellEditor state={this.state} />}
+                    <Line linePosition={this.state.linePosition} isVertical={true} cellMatrix={this.state.cellMatrix} />
+                    <Shadow shadowPosition={this.state.shadowPosition} isVertical={true} cellMatrix={this.state.cellMatrix} shadowSize={this.state.shadowSize} />
                 </div>
             </div >
         );

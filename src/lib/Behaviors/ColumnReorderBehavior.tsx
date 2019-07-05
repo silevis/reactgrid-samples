@@ -70,8 +70,10 @@ export class ColumnReorderBehavior extends Behavior {
         }
         return {
             ...state,
-            //focusedLocation: cell,
+            focusedLocation: location,
             //isFocusedCellInEditMode: false,
+            linePosition: -1,
+            shadowPosition: -1,
             selectedRanges: [],
             selectedIndexes: [] // TODO state.cellMatrix.cols.map(col => col.idx)
         };
