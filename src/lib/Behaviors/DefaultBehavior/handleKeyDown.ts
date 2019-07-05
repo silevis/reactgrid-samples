@@ -14,7 +14,7 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
         focusedLocation.cell.data = state.cellTemplates[focusedLocation.cell.type].handleKeyDown(event.keyCode, focusedLocation.cell.data).cellData
     }
 
-    if (!isSelectedOneCell(state) && !isArrowKey(key) && !isSpecialKeys(key)) {
+    if (!event.ctrlKey && !isSelectedOneCell(state) && !isArrowKey(key) && !isSpecialKeys(key)) {
         return handleKeyNavigationInsideSelection(state, event)
     } else {
         if (isTabKey(key)) {
