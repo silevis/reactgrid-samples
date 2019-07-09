@@ -1,6 +1,6 @@
 import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, DataChange } from ".";
 import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
-import { CellTemplates } from "./PublicModel";
+import { CellTemplates, Id } from "./PublicModel";
 import { TextCellTemplate } from "../Cells/TextCellTemplate";
 import { HeaderCellTemplate } from "../Cells/HeaderCellTemplate";
 import { NumberCellTemplate } from "../Cells/NumberCellTemplate";
@@ -44,6 +44,7 @@ export class State {
     selectionMode: SelectionMode = 'range'
     selectedRanges: Range[] = [];
     selectedIndexes: number[] = [];
+    selectedIds: Id[] = [];
     focusedLocation?: Location;
     activeSelectedRangeIdx: number = 0;
     isFocusedCellInEditMode: boolean = false;

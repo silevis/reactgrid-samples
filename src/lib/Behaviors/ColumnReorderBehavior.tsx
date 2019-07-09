@@ -18,7 +18,8 @@ export class ColumnReorderBehavior extends Behavior {
         const leftColumns = leftIndexes.map(i => state.cellMatrix.cols[i]);
         const leftColumnsWidth = leftColumns.reduce((sum, col) => sum + col.width, 0);
         this.pointerOffset = leftColumnsWidth + location.cellX;
-        this.selectedIds = columns.map(c => c.id);
+        // changed from id to idx
+        this.selectedIds = columns.map(c => c.idx);
         return {
             ...state,
             lineOrientation: 'vertical',

@@ -27,7 +27,8 @@ export function selectColumn(state: State, column: Column, incremental: boolean)
         selectionMode: 'column',
         // TODO Ranges have to be re-calculated durring render
         selectedRanges: (incremental && state.selectionMode === 'column' ? state.selectedRanges : []).concat(range),
-        selectedIndexes: (incremental && state.selectionMode === 'column' ? state.selectedIndexes : []).concat(column.idx)
+        selectedIndexes: (incremental && state.selectionMode === 'column' ? state.selectedIndexes : []).concat(column.idx),
+        selectedIds: (incremental && state.selectionMode === 'column' ? state.selectedIndexes : []).concat(column.id as number),
     };
 }
 
@@ -42,7 +43,8 @@ export function updateActiveSelectedColumns(state: State, firstColumn: Column, l
         selectionMode: 'column',
         // TODO Ranges have to be re-calculated during render
         selectedRanges: [range],
-        selectedIndexes: range.cols.map(col => col.idx)
+        selectedIndexes: range.cols.map(col => col.idx),
+        selectedIds: range.cols.map(row => row.id),
     };
 }
 
@@ -55,7 +57,8 @@ export function selectRow(state: State, row: Row, incremental: boolean): State {
         selectionMode: 'row',
         // TODO Ranges have to be re-calculated durring render
         selectedRanges: (incremental && state.selectionMode === 'row' ? state.selectedRanges : []).concat(range),
-        selectedIndexes: (incremental && state.selectionMode === 'row' ? state.selectedIndexes : []).concat(row.idx)
+        selectedIndexes: (incremental && state.selectionMode === 'row' ? state.selectedIndexes : []).concat(row.idx),
+        selectedIds: (incremental && state.selectionMode === 'column' ? state.selectedIndexes : []).concat(row.id as number),
     };
 }
 
@@ -70,6 +73,7 @@ export function updateActiveSelectedRows(state: State, firstRow: Row, lastRow: R
         selectionMode: 'row',
         // TODO Ranges have to be re-calculated durring render
         selectedRanges: [range],
-        selectedIndexes: range.rows.map(row => row.idx)
+        selectedIndexes: range.rows.map(row => row.idx),
+        selectedIds: range.rows.map(row => row.id),
     };
 }
