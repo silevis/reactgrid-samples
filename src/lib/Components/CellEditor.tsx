@@ -19,8 +19,8 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
             style={{
                 boxSizing: 'border-box',
                 position: 'fixed',
-                top: position.top,
-                left: position.left,
+                top: position.top + props.state.viewportElement.offsetTop,
+                left: position.left + props.state.viewportElement.offsetLeft,
                 height: location.row.height,
                 width: location.col.width,
                 border: '2px #3579f8 solid',

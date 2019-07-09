@@ -2,18 +2,42 @@ import * as React from 'react'
 import { ColumnProps, RowProps, CellMatrixProps, DataChange } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 
-export class Spreadsheet extends React.Component<{}, { data: string[][], widths: number[] }> {
+
+interface Cell {
+    colId: string;
+    data: any;
+}
+interface Row {
+    rowId: string;
+    cols: Cell[]
+}
+
+
+export class Spreadsheet extends React.Component<{}, { data: Row[], widths: number[] }> {
     constructor(props: {}) {
         super(props);
+
+        const colIds: string[] = Array.from(Array(10), () => Math.random().toString(36).substr(2, 9));
+
         this.state = {
             widths: Array(500).fill(120),
-            data: Array(500).fill(0).map((_, ri) => Array(20).fill(0).map((_, ci) => (ri + 100) + ' - ' + (ci + 100)))
+            data: Array(20).fill(0).map((_, ri) =>
+                ({
+                    rowId: Math.random().toString(36).substr(2, 9),
+                    cols: Array(10).fill(0).map((_, ci) =>
+                        ({
+                            data: (ri + 100) + ' - ' + (ci + 100),
+                            colId: colIds[ci]
+                        }))
+                })
+            )
         }
     }
 
     private generateCellMatrix(): CellMatrixProps {
-        const columns: ColumnProps[] = this.state.data[0].map((c, idx) => ({
-            id: idx,
+        console.log(this.state.data)
+        const columns: ColumnProps[] = this.state.data[0].cols.map((c, idx) => ({
+            id: c.colId,
             width: this.state.widths[idx],
             onDrop: (ids) => this.reorderColumns(ids as number[], idx),
             reorderable: true,
@@ -21,11 +45,11 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
             onResize: width => { this.state.widths[idx] = 120, this.forceUpdate(); }
         }));
         const rows: RowProps[] = this.state.data.map((row, rowIdx) => ({
-            id: Math.floor(Math.random() * 10000),
+            id: row.rowId,
             height: 25,
             onDrop: (ids) => this.reorderRows(ids as number[], rowIdx),
             reorderable: true,
-            cells: row.map((data, colIdx) => (rowIdx === 0 || colIdx === 0) ? { data: data, type: 'header' } : (rowIdx !== 0 && colIdx === 1) ? { data: data, type: 'checkbox' } : { data: data, type: 'text' })
+            cells: row.cols.map((data, colIdx) => (rowIdx === 0 || colIdx === 0) ? { data: data.data, type: 'header' } : (rowIdx !== 0 && colIdx === 1) ? { data: data.data, type: 'checkbox' } : { data: data.data, type: 'text' })
         }))
         return ({ frozenTopRows: 2, frozenLeftColumns: 2, frozenBottomRows: 2, frozenRightColumns: 2, rows, columns })
     }
@@ -41,6 +65,7 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
     }
 
     render() {
+        console.log(this.state.data)
         return <div>
             <button style={{ width: 50, height: 50 }} onClick={() => {
                 let data = [...this.state.data];
@@ -58,22 +83,27 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
     }
 
     handleDataChanges(dataChanges: DataChange[]) {
-        const data = this.state.data;
+        const data: Row[] = this.state.data;
         dataChanges.forEach(change => {
-
-            data[change.rowId as number][change.columnId as number] = change.newData as string;
+            const row: any = data.find(row => row.rowId === change.rowId);
+            const cell: any = row ? row.cols.find((c: any) => c.colId === change.columnId) : null
+            if (cell && row) {
+                cell.data = change.newData as string;
+                row.cols.map((c: any) => c.colId == cell.colId ? c = cell : change)
+                const newData: Row[] = data.map(r => r.rowId == row.rowId ? r = row : r)
+                this.setState({ data: newData })
+            }
         })
-        this.setState({ data });
     }
 
     reorderColumns(colIdxs: number[], to: number) {
-        let data = [...this.state.data];
-        if (to > colIdxs[0]) {
-            data = data.map(r => this.calculateColumnReorder(r, colIdxs, 'right', to));
-        } else {
-            data = data.map(r => this.calculateColumnReorder(r, colIdxs, 'left', to));
-        }
-        this.setState({ data })
+        // let data = [...this.state.data];
+        // if (to > colIdxs[0]) {
+        //     data = data.map(r => this.calculateColumnReorder(r, colIdxs, 'right', to));
+        // } else {
+        //     data = data.map(r => this.calculateColumnReorder(r, colIdxs, 'left', to));
+        // }
+        // this.setState({ data })
     }
 
     reorderRows(rowIdxs: number[], to: number) {
