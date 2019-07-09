@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DynaGridProps, CellMatrix, PointerEvent, State, StateUpdater } from "../Common";
+import { DynaGridProps, CellMatrix, PointerEvent, State, StateUpdater, Range } from "../Common";
 import { PaneRow } from "./PaneRow";
 import { recalcVisibleRange } from "../Functions";
 import { KeyboardEvent, ClipboardEvent } from "../Common";
@@ -7,6 +7,8 @@ import { PointerEventsController } from "../Common/PointerEventsController";
 import { CellEditor } from "./CellEditor";
 import { Line } from "./Line";
 import { Shadow } from "./Shadow";
+import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
+import { runInContext } from "vm";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
 
@@ -16,24 +18,12 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     private currentState: State = this.state;
 
     static getDerivedStateFromProps(props: DynaGridProps, state: State) {
-        if (state.isFocusedCellInEditMode && state.focusedLocation) {
-            return {
-                ...state,
-                cellMatrix: new CellMatrix(props.cellMatrixProps),
-                currentlyEditedCell: { ...state.focusedLocation.cell },
-                cellTemplates: { ...state.cellTemplates, ...props.cellTemplates }
-            };
-        }
         return {
             ...state,
             cellMatrix: new CellMatrix(props.cellMatrixProps),
-            currentlyEditedCell: undefined,
-            cellTemplates: { ...state.cellTemplates, ...props.cellTemplates }
+            currentlyEditedCell: state.isFocusedCellInEditMode && state.focusedLocation ? { ...state.focusedLocation.cell } : undefined,
+            cellTemplates: { ...state.cellTemplates, ...props.cellTemplates },
         };
-    }
-
-    shouldComponentUpdate(nextProps: DynaGridProps, nextState: State) {
-        return true
     }
 
     componentDidMount() {

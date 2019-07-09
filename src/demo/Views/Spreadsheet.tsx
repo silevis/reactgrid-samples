@@ -21,7 +21,7 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
             onResize: width => { this.state.widths[idx] = 120, this.forceUpdate(); }
         }));
         const rows: RowProps[] = this.state.data.map((row, rowIdx) => ({
-            id: rowIdx,
+            id: Math.floor(Math.random() * 10000),
             height: 25,
             onDrop: (ids) => this.reorderRows(ids as number[], rowIdx),
             reorderable: true,
@@ -41,16 +41,26 @@ export class Spreadsheet extends React.Component<{}, { data: string[][], widths:
     }
 
     render() {
-        return <DynaGrid style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
-            cellMatrixProps={this.generateCellMatrix()}
-            onDataChanged={changes => this.handleDataChanges(changes)}
-            cellTemplates={{}}
-        />
+        return <div>
+            <button style={{ width: 50, height: 50 }} onClick={() => {
+                let data = [...this.state.data];
+                data.shift()
+                this.setState({ data })
+            }}>
+                usuŃ to
+            </button>
+            <DynaGrid style={{ position: 'absolute', top: 50, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
+                cellMatrixProps={this.generateCellMatrix()}
+                onDataChanged={changes => this.handleDataChanges(changes)}
+                cellTemplates={{}}
+            />
+        </div>
     }
 
     handleDataChanges(dataChanges: DataChange[]) {
         const data = this.state.data;
         dataChanges.forEach(change => {
+
             data[change.rowId as number][change.columnId as number] = change.newData as string;
         })
         this.setState({ data });

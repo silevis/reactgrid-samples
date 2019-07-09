@@ -28,7 +28,6 @@ export class State {
         'email': new EmailCellTemplate(),
         'time': new TimeCellTemplate(),
     }
-
     hiddenFocusElement!: HTMLDivElement;
     readonly viewportElement!: HTMLDivElement;
     lastKeyCode: number = 0;
