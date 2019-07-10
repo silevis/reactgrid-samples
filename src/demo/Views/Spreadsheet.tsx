@@ -76,7 +76,7 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
             </button>
             <button style={{ width: 250, height: 50 }} onClick={() => {
                 let data = [...this.state.data];
-                data.splice(0, 0, { rowId: Math.random().toString(36).substr(2, 9), cols: [...Array.from(Array(10), () => ({ colId: Math.random().toString(36).substr(2, 9), data: 'eee' }))] })
+                data.splice(5, 0, { rowId: Math.random().toString(36).substr(2, 9), cols: [...data[0].cols.map(c => ({ data: c.data + c.colId, colId: c.colId }))] })
                 this.setState({ data })
             }}>
                 dodaj pierwszy rekord od góry

@@ -21,7 +21,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     static getDerivedStateFromProps(props: DynaGridProps, state: State) {
 
         const matrix = new CellMatrix(props.cellMatrixProps);
-
+        console.log(matrix.rows)
         const newState = {
             ...state,
             cellMatrix: matrix,

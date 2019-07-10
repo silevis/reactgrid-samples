@@ -67,28 +67,14 @@ export function updateActiveSelectedRows(state: State, ids: Id[], incremental: b
 
     const firstCol = state.cellMatrix.first.col;
     const lastCol = state.cellMatrix.last.col;
-
-    // znalezc trzeba
     const newRows = state.cellMatrix.rows.filter(r => ids.includes(r.id))
-    const firstRow = newRows.find(r => r.idx == Math.min(...newRows.map(r => r.idx)))
-    const lastRow = newRows.find(r => r.idx == Math.max(...newRows.map(r => r.idx)))
-
-    if (firstRow && lastRow) {
-        const range = state.cellMatrix.getRange(new Location(firstRow!, firstCol), new Location(lastRow!, lastCol))
-        return {
-            ...state,
-            selectionMode: 'row',
-            // TODO Ranges have to be re-calculated durring render
-            selectedRanges: [range],
-            selectedIndexes: range.rows.map(row => row.idx),
-            selectedIds: range.rows.map(row => row.id),
-        };
-    }
+    const ranges = newRows.map(r => state.cellMatrix.getRange(new Location(r, firstCol), new Location(r, lastCol)))
     return {
         ...state,
-        selectedRanges: [],
-        selectedIndexes: [],
-        selectedIds: [],
+        selectionMode: 'row',
+        // TODO Ranges have to be re-calculated durring render
+        selectedRanges: [...ranges],
+        selectedIndexes: newRows.map(row => row.idx),
+        selectedIds: newRows.map(row => row.id),
     }
-
 }
