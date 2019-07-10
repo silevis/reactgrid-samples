@@ -22,35 +22,21 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
 
         const matrix = new CellMatrix(props.cellMatrixProps);
 
+        const newState = {
+            ...state,
+            cellMatrix: matrix,
+            currentlyEditedCell: state.isFocusedCellInEditMode && state.focusedLocation ? { ...state.focusedLocation.cell } : undefined,
+            cellTemplates: { ...state.cellTemplates, ...props.cellTemplates },
+        }
+
         if (state.selectionMode === 'row') {
-            console.log(props.cellMatrixProps.rows.filter(r => state.selectedIds.includes(r.id)))
-            const newRows = matrix.rows.filter(r => state.selectedIds.includes(r.id))
-            const firstRow = newRows.find(r => r.idx == Math.min(...newRows.map(r => r.idx)))
-            const lastRow = newRows.find(r => r.idx == Math.max(...newRows.map(r => r.idx)))
-            if (firstRow && lastRow) {
-                state = updateActiveSelectedRows(state, firstRow, lastRow, false)
-            } else {
-                state.selectedRanges = []
-                state.selectedIndexes = []
-                state.selectedIds = []
-            }
-        } else if (state.selectionMode === 'column') {
-            console.log(props.cellMatrixProps.columns.filter(c => state.selectedIds.includes(c.id)))
-            const newRows = matrix.cols.filter(c => state.selectedIds.includes(c.id))
-            const firstCol = newRows.find(c => c.idx == Math.min(...newRows.map(c => c.idx)))
-            const lastCol = newRows.find(c => c.idx == Math.max(...newRows.map(c => c.idx)))
-            if (firstCol && lastCol) {
-                state = updateActiveSelectedColumns(state, firstCol, lastCol, false)
-            } else {
-                state.selectedRanges = []
-                state.selectedIndexes = []
-                state.selectedIds = []
-            }
+            const newRowIds = state.selectedIds.filter(id => matrix.rows.map(r => r.id).includes(id))
+            state = updateActiveSelectedRows(newState, newRowIds, false)
         }
 
         return {
             ...state,
-            cellMatrix: new CellMatrix(props.cellMatrixProps),
+            cellMatrix: matrix,
             currentlyEditedCell: state.isFocusedCellInEditMode && state.focusedLocation ? { ...state.focusedLocation.cell } : undefined,
             cellTemplates: { ...state.cellTemplates, ...props.cellTemplates },
         };

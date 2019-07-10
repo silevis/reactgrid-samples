@@ -21,10 +21,10 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
 
         this.state = {
             widths: Array(500).fill(120),
-            data: Array(20).fill(0).map((_, ri) =>
+            data: Array(10).fill(0).map((_, ri) =>
                 ({
                     rowId: Math.random().toString(36).substr(2, 9),
-                    cols: Array(10).fill(0).map((_, ci) =>
+                    cols: Array(5).fill(0).map((_, ci) =>
                         ({
                             data: (ri + 100) + ' - ' + (ci + 100),
                             colId: colIds[ci]
@@ -69,9 +69,17 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
             <button style={{ width: 250, height: 50 }} onClick={() => {
                 let data = [...this.state.data];
                 data.shift()
+                console.log(data.length)
                 this.setState({ data })
             }}>
                 usuń pierwszy rekord od góry
+            </button>
+            <button style={{ width: 250, height: 50 }} onClick={() => {
+                let data = [...this.state.data];
+                data.splice(0, 0, { rowId: Math.random().toString(36).substr(2, 9), cols: [...Array.from(Array(10), () => ({ colId: Math.random().toString(36).substr(2, 9), data: 'eee' }))] })
+                this.setState({ data })
+            }}>
+                dodaj pierwszy rekord od góry
             </button>
             <button style={{ width: 250, height: 50 }} onClick={() => {
                 let data = [...this.state.data];

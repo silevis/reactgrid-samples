@@ -1,4 +1,4 @@
-import { State, Range, Column, Row, Location } from "../Common";
+import { State, Range, Column, Row, Location, Id } from "../Common";
 
 export function selectRange(state: State, range: Range, incremental: boolean): State {
     return {
@@ -62,18 +62,33 @@ export function selectRow(state: State, row: Row, incremental: boolean): State {
     };
 }
 
-export function updateActiveSelectedRows(state: State, firstRow: Row, lastRow: Row, incremental: boolean): State {
+export function updateActiveSelectedRows(state: State, ids: Id[], incremental: boolean): State {
     // TODO THIS! 
 
     const firstCol = state.cellMatrix.first.col;
     const lastCol = state.cellMatrix.last.col;
-    const range = state.cellMatrix.getRange(new Location(firstRow, firstCol), new Location(lastRow, lastCol))
+
+    // znalezc trzeba
+    const newRows = state.cellMatrix.rows.filter(r => ids.includes(r.id))
+    const firstRow = newRows.find(r => r.idx == Math.min(...newRows.map(r => r.idx)))
+    const lastRow = newRows.find(r => r.idx == Math.max(...newRows.map(r => r.idx)))
+
+    if (firstRow && lastRow) {
+        const range = state.cellMatrix.getRange(new Location(firstRow!, firstCol), new Location(lastRow!, lastCol))
+        return {
+            ...state,
+            selectionMode: 'row',
+            // TODO Ranges have to be re-calculated durring render
+            selectedRanges: [range],
+            selectedIndexes: range.rows.map(row => row.idx),
+            selectedIds: range.rows.map(row => row.id),
+        };
+    }
     return {
         ...state,
-        selectionMode: 'row',
-        // TODO Ranges have to be re-calculated durring render
-        selectedRanges: [range],
-        selectedIndexes: range.rows.map(row => row.idx),
-        selectedIds: range.rows.map(row => row.id),
-    };
+        selectedRanges: [],
+        selectedIndexes: [],
+        selectedIds: [],
+    }
+
 }
