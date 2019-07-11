@@ -62,19 +62,40 @@ export function selectRow(state: State, row: Row, incremental: boolean): State {
     };
 }
 
-export function updateActiveSelectedRows(state: State, ids: Id[], incremental: boolean): State {
+export function updateSelectedRows(state: State, ids: Id[], incremental?: boolean): State {
     // TODO THIS! 
-
     const firstCol = state.cellMatrix.first.col;
     const lastCol = state.cellMatrix.last.col;
-    const newRows = state.cellMatrix.rows.filter(r => ids.includes(r.id))
-    const ranges = newRows.map(r => state.cellMatrix.getRange(new Location(r, firstCol), new Location(r, lastCol)))
+    const newRows = state.cellMatrix.rows.filter(r => ids.includes(r.id));
+
+    const firstRow = state.cellMatrix.rows.find(row => row.id === ids[0])!;
+    const lastRow = state.cellMatrix.rows.find(row => row.id === ids[ids.length - 1])!;
+
+    // const ranges = newRows.map(r => state.cellMatrix.getRange(new Location(firstRow, firstCol), new Location(lastRow, lastCol)));
+    const range = state.cellMatrix.getRange(new Location(firstRow, firstCol), new Location(lastRow, lastCol));
+
     return {
         ...state,
         selectionMode: 'row',
-        // TODO Ranges have to be re-calculated durring render
-        selectedRanges: [...ranges],
+        selectedRanges: [range],
         selectedIndexes: newRows.map(row => row.idx),
-        selectedIds: newRows.map(row => row.id),
+        selectedIds: newRows.map(row => row.id)
+    }
+}
+
+export function updateActiveSelectedRows(state: State, firstRowId: Id, lastRowId: Id, incremental?: boolean): State {
+    // TODO THIS! 
+    const firstCol = state.cellMatrix.first.col;
+    const lastCol = state.cellMatrix.last.col;
+
+    const firstRow = state.cellMatrix.rows.find(row => row.id === firstRowId)!;
+    const lastRow = state.cellMatrix.rows.find(row => row.id === lastRowId)!;
+
+    const range = state.cellMatrix.getRange(new Location(firstRow, firstCol), new Location(lastRow, lastCol));
+
+    return {
+        ...state,
+        selectionMode: 'row',
+        selectedIds: range.rows.map(row => row.id)
     }
 }

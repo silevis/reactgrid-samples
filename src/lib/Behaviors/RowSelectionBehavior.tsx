@@ -18,6 +18,8 @@ export class RowSelectionBehavior extends Behavior {
     }
 
     handlePointerEnter(event: PointerEvent, location: Location, state: State): State {
-        return updateActiveSelectedRows(state, [...state.selectedIds, location.row.id], event.ctrlKey);
+        // return updateActiveSelectedRows(state, [...state.selectedIds, location.row.id], event.ctrlKey);
+        // return updateActiveSelectedRows(state, state.selectedIds, location.row.id, event.ctrlKey);
+        return updateActiveSelectedRows(state, state.focusedLocation!.row.id, location.row.id);
     }
 }

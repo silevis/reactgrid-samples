@@ -21,7 +21,7 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
 
         this.state = {
             widths: Array(500).fill(120),
-            data: Array(10).fill(0).map((_, ri) =>
+            data: Array(50).fill(0).map((_, ri) =>
                 ({
                     rowId: Math.random().toString(36).substr(2, 9),
                     cols: Array(5).fill(0).map((_, ci) =>
@@ -69,7 +69,6 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
             <button style={{ width: 250, height: 50 }} onClick={() => {
                 let data = [...this.state.data];
                 data.shift()
-                console.log(data.length)
                 this.setState({ data })
             }}>
                 usuń pierwszy rekord od góry

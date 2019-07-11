@@ -7,9 +7,7 @@ import { PointerEventsController } from "../Common/PointerEventsController";
 import { CellEditor } from "./CellEditor";
 import { Line } from "./Line";
 import { Shadow } from "./Shadow";
-import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
-import { runInContext } from "vm";
-import { updateActiveSelectedRows, updateActiveSelectedColumns } from "../Functions/selectRange";
+import { updateSelectedRows } from "../Functions/selectRange";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
 
@@ -19,9 +17,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     private currentState: State = this.state;
 
     static getDerivedStateFromProps(props: DynaGridProps, state: State) {
-
         const matrix = new CellMatrix(props.cellMatrixProps);
-        console.log(matrix.rows)
         const newState = {
             ...state,
             cellMatrix: matrix,
@@ -30,9 +26,13 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
         }
 
         if (state.selectionMode === 'row') {
-            const newRowIds = state.selectedIds.filter(id => matrix.rows.map(r => r.id).includes(id))
-            state = updateActiveSelectedRows(newState, newRowIds, false)
+            state = updateSelectedRows(newState, newState.selectedIds);
         }
+
+        // if (state.selectionMode === 'row') {
+        //     const newRowIds = state.selectedIds.filter(id => matrix.rows.map(r => r.id).includes(id))
+        //     state = updateActiveSelectedRows(newState, newRowIds, false)
+        // }
 
         return {
             ...state,
