@@ -75,7 +75,8 @@ export class RowReorderBehavior extends Behavior {
                 //focusedLocation: cell,
                 //isFocusedCellInEditMode: false,
                 selectedRanges: [],
-                selectedIndexes: [] // TODO state.cellMatrix.cols.map(col => col.idx)
+                selectedIndexes: [], // TODO state.cellMatrix.cols.map(col => col.idx)
+                selectedIds: [] // TODO state.cellMatrix.cols.map(col => col.idx)
             };
         }
         return state

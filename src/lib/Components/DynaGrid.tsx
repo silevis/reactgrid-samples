@@ -24,18 +24,9 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
             currentlyEditedCell: state.isFocusedCellInEditMode && state.focusedLocation ? { ...state.focusedLocation.cell } : undefined,
             cellTemplates: { ...state.cellTemplates, ...props.cellTemplates },
         }
-
         if (state.selectionMode === 'row') {
             state = updateSelectedRows(newState);
         }
-
-        // if (state.selectionMode === 'row') {
-        //     const newRowIds = state.selectedIds.filter(id => matrix.rows.map(r => r.id).includes(id))
-        //     state = updateActiveSelectedRows(newState, newRowIds, false)
-        // }
-
-        console.log(state.selectedIds)
-
         return {
             ...state,
             cellMatrix: matrix,

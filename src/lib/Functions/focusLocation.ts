@@ -17,7 +17,8 @@ export function focusLocation(state: State, location: Location, resetSelection =
             isFocusedCellInEditMode: false,
             activeSelectedRangeIdx: 0,
             selectedRanges: [cellMatrix.getRange(location, location)],
-            selectedIndexes: []
+            selectedIndexes: [],
+            // selectedIds: []
         };
     } else {
         return {

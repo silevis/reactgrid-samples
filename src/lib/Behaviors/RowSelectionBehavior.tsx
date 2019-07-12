@@ -9,7 +9,7 @@ export class RowSelectionBehavior extends Behavior {
         if (event.ctrlKey && state.selectionMode === 'row' && state.selectedIndexes.some(idx => idx === location.row.idx)) {
             // TODO remove row from selected indexes
         } if (event.shiftKey) {
-            // TODO        
+            state = selectRows(state, state.focusedLocation!.row, location.row);
         } else {
             state = focusLocation(state, location);
             state = selectRow(state, location.row, event.ctrlKey);
@@ -20,6 +20,6 @@ export class RowSelectionBehavior extends Behavior {
     handlePointerEnter(event: PointerEvent, location: Location, state: State): State {
         // return updateActiveSelectedRows(state, [...state.selectedIds, location.row.id], event.ctrlKey);
         // return updateActiveSelectedRows(state, state.selectedIds, location.row.id, event.ctrlKey);
-        return selectRows(state, state.focusedLocation!.row, location.row);
+        return selectRows(state, state.focusedLocation!.row, location.row, event.ctrlKey);
     }
 }

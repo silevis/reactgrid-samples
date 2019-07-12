@@ -70,8 +70,6 @@ export function updateSelectedRows(state: State, incremental?: boolean): State {
     const groupedRows: Row[][] = [];
     let sortedRowsIndex = 0;
 
-    console.log(updatedRows)
-
     updatedRows.forEach((current, index) => {
         if (!updatedRows[index - 1]) {
             groupedRows.push([current])
@@ -85,6 +83,7 @@ export function updateSelectedRows(state: State, incremental?: boolean): State {
                 groupedRows[sortedRowsIndex].push(current)
             }
         } else {
+            groupedRows.push([current])
             sortedRowsIndex += 1
         }
     })
@@ -109,6 +108,6 @@ export function selectRows(state: State, firstRow: Row, lastRow: Row, incrementa
     return {
         ...state,
         selectionMode: 'row',
-        selectedIds: range.rows.map(row => row.id)
+        selectedIds: incremental ? state.selectedIds.concat(range.rows.map(row => row.id)) : range.rows.map(row => row.id)
     }
 }
