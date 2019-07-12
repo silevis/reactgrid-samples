@@ -1,7 +1,7 @@
 import { focusLocation } from '../Functions';
 import { State, Location, Behavior } from '../Common';
 import { PointerEvent } from "../Common/domEvents";
-import { selectRow, updateActiveSelectedRows } from '../Functions/selectRange';
+import { selectRow, selectRows, updateSelectedRows } from '../Functions/selectRange';
 
 export class RowSelectionBehavior extends Behavior {
 
@@ -20,6 +20,6 @@ export class RowSelectionBehavior extends Behavior {
     handlePointerEnter(event: PointerEvent, location: Location, state: State): State {
         // return updateActiveSelectedRows(state, [...state.selectedIds, location.row.id], event.ctrlKey);
         // return updateActiveSelectedRows(state, state.selectedIds, location.row.id, event.ctrlKey);
-        return updateActiveSelectedRows(state, state.focusedLocation!.row.id, location.row.id);
+        return selectRows(state, state.focusedLocation!.row, location.row);
     }
 }

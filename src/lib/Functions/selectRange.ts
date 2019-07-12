@@ -56,41 +56,54 @@ export function selectRow(state: State, row: Row, incremental: boolean): State {
         ...state,
         selectionMode: 'row',
         // TODO Ranges have to be re-calculated durring render
-        selectedRanges: (incremental && state.selectionMode === 'row' ? state.selectedRanges : []).concat(range),
+        // selectedRanges: (incremental && state.selectionMode === 'row' ? state.selectedRanges : []).concat(range),
         selectedIndexes: (incremental && state.selectionMode === 'row' ? state.selectedIndexes : []).concat(row.idx),
-        selectedIds: (incremental && state.selectionMode === 'column' ? state.selectedIndexes : []).concat(row.id as number),
+        selectedIds: (incremental && state.selectionMode === 'row' ? state.selectedIds : []).concat(row.id as number),
     };
 }
 
-export function updateSelectedRows(state: State, ids: Id[], incremental?: boolean): State {
-    // TODO THIS! 
+export function updateSelectedRows(state: State, incremental?: boolean): State {
     const firstCol = state.cellMatrix.first.col;
     const lastCol = state.cellMatrix.last.col;
-    const newRows = state.cellMatrix.rows.filter(r => ids.includes(r.id));
+    const updatedRows = state.cellMatrix.rows.filter(r => state.selectedIds.includes(r.id)).sort((a, b) => a.idx - b.idx);
 
-    const firstRow = state.cellMatrix.rows.find(row => row.id === ids[0])!;
-    const lastRow = state.cellMatrix.rows.find(row => row.id === ids[ids.length - 1])!;
+    const groupedRows: Row[][] = [];
+    let sortedRowsIndex = 0;
 
-    // const ranges = newRows.map(r => state.cellMatrix.getRange(new Location(firstRow, firstCol), new Location(lastRow, lastCol)));
-    const range = state.cellMatrix.getRange(new Location(firstRow, firstCol), new Location(lastRow, lastCol));
+    console.log(updatedRows)
+
+    updatedRows.forEach((current, index) => {
+        if (!updatedRows[index - 1]) {
+            groupedRows.push([current])
+            return
+        }
+        const prev = updatedRows[index - 1]
+        if (current.idx - prev.idx == 1) {
+            if (!groupedRows[sortedRowsIndex]) {
+                groupedRows.push([prev, current])
+            } else {
+                groupedRows[sortedRowsIndex].push(current)
+            }
+        } else {
+            sortedRowsIndex += 1
+        }
+    })
+
+    const ranges = groupedRows.map(arr => state.cellMatrix.getRange(new Location(arr[0], firstCol), new Location(arr[arr.length - 1], lastCol)))
 
     return {
         ...state,
         selectionMode: 'row',
-        selectedRanges: [range],
-        selectedIndexes: newRows.map(row => row.idx),
-        selectedIds: newRows.map(row => row.id)
+        selectedRanges: [...ranges],
+        selectedIndexes: updatedRows.map(row => row.idx),
+        selectedIds: updatedRows.map(row => row.id)
     }
 }
 
-export function updateActiveSelectedRows(state: State, firstRowId: Id, lastRowId: Id, incremental?: boolean): State {
+export function selectRows(state: State, firstRow: Row, lastRow: Row, incremental?: boolean): State {
     // TODO THIS! 
     const firstCol = state.cellMatrix.first.col;
     const lastCol = state.cellMatrix.last.col;
-
-    const firstRow = state.cellMatrix.rows.find(row => row.id === firstRowId)!;
-    const lastRow = state.cellMatrix.rows.find(row => row.id === lastRowId)!;
-
     const range = state.cellMatrix.getRange(new Location(firstRow, firstCol), new Location(lastRow, lastCol));
 
     return {

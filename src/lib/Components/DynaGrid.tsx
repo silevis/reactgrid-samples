@@ -26,13 +26,15 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
         }
 
         if (state.selectionMode === 'row') {
-            state = updateSelectedRows(newState, newState.selectedIds);
+            state = updateSelectedRows(newState);
         }
 
         // if (state.selectionMode === 'row') {
         //     const newRowIds = state.selectedIds.filter(id => matrix.rows.map(r => r.id).includes(id))
         //     state = updateActiveSelectedRows(newState, newRowIds, false)
         // }
+
+        console.log(state.selectedIds)
 
         return {
             ...state,
