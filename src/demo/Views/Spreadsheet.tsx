@@ -21,10 +21,10 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
 
         this.state = {
             widths: Array(500).fill(120),
-            data: Array(50).fill(0).map((_, ri) =>
+            data: Array(250).fill(0).map((_, ri) =>
                 ({
                     rowId: Math.random().toString(36).substr(2, 9),
-                    cols: Array(5).fill(0).map((_, ci) =>
+                    cols: Array(100).fill(0).map((_, ci) =>
                         ({
                             data: (ri + 100) + ' - ' + (ci + 100),
                             colId: colIds[ci]

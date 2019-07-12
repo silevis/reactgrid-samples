@@ -104,7 +104,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                         />}
                     <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} />
                     {this.state.isFocusedCellInEditMode && this.state.currentlyEditedCell && <CellEditor state={this.state} />}
-                    <Line linePosition={this.state.linePosition} isVertical={true} cellMatrix={this.state.cellMatrix} />
+                    <Line linePosition={this.state.linePosition} orientation={this.state.lineOrientation} cellMatrix={this.state.cellMatrix} />
                     <Shadow shadowPosition={this.state.shadowPosition} isVertical={true} cellMatrix={this.state.cellMatrix} shadowSize={this.state.shadowSize} />
                 </div>
             </div >

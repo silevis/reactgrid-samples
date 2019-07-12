@@ -1,12 +1,12 @@
 import { focusLocation } from '../Functions';
 import { State, Location, Behavior } from '../Common';
 import { PointerEvent } from "../Common/domEvents";
-import { selectRow, selectRows, updateSelectedRows } from '../Functions/selectRange';
+import { selectRow, selectRows } from '../Functions/selectRange';
 
 export class RowSelectionBehavior extends Behavior {
 
     handlePointerDown(event: PointerEvent, location: Location, state: State): State {
-        if (event.ctrlKey && state.selectionMode === 'row' && state.selectedIndexes.some(idx => idx === location.row.idx)) {
+        if (event.ctrlKey && state.selectionMode === 'row' && state.selectedIds.some(id => id === location.row.id)) {
             // TODO remove row from selected indexes
         } if (event.shiftKey && state.focusedLocation) {
             state = selectRows(state, state.focusedLocation.row, location.row, event.ctrlKey);
@@ -18,8 +18,6 @@ export class RowSelectionBehavior extends Behavior {
     }
 
     handlePointerEnter(event: PointerEvent, location: Location, state: State): State {
-        // return updateActiveSelectedRows(state, [...state.selectedIds, location.row.id], event.ctrlKey);
-        // return updateActiveSelectedRows(state, state.selectedIds, location.row.id, event.ctrlKey);
         return selectRows(state, state.focusedLocation!.row, location.row, event.ctrlKey);
     }
 }

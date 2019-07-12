@@ -13,11 +13,32 @@ export interface PaneProps {
     borders: Borders,
 }
 
+interface RowsProps {
+    state: State;
+    range: Range;
+    borders: Borders;
+}
+
+class GridContent extends React.Component<RowsProps>{
+
+    shouldComponentUpdate(nextProps: RowsProps) {
+        return this.props.state.visibleRange != nextProps.state.visibleRange || this.props.state.cellMatrix.props != nextProps.state.cellMatrix.props
+    }
+
+    render() {
+        return (
+            <>
+                {this.props.range.rows.map((row) => <RowRenderer key={row.idx} state={this.props.state} row={row} columns={this.props.range.cols} forceUpdate={true} borders={{ ...this.props.borders, top: this.props.borders.top && row.top === 0, bottom: this.props.borders.bottom && row.idx === this.props.range.last.row.idx }} />)}
+                {this.props.range.rows.map((row) => <div key={row.idx} style={{ position: 'absolute', boxSizing: 'border-box', top: row.top, height: row.height, width: '100%', borderBottom: '1px #e5e5e5 solid', pointerEvents: 'none' }} />)}
+                {this.props.range.cols.map((col) => <div key={col.idx} style={{ position: 'absolute', boxSizing: 'border-box', left: col.left, width: col.width, height: '100%', borderRight: '1px #e5e5e5 solid', pointerEvents: 'none' }} />)}
+            </>
+        )
+    }
+}
+
 export const Pane: React.FunctionComponent<PaneProps> = (props) =>
     <div key={props.id} className="dg-pane" style={{ position: 'relative', width: props.range.width, height: '100%', ...props.style }}>
-        {props.range.rows.map((row) => <RowRenderer key={row.idx} state={props.state} row={row} columns={props.range.cols} forceUpdate={true} borders={{ ...props.borders, top: props.borders.top && row.top === 0, bottom: props.borders.bottom && row.idx === props.range.last.row.idx }} />)}
-        {props.range.rows.map((row) => <div key={row.idx} style={{ position: 'absolute', boxSizing: 'border-box', top: row.top, height: row.height, width: '100%', borderBottom: '1px #e5e5e5 solid', pointerEvents: 'none' }} />)}
-        {props.range.cols.map((col) => <div key={col.idx} style={{ position: 'absolute', boxSizing: 'border-box', left: col.left, width: col.width, height: '100%', borderRight: '1px #e5e5e5 solid', pointerEvents: 'none' }} />)}
+        <GridContent state={props.state} range={props.range} borders={props.borders} />
         {renderSelectedRanges(props.state, props.range)}
         {props.state.currentBehavior.renderPanePart(props.range)}
         {props.state.focusedLocation && props.range.contains(props.state.focusedLocation) &&
@@ -32,5 +53,3 @@ function renderSelectedRanges(state: State, pane: Range) {
         backgroundColor: 'rgba(53, 121, 248, 0.15)',
     }} />);
 }
-
-
