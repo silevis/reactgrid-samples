@@ -9,9 +9,6 @@ export class RowReorderBehavior extends Behavior {
     private pointerOffset!: number;
     private selectedIds!: Id[];
 
-    private setLinePosition: (position: number) => void = _ => { };
-    private setShadowPosition: (position: number) => void = _ => { };
-
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
         this.initialRowIdx = location.row.idx;
         this.lastPossibleDropLocation = location;

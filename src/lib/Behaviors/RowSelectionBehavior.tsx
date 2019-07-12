@@ -8,8 +8,8 @@ export class RowSelectionBehavior extends Behavior {
     handlePointerDown(event: PointerEvent, location: Location, state: State): State {
         if (event.ctrlKey && state.selectionMode === 'row' && state.selectedIndexes.some(idx => idx === location.row.idx)) {
             // TODO remove row from selected indexes
-        } if (event.shiftKey) {
-            state = selectRows(state, state.focusedLocation!.row, location.row);
+        } if (event.shiftKey && state.focusedLocation) {
+            state = selectRows(state, state.focusedLocation.row, location.row, event.ctrlKey);
         } else {
             state = focusLocation(state, location);
             state = selectRow(state, location.row, event.ctrlKey);
