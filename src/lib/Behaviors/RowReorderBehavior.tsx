@@ -23,6 +23,7 @@ export class RowReorderBehavior extends Behavior {
         return {
             ...state,
             lineOrientation: 'horizontal',
+            shadowSize: rows.reduce((sum, col) => sum + col.height, 0),
             shadowPosition: this.getShadowPosition(location, state)
         }
     }
@@ -71,6 +72,7 @@ export class RowReorderBehavior extends Behavior {
                 ...state,
                 //focusedLocation: cell,
                 linePosition: -1,
+                shadowPosition: -1,
                 selectedRanges: [],
                 selectedIndexes: [], // TODO state.cellMatrix.cols.map(col => col.idx)
                 selectedIds: [] // TODO state.cellMatrix.cols.map(col => col.idx)
