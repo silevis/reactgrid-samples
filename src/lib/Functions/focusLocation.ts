@@ -23,7 +23,7 @@ export function focusLocation(state: State, location: Location, resetSelection =
         return {
             ...state,
             focusedLocation: location,
-            isFocusedCellInEditMode: false,
+            isFocusedCellInEditMode: false
         };
     }
 }

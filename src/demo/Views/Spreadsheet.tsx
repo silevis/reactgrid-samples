@@ -21,10 +21,10 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
 
         this.state = {
             widths: Array(500).fill(120),
-            data: Array(20).fill(0).map((_, ri) =>
+            data: Array(250).fill(0).map((_, ri) =>
                 ({
                     rowId: Math.random().toString(36).substr(2, 9),
-                    cols: Array(10).fill(0).map((_, ci) =>
+                    cols: Array(5).fill(0).map((_, ci) =>
                         ({
                             data: (ri + 100) + ' - ' + (ci + 100),
                             colId: colIds[ci]
@@ -35,7 +35,6 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
     }
 
     private generateCellMatrix(): CellMatrixProps {
-        console.log(this.state.data)
         const columns: ColumnProps[] = this.state.data[0].cols.map((c, idx) => ({
             id: c.colId,
             width: this.state.widths[idx],
@@ -54,25 +53,39 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
         return ({ frozenTopRows: 2, frozenLeftColumns: 2, frozenBottomRows: 2, frozenRightColumns: 2, rows, columns })
     }
 
-    private calculateColumnReorder(row: string[], colIdxs: number[], direction: string, destination: number) {
-        const movedColumns: string[] = row.filter((_, idx) => colIdxs.includes(idx));
-        const clearedRow: string[] = row.filter((_, idx) => !colIdxs.includes(idx));
+    private calculateColumnReorder(row: Row, colIdxs: number[], direction: string, destination: number) {
+        const movedColumns: Cell[] = row.cols.filter((_, idx) => colIdxs.includes(idx));
+        const clearedRow: Cell[] = row.cols.filter((_, idx) => !colIdxs.includes(idx));
         if (direction === 'right') {
             destination = destination - colIdxs.length + 1
         }
         clearedRow.splice(destination, 0, ...movedColumns)
-        return clearedRow
+        row.cols = clearedRow
+        return row
     }
 
     render() {
-        console.log(this.state.data)
         return <div>
-            <button style={{ width: 50, height: 50 }} onClick={() => {
+            <button style={{ width: 250, height: 50 }} onClick={() => {
                 let data = [...this.state.data];
                 data.shift()
                 this.setState({ data })
             }}>
-                usuŃ to
+                usuń pierwszy rekord od góry
+            </button>
+            <button style={{ width: 250, height: 50 }} onClick={() => {
+                let data = [...this.state.data];
+                data.splice(5, 0, { rowId: Math.random().toString(36).substr(2, 9), cols: [...data[0].cols.map(c => ({ data: c.data + c.colId, colId: c.colId }))] })
+                this.setState({ data })
+            }}>
+                dodaj pierwszy rekord od góry
+            </button>
+            <button style={{ width: 250, height: 50 }} onClick={() => {
+                let data = [...this.state.data];
+                data.forEach(r => r.cols.shift())
+                this.setState({ data })
+            }}>
+                usuń pierwszy kolumn od lewej
             </button>
             <DynaGrid style={{ position: 'absolute', top: 50, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
                 cellMatrixProps={this.generateCellMatrix()}
@@ -97,13 +110,13 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
     }
 
     reorderColumns(colIdxs: number[], to: number) {
-        // let data = [...this.state.data];
-        // if (to > colIdxs[0]) {
-        //     data = data.map(r => this.calculateColumnReorder(r, colIdxs, 'right', to));
-        // } else {
-        //     data = data.map(r => this.calculateColumnReorder(r, colIdxs, 'left', to));
-        // }
-        // this.setState({ data })
+        let data = [...this.state.data];
+        if (to > colIdxs[0]) {
+            data = data.map(r => this.calculateColumnReorder(r, colIdxs, 'right', to));
+        } else {
+            data = data.map(r => this.calculateColumnReorder(r, colIdxs, 'left', to));
+        }
+        this.setState({ data })
     }
 
     reorderRows(rowIdxs: number[], to: number) {

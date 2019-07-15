@@ -7,8 +7,7 @@ import { PointerEventsController } from "../Common/PointerEventsController";
 import { CellEditor } from "./CellEditor";
 import { Line } from "./Line";
 import { Shadow } from "./Shadow";
-import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
-import { runInContext } from "vm";
+import { updateSelectedRows, updateSelectedColumns } from "../Functions/selectRange";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
 
@@ -18,9 +17,21 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     private currentState: State = this.state;
 
     static getDerivedStateFromProps(props: DynaGridProps, state: State) {
+        const matrix = new CellMatrix(props.cellMatrixProps);
+        const newState = {
+            ...state,
+            cellMatrix: matrix,
+            currentlyEditedCell: state.isFocusedCellInEditMode && state.focusedLocation ? { ...state.focusedLocation.cell } : undefined,
+            cellTemplates: { ...state.cellTemplates, ...props.cellTemplates },
+        }
+        if (state.selectionMode === 'row') {
+            state = updateSelectedRows(newState);
+        } else if (state.selectionMode === 'column') {
+            state = updateSelectedColumns(newState);
+        }
         return {
             ...state,
-            cellMatrix: new CellMatrix(props.cellMatrixProps),
+            cellMatrix: matrix,
             currentlyEditedCell: state.isFocusedCellInEditMode && state.focusedLocation ? { ...state.focusedLocation.cell } : undefined,
             cellTemplates: { ...state.cellTemplates, ...props.cellTemplates },
         };
@@ -95,8 +106,14 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                         />}
                     <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} />
                     {this.state.isFocusedCellInEditMode && this.state.currentlyEditedCell && <CellEditor state={this.state} />}
-                    <Line linePosition={this.state.linePosition} isVertical={true} cellMatrix={this.state.cellMatrix} />
-                    <Shadow shadowPosition={this.state.shadowPosition} isVertical={true} cellMatrix={this.state.cellMatrix} shadowSize={this.state.shadowSize} />
+                    <Line linePosition={this.state.linePosition} orientation={this.state.lineOrientation} cellMatrix={this.state.cellMatrix} />
+                    <Shadow shadowPosition={this.state.shadowPosition}
+                        orientation={this.state.lineOrientation}
+                        cellMatrix={this.state.cellMatrix}
+                        shadowSize={this.state.shadowSize}
+                        verticalOffset={this.state.viewportElement ? this.state.viewportElement.offsetTop : 0}
+                        horizontalOffset={this.state.viewportElement ? this.state.viewportElement.offsetLeft : 0}
+                    />
                 </div>
             </div >
         );
