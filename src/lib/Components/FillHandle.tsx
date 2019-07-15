@@ -9,6 +9,7 @@ interface FillHandleProps {
 
 export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
     <div
+        className="dg-touch-fill-handle"
         style={{
             position: 'absolute',
             top: props.location.row.bottom - 13,
@@ -16,11 +17,12 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
             width: 20,
             height: 20,
             touchAction: 'none', // prevent scrolling
-            background: 'rgba(255, 255, 255, 0.01)'
+            background: 'rgba(255, 255, 255, 0.01)',
+            zIndex: 1
         }}
-        data-cy="touch-fill-handle"
+        data-cy="dg-touch-fill-handle"
         onPointerDown={event => {
-            if (event.pointerType !== 'mouse' && event.pointerType !== undefined) { // !== undefined only for cypress tests
+            if (event.pointerType !== 'mouse' && event.pointerType !== undefined) { // !== undefined (disabled this event for cypress tests)
                 props.state.updateState(state => ({ ...state, currentBehavior: new FillHandleBehavior() }));
             }
         }}
@@ -38,11 +40,5 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
                 cursor: 'crosshair'
             }}
             data-cy="dg-fill-handle"
-            onPointerDown={event => {
-                event.preventDefault();
-                if (event.pointerType === 'mouse' || event.pointerType === undefined) { // !== undefined only for cypress tests
-                    props.state.updateState(state => ({ ...state, currentBehavior: new FillHandleBehavior() }));
-                }
-            }}
         />
     </div>
