@@ -1,9 +1,7 @@
-import { focusLocation, getLocationFromClient } from '../Functions';
-import { State, Location, Behavior, Direction } from '../Common';
+import { focusLocation } from '../Functions';
+import { State, Location, Behavior, Direction, PointerLocation } from '../Common';
 import { PointerEvent } from "../Common/domEvents";
 import { selectRange, updateActiveSelectedRange } from '../Functions/selectRange';
-
-// // export let userIsMarkingGrid: boolean = false;
 
 export class CellSelectionBehavior extends Behavior {
 
@@ -23,10 +21,12 @@ export class CellSelectionBehavior extends Behavior {
             } else {
                 const range = state.cellMatrix.getRange(location, location);
                 state = selectRange(state, range, true);
-                return focusLocation(state, location, false);
+                state = focusLocation(state, location, false);
             }
+        } else {
+            state = focusLocation(state, location);
         }
-        return focusLocation(state, location, true);
+        return { ...state, selectionMode: 'range' }
     }
 
     handlePointerEnter(event: PointerEvent, location: Location, state: State): State {
