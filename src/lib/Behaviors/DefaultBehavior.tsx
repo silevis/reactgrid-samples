@@ -7,6 +7,7 @@ import { RowSelectionBehavior } from "./RowSelectionBehavior";
 import { RowReorderBehavior } from "./RowReorderBehavior";
 import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
 import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChange";
+import { FillHandleBehavior } from "./FillHandleBehavior";
 
 interface ClipboardData {
     type: string;
@@ -21,7 +22,7 @@ export class DefaultBehavior extends Behavior {
         return state.currentBehavior.handlePointerDown(event, location, state);
     }
 
-    private getNewBehavior(event: PointerEvent, location: PointerLocation, state: State): Behavior {
+    private getNewBehavior(event: any, location: PointerLocation, state: State): Behavior {
         // changing behavior will disable all keyboard event handlers
         if (location.row.idx == 0 && state.selectedIndexes.includes(location.col.idx) && !event.ctrlKey) {
             return new ColumnReorderBehavior();
@@ -31,6 +32,8 @@ export class DefaultBehavior extends Behavior {
             return new RowReorderBehavior();
         } else if (location.col.idx == 0) {
             return new RowSelectionBehavior();
+        } else if ((event.pointerType === 'mouse' || event.pointerType === undefined) && event.target.className === 'dg-fill-handle') { // event.pointerType === undefined -> for cypress tests (is always undefined)
+            return new FillHandleBehavior();
         } else {
             return new CellSelectionBehavior();
         }
