@@ -1,5 +1,4 @@
 import { State, Range, Column, Row, Location } from "../Common";
-import { getActiveSelectedRange } from "./getActiveSelectedRange";
 
 export function selectRange(state: State, range: Range, incremental: boolean): State {
     return {
@@ -25,6 +24,18 @@ export function selectOneColumn(state: State, col: Column, incremental: boolean)
         selectionMode: 'column',
         selectedIndexes: (incremental && state.selectionMode === 'column' ? state.selectedIndexes : []).concat(col.idx),
         selectedIds: (incremental && state.selectionMode === 'column' ? state.selectedIds : []).concat(col.id)
+    };
+}
+
+export function unSelectOneColumn(state: State, col: Column): State {
+    const updatedIndexes = state.selectedIndexes.filter(idx => idx !== col.idx);
+    const updatedIds = state.selectedIds.filter(id => id !== col.id);
+
+    return {
+        ...state,
+        selectionMode: 'column',
+        selectedIndexes: updatedIndexes,
+        selectedIds: updatedIds
     };
 }
 
@@ -89,25 +100,24 @@ export function updateSelectedColumns(state: State): State {
     }
 }
 
-export function unSelectOneRow(state: State, row: Row): State {
-    const updatedIndexes = state.selectedIndexes.filter(idx => idx !== row.idx);
-    const updatedIds = state.selectedIds.filter(id => id !== row.id);
-    const isFocused = state.focusedLocation!.row.id === row.id;
-
-    return {
-        ...state,
-        selectionMode: 'row',
-        selectedIndexes: updatedIndexes,
-        selectedIds: updatedIds
-    };
-}
-
 export function selectOneRow(state: State, row: Row, incremental: boolean): State {
     return {
         ...state,
         selectionMode: 'row',
         selectedIndexes: (incremental && state.selectionMode === 'row' ? state.selectedIndexes : []).concat(row.idx),
         selectedIds: (incremental && state.selectionMode === 'row' ? state.selectedIds : []).concat(row.id)
+    };
+}
+
+export function unSelectOneRow(state: State, row: Row): State {
+    const updatedIndexes = state.selectedIndexes.filter(idx => idx !== row.idx);
+    const updatedIds = state.selectedIds.filter(id => id !== row.id);
+
+    return {
+        ...state,
+        selectionMode: 'row',
+        selectedIndexes: updatedIndexes,
+        selectedIds: updatedIds
     };
 }
 
@@ -171,5 +181,3 @@ export function updateSelectedRows(state: State): State {
         selectedIds: updatedRows.map(row => row.id)
     }
 }
-
-
