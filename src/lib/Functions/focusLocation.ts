@@ -17,14 +17,13 @@ export function focusLocation(state: State, location: Location, resetSelection =
             isFocusedCellInEditMode: false,
             activeSelectedRangeIdx: 0,
             selectedRanges: [cellMatrix.getRange(location, location)],
-            selectedIndexes: [],
-            // selectedIds: []
+            selectedIndexes: []
         };
     } else {
         return {
             ...state,
             focusedLocation: location,
-            isFocusedCellInEditMode: false,
+            isFocusedCellInEditMode: false
         };
     }
 }

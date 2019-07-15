@@ -1,7 +1,6 @@
 import * as React from "react";
-import { State, Borders, Location, keyCodes } from "../Common";
+import { State, Borders, Location } from "../Common";
 import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChange";
-import { selectColumn } from "../Functions/selectRange";
 
 export interface CellRendererProps {
     state: State

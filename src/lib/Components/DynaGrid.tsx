@@ -7,7 +7,7 @@ import { PointerEventsController } from "../Common/PointerEventsController";
 import { CellEditor } from "./CellEditor";
 import { Line } from "./Line";
 import { Shadow } from "./Shadow";
-import { updateSelectedRows } from "../Functions/selectRange";
+import { updateSelectedRows, updateSelectedColumns } from "../Functions/selectRange";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
 
@@ -26,6 +26,8 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
         }
         if (state.selectionMode === 'row') {
             state = updateSelectedRows(newState);
+        } else if (state.selectionMode === 'column') {
+            state = updateSelectedColumns(newState);
         }
         return {
             ...state,
