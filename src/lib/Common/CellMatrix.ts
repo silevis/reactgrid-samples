@@ -1,4 +1,4 @@
-import { CellMatrixProps } from "./PublicModel";
+import { CellMatrixProps, Id } from "./PublicModel";
 import { Range } from "./Range";
 import { Column, Row, Location } from ".";
 
@@ -79,7 +79,11 @@ export class CellMatrix {
         return new Location(this.rows[rowIdx], this.cols[colIdx]);
     }
 
-    getCell(location: Location) {
-        return location.cell
+    getCell(rowId: Id, colId: Id) {
+        const row = this.rows.find(r => r.id === rowId)
+        const col = this.cols.find(c => c.id === colId)
+        if (row && col)
+            return row.cells[col.idx]
+        return undefined
     }
 }

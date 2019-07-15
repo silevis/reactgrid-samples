@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DynaGridProps, CellMatrix, PointerEvent, State, StateUpdater, Range } from "../Common";
+import { DynaGridProps, CellMatrix, PointerEvent, State, StateUpdater } from "../Common";
 import { PaneRow } from "./PaneRow";
 import { recalcVisibleRange } from "../Functions";
 import { KeyboardEvent, ClipboardEvent } from "../Common";
@@ -8,6 +8,7 @@ import { CellEditor } from "./CellEditor";
 import { Line } from "./Line";
 import { Shadow } from "./Shadow";
 import { updateSelectedRows, updateSelectedColumns } from "../Functions/selectRange";
+import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
 
@@ -27,7 +28,19 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
             state = updateSelectedRows(newState);
         } else if (state.selectionMode === 'column') {
             state = updateSelectedColumns(newState);
+        } else {
         }
+
+        if (state.focusedLocation) {
+            const newFocusedCol = matrix.cols.find(c => c.id === state.focusedLocation!.col.id)
+            const newFocusedRow = matrix.rows.find(r => r.id === state.focusedLocation!.row.id)
+            if (newFocusedCol && newFocusedRow) {
+                const newFocusedLocation = matrix.getLocation(newFocusedRow.idx, newFocusedCol.idx)
+                if (newFocusedLocation)
+                    state.focusedLocation = newFocusedLocation
+            }
+        }
+
         return {
             ...state,
             cellMatrix: matrix,
