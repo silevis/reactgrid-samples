@@ -9,9 +9,6 @@ export class RowReorderBehavior extends Behavior {
     private pointerOffset!: number;
     private selectedIds!: Id[];
 
-    private setLinePosition: (position: number) => void = _ => { };
-    private setShadowPosition: (position: number) => void = _ => { };
-
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
         this.initialRowIdx = location.row.idx;
         this.lastPossibleDropLocation = location;
@@ -26,6 +23,7 @@ export class RowReorderBehavior extends Behavior {
         return {
             ...state,
             lineOrientation: 'horizontal',
+            shadowSize: rows.reduce((sum, col) => sum + col.height, 0),
             shadowPosition: this.getShadowPosition(location, state)
         }
     }
@@ -73,7 +71,8 @@ export class RowReorderBehavior extends Behavior {
             return {
                 ...state,
                 //focusedLocation: cell,
-                //isFocusedCellInEditMode: false,
+                linePosition: -1,
+                shadowPosition: -1,
                 selectedRanges: [],
                 selectedIndexes: [], // TODO state.cellMatrix.cols.map(col => col.idx)
                 selectedIds: [] // TODO state.cellMatrix.cols.map(col => col.idx)
