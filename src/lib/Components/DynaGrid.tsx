@@ -17,26 +17,24 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
 
     static getDerivedStateFromProps(props: DynaGridProps, state: State) {
 
-        const newState = {
+        state = {
             ...state,
-            cellMatrix: new CellMatrix(props.cellMatrixProps),
-            currentlyEditedCell: state.isFocusedCellInEditMode && state.focusedLocation ? { ...state.focusedLocation.cell } : undefined,
-            cellTemplates: { ...state.cellTemplates, ...props.cellTemplates },
+            cellMatrix: new CellMatrix(props.cellMatrixProps)
         }
 
         if (state.selectionMode === 'row') {
-            state = updateSelectedRows(newState);
+            state = updateSelectedRows(state);
         } else if (state.selectionMode === 'column') {
-            state = updateSelectedColumns(newState);
+            state = updateSelectedColumns(state);
         } else {
-            // state = updateSelectedRanges(newState)
+            state = updateSelectedRanges(state)
         }
 
-        state = updateFocusedLocation(newState)
+        state = updateFocusedLocation(state)
+
 
         return {
             ...state,
-            cellMatrix: newState.cellMatrix,
             currentlyEditedCell: state.isFocusedCellInEditMode && state.focusedLocation ? { ...state.focusedLocation.cell } : undefined,
             cellTemplates: { ...state.cellTemplates, ...props.cellTemplates },
         };
@@ -53,6 +51,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
 
     render() {
         const matrix = this.state.cellMatrix;
+        console.log(matrix.width)
         return (
             <div
                 className="dyna-grid dg-viewport"

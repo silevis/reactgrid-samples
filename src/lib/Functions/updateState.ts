@@ -26,28 +26,9 @@ export function updateSelectedRows(state: State): State {
     const lastCol = state.cellMatrix.last.col;
     const updatedRows = state.cellMatrix.rows.filter(r => state.selectedIds.includes(r.id)).sort((a, b) => a.idx - b.idx);
 
-    const groupedRows: Row[][] = [];
-    let sortedRowsIndex = 0;
+    const rows = groupedRows(updatedRows);
 
-    updatedRows.forEach((current, index) => {
-        if (!updatedRows[index - 1]) {
-            groupedRows.push([current])
-            return
-        }
-        const prev = updatedRows[index - 1]
-        if (current.idx - prev.idx == 1) {
-            if (!groupedRows[sortedRowsIndex]) {
-                groupedRows.push([prev, current])
-            } else {
-                groupedRows[sortedRowsIndex].push(current)
-            }
-        } else {
-            groupedRows.push([current])
-            sortedRowsIndex += 1
-        }
-    })
-
-    const ranges = groupedRows.map(arr => state.cellMatrix.getRange(new Location(arr[0], firstCol), new Location(arr[arr.length - 1], lastCol)));
+    const ranges = rows.map(arr => state.cellMatrix.getRange(new Location(arr[0], firstCol), new Location(arr[arr.length - 1], lastCol)));
 
     let activeSelectedRangeIdx!: number;
 
@@ -74,28 +55,9 @@ export function updateSelectedColumns(state: State): State {
     const lastRow = state.cellMatrix.last.row;
     const updatedColumns = state.cellMatrix.cols.filter(r => state.selectedIds.includes(r.id)).sort((a, b) => a.idx - b.idx);
 
-    const groupedColumns: Column[][] = [];
-    let sortedColumnsIndex = 0;
+    const columns = groupedColumns(updatedColumns)
 
-    updatedColumns.forEach((current, index) => {
-        if (!updatedColumns[index - 1]) {
-            groupedColumns.push([current])
-            return
-        }
-        const prev = updatedColumns[index - 1]
-        if (current.idx - prev.idx == 1) {
-            if (!groupedColumns[sortedColumnsIndex]) {
-                groupedColumns.push([prev, current])
-            } else {
-                groupedColumns[sortedColumnsIndex].push(current)
-            }
-        } else {
-            groupedColumns.push([current])
-            sortedColumnsIndex += 1
-        }
-    })
-
-    const ranges = groupedColumns.map(arr => state.cellMatrix.getRange(new Location(firstRow, arr[0]), new Location(lastRow, arr[arr.length - 1])));
+    const ranges = columns.map(arr => state.cellMatrix.getRange(new Location(firstRow, arr[0]), new Location(lastRow, arr[arr.length - 1])));
 
     let activeSelectedRangeIdx!: number;
 
@@ -118,57 +80,74 @@ export function updateSelectedColumns(state: State): State {
 }
 
 export function updateSelectedRanges(state: State): State {
-    const newSelectedRanges = [];
+
+    const newSelectedRanges: Range[] = [];
+
     state.selectedRanges.forEach(range => {
         const rowIds = range.rows.map(row => row.id)
         const colIds = range.cols.map(col => col.id)
+
         const updatedRows = state.cellMatrix.rows.filter(r => rowIds.includes(r.id)).sort((a, b) => a.idx - b.idx);
         const updatedColumns = state.cellMatrix.cols.filter(c => colIds.includes(c.id)).sort((a, b) => a.idx - b.idx);
 
-        const groupedRows: Row[][] = [];
-        const groupedColumns: Column[][] = [];
+        const rows = groupedRows(updatedRows)
+        const columns = groupedColumns(updatedColumns)
 
-        let sortedColumnsIndex = 0;
-        let sortedRowsIndex = 0;
-
-        updatedColumns.forEach((current, index) => {
-            if (!updatedColumns[index - 1]) {
-                groupedColumns.push([current])
-                return
-            }
-            const prev = updatedColumns[index - 1]
-            if (current.idx - prev.idx == 1) {
-                if (!groupedColumns[sortedColumnsIndex]) {
-                    groupedColumns.push([prev, current])
-                } else {
-                    groupedColumns[sortedColumnsIndex].push(current)
-                }
-            } else {
-                groupedColumns.push([current])
-                sortedColumnsIndex += 1
-            }
+        columns.forEach(c => {
+            rows.forEach(r => {
+                newSelectedRanges.push(state.cellMatrix.getRange(new Location(r[0], c[0]), new Location(r[r.length - 1], c[c.length - 1])))
+            })
         })
-
-        updatedRows.forEach((current, index) => {
-            if (!updatedRows[index - 1]) {
-                groupedRows.push([current])
-                return
-            }
-            const prev = updatedRows[index - 1]
-            if (current.idx - prev.idx == 1) {
-                if (!groupedRows[sortedRowsIndex]) {
-                    groupedRows.push([prev, current])
-                } else {
-                    groupedRows[sortedRowsIndex].push(current)
-                }
-            } else {
-                groupedRows.push([current])
-                sortedRowsIndex += 1
-            }
-        })
-
-        console.log(groupedColumns)
-
     })
-    return state
+
+    return {
+        ...state,
+        selectedRanges: newSelectedRanges
+    }
+}
+
+const groupedRows = (array: Row[]) => {
+    const grouped: Row[][] = [];
+    let sortIndex = 0;
+    array.forEach((current: Row, index) => {
+        if (!array[index - 1]) {
+            grouped.push([current])
+            return
+        }
+        const prev: Row = array[index - 1]
+        if (current.idx - prev.idx == 1) {
+            if (!grouped[sortIndex]) {
+                grouped.push([prev, current])
+            } else {
+                grouped[sortIndex].push(current)
+            }
+        } else {
+            grouped.push([current])
+            sortIndex += 1
+        }
+    })
+    return grouped
+}
+
+const groupedColumns = (array: Column[]) => {
+    const grouped: Column[][] = [];
+    let sortIndex = 0;
+    array.forEach((current: Column, index) => {
+        if (!array[index - 1]) {
+            grouped.push([current])
+            return
+        }
+        const prev: Column = array[index - 1]
+        if (current.idx - prev.idx == 1) {
+            if (!grouped[sortIndex]) {
+                grouped.push([prev, current])
+            } else {
+                grouped[sortIndex].push(current)
+            }
+        } else {
+            grouped.push([current])
+            sortIndex += 1
+        }
+    })
+    return grouped
 }

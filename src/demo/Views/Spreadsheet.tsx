@@ -2,8 +2,8 @@ import * as React from 'react'
 import { ColumnProps, RowProps, CellMatrixProps, DataChange } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 
-const COL_SIZE = 50;
-const ROW_SIZE = 250;
+const COL_SIZE = 10;
+const ROW_SIZE = 50;
 
 interface Cell {
     colId: string;
@@ -22,7 +22,7 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
         const colIds: string[] = Array.from(Array(COL_SIZE), () => Math.random().toString(36).substr(2, 9));
 
         this.state = {
-            widths: Array(COL_SIZE).fill(120),
+            widths: Array(1000).fill(120),
             data: Array(ROW_SIZE).fill(0).map((_, ri) =>
                 ({
                     rowId: Math.random().toString(36).substr(2, 9),
@@ -92,7 +92,7 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
             <button style={{ width: 100, height: 50 }} onClick={() => {
                 const colId = Math.random().toString(36).substr(2, 9);
                 const data = [...this.state.data];
-                data.forEach(r => r.cols.splice(5, 0, { colId: colId, data: '+' + colId }))
+                data.forEach(r => r.cols.splice(2, 0, { colId: colId, data: '+' + colId }))
                 this.setState({ data })
             }}>
                 + kolumn
