@@ -9,7 +9,7 @@ export class ColumnSelectionBehavior extends Behavior {
         if (event.ctrlKey && state.selectionMode === 'column' && state.selectedIds.some(id => id === location.col.id)) {
             state = unSelectOneColumn(state, location.col);
         } if (event.shiftKey) {
-            state = selectMultipleColumns(state, state.focusedLocation!.col, location.col);
+            state = selectMultipleColumns(state, state.focusedLocation!.col, location.col, event.ctrlKey);
         } else {
             state = focusLocation(state, location, false);
             state = selectOneColumn(state, location.col, event.ctrlKey);

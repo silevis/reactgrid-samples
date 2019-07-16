@@ -4,17 +4,21 @@ export function selectRange(state: State, range: Range, incremental: boolean): S
     return {
         ...state,
         selectionMode: 'range',
-        selectedRanges: (incremental ? state.selectedRanges : []).concat([range]),
+        selectedRanges: (incremental && state.selectionMode === 'range' ? state.selectedRanges : []).concat([range]),
         selectedIndexes: [],
-        activeSelectedRangeIdx: incremental ? state.selectedRanges.length : 0
+        selectedIds: [],
+        activeSelectedRangeIdx: incremental && state.selectionMode === 'range' ? state.selectedRanges.length : 0
     };
 }
 
 export function updateActiveSelectedRange(state: State, range: Range): State {
     return {
         ...state,
+        selectionMode: 'range',
         // replace active selected range in selectedRanges
-        selectedRanges: Object.assign([], state.selectedRanges, { [state.activeSelectedRangeIdx]: range })
+        selectedRanges: Object.assign([], state.selectedRanges, { [state.activeSelectedRangeIdx]: range }),
+        selectedIndexes: [],
+        selectedIds: []
     }
 }
 
