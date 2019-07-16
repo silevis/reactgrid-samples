@@ -24,11 +24,11 @@ export class DefaultBehavior extends Behavior {
 
     private getNewBehavior(event: any, location: PointerLocation, state: State): Behavior {
         // changing behavior will disable all keyboard event handlers
-        if (location.row.idx == 0 && state.selectedIndexes.includes(location.col.idx) && !event.ctrlKey) {
+        if (location.row.idx == 0 && state.selectedIds.includes(location.col.id) && !event.ctrlKey) {
             return new ColumnReorderBehavior();
         } else if (location.row.idx == 0) {
             return new ColumnSelectionBehavior();
-        } else if (location.col.idx == 0 && state.selectedIndexes.includes(location.row.idx) && !event.ctrlKey) {
+        } else if (location.col.idx == 0 && state.selectedIds.includes(location.row.id) && !event.ctrlKey) {
             return new RowReorderBehavior();
         } else if (location.col.idx == 0) {
             return new RowSelectionBehavior();

@@ -2,6 +2,8 @@ import * as React from 'react'
 import { ColumnProps, RowProps, CellMatrixProps, DataChange } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 
+const COL_SIZE = 50;
+const ROW_SIZE = 250;
 
 interface Cell {
     colId: string;
@@ -17,14 +19,14 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
     constructor(props: {}) {
         super(props);
 
-        const colIds: string[] = Array.from(Array(10), () => Math.random().toString(36).substr(2, 9));
+        const colIds: string[] = Array.from(Array(COL_SIZE), () => Math.random().toString(36).substr(2, 9));
 
         this.state = {
-            widths: Array(500).fill(120),
-            data: Array(250).fill(0).map((_, ri) =>
+            widths: Array(COL_SIZE).fill(120),
+            data: Array(ROW_SIZE).fill(0).map((_, ri) =>
                 ({
                     rowId: Math.random().toString(36).substr(2, 9),
-                    cols: Array(5).fill(0).map((_, ci) =>
+                    cols: Array(COL_SIZE).fill(0).map((_, ci) =>
                         ({
                             data: (ri + 100) + ' - ' + (ci + 100),
                             colId: colIds[ci]
