@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { State, Behavior, PointerEvent, PointerLocation, Id } from '../Common';
 
-
 export class ColumnReorderBehavior extends Behavior {
     private initialColumnIdx!: number;
     private lastPossibleDropLocation?: PointerLocation;
     private shadowWidth!: number;
     private pointerOffset!: number;
-    private selectedIds!: Id[];
+    private selectedIdxs!: number[];
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
         this.initialColumnIdx = location.col.idx;
@@ -19,7 +18,7 @@ export class ColumnReorderBehavior extends Behavior {
         const leftColumnsWidth = leftColumns.reduce((sum, col) => sum + col.width, 0);
         this.pointerOffset = leftColumnsWidth + location.cellX;
         // changed from id to idx
-        this.selectedIds = columns.map(c => c.idx);
+        this.selectedIdxs = columns.map(c => c.idx);
         return {
             ...state,
             lineOrientation: 'vertical',
@@ -58,26 +57,22 @@ export class ColumnReorderBehavior extends Behavior {
 
     getLastPossibleDropLocation(currentLocation: PointerLocation): PointerLocation | undefined {
         const position = currentLocation.col.idx <= this.initialColumnIdx ? 'before' : 'after'
-        if (!currentLocation.col.canDrop || currentLocation.col.canDrop(this.selectedIds, position)) {
+        if (!currentLocation.col.canDrop || currentLocation.col.canDrop(this.selectedIdxs, position)) {
             return this.lastPossibleDropLocation = currentLocation;
         }
         return this.lastPossibleDropLocation;
     }
 
     handlePointerUp(event: PointerEvent, location: PointerLocation, state: State): State {
-        if (this.lastPossibleDropLocation && this.lastPossibleDropLocation.col.onDrop) {
+        if (this.initialColumnIdx !== location.col.idx && this.lastPossibleDropLocation && this.lastPossibleDropLocation.col.onDrop) {
             const isBefore = this.lastPossibleDropLocation.col.idx <= this.initialColumnIdx;
-            this.lastPossibleDropLocation.col.onDrop(this.selectedIds, isBefore ? 'before' : 'after');
+            this.lastPossibleDropLocation.col.onDrop(this.selectedIdxs, isBefore ? 'before' : 'after');
         }
         return {
             ...state,
             focusedLocation: location,
-            //isFocusedCellInEditMode: false,
             linePosition: -1,
-            shadowPosition: -1,
-            selectedRanges: [],
-            selectedIndexes: [] // TODO state.cellMatrix.cols.map(col => col.idx)
+            shadowPosition: -1
         };
     }
 }
-

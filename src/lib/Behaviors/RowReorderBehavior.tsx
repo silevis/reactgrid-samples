@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { State, Behavior, PointerEvent, PointerLocation, Id } from '../Common';
-// import { resetToDefaultBehavior } from '../Functions';
 
 export class RowReorderBehavior extends Behavior {
     private initialRowIdx!: number;
     private lastPossibleDropLocation?: PointerLocation;
     private shadowWidth!: number;
     private pointerOffset!: number;
-    private selectedIds!: Id[];
+    private selectedIdxs!: number[];
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
         this.initialRowIdx = location.row.idx;
@@ -19,7 +18,7 @@ export class RowReorderBehavior extends Behavior {
         const upperRows = upperIndexes.map(i => state.cellMatrix.rows[i]);
         const upperRowsWidth = upperRows.reduce((sum, row) => sum + row.height, 0);
         this.pointerOffset = upperRowsWidth + location.cellY;
-        this.selectedIds = rows.map(r => r.id);
+        this.selectedIdxs = rows.map(r => r.idx);
         return {
             ...state,
             lineOrientation: 'horizontal',
@@ -58,26 +57,22 @@ export class RowReorderBehavior extends Behavior {
 
     getLastPossibleDropLocation(currentLocation: PointerLocation): PointerLocation | undefined {
         const position = currentLocation.row.idx <= this.initialRowIdx ? 'before' : 'after'
-        if (!currentLocation.row.canDrop || currentLocation.row.canDrop(this.selectedIds, position)) {
+        if (!currentLocation.row.canDrop || currentLocation.row.canDrop(this.selectedIdxs, position)) {
             return this.lastPossibleDropLocation = currentLocation;
         }
         return this.lastPossibleDropLocation;
     }
 
     handlePointerUp(event: PointerEvent, location: PointerLocation, state: State): State {
-        if (this.lastPossibleDropLocation && this.lastPossibleDropLocation.row.onDrop) {
+        if (this.initialRowIdx !== location.row.idx && this.lastPossibleDropLocation && this.lastPossibleDropLocation.row.onDrop) {
             const isBefore = this.lastPossibleDropLocation.row.idx <= this.initialRowIdx;
-            this.lastPossibleDropLocation.row.onDrop(this.selectedIds, isBefore ? 'before' : 'after');
-            return {
-                ...state,
-                //focusedLocation: cell,
-                linePosition: -1,
-                shadowPosition: -1,
-                selectedRanges: [],
-                selectedIndexes: [], // TODO state.cellMatrix.cols.map(col => col.idx)
-                selectedIds: [] // TODO state.cellMatrix.cols.map(col => col.idx)
-            };
+            this.lastPossibleDropLocation.row.onDrop(this.selectedIdxs, isBefore ? 'before' : 'after');
         }
-        return state
+        return {
+            ...state,
+            focusedLocation: location,
+            linePosition: -1,
+            shadowPosition: -1
+        };
     }
 }
