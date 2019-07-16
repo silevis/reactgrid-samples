@@ -1,5 +1,5 @@
 import { focusLocation } from '../Functions';
-import { State, Location, Behavior, Direction, PointerLocation } from '../Common';
+import { State, Location, Behavior } from '../Common';
 import { PointerEvent } from "../Common/domEvents";
 import { selectRange, updateActiveSelectedRange } from '../Functions/selectRange';
 
@@ -8,7 +8,7 @@ export class CellSelectionBehavior extends Behavior {
     handlePointerDown(event: PointerEvent, location: Location, state: State): State {
         if (event.shiftKey && state.focusedLocation) {
             const range = state.cellMatrix.getRange(state.focusedLocation, location);
-            if (event.ctrlKey) {
+            if (event.ctrlKey && state.selectionMode === 'range') {
                 return updateActiveSelectedRange(state, range);
             } else {
                 return selectRange(state, range, false);
@@ -16,8 +16,10 @@ export class CellSelectionBehavior extends Behavior {
 
         } else if (event.ctrlKey) {
             const pointedRange = state.selectedRanges.find(range => range.contains(location));
+            const pointedRangeIdx = state.selectedRanges.findIndex(range => range.contains(location));
+
             if (pointedRange) {
-                // TODO if found, remove pointedRange from selectedRanges
+                state = { ...state, activeSelectedRangeIdx: pointedRangeIdx, focusedLocation: location }
             } else {
                 const range = state.cellMatrix.getRange(location, location);
                 state = selectRange(state, range, true);
@@ -26,12 +28,16 @@ export class CellSelectionBehavior extends Behavior {
         } else {
             state = focusLocation(state, location);
         }
-        return { ...state, selectionMode: 'range' }
+        return state;
     }
 
     handlePointerEnter(event: PointerEvent, location: Location, state: State): State {
         const range = state.cellMatrix.getRange(state.focusedLocation!, location);
-        return updateActiveSelectedRange(state, range);
+        if (state.selectionMode === 'range') {
+            return updateActiveSelectedRange(state, range);
+        } else {
+            return selectRange(state, range, false);
+        }
     }
 
     handleDoubleClick(event: PointerEvent, location: Location, state: State): State {
