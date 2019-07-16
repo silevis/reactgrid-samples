@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ColumnProps, RowProps, CellMatrixProps, DataChange } from '../../lib/Common';
+import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 
 const COL_SIZE = 50;
@@ -67,34 +67,38 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
     }
 
     render() {
-        return <div>
-            <button style={{ width: 250, height: 50 }} onClick={() => {
-                let data = [...this.state.data];
-                data.shift()
-                this.setState({ data })
-            }}>
-                usuń pierwszy rekord od góry
+        return (
+            <div>
+                <button style={{ width: 250, height: 50 }} onClick={() => {
+                    let data = [...this.state.data];
+                    data.shift()
+                    this.setState({ data })
+                }}>
+                    usuń pierwszy rekord od góry
             </button>
-            <button style={{ width: 250, height: 50 }} onClick={() => {
-                let data = [...this.state.data];
-                data.splice(5, 0, { rowId: Math.random().toString(36).substr(2, 9), cols: [...data[0].cols.map(c => ({ data: c.data + c.colId, colId: c.colId }))] })
-                this.setState({ data })
-            }}>
-                dodaj pierwszy rekord od góry
+                <button style={{ width: 250, height: 50 }} onClick={() => {
+                    let data = [...this.state.data];
+                    data.splice(5, 0, { rowId: Math.random().toString(36).substr(2, 9), cols: [...data[0].cols.map(c => ({ data: c.data + c.colId, colId: c.colId }))] })
+                    this.setState({ data })
+                }}>
+                    dodaj pierwszy rekord od góry
             </button>
-            <button style={{ width: 250, height: 50 }} onClick={() => {
-                let data = [...this.state.data];
-                data.forEach(r => r.cols.shift())
-                this.setState({ data })
-            }}>
-                usuń pierwszy kolumn od lewej
+                <button style={{ width: 250, height: 50 }} onClick={() => {
+                    let data = [...this.state.data];
+                    data.forEach(r => r.cols.shift())
+                    this.setState({ data })
+                }}>
+                    usuń pierwszy kolumn od lewej
             </button>
-            <DynaGrid style={{ position: 'absolute', top: 50, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
-                cellMatrixProps={this.generateCellMatrix()}
-                onDataChanged={changes => this.handleDataChanges(changes)}
-                cellTemplates={{}}
-            />
-        </div>
+                <DynaGrid style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
+                    cellMatrixProps={this.generateCellMatrix()}
+                    onDataChanged={changes => this.handleDataChanges(changes)}
+                    onRowContextMenu={(selectedRowIds: Id[]) => this.handleRowContextMenu(selectedRowIds)}
+                    onColumnContextMenu={(selectedColIds: Id[]) => this.handleColContextMenu(selectedColIds)}
+                    cellTemplates={{}}
+                />
+            </div>
+        );
     }
 
     handleDataChanges(dataChanges: DataChange[]) {
@@ -109,6 +113,32 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
                 this.setState({ data: newData })
             }
         })
+    }
+
+    private handleRowContextMenu(selectedRowIds: Id[]) {
+        return [
+            {
+                title: 'Delete Row',
+                handler: () => {
+                    const data = this.state.data;
+                    const newData = data.filter(row => !selectedRowIds.includes(row.rowId));
+                    this.setState({ data: newData })
+                }
+            }
+        ];
+    }
+
+    private handleColContextMenu(selectedColIds: Id[]) {
+        return [
+            {
+                title: 'Delete Column',
+                handler: () => {
+                    const data = this.state.data;
+                    const newData = data.map(row => ({ cols: row.cols.filter(col => !selectedColIds.includes(col.colId)), rowId: row.rowId }));
+                    this.setState({ data: newData })
+                }
+            }
+        ];
     }
 
     reorderColumns(colIdxs: number[], to: number) {

@@ -12,6 +12,7 @@ export function focusLocation(state: State, location: Location, resetSelection =
     if (resetSelection) {
         return {
             ...state,
+            contextMenuPosition: [-1, -1],
             focusedLocation: location,
             isFocusedCellInEditMode: false,
             activeSelectedRangeIdx: 0,
@@ -22,6 +23,7 @@ export function focusLocation(state: State, location: Location, resetSelection =
     } else {
         return {
             ...state,
+            contextMenuPosition: [-1, -1],
             focusedLocation: location,
             isFocusedCellInEditMode: false
         };

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DynaGridProps, CellMatrix, PointerEvent, State, StateUpdater, Range } from "../Common";
+import { DynaGridProps, CellMatrix, PointerEvent, State, StateUpdater, MenuOption } from "../Common";
 import { PaneRow } from "./PaneRow";
 import { recalcVisibleRange } from "../Functions";
 import { KeyboardEvent, ClipboardEvent } from "../Common";
@@ -8,6 +8,7 @@ import { CellEditor } from "./CellEditor";
 import { Line } from "./Line";
 import { Shadow } from "./Shadow";
 import { updateSelectedRows, updateSelectedColumns } from "../Functions/selectRange";
+import { ContextMenu } from "./ContextMenu";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
 
@@ -113,6 +114,12 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                         verticalOffset={this.state.viewportElement ? this.state.viewportElement.offsetTop : 0}
                         horizontalOffset={this.state.viewportElement ? this.state.viewportElement.offsetLeft : 0}
                     />
+                    <ContextMenu
+                        state={this.state}
+                        onRowContextMenu={(_, menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(this.state.selectedIds, menuOptions) : []}
+                        onColumnContextMenu={(_, menuOptions: MenuOption[]) => this.props.onColumnContextMenu ? this.props.onColumnContextMenu(this.state.selectedIds, menuOptions) : []}
+                        contextMenuPosition={this.state.contextMenuPosition}
+                    />
                 </div>
             </div >
         );
@@ -148,7 +155,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     private copyHandler = (event: ClipboardEvent) => this.updateOnNewState(this.state.currentBehavior.handleCopy(event, this.state));
     private pasteHandler = (event: ClipboardEvent) => this.updateOnNewState(this.state.currentBehavior.handlePaste(event, this.state));
     private cutHandler = (event: ClipboardEvent) => this.updateOnNewState(this.state.currentBehavior.handleCut(event, this.state));
-    private handleContextMenu = (event: PointerEvent) => this.state.currentBehavior.handleContextMenu(event);
+    private handleContextMenu = (event: PointerEvent) => this.updateOnNewState(this.state.currentBehavior.handleContextMenu(event, this.state));
 
     private updateOnNewState(state: State) {
         if (state === this.state) return;

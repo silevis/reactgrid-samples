@@ -1,130 +1,92 @@
 import * as React from 'react';
-import { State, PointerEvent, Range, Behavior } from "../Common";
+import styled from 'styled-components';
+import { Id, MenuOption, CellMatrix, Location, State } from '../Common';
+import { copySelectedRangeToClipboard } from '../Behaviors/DefaultBehavior';
 
-export class DrawContextMenuBehavior extends Behavior {
-    constructor(private state: State, private event: PointerEvent) {
-        super();
-    }
-
-    // renderPanePart = (pane: Range): React.ReactNode => {
-    //     return (
-    //         <>
-    //             {renderContextMenu(pane, state, this.event)}
-    //         </>
-    //     );
-    // }
-    // renderGlobalPart(): React.ReactNode {
-    //     return undefined
-    // }
-    // dispose(): void {
-    // }
+interface ContextMenuProps {
+    contextMenuPosition: number[],
+    focusedLocation?: Location,
+    state: State,
+    onRowContextMenu?: (selectedRowIds: Id[], menuOptions: MenuOption[]) => MenuOption[]
+    onColumnContextMenu?: (selectedColIds: Id[], menuOptions: MenuOption[]) => MenuOption[]
 }
 
-// const renderContextMenu = (pane: Range, state: State, event: PointerEvent) => {
-//     if (pane.contains(state.focusedLocation!)) {
-//         return (
-//             <>
-//                 <div
-//                     style={{ width: '100%', height: '100%', position: 'fixed', top: 0, left: 0, zIndex: 900 }}
-//                     onTouchStart={e => {
-//                         e.stopPropagation();
-//                         e.preventDefault();
-//                     }}
-//                     onTouchEnd={e => {
-//                         e.stopPropagation();
-//                     }}
-//                     onContextMenu={e => contextMenuHandler(e, state)}
-//                     onDoubleClick={e => {
-//                         e.preventDefault();
-//                         e.stopPropagation();
-//                     }}
-//                     onClick={e => {
-//                         e.stopPropagation();
-//                         contextMenuHandler(e, state);
-//                     }}
-//                 />
-//                 {renderCustomContextMenu(pane, state, event)}
-//             </>
-//         );
-//     }
-// }
+const ContextMenuContainer = styled.div`
+    position: fixed;
+    background: white;
+    font-size: 13px;
+    box-shadow: 0 4px 5px 3px rgba(0, 0, 0, .2);
+    z-index: 1000;
 
-//const renderCustomContextMenu = (pane: Range, state: State, event: PointerEvent) => {
-//     // TODO
-//     // const selectedRows: Range[] = state.selectRows(state.selectedRowsIdx);
-//     // const options: MenuOption[] = state.props.onContextMenu(state.selectedRanges, selectedRows);
-//     const clickX = event.clientX
-//     const clickY = event.clientY
-//     const screenW = window.innerWidth;
-//     const screenH = window.innerHeight;
-//     const right = screenW - clickX > 120;
-//     const left = !right;
-//     const top = screenH - clickY > 25;
-//     const bottom = !top;
-//     let stylePosition = { left: '', top: '' };
-//     if (right) {
-//         stylePosition.left = `${clickX + 5}px`;
-//     }
-//     if (left) {
-//         stylePosition.left = `${clickX - 120 - 5}px`;
-//     }
-//     if (top) {
-//         stylePosition.top = `${clickY + 5}px`;
-//     }
-//     if (bottom) {
-//         stylePosition.top = `${clickY - 25 - 5}px`;
-//     }
-//     const style = { width: '80px', height: '20px', fontSize: '15px', cursor: 'pointer', overflow: 'hidden', padding: '10px 40px 10px 20px' };
-//     return (
-//         <div
-//             style={{
-//                 ...stylePosition,
-//                 height: 'auto',
-//                 position: 'fixed',
-//                 background: 'white',
-//                 boxShadow: '0 4px 5px 3px rgba(0, 0, 0, 0.2)',
-//                 zIndex: 999
-//             }}
-//         >
-//             {/* TODO */}
-//             {/* {options.map((option, idx) => { return ()}} */}
-//             <div
-//                 className="context-menu-option"
-//                 style={style}
-//                 onMouseDown={e => {
-//                     e.preventDefault();
-//                     e.stopPropagation();
-//                 }}
-//                 onClick={e => {
-//                     e.stopPropagation();
-//                     // option.handler();
-//                     //contextMenuHandler(e, state);
-//                 }}
-//                 onTouchStart={e => {
-//                     e.preventDefault();
-//                     e.stopPropagation();
-//                 }}
-//                 onTouchEnd={e => {
-//                     e.stopPropagation();
-//                     // option.handler();
-//                 }}
-//             >
-//                 Option 1
-//                 </div>
-//         </div >
-//     );
-// }
+    .dg-context-menu-option {
+        padding: 10px 40px 10px 20px;
+        cursor: pointer;
 
-// const contextMenuHandler = (e: PointerEvent, state: State) => {
+        &:hover {
+            background: #f2f2f2;
+        }
+    }
+`;
 
-//     // TODO 
-//     state.forceUpdate()
-//     const location = getLocationFromClient(state, e.clientX, e.clientY);
-//     focusLocation(state, location);
-//     if (e.button === 2) {
-//         e.preventDefault();
-//         changeBehavior(state, new DrawContextMenuBehavior(state, e))
-//         e.persist();
-//     }
-// }
+export class ContextMenu extends React.Component<ContextMenuProps> {
+    render() {
+        const { contextMenuPosition, onRowContextMenu, onColumnContextMenu, state } = this.props;
+        const focusedLocation = state.focusedLocation!;
+        const rowOptions = renderCustomContextMenuOptions(state);
+        const colOptions = renderCustomContextMenuOptions(state);
+        const cellOptions = renderCustomContextMenuOptions(state);
 
+        onRowContextMenu && onRowContextMenu(state.selectedIds, rowOptions).map(option => rowOptions.push(option));
+        onColumnContextMenu && onColumnContextMenu(state.selectedIds, colOptions).map(option => colOptions.push(option));
+
+        return (
+            (contextMenuPosition[0] !== -1 && contextMenuPosition[1] !== -1 &&
+                <ContextMenuContainer
+                    className="dg-context-menu"
+                    style={{
+                        top: contextMenuPosition[0] + 'px',
+                        left: contextMenuPosition[1] + 'px'
+                    }}
+                >
+                    {(state.selectedIds.includes(focusedLocation.col.id)
+                        ? colOptions
+                        : state.selectedIds.includes(focusedLocation.row.id)
+                            ? rowOptions
+                            : cellOptions).map((el, idx) => {
+                                return (
+                                    <div
+                                        key={idx}
+                                        className="dg-context-menu-option"
+                                        onPointerDown={e => e.stopPropagation()}
+                                        onClick={() => {
+                                            el.handler();
+                                            state.updateState((state: State) => ({ ...state, selectedIds: state.selectedIds, contextMenuPosition: [-1, -1] }))
+                                        }}
+                                    >
+                                        {el.title}
+                                    </div>
+                                );
+                            })}
+                </ContextMenuContainer>
+            )
+        );
+    }
+}
+
+function renderCustomContextMenuOptions(state: State): MenuOption[] {
+    return [
+        {
+            title: 'Copy',
+            handler: () => copySelectedRangeToClipboard(state, false)
+        },
+        {
+            title: 'Cut',
+            handler: () => copySelectedRangeToClipboard(state, true)
+        },
+        {
+            title: 'Paste (doesn\'t work)',
+            handler: () => {
+            }
+        }
+    ];
+}

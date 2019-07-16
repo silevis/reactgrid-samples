@@ -34,6 +34,9 @@ export class State {
     readonly queuedDataChanges: DataChange[] = [];
     currentlyEditedCell?: any;
 
+    // CONTEXT MENU
+    contextMenuPosition: number[] = [-1, -1] // [top, left]
+
     // LINE AND SHADOW
     lineOrientation: Orientation = 'horizontal';
     linePosition: number = -1

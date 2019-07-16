@@ -8,6 +8,7 @@ import { RowReorderBehavior } from "./RowReorderBehavior";
 import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
 import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChange";
 import { FillHandleBehavior } from "./FillHandleBehavior";
+import { getLocationFromClient, focusLocation } from "../Functions";
 
 interface ClipboardData {
     type: string;
@@ -39,10 +40,27 @@ export class DefaultBehavior extends Behavior {
         }
     }
 
-    handleContextMenu(event: PointerEvent): void {
+    handleContextMenu(event: PointerEvent, state: State): State {
         event.preventDefault();
-        //changeBehavior(state, new DrawContextMenuBehavior(state, event))
-        //event.persist();
+        const clickX = event.clientX
+        const clickY = event.clientY
+        const top = window.innerHeight - clickY > 25;
+        const right = window.innerWidth - clickX > 120;
+        const bottom = !top;
+        const left = !right;
+        let contextMenuPosition = state.contextMenuPosition;
+        if (top) { contextMenuPosition[0] = clickY; }
+        if (right) { contextMenuPosition[1] = clickX + 5; }
+        if (bottom) { contextMenuPosition[0] = clickY - 25 - 5; }
+        if (left) { contextMenuPosition[1] = clickX - 120 - 5; }
+        const focusedLocation = getLocationFromClient(state, clickX, clickY);
+        if (!state.selectedRanges.find(range => range.contains(focusedLocation))) {
+            state = focusLocation(state, focusedLocation)
+        }
+        return {
+            ...state,
+            contextMenuPosition
+        }
     }
 
     handleDoubleClick(event: PointerEvent, location: Location, state: State): State {
@@ -71,7 +89,7 @@ export class DefaultBehavior extends Behavior {
     }
 
     handleCopy(event: ClipboardEvent, state: State): State {
-        this.copySelectedRangeToClipboard(state);
+        copySelectedRangeToClipboard(state);
         event.preventDefault()
         return state;
     }
@@ -130,44 +148,44 @@ export class DefaultBehavior extends Behavior {
 
     handleCut(event: ClipboardEvent, state: State): State {
         // this.grid.preventFocusChange = true;
-        this.copySelectedRangeToClipboard(state, true)
+        copySelectedRangeToClipboard(state, true)
         // this.grid.preventFocusChange = false;
         event.preventDefault()
         //state.hiddenFocusElement.focus();
         return { ...state };
     }
+}
 
-    private copySelectedRangeToClipboard(state: State, removeValues = false) {
+export function copySelectedRangeToClipboard(state: State, removeValues = false) {
 
-        const div = document.createElement('div')
-        const table = document.createElement('table')
-        table.setAttribute('empty-cells', 'show')
-        table.setAttribute('data-key', 'dynagrid')
-        const activeSelectedRange = getActiveSelectedRange(state)
-        activeSelectedRange.rows.forEach(row => {
-            const tableRow = table.insertRow()
-            activeSelectedRange.cols.forEach(col => {
-                const tableCell = tableRow.insertCell()
-                const location = new Location(row, col)
-                const data = state.cellTemplates[location.cell.type].validate(location.cell.data)
-                tableCell.textContent = data;  // for undefined values
-                if (!location.cell.data) {
-                    tableCell.innerHTML = '<img>';
-                }
-                tableCell.setAttribute('data-data', JSON.stringify(data))
-                tableCell.setAttribute('data-type', location.cell.type)
-                tableCell.style.border = '1px solid #D3D3D3'
-                if (removeValues) {
-                    state = trySetDataAndAppendChange(state, location, 'text', '', '');
-                }
-            })
+    const div = document.createElement('div')
+    const table = document.createElement('table')
+    table.setAttribute('empty-cells', 'show')
+    table.setAttribute('data-key', 'dynagrid')
+    const activeSelectedRange = getActiveSelectedRange(state)
+    activeSelectedRange.rows.forEach(row => {
+        const tableRow = table.insertRow()
+        activeSelectedRange.cols.forEach(col => {
+            const tableCell = tableRow.insertCell()
+            const location = new Location(row, col)
+            const data = state.cellTemplates[location.cell.type].validate(location.cell.data)
+            tableCell.textContent = data;  // for undefined values
+            if (!location.cell.data) {
+                tableCell.innerHTML = '<img>';
+            }
+            tableCell.setAttribute('data-data', JSON.stringify(data))
+            tableCell.setAttribute('data-type', location.cell.type)
+            tableCell.style.border = '1px solid #D3D3D3'
+            if (removeValues) {
+                state = trySetDataAndAppendChange(state, location, 'text', '', '');
+            }
         })
-        div.setAttribute('contenteditable', 'true')
-        div.appendChild(table)
-        document.body.appendChild(div)
-        div.focus()
-        document.execCommand('selectAll', false, undefined)
-        document.execCommand('copy')
-        document.body.removeChild(div)
-    }
+    })
+    div.setAttribute('contenteditable', 'true')
+    div.appendChild(table)
+    document.body.appendChild(div)
+    div.focus()
+    document.execCommand('selectAll', false, undefined)
+    document.execCommand('copy')
+    document.body.removeChild(div)
 }
