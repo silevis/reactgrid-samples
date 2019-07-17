@@ -42,7 +42,7 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
             onDrop: (ids) => this.reorderColumns(ids as number[], idx),
             reorderable: true,
             resizable: true,
-            onResize: width => { this.state.widths[idx] = 120, this.forceUpdate(); }
+            onResize: width => { this.state.widths[idx] = width, this.forceUpdate(); }
         }));
         const rows: RowProps[] = this.state.data.map((row, rowIdx) => ({
             id: row.rowId,
