@@ -9,6 +9,7 @@ import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
 import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChange";
 import { FillHandleBehavior } from "./FillHandleBehavior";
 import { getLocationFromClient, focusLocation } from "../Functions";
+import { ResizeColumnBehavior } from "./ResizeColumnBehavior";
 
 interface ClipboardData {
     type: string;
@@ -25,7 +26,9 @@ export class DefaultBehavior extends Behavior {
 
     private getNewBehavior(event: any, location: PointerLocation, state: State): Behavior {
         // changing behavior will disable all keyboard event handlers
-        if (location.row.idx == 0 && state.selectedIds.includes(location.col.id) && !event.ctrlKey) {
+        if (location.row.idx == 0 && location.cellX > location.col.width - 6) {
+            return new ResizeColumnBehavior();
+        } else if (location.row.idx == 0 && state.selectedIds.includes(location.col.id) && !event.ctrlKey) {
             return new ColumnReorderBehavior();
         } else if (location.row.idx == 0) {
             return new ColumnSelectionBehavior();
