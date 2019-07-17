@@ -80,7 +80,6 @@ export function updateSelectedColumns(state: State): State {
 }
 
 export function updateSelectedRanges(state: State): State {
-
     const newSelectedRanges: Range[] = [];
 
     state.selectedRanges.forEach(range => {
@@ -100,9 +99,22 @@ export function updateSelectedRanges(state: State): State {
         })
     })
 
+    if (state.focusedLocation && newSelectedRanges.length == 0) {
+        const location = new Location(state.focusedLocation.row, state.focusedLocation.col)
+        newSelectedRanges.push(state.cellMatrix.getRange(location, location))
+        state.activeSelectedRangeIdx = 0
+    } else if (state.focusedLocation) {
+        const location = new Location(state.focusedLocation.row, state.focusedLocation.col)
+        const index = newSelectedRanges.findIndex(r => r.contains(location))
+        if (index !== -1) {
+            state.activeSelectedRangeIdx = index
+        }
+    }
+
     return {
         ...state,
-        selectedRanges: newSelectedRanges
+        selectedRanges: newSelectedRanges,
+        selectionMode: 'range',
     }
 }
 

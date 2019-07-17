@@ -8,6 +8,7 @@ import { CellEditor } from "./CellEditor";
 import { Line } from "./Line";
 import { Shadow } from "./Shadow";
 import { updateFocusedLocation, updateSelectedRows, updateSelectedColumns, updateSelectedRanges } from "../Functions/updateState";
+import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
 
@@ -51,7 +52,6 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
 
     render() {
         const matrix = this.state.cellMatrix;
-        console.log(matrix.width)
         return (
             <div
                 className="dyna-grid dg-viewport"
