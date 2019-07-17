@@ -99,9 +99,9 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
             <DynaGrid style={{ position: 'absolute', top: 50, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
                 cellMatrixProps={this.generateCellMatrix()}
                 onDataChanged={changes => this.handleDataChanges(changes)}
-                onRowContextMenu={(selectedRowIds: Id[]) => this.handleRowContextMenu(selectedRowIds)}
-                onColumnContextMenu={(selectedColIds: Id[]) => this.handleColContextMenu(selectedColIds)}
-                onRangeContextMenu={(selectedRanges: Range[]) => this.handleRangeContextMenu(selectedRanges)}
+                onRowContextMenu={(selectedRowIds: Id[], menuOptions: MenuOption[]) => this.handleRowContextMenu(selectedRowIds, menuOptions)}
+                onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
+                onRangeContextMenu={(selectedRanges: Range[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRanges, menuOptions)}
                 cellTemplates={{}}
             />
         </div>
@@ -122,7 +122,7 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
         })
     }
 
-    private handleRangeContextMenu(selectedRanges: Range[]): MenuOption[] {
+    private handleRangeContextMenu(selectedRanges: Range[], menuOptions: MenuOption[]): MenuOption[] {
         let selectedRowIds: Id[] = [];
         let selectedColIds: Id[] = [];
         selectedRanges.forEach(range => {
@@ -133,7 +133,8 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
         // delete duplicated ids
         selectedRowIds = Array.from(new Set(selectedRowIds));
         selectedColIds = Array.from(new Set(selectedColIds));
-        return [
+
+        return menuOptions.concat([
             {
                 title: 'Delete Row',
                 handler: () => {
@@ -146,29 +147,29 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
                     this.deleteColumns(selectedColIds);
                 }
             }
-        ];
+        ]);
     }
 
-    private handleRowContextMenu(selectedRowIds: Id[]): MenuOption[] {
-        return [
+    private handleRowContextMenu(selectedRowIds: Id[], menuOptions: MenuOption[]): MenuOption[] {
+        return menuOptions.concat([
             {
                 title: 'Delete Row',
                 handler: () => {
                     this.deleteRows(selectedRowIds);
                 }
             }
-        ];
+        ]);
     }
 
-    private handleColContextMenu(selectedColIds: Id[]): MenuOption[] {
-        return [
+    private handleColContextMenu(selectedColIds: Id[], menuOptions: MenuOption[]): MenuOption[] {
+        return menuOptions.concat([
             {
                 title: 'Delete Column',
                 handler: () => {
                     this.deleteColumns(selectedColIds)
                 }
             }
-        ];
+        ]);
     }
 
     private deleteRows(selectedRowIds: Id[]) {

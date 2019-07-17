@@ -33,23 +33,23 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
     render() {
         const { contextMenuPosition, onRowContextMenu, onColumnContextMenu, onRangeContextMenu, state } = this.props;
         const focusedLocation = state.focusedLocation;
-        let internalContextMenuOptions: any = [];
-        const rowOptions = onRowContextMenu && onRowContextMenu(state.selectedIds, internalContextMenuOptions);
-        const colOptions = onColumnContextMenu && onColumnContextMenu(state.selectedIds, internalContextMenuOptions);
-        const rangeOptions = onRangeContextMenu && onRangeContextMenu(state.selectedRanges, internalContextMenuOptions);
+        let contextMenuOptions: MenuOption[] = customContextMenuOptions(state);
+        const rowOptions = onRowContextMenu && onRowContextMenu(state.selectedIds, customContextMenuOptions(state));
+        const colOptions = onColumnContextMenu && onColumnContextMenu(state.selectedIds, customContextMenuOptions(state));
+        const rangeOptions = onRangeContextMenu && onRangeContextMenu(state.selectedRanges, customContextMenuOptions(state));
 
         if (focusedLocation) {
-            if (state.selectedIds.includes(focusedLocation.col.id)) {
-                internalContextMenuOptions = colOptions;
-            } else if (state.selectedIds.includes(focusedLocation.row.id)) {
-                internalContextMenuOptions = rowOptions;
-            } else {
-                internalContextMenuOptions = rangeOptions;
+            if (state.selectedIds.includes(focusedLocation.col.id) && colOptions) {
+                contextMenuOptions = colOptions;
+            } else if (state.selectedIds.includes(focusedLocation.row.id) && rowOptions) {
+                contextMenuOptions = rowOptions;
+            } else if (rangeOptions) {
+                contextMenuOptions = rangeOptions;
             }
         }
 
         return (
-            (contextMenuPosition[0] !== -1 && contextMenuPosition[1] !== -1 &&
+            (contextMenuPosition[0] !== -1 && contextMenuPosition[1] !== -1 && contextMenuOptions.length > 0 &&
                 <ContextMenuContainer
                     className="dg-context-menu"
                     style={{
@@ -57,7 +57,7 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
                         left: contextMenuPosition[1] + 'px'
                     }}
                 >
-                    {customContextMenuOptions(state).concat(internalContextMenuOptions).map((el, idx) => {
+                    {contextMenuOptions.map((el, idx) => {
                         return (
                             <div
                                 key={idx}
