@@ -1,14 +1,15 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Id, MenuOption, CellMatrix, Location, State } from '../Common';
+import { Id, MenuOption, Location, State, Range } from '../Common';
 import { copySelectedRangeToClipboard } from '../Behaviors/DefaultBehavior';
 
 interface ContextMenuProps {
     contextMenuPosition: number[],
     focusedLocation?: Location,
     state: State,
-    onRowContextMenu?: (selectedRowIds: Id[], menuOptions: MenuOption[]) => MenuOption[]
-    onColumnContextMenu?: (selectedColIds: Id[], menuOptions: MenuOption[]) => MenuOption[]
+    onRowContextMenu?: (selectedRowIds: Id[], menuOptions: MenuOption[]) => MenuOption[],
+    onColumnContextMenu?: (selectedColIds: Id[], menuOptions: MenuOption[]) => MenuOption[],
+    onRangeContextMenu?: (selectedRanges: Range[], menuOptions: MenuOption[]) => MenuOption[];
 }
 
 const ContextMenuContainer = styled.div`
@@ -30,14 +31,22 @@ const ContextMenuContainer = styled.div`
 
 export class ContextMenu extends React.Component<ContextMenuProps> {
     render() {
-        const { contextMenuPosition, onRowContextMenu, onColumnContextMenu, state } = this.props;
-        const focusedLocation = state.focusedLocation!;
-        const rowOptions = renderCustomContextMenuOptions(state);
-        const colOptions = renderCustomContextMenuOptions(state);
-        const cellOptions = renderCustomContextMenuOptions(state);
+        const { contextMenuPosition, onRowContextMenu, onColumnContextMenu, onRangeContextMenu, state } = this.props;
+        const focusedLocation = state.focusedLocation;
+        let internalContextMenuOptions: any = [];
+        const rowOptions = onRowContextMenu && onRowContextMenu(state.selectedIds, internalContextMenuOptions);
+        const colOptions = onColumnContextMenu && onColumnContextMenu(state.selectedIds, internalContextMenuOptions);
+        const rangeOptions = onRangeContextMenu && onRangeContextMenu(state.selectedRanges, internalContextMenuOptions);
 
-        onRowContextMenu && onRowContextMenu(state.selectedIds, rowOptions).map(option => rowOptions.push(option));
-        onColumnContextMenu && onColumnContextMenu(state.selectedIds, colOptions).map(option => colOptions.push(option));
+        if (focusedLocation) {
+            if (state.selectedIds.includes(focusedLocation.col.id)) {
+                internalContextMenuOptions = colOptions;
+            } else if (state.selectedIds.includes(focusedLocation.row.id)) {
+                internalContextMenuOptions = rowOptions;
+            } else {
+                internalContextMenuOptions = rangeOptions;
+            }
+        }
 
         return (
             (contextMenuPosition[0] !== -1 && contextMenuPosition[1] !== -1 &&
@@ -48,32 +57,28 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
                         left: contextMenuPosition[1] + 'px'
                     }}
                 >
-                    {(state.selectedIds.includes(focusedLocation.col.id)
-                        ? colOptions
-                        : state.selectedIds.includes(focusedLocation.row.id)
-                            ? rowOptions
-                            : cellOptions).map((el, idx) => {
-                                return (
-                                    <div
-                                        key={idx}
-                                        className="dg-context-menu-option"
-                                        onPointerDown={e => e.stopPropagation()}
-                                        onClick={() => {
-                                            el.handler();
-                                            state.updateState((state: State) => ({ ...state, selectedIds: state.selectedIds, contextMenuPosition: [-1, -1] }))
-                                        }}
-                                    >
-                                        {el.title}
-                                    </div>
-                                );
-                            })}
+                    {customContextMenuOptions(state).concat(internalContextMenuOptions).map((el, idx) => {
+                        return (
+                            <div
+                                key={idx}
+                                className="dg-context-menu-option"
+                                onPointerDown={e => e.stopPropagation()}
+                                onClick={() => {
+                                    el.handler();
+                                    state.updateState((state: State) => ({ ...state, selectedIds: state.selectedIds, contextMenuPosition: [-1, -1] }))
+                                }}
+                            >
+                                {el.title}
+                            </div>
+                        );
+                    })}
                 </ContextMenuContainer>
             )
         );
     }
 }
 
-function renderCustomContextMenuOptions(state: State): MenuOption[] {
+function customContextMenuOptions(state: State): MenuOption[] {
     return [
         {
             title: 'Copy',

@@ -8,7 +8,6 @@ import { CellEditor } from "./CellEditor";
 import { Line } from "./Line";
 import { Shadow } from "./Shadow";
 import { updateFocusedLocation, updateSelectedRows, updateSelectedColumns, updateSelectedRanges } from "../Functions/updateState";
-import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
 import { ContextMenu } from "./ContextMenu";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
@@ -111,8 +110,13 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                         />}
                     <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} />
                     {this.state.isFocusedCellInEditMode && this.state.currentlyEditedCell && <CellEditor state={this.state} />}
-                    <Line linePosition={this.state.linePosition} orientation={this.state.lineOrientation} cellMatrix={this.state.cellMatrix} />
-                    <Shadow shadowPosition={this.state.shadowPosition}
+                    <Line
+                        linePosition={this.state.linePosition}
+                        orientation={this.state.lineOrientation}
+                        cellMatrix={this.state.cellMatrix}
+                    />
+                    <Shadow
+                        shadowPosition={this.state.shadowPosition}
                         orientation={this.state.lineOrientation}
                         cellMatrix={this.state.cellMatrix}
                         shadowSize={this.state.shadowSize}
@@ -123,6 +127,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                         state={this.state}
                         onRowContextMenu={(_, menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(this.state.selectedIds, menuOptions) : []}
                         onColumnContextMenu={(_, menuOptions: MenuOption[]) => this.props.onColumnContextMenu ? this.props.onColumnContextMenu(this.state.selectedIds, menuOptions) : []}
+                        onRangeContextMenu={(_, menuOptions: MenuOption[]) => this.props.onRangeContextMenu ? this.props.onRangeContextMenu(this.state.selectedRanges, menuOptions) : []}
                         contextMenuPosition={this.state.contextMenuPosition}
                     />
                 </div>

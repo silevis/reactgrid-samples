@@ -1,3 +1,5 @@
+import { Range } from "./Range";
+
 export type Orientation = 'horizontal' | 'vertical';
 
 export type Direction = 'horizontal' | 'vertical' | 'both'
@@ -16,6 +18,7 @@ export interface DynaGridProps {
     readonly onCellFocused?: (cellId: CellId) => void;
     readonly onRowContextMenu?: (selectedRowIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
     readonly onColumnContextMenu?: (selectedColumnIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
+    readonly onRangeContextMenu?: (selectedRanges: Range[], menuOptions: MenuOption[]) => MenuOption[];
     // readonly onContextMenuRequested?: (menuOptions: MenuOption[]) => void
     // readonly onRowDeletionRequested? : (rowIds: Id[]) => void
     // readonly onColumnDeletionRequested? : (colIds: Id[]) => void
