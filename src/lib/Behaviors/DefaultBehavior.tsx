@@ -167,17 +167,17 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
         const tableRow = table.insertRow()
         activeSelectedRange.cols.forEach(col => {
             const tableCell = tableRow.insertCell()
-            const location = new Location(row, col)
-            const data = state.cellTemplates[location.cell.type].validate(location.cell.data)
+            const cell = state.cellMatrix.getCell(row.id, col.id)!
+            const data = state.cellTemplates[cell.type].validate(cell.data)
             tableCell.textContent = data;  // for undefined values
-            if (!location.cell.data) {
+            if (!cell.data) {
                 tableCell.innerHTML = '<img>';
             }
             tableCell.setAttribute('data-data', JSON.stringify(data))
-            tableCell.setAttribute('data-type', location.cell.type)
+            tableCell.setAttribute('data-type', cell.type)
             tableCell.style.border = '1px solid #D3D3D3'
             if (removeValues) {
-                state = trySetDataAndAppendChange(state, location, 'text', '', '');
+                state = trySetDataAndAppendChange(state, new Location(row, col), 'text', '', '');
             }
         })
     })

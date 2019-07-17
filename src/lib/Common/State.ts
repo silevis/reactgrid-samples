@@ -32,14 +32,14 @@ export class State {
     readonly viewportElement!: HTMLDivElement;
     lastKeyCode: number = 0;
     readonly queuedDataChanges: DataChange[] = [];
-    currentlyEditedCell?: any;
+    currentlyEditedCell?: { type: string, data: any, text?: string };
 
     // CONTEXT MENU
     contextMenuPosition: number[] = [-1, -1] // [top, left]
 
     // LINE AND SHADOW
     lineOrientation: Orientation = 'horizontal';
-    linePosition: number = -1
+    linePosition: number = -1;
     shadowSize: number = 0;
     shadowPosition: number = -1;
 
