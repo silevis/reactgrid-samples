@@ -52,7 +52,7 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
             reorderable: true,
             cells: row.cols.map((data, colIdx) => (rowIdx === 0 || colIdx === 0) ? { data: data.data, type: 'header' } : (rowIdx !== 0 && colIdx === 1) ? { data: data.data, type: 'checkbox' } : { data: data.data, type: 'text' })
         }))
-        return ({ frozenTopRows: 1, frozenLeftColumns: 1, frozenBottomRows: 1, frozenRightColumns: 1, rows, columns })
+        return ({ frozenTopRows: 0, frozenLeftColumns: 0, frozenBottomRows: 0, frozenRightColumns: 0, rows, columns })
     }
 
     private calculateColumnReorder(row: Row, colIdxs: number[], direction: string, destination: number) {

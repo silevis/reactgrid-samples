@@ -16,11 +16,11 @@ function getRow(state: State, viewportY: number, favorScrollableContent: boolean
     const scrollTop = state.viewportElement.scrollTop;
     const maxScrollTop = cellMatrix.scrollableRange.height - visibleContentHeight + cellMatrix.frozenTopRange.height + cellMatrix.frozenBottomRange.height - 1;
 
-    if (viewportY < cellMatrix.frozenTopRange.height && !(favorScrollableContent && scrollTop > 0)) {
+    if (cellMatrix.frozenTopRange.rows && viewportY < cellMatrix.frozenTopRange.height && !(favorScrollableContent && scrollTop > 0)) {
         const row = cellMatrix.frozenTopRange.rows.find(row => row.bottom > viewportY)!;
         return [viewportY - row.top, row];
     }
-    else if (viewportY >= bottomPaneTop && !(favorScrollableContent && scrollTop < maxScrollTop)) {
+    else if (cellMatrix.frozenBottomRange.rows && viewportY >= bottomPaneTop && !(favorScrollableContent && scrollTop < maxScrollTop)) {
         const row = cellMatrix.frozenBottomRange.rows.find(row => row.bottom > viewportY - bottomPaneTop) || cellMatrix.last.row;
         return [viewportY - bottomPaneTop - row.top, row];
     }
@@ -39,11 +39,11 @@ function getColumn(state: State, viewportX: number, favorScrollableContent: bool
     const scrollLeft = state.viewportElement.scrollLeft;
     const maxScrollLeft = cellMatrix.scrollableRange.width - visibleContentWidth + cellMatrix.frozenLeftRange.width + cellMatrix.frozenRightRange.width - 1;
 
-    if (viewportX < cellMatrix.frozenLeftRange.width && !(favorScrollableContent && scrollLeft > 0)) {
+    if (cellMatrix.frozenLeftRange.cols && viewportX < cellMatrix.frozenLeftRange.width && !(favorScrollableContent && scrollLeft > 0)) {
         const column = cellMatrix.frozenLeftRange.cols.find(col => col.right > viewportX)!;
         return [viewportX - column.left, column];
     }
-    else if (viewportX >= rightPaneLeft && !(favorScrollableContent && scrollLeft < maxScrollLeft)) {
+    else if (cellMatrix.frozenRightRange.cols && viewportX >= rightPaneLeft && !(favorScrollableContent && scrollLeft < maxScrollLeft)) {
         const column = cellMatrix.frozenRightRange.cols.find(col => col.right > viewportX - rightPaneLeft) || cellMatrix.last.col;
         return [viewportX - rightPaneLeft - column.left, column]
     }

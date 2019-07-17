@@ -46,9 +46,9 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
 }
 
 const calculatedXAxisOffset = (location: Location, state: State) => {
-    if (location.col.idx >= state.cellMatrix.frozenRightRange.first.col.idx) {
+    if (state.cellMatrix.frozenRightRange.first.col && location.col.idx >= state.cellMatrix.frozenRightRange.first.col.idx) {
         return Math.min(state.cellMatrix.width, state.viewportElement.clientWidth) - state.cellMatrix.frozenRightRange.width
-    } else if (location.col.idx > state.cellMatrix.frozenLeftRange.last.col.idx) {
+    } else if (state.cellMatrix.frozenLeftRange.last.col && location.col.idx > state.cellMatrix.frozenLeftRange.last.col.idx) {
         return state.cellMatrix.frozenLeftRange.width - state.viewportElement.scrollLeft;
     } else {
         return 0;
@@ -56,9 +56,9 @@ const calculatedXAxisOffset = (location: Location, state: State) => {
 }
 
 const calculatedYAxisOffset = (location: Location, state: State) => {
-    if (location.row.idx >= state.cellMatrix.frozenBottomRange.first.row.idx) {
+    if (state.cellMatrix.frozenBottomRange.first.row && location.row.idx >= state.cellMatrix.frozenBottomRange.first.row.idx) {
         return Math.min(state.cellMatrix.height, state.viewportElement.clientHeight) - state.cellMatrix.frozenBottomRange.height
-    } else if (location.row.idx > state.cellMatrix.frozenTopRange.last.row.idx) {
+    } else if (state.cellMatrix.frozenTopRange.last.row && location.row.idx > state.cellMatrix.frozenTopRange.last.row.idx) {
         return state.cellMatrix.frozenTopRange.height - state.viewportElement.scrollTop;
     } else {
         return 0;
