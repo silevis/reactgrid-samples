@@ -70,7 +70,6 @@ export class ColumnReorderBehavior extends Behavior {
         }
         return {
             ...state,
-            focusedLocation: location,
             linePosition: -1,
             shadowPosition: -1
         };
