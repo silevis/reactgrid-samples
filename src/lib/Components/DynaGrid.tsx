@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DynaGridProps, CellMatrix, PointerEvent, State, StateUpdater, Range } from "../Common";
+import { DynaGridProps, CellMatrix, PointerEvent, State, StateUpdater } from "../Common";
 import { PaneRow } from "./PaneRow";
 import { recalcVisibleRange } from "../Functions";
 import { KeyboardEvent, ClipboardEvent } from "../Common";
@@ -7,7 +7,8 @@ import { PointerEventsController } from "../Common/PointerEventsController";
 import { CellEditor } from "./CellEditor";
 import { Line } from "./Line";
 import { Shadow } from "./Shadow";
-import { updateSelectedRows, updateSelectedColumns } from "../Functions/selectRange";
+import { updateFocusedLocation, updateSelectedRows, updateSelectedColumns, updateSelectedRanges } from "../Functions/updateState";
+import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
 
@@ -16,21 +17,25 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     state = new State(this.updateState);
 
     static getDerivedStateFromProps(props: DynaGridProps, state: State) {
-        const matrix = new CellMatrix(props.cellMatrixProps);
-        const newState = {
+
+        state = {
             ...state,
-            cellMatrix: matrix,
-            currentlyEditedCell: state.isFocusedCellInEditMode && state.focusedLocation ? { ...state.focusedLocation.cell } : undefined,
-            cellTemplates: { ...state.cellTemplates, ...props.cellTemplates },
+            cellMatrix: new CellMatrix(props.cellMatrixProps)
         }
+
         if (state.selectionMode === 'row') {
-            state = updateSelectedRows(newState);
+            state = updateSelectedRows(state);
         } else if (state.selectionMode === 'column') {
-            state = updateSelectedColumns(newState);
+            state = updateSelectedColumns(state);
+        } else {
+            state = updateSelectedRanges(state)
         }
+
+        state = updateFocusedLocation(state)
+
+
         return {
             ...state,
-            cellMatrix: matrix,
             currentlyEditedCell: state.isFocusedCellInEditMode && state.focusedLocation ? { ...state.focusedLocation.cell } : undefined,
             cellTemplates: { ...state.cellTemplates, ...props.cellTemplates },
         };

@@ -2,8 +2,8 @@ import * as React from 'react'
 import { ColumnProps, RowProps, CellMatrixProps, DataChange } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 
-const COL_SIZE = 50;
-const ROW_SIZE = 250;
+const COL_SIZE = 10;
+const ROW_SIZE = 50;
 
 interface Cell {
     colId: string;
@@ -22,7 +22,7 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
         const colIds: string[] = Array.from(Array(COL_SIZE), () => Math.random().toString(36).substr(2, 9));
 
         this.state = {
-            widths: Array(COL_SIZE).fill(120),
+            widths: Array(1000).fill(120),
             data: Array(ROW_SIZE).fill(0).map((_, ri) =>
                 ({
                     rowId: Math.random().toString(36).substr(2, 9),
@@ -52,7 +52,7 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
             reorderable: true,
             cells: row.cols.map((data, colIdx) => (rowIdx === 0 || colIdx === 0) ? { data: data.data, type: 'header' } : (rowIdx !== 0 && colIdx === 1) ? { data: data.data, type: 'checkbox' } : { data: data.data, type: 'text' })
         }))
-        return ({ frozenTopRows: 2, frozenLeftColumns: 2, frozenBottomRows: 2, frozenRightColumns: 2, rows, columns })
+        return ({ frozenTopRows: 1, frozenLeftColumns: 1, frozenBottomRows: 1, frozenRightColumns: 1, rows, columns })
     }
 
     private calculateColumnReorder(row: Row, colIdxs: number[], direction: string, destination: number) {
@@ -68,26 +68,34 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
 
     render() {
         return <div>
-            <button style={{ width: 250, height: 50 }} onClick={() => {
-                let data = [...this.state.data];
+            <button style={{ width: 100, height: 50 }} onClick={() => {
+                const data = [...this.state.data];
                 data.shift()
                 this.setState({ data })
             }}>
-                usuń pierwszy rekord od góry
+                - rekord
             </button>
-            <button style={{ width: 250, height: 50 }} onClick={() => {
-                let data = [...this.state.data];
+            <button style={{ width: 100, height: 50 }} onClick={() => {
+                const data = [...this.state.data];
                 data.splice(5, 0, { rowId: Math.random().toString(36).substr(2, 9), cols: [...data[0].cols.map(c => ({ data: c.data + c.colId, colId: c.colId }))] })
                 this.setState({ data })
             }}>
-                dodaj pierwszy rekord od góry
+                + rekord
             </button>
-            <button style={{ width: 250, height: 50 }} onClick={() => {
-                let data = [...this.state.data];
+            <button style={{ width: 100, height: 50 }} onClick={() => {
+                const data = [...this.state.data];
                 data.forEach(r => r.cols.shift())
                 this.setState({ data })
             }}>
-                usuń pierwszy kolumn od lewej
+                - kolumn
+            </button>
+            <button style={{ width: 100, height: 50 }} onClick={() => {
+                const colId = Math.random().toString(36).substr(2, 9);
+                const data = [...this.state.data];
+                data.forEach(r => r.cols.splice(2, 0, { colId: colId, data: '+' + colId }))
+                this.setState({ data })
+            }}>
+                + kolumn
             </button>
             <DynaGrid style={{ position: 'absolute', top: 50, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
                 cellMatrixProps={this.generateCellMatrix()}
