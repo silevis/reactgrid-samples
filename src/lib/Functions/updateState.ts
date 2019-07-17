@@ -27,7 +27,17 @@ export function updateSelectedRows(state: State): State {
     const updatedRows = state.cellMatrix.rows.filter(r => state.selectedIds.includes(r.id)).sort((a, b) => a.idx - b.idx);
     const rows = groupedRows(updatedRows);
     const ranges = rows.map(arr => state.cellMatrix.getRange(new Location(arr[0], firstCol), new Location(arr[arr.length - 1], lastCol)));
-    const activeSelectedRangeIdx = state.focusedLocation ? activeSelectedRangeIndex(state.focusedLocation.row, ranges) : 0
+    let activeSelectedRangeIdx = 0
+
+    if (state.focusedLocation) {
+        ranges.forEach((range, idx) => {
+            range.rows.forEach(row => {
+                if (state.focusedLocation!.row.id === row.id) {
+                    activeSelectedRangeIdx = idx;
+                }
+            })
+        });
+    }
 
     return {
         ...state,
@@ -45,7 +55,17 @@ export function updateSelectedColumns(state: State): State {
     const updatedColumns = state.cellMatrix.cols.filter(r => state.selectedIds.includes(r.id)).sort((a, b) => a.idx - b.idx);
     const columns = groupedColumns(updatedColumns)
     const ranges = columns.map(arr => state.cellMatrix.getRange(new Location(firstRow, arr[0]), new Location(lastRow, arr[arr.length - 1])));
-    const activeSelectedRangeIdx = state.focusedLocation ? activeSelectedRangeIndex(state.focusedLocation.col, ranges) : 0
+    let activeSelectedRangeIdx = 0
+
+    if (state.focusedLocation) {
+        ranges.forEach((range, idx) => {
+            range.cols.forEach(col => {
+                if (state.focusedLocation!.col.id === col.id) {
+                    activeSelectedRangeIdx = idx;
+                }
+            })
+        });
+    }
 
     return {
         ...state,
@@ -75,36 +95,25 @@ export function updateSelectedRanges(state: State): State {
         })
     })
 
+    let activeSelectedRangeIdx = 0;
+
     if (state.focusedLocation && newSelectedRanges.length == 0) {
         const location = new Location(state.focusedLocation.row, state.focusedLocation.col)
         newSelectedRanges.push(state.cellMatrix.getRange(location, location))
-        state.activeSelectedRangeIdx = 0
     } else if (state.focusedLocation) {
         const location = new Location(state.focusedLocation.row, state.focusedLocation.col)
         const index = newSelectedRanges.findIndex(r => r.contains(location))
         if (index !== -1) {
-            state.activeSelectedRangeIdx = index
+            activeSelectedRangeIdx = index
         }
     }
 
     return {
         ...state,
+        activeSelectedRangeIdx,
         selectedRanges: newSelectedRanges,
         selectionMode: 'range',
     }
-}
-
-const activeSelectedRangeIndex = (position: Row | Column, ranges: Range[]) => {
-    if (!position)
-        return 0
-    ranges.forEach((range, idx) => {
-        range.rows.forEach(row => {
-            if (position.id === row.id) {
-                return idx;
-            }
-        })
-    });
-    return 0
 }
 
 const groupedRows = (array: Row[]) => {
