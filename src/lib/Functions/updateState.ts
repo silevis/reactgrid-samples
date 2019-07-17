@@ -1,4 +1,4 @@
-import { State, Range, Column, Row, Location } from "../Common";
+import { State, Range, Column, Row, Location, Id } from "../Common";
 
 export function updateFocusedLocation(state: State): State {
     if (state.focusedLocation) {
@@ -25,20 +25,9 @@ export function updateSelectedRows(state: State): State {
     const firstCol = state.cellMatrix.first.col;
     const lastCol = state.cellMatrix.last.col;
     const updatedRows = state.cellMatrix.rows.filter(r => state.selectedIds.includes(r.id)).sort((a, b) => a.idx - b.idx);
-
     const rows = groupedRows(updatedRows);
-
     const ranges = rows.map(arr => state.cellMatrix.getRange(new Location(arr[0], firstCol), new Location(arr[arr.length - 1], lastCol)));
-
-    let activeSelectedRangeIdx!: number;
-
-    ranges.forEach((range, idx) => {
-        range.rows.forEach(row => {
-            if (state.focusedLocation!.row.id === row.id) {
-                activeSelectedRangeIdx = idx;
-            }
-        })
-    });
+    const activeSelectedRangeIdx = state.focusedLocation ? activeSelectedRangeIndex(state.focusedLocation.row, ranges) : 0
 
     return {
         ...state,
@@ -54,20 +43,9 @@ export function updateSelectedColumns(state: State): State {
     const firstRow = state.cellMatrix.first.row;
     const lastRow = state.cellMatrix.last.row;
     const updatedColumns = state.cellMatrix.cols.filter(r => state.selectedIds.includes(r.id)).sort((a, b) => a.idx - b.idx);
-
     const columns = groupedColumns(updatedColumns)
-
     const ranges = columns.map(arr => state.cellMatrix.getRange(new Location(firstRow, arr[0]), new Location(lastRow, arr[arr.length - 1])));
-
-    let activeSelectedRangeIdx!: number;
-
-    ranges.forEach((range, idx) => {
-        range.cols.forEach(col => {
-            if (state.focusedLocation!.col.id === col.id) {
-                activeSelectedRangeIdx = idx;
-            }
-        })
-    });
+    const activeSelectedRangeIdx = state.focusedLocation ? activeSelectedRangeIndex(state.focusedLocation.col, ranges) : 0
 
     return {
         ...state,
@@ -85,10 +63,8 @@ export function updateSelectedRanges(state: State): State {
     state.selectedRanges.forEach(range => {
         const rowIds = range.rows.map(row => row.id)
         const colIds = range.cols.map(col => col.id)
-
         const updatedRows = state.cellMatrix.rows.filter(r => rowIds.includes(r.id)).sort((a, b) => a.idx - b.idx);
         const updatedColumns = state.cellMatrix.cols.filter(c => colIds.includes(c.id)).sort((a, b) => a.idx - b.idx);
-
         const rows = groupedRows(updatedRows)
         const columns = groupedColumns(updatedColumns)
 
@@ -116,6 +92,19 @@ export function updateSelectedRanges(state: State): State {
         selectedRanges: newSelectedRanges,
         selectionMode: 'range',
     }
+}
+
+const activeSelectedRangeIndex = (position: Row | Column, ranges: Range[]) => {
+    if (!position)
+        return 0
+    ranges.forEach((range, idx) => {
+        range.rows.forEach(row => {
+            if (position.id === row.id) {
+                return idx;
+            }
+        })
+    });
+    return 0
 }
 
 const groupedRows = (array: Row[]) => {
