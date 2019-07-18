@@ -1,11 +1,15 @@
-import { State, Range, Column, Row, Location, Id } from "../Common";
+import { State, Range, Column, Row, Location } from "../Common";
 
 export function updateFocusedLocation(state: State): State {
     if (state.focusedLocation) {
         const newFocusedCol = state.cellMatrix.cols.find(c => c.id === state.focusedLocation!.col.id)
         const newFocusedRow = state.cellMatrix.rows.find(r => r.id === state.focusedLocation!.row.id)
         if (newFocusedCol && newFocusedRow) {
-            const focusedLocation = state.cellMatrix.getLocation(newFocusedRow.idx, newFocusedCol.idx)
+            const selectedRanges = state.selectedRanges;
+            let focusedLocation = state.cellMatrix.getLocation(newFocusedRow.idx, newFocusedCol.idx);
+            if (selectedRanges.length > 0 && !selectedRanges.some(range => range.contains(focusedLocation))) { // change focus position after unselection Row or Column which contains focus
+                focusedLocation = state.cellMatrix.getLocation(selectedRanges[selectedRanges.length - 1].first.row.idx, selectedRanges[selectedRanges.length - 1].first.col.idx);
+            }
             if (focusedLocation)
                 return {
                     ...state,
@@ -27,7 +31,7 @@ export function updateSelectedRows(state: State): State {
     const updatedRows = state.cellMatrix.rows.filter(r => state.selectedIds.includes(r.id)).sort((a, b) => a.idx - b.idx);
     const rows = groupedRows(updatedRows);
     const ranges = rows.map(arr => state.cellMatrix.getRange(new Location(arr[0], firstCol), new Location(arr[arr.length - 1], lastCol)));
-    let activeSelectedRangeIdx = 0
+    let activeSelectedRangeIdx = state.selectedRanges.length - 1;
 
     if (state.focusedLocation) {
         ranges.forEach((range, idx) => {
@@ -55,7 +59,7 @@ export function updateSelectedColumns(state: State): State {
     const updatedColumns = state.cellMatrix.cols.filter(r => state.selectedIds.includes(r.id)).sort((a, b) => a.idx - b.idx);
     const columns = groupedColumns(updatedColumns)
     const ranges = columns.map(arr => state.cellMatrix.getRange(new Location(firstRow, arr[0]), new Location(lastRow, arr[arr.length - 1])));
-    let activeSelectedRangeIdx = 0
+    let activeSelectedRangeIdx = state.selectedRanges.length - 1;
 
     if (state.focusedLocation) {
         ranges.forEach((range, idx) => {
