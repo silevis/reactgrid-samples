@@ -125,16 +125,7 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
     private handleRangeContextMenu(selectedRanges: Range[], menuOptions: MenuOption[]): MenuOption[] {
         let selectedRowIds: Id[] = [];
         let selectedColIds: Id[] = [];
-        selectedRanges.forEach(range => {
-            range.cols.forEach(col => selectedColIds.push(col.id));
-            range.rows.forEach(row => selectedRowIds.push(row.id));
-        });
-
-        // delete duplicated ids
-        selectedRowIds = Array.from(new Set(selectedRowIds));
-        selectedColIds = Array.from(new Set(selectedColIds));
-
-        return menuOptions.concat([
+        let options = menuOptions.concat([
             {
                 title: 'Delete Row',
                 handler: () => {
@@ -148,6 +139,27 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
                 }
             }
         ]);
+
+        selectedRanges.forEach((range, idx) => {
+            range.cols.forEach((col, colIdx) => {
+                selectedColIds.push(col.id);
+                range.rows.forEach((row, rowIdx) => {
+                    selectedRowIds.push(row.id);
+                    if (row.cells[range.cols[colIdx].idx].type === 'header' && rowIdx > 1) {
+                        options = options.filter(option => option.title !== 'Delete Column');
+                    }
+                    if (row.cells[range.cols[colIdx].idx].type === 'header' && colIdx > 0) {
+                        options = options.filter(option => option.title !== 'Delete Row');
+                    }
+                })
+            })
+        });
+
+        // delete duplicated ids
+        selectedRowIds = Array.from(new Set(selectedRowIds));
+        selectedColIds = Array.from(new Set(selectedColIds));
+
+        return options;
     }
 
     private handleRowContextMenu(selectedRowIds: Id[], menuOptions: MenuOption[]): MenuOption[] {
