@@ -33,7 +33,9 @@ export class EmailCellTemplate implements CellTemplate<string> {
             style={{
                 width: '100%',
                 height: '100%',
+                padding: 0,
                 border: 0,
+                background: 'transparent',
                 fontSize: 16,
                 outline: 'none'
             }}

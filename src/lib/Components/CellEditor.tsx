@@ -19,11 +19,13 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
             style={{
                 boxSizing: 'border-box',
                 position: 'fixed',
-                top: position.top + props.state.viewportElement.offsetTop,
-                left: position.left + props.state.viewportElement.offsetLeft,
-                height: location.row.height,
-                width: location.col.width,
+                top: position.top + props.state.viewportElement.offsetTop - 1,
+                left: position.left + props.state.viewportElement.offsetLeft - 1,
+                height: location.row.height + 1,
+                width: location.col.width + 1,
+                paddingTop: 1,
                 border: '2px #3579f8 solid',
+                background: 'white',
                 boxShadow: '1px 1px 6px rgba(0, 0, 0, 0.2)',
                 zIndex: 5,
             }}
