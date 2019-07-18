@@ -4,8 +4,8 @@ export function updateFocusedLocation(state: State): State {
     if (state.focusedLocation) {
         const newFocusedCol = state.cellMatrix.cols.find(c => c.id === state.focusedLocation!.col.id)
         const newFocusedRow = state.cellMatrix.rows.find(r => r.id === state.focusedLocation!.row.id)
+        const selectedRanges = state.selectedRanges;
         if (newFocusedCol && newFocusedRow) {
-            const selectedRanges = state.selectedRanges;
             let focusedLocation = state.cellMatrix.getLocation(newFocusedRow.idx, newFocusedCol.idx);
             if (selectedRanges.length > 0 && !selectedRanges.some(range => range.contains(focusedLocation))) { // change focus position after unselection Row or Column which contains focus
                 focusedLocation = state.cellMatrix.getLocation(selectedRanges[selectedRanges.length - 1].first.row.idx, selectedRanges[selectedRanges.length - 1].first.col.idx);
@@ -16,8 +16,10 @@ export function updateFocusedLocation(state: State): State {
                     focusedLocation
                 }
         } else {
+            const isOneRangeAndHasOneCell = selectedRanges.length === 1 && selectedRanges[0].rows.length === 1 && selectedRanges[0].cols.length === 1;
             return {
                 ...state,
+                selectedRanges: isOneRangeAndHasOneCell ? [] : selectedRanges,
                 focusedLocation: undefined
             }
         }
