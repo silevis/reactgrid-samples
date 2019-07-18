@@ -1,4 +1,4 @@
-import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, PointerLocation } from "../Common";
+import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, PointerLocation, Id } from "../Common";
 import { handleKeyDown as handleKeyDown } from "./DefaultBehavior/handleKeyDown";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
 import { ColumnSelectionBehavior } from "./ColumnSelectionBehavior";
@@ -143,9 +143,20 @@ export class DefaultBehavior extends Behavior {
                     }
                 })
             )
+
+            const selectedIds = (): Id[] => {
+                const range = cellMatrix.getRange(activeSelectedRange.first, lastLocation!);
+                if (state.selectionMode == 'column')
+                    return range.cols.map(c => c.id)
+                if (state.selectionMode == 'row')
+                    return range.rows.map(r => r.id)
+                return []
+            }
+
             return {
                 ...state,
-                selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, lastLocation!)]
+                selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, lastLocation!)],
+                selectedIds: selectedIds()
             }
         }
         event.preventDefault()
