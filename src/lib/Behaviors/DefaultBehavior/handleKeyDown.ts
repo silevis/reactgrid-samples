@@ -14,7 +14,7 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
         focusedLocation.cell.data = state.cellTemplates[focusedLocation.cell.type].handleKeyDown(event.keyCode, focusedLocation.cell.data).cellData
     }
 
-    if (!event.ctrlKey && !isSelectedOneCell(state) && !isArrowKey(key) && !isSpecialKeys(key)) {
+    if (state.selectedRanges.length > 0 && !event.ctrlKey && !isSelectedOneCell(state) && !isArrowKey(key) && !isSpecialKeys(key)) {
         return handleKeyNavigationInsideSelection(state, event)
     } else {
         if (isTabKey(key)) {
@@ -78,10 +78,7 @@ const isSpecialKeys = (key: string): boolean => {
 // const isKeys = (key: string, keys: Array<string>): boolean => keys.some(el => el.includes(key))
 
 const isSelectedOneCell = (state: State): boolean => {
-    const activeSelectedRange = state.selectedRanges[state.activeSelectedRangeIdx]
-    if (!activeSelectedRange) {
-        return false
-    }
+    const activeSelectedRange = state.selectedRanges[state.activeSelectedRangeIdx];
     return state.selectedRanges.length <= 1 && state.selectedRanges.length > 0 && activeSelectedRange.cols.length <= 1 && activeSelectedRange.rows.length <= 1
 }
 
