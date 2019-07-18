@@ -23,16 +23,15 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
             cellMatrix: new CellMatrix(props.cellMatrixProps)
         }
 
-        if (state.selectionMode === 'row') {
+        if (state.selectionMode === 'row' && state.selectedIds.length > 0) {
             state = updateSelectedRows(state);
-        } else if (state.selectionMode === 'column') {
+        } else if (state.selectionMode === 'column' && state.selectedIds.length > 0) {
             state = updateSelectedColumns(state);
         } else {
             state = updateSelectedRanges(state)
         }
 
         state = updateFocusedLocation(state)
-
 
         return {
             ...state,

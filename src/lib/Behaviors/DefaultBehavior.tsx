@@ -148,9 +148,9 @@ export class DefaultBehavior extends Behavior {
 
             const selectedIds = (): Id[] => {
                 const range = cellMatrix.getRange(activeSelectedRange.first, lastLocation!);
-                if (state.selectionMode == 'column')
+                if (state.selectionMode == 'column' && activeSelectedRange.first.row == state.cellMatrix.first.row)
                     return range.cols.map(c => c.id)
-                if (state.selectionMode == 'row')
+                if (state.selectionMode == 'row' && activeSelectedRange.first.col == state.cellMatrix.first.col)
                     return range.rows.map(r => r.id)
                 return []
             }

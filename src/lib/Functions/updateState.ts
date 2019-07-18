@@ -85,7 +85,6 @@ export function updateSelectedColumns(state: State): State {
 
 export function updateSelectedRanges(state: State): State {
     const newSelectedRanges: Range[] = [];
-
     state.selectedRanges.forEach(range => {
         const rowIds = range.rows.map(row => row.id)
         const colIds = range.cols.map(col => col.id)
@@ -118,7 +117,6 @@ export function updateSelectedRanges(state: State): State {
         ...state,
         activeSelectedRangeIdx,
         selectedRanges: newSelectedRanges,
-        selectionMode: 'range',
     }
 }
 
