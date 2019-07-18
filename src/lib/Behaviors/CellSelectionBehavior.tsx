@@ -46,7 +46,7 @@ export class CellSelectionBehavior extends Behavior {
             event.preventDefault();
             event.stopPropagation();
         } else if (location.equals(state.focusedLocation)) {
-            return { ...state, isFocusedCellInEditMode: state.cellTemplates[state.focusedLocation!.cell.type].handleKeyDown(1, state.focusedLocation!.cell.data).shouldEnableEditMode };
+            return { ...state, isFocusedCellInEditMode: state.cellTemplates[state.focusedLocation!.cell.type].handleKeyDown(1, state.focusedLocation!.cell.data).editable };
         }
         return state;
     }

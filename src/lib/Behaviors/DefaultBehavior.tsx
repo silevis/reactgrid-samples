@@ -16,7 +16,6 @@ interface ClipboardData {
     data: any;
     text: string;
 }
-
 export class DefaultBehavior extends Behavior {
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
@@ -73,7 +72,7 @@ export class DefaultBehavior extends Behavior {
         } else if (location.equals(state.focusedLocation)) {
             return {
                 ...state,
-                isFocusedCellInEditMode: state.cellTemplates[state.focusedLocation!.cell.type].handleKeyDown(1, state.focusedLocation!.cell.data).shouldEnableEditMode
+                isFocusedCellInEditMode: state.cellTemplates[state.focusedLocation!.cell.type].handleKeyDown(1, state.focusedLocation!.cell.data).editable
             };
         }
         return state;
@@ -124,6 +123,8 @@ export class DefaultBehavior extends Behavior {
         if (pasteContent.length === 1 && pasteContent[0].length === 1) {
             activeSelectedRange.rows.forEach(row =>
                 activeSelectedRange.cols.forEach(col => {
+                    if (!state.cellTemplates[row.cells[col.idx].type].handleKeyDown(0, pasteContent[0][0].data).editable)
+                        return
                     state = trySetDataAndAppendChange(state, new Location(row, col), pasteContent[0][0].type, pasteContent[0][0].data, pasteContent[0][0].text)
                 })
             )
@@ -136,6 +137,8 @@ export class DefaultBehavior extends Behavior {
                     const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx
                     if (rowIdx <= cellMatrix.last.row.idx && colIdx <= cellMatrix.last.col.idx) {
                         lastLocation = cellMatrix.getLocation(rowIdx, colIdx)
+                        if (!state.cellTemplates[lastLocation.cell.type].handleKeyDown(0, pasteValue.data).editable)
+                            return
                         state = trySetDataAndAppendChange(state, lastLocation, pasteValue.type, pasteValue.data, pasteValue.text)
                     }
                 })
@@ -166,6 +169,8 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
     table.setAttribute('empty-cells', 'show')
     table.setAttribute('data-key', 'dynagrid')
     const activeSelectedRange = getActiveSelectedRange(state)
+    if (!activeSelectedRange)
+        return
     activeSelectedRange.rows.forEach(row => {
         const tableRow = table.insertRow()
         activeSelectedRange.cols.forEach(col => {
@@ -180,7 +185,8 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
             tableCell.setAttribute('data-type', cell.type)
             tableCell.style.border = '1px solid #D3D3D3'
             if (removeValues) {
-                state = trySetDataAndAppendChange(state, new Location(row, col), 'text', '', '');
+                if (state.cellTemplates[cell.type].handleKeyDown(0, cell.data).editable)
+                    state = trySetDataAndAppendChange(state, new Location(row, col), 'text', '', '');
             }
         })
     })

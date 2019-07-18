@@ -15,7 +15,7 @@ function getScrollTop(state: State, row: Row, dontChange: boolean): number {
 
     const { frozenTopRange, frozenBottomRange } = state.cellMatrix;
 
-    const isRowOnFrozenPane = row.idx <= frozenTopRange.last.row.idx || row.idx >= frozenBottomRange.first.row.idx;
+    const isRowOnFrozenPane = (frozenTopRange.last.row && frozenBottomRange.first.row) ? row.idx <= frozenTopRange.last.row.idx || row.idx >= frozenBottomRange.first.row.idx : false;
     const visibleContentHeight = Math.min(clientHeight, state.cellMatrix.height);
     const visibleScrollAreaHeight = visibleContentHeight - frozenTopRange.height - frozenBottomRange.height;
     const isRowBelowTopPane = row.top < scrollTop;
@@ -36,7 +36,7 @@ function getScrollLeft(state: State, column: Column, dontChange: boolean): numbe
 
     const { frozenLeftRange, frozenRightRange } = state.cellMatrix;
 
-    const isColumnOnFrozenPane = column.idx <= frozenLeftRange.last.col.idx || column.idx >= frozenRightRange.first.col.idx;
+    const isColumnOnFrozenPane = (frozenLeftRange.last.col && frozenRightRange.first.col) ? column.idx <= frozenLeftRange.last.col.idx || column.idx >= frozenRightRange.first.col.idx : false;
     const visibleContentWidth = Math.min(clientWidth, state.cellMatrix.width);
     const visibleScrollAreaWidth = visibleContentWidth - frozenLeftRange.width - frozenRightRange.width;
     const isColumnBelowLeftPane = column.left < scrollLeft;

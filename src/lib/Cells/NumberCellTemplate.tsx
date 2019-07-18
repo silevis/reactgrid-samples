@@ -16,7 +16,7 @@ export class NumberCellTemplate implements CellTemplate<number> {
     }
 
     handleKeyDown(keyCode: number, cellData: number) {
-        return { shouldEnableEditMode: true, cellData }
+        return { editable: true, cellData }
     }
 
     customStyle: React.CSSProperties = {};

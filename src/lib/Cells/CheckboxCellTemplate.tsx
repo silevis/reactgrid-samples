@@ -18,7 +18,7 @@ export class CheckboxCellTemplate implements CellTemplate<boolean> {
     handleKeyDown(keyCode: number, cellData: boolean) {
         if (keyCode == keyCodes.SPACE || keyCode == keyCodes.ENTER)
             cellData = !this.validate(cellData)
-        return { shouldEnableEditMode: false, cellData }
+        return { editable: false, cellData }
     }
 
     customStyle: React.CSSProperties = {};
