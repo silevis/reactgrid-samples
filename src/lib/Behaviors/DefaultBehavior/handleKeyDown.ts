@@ -248,8 +248,10 @@ function handleSpecialKeys(event: KeyboardEvent, state: State) {
         const dataChanges: DataChange[] = []
         state.selectedRanges.forEach(range =>
             range.rows.forEach((row: Row) =>
-                range.cols.forEach((col: Column) =>
-                    trySetDataAndAppendChange(state, new Location(row, col), 'text', '', '')
+                range.cols.forEach((col: Column) => {
+                    if (state.cellTemplates[row.cells[col.idx].type].handleKeyDown(keyCodes.DELETE, row.cells[col.idx].data).editable)
+                        trySetDataAndAppendChange(state, new Location(row, col), 'text', '', '')
+                }
                 )
             )
         );

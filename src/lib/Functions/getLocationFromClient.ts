@@ -16,7 +16,7 @@ function getRow(state: State, viewportY: number, favorScrollableContent: boolean
     const scrollTop = state.viewportElement.scrollTop;
     const maxScrollTop = cellMatrix.scrollableRange.height - visibleContentHeight + cellMatrix.frozenTopRange.height + cellMatrix.frozenBottomRange.height - 1;
 
-    if (cellMatrix.frozenTopRange.rows && viewportY < cellMatrix.frozenTopRange.height && !(favorScrollableContent && scrollTop > 0)) {
+    if (cellMatrix.frozenTopRange.rows.find(row => row.bottom > viewportY) && viewportY < cellMatrix.frozenTopRange.height && !(favorScrollableContent && scrollTop > 0)) {
         const row = cellMatrix.frozenTopRange.rows.find(row => row.bottom > viewportY)!;
         return [viewportY - row.top, row];
     }
@@ -39,7 +39,7 @@ function getColumn(state: State, viewportX: number, favorScrollableContent: bool
     const scrollLeft = state.viewportElement.scrollLeft;
     const maxScrollLeft = cellMatrix.scrollableRange.width - visibleContentWidth + cellMatrix.frozenLeftRange.width + cellMatrix.frozenRightRange.width - 1;
 
-    if (cellMatrix.frozenLeftRange.cols && viewportX < cellMatrix.frozenLeftRange.width && !(favorScrollableContent && scrollLeft > 0)) {
+    if (cellMatrix.frozenLeftRange.cols.find(col => col.right > viewportX) && viewportX < cellMatrix.frozenLeftRange.width && !(favorScrollableContent && scrollLeft > 0)) {
         const column = cellMatrix.frozenLeftRange.cols.find(col => col.right > viewportX)!;
         return [viewportX - column.left, column];
     }

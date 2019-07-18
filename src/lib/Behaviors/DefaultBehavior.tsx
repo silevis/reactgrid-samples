@@ -14,7 +14,6 @@ interface ClipboardData {
     data: any;
     text: string;
 }
-
 export class DefaultBehavior extends Behavior {
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
@@ -148,6 +147,8 @@ export class DefaultBehavior extends Behavior {
         table.setAttribute('empty-cells', 'show')
         table.setAttribute('data-key', 'dynagrid')
         const activeSelectedRange = getActiveSelectedRange(state)
+        if (!activeSelectedRange)
+            return
         activeSelectedRange.rows.forEach(row => {
             const tableRow = table.insertRow()
             activeSelectedRange.cols.forEach(col => {
