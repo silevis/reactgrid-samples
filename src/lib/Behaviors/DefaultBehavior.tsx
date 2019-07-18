@@ -1,4 +1,4 @@
-import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, PointerLocation, Id } from "../Common";
+import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, PointerLocation, Id, SelectionMode } from "../Common";
 import { handleKeyDown as handleKeyDown } from "./DefaultBehavior/handleKeyDown";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
 import { ColumnSelectionBehavior } from "./ColumnSelectionBehavior";
@@ -104,6 +104,7 @@ export class DefaultBehavior extends Behavior {
         let pasteContent: ClipboardData[][] = [];
         const htmlData = event.clipboardData.getData('text/html');
         const parsedData = new DOMParser().parseFromString(htmlData, 'text/html')
+        const selectionMode = parsedData.body.firstElementChild!.getAttribute('data-selection') as SelectionMode;
         if (htmlData && parsedData.body.firstElementChild!.getAttribute('data-key') === 'dynagrid') {
             const cells = parsedData.body.firstElementChild!.firstElementChild!.children
             for (let i = 0; i < cells.length; i++) {
@@ -156,6 +157,7 @@ export class DefaultBehavior extends Behavior {
             return {
                 ...state,
                 selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, lastLocation!)],
+                selectionMode: selectionMode,
                 selectedIds: selectedIds()
             }
         }
@@ -179,6 +181,7 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
     const table = document.createElement('table')
     table.setAttribute('empty-cells', 'show')
     table.setAttribute('data-key', 'dynagrid')
+    table.setAttribute('data-selection', state.selectionMode)
     const activeSelectedRange = getActiveSelectedRange(state)
     if (!activeSelectedRange)
         return
