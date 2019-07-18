@@ -43,7 +43,7 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
             (event.keyCode >= keyCodes.NUM_PAD_0 && event.keyCode <= keyCodes.DIVIDE) ||
             (event.keyCode >= keyCodes.SEMI_COLON && event.keyCode <= keyCodes.SINGLE_QUOTE) ||
             event.keyCode === keyCodes.SPACE)) {
-        return { ...state, isFocusedCellInEditMode: state.cellTemplates[focusedLocation.cell.type].handleKeyDown(event.keyCode, focusedLocation.cell.data).shouldEnableEditMode }
+        return { ...state, isFocusedCellInEditMode: state.cellTemplates[focusedLocation.cell.type].handleKeyDown(event.keyCode, focusedLocation.cell.data).editable }
     }
     if (event.keyCode === keyCodes.ESC && state.isFocusedCellInEditMode) {
         return focusLocation(
@@ -231,7 +231,7 @@ function handleEnterKey(event: KeyboardEvent, state: State) {
         !state.isFocusedCellInEditMode
         // !state.isFocusedCellReadOnly 
     ) {
-        return { ...state, isFocusedCellInEditMode: state.cellTemplates[focusedLocation.cell.type].handleKeyDown(event.keyCode, focusedLocation.cell.data).shouldEnableEditMode };
+        return { ...state, isFocusedCellInEditMode: state.cellTemplates[focusedLocation.cell.type].handleKeyDown(event.keyCode, focusedLocation.cell.data).editable };
     } else if (event.shiftKey && event.keyCode === keyCodes.ENTER && focusedLocation.row.idx > 0) {
         return focusCell(focusedLocation.col.idx, focusedLocation.row.idx - 1, state);
     }

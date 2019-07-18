@@ -60,7 +60,7 @@ export interface CellTemplate<TCellData> {
     //shouldEnableEditMode(keyCode: number): boolean;
 
     // The keyCode represents the key pressed on the keyboard, or 1 for a pointer event.
-    handleKeyDown(keyCode: number, cellData: TCellData): { shouldEnableEditMode: boolean, cellData: TCellData }
+    handleKeyDown(keyCode: number, cellData: TCellData): { editable: boolean, cellData: TCellData }
     // Custom styles applied to the cells div element
     customStyle?: React.CSSProperties;
     // Render the cell content
