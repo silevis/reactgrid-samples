@@ -7,7 +7,7 @@ export function updateFocusedLocation(state: State): State {
         if (newFocusedCol && newFocusedRow) {
             const selectedRanges = state.selectedRanges;
             let focusedLocation = state.cellMatrix.getLocation(newFocusedRow.idx, newFocusedCol.idx);
-            if (selectedRanges.length > 0 && !selectedRanges.some(range => range.contains(focusedLocation))) {
+            if (selectedRanges.length > 0 && !selectedRanges.some(range => range.contains(focusedLocation))) { // change focus position after unselection Row or Column which contains focus
                 focusedLocation = state.cellMatrix.getLocation(selectedRanges[selectedRanges.length - 1].first.row.idx, selectedRanges[selectedRanges.length - 1].first.col.idx);
             }
             if (focusedLocation)
