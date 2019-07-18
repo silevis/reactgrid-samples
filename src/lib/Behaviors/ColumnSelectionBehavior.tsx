@@ -8,7 +8,7 @@ export class ColumnSelectionBehavior extends Behavior {
     handlePointerDown(event: PointerEvent, location: Location, state: State): State {
         if (event.ctrlKey && state.selectionMode === 'column' && state.selectedIds.some(id => id === location.col.id)) {
             state = unSelectOneColumn(state, location.col);
-        } if (event.shiftKey) {
+        } else if (event.shiftKey) {
             state = selectMultipleColumns(state, state.focusedLocation!.col, location.col, event.ctrlKey);
         } else {
             state = focusLocation(state, location, false);

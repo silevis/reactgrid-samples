@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DynaGridProps, CellMatrix, PointerEvent, State, StateUpdater } from "../Common";
+import { DynaGridProps, CellMatrix, PointerEvent, State, StateUpdater, MenuOption } from "../Common";
 import { PaneRow } from "./PaneRow";
 import { recalcVisibleRange } from "../Functions";
 import { KeyboardEvent, ClipboardEvent } from "../Common";
@@ -8,7 +8,7 @@ import { CellEditor } from "./CellEditor";
 import { Line } from "./Line";
 import { Shadow } from "./Shadow";
 import { updateFocusedLocation, updateSelectedRows, updateSelectedColumns, updateSelectedRanges } from "../Functions/updateState";
-import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
+import { ContextMenu } from "./ContextMenu";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
 
@@ -110,13 +110,25 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                         />}
                     <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} />
                     {this.state.isFocusedCellInEditMode && this.state.currentlyEditedCell && <CellEditor state={this.state} />}
-                    <Line linePosition={this.state.linePosition} orientation={this.state.lineOrientation} cellMatrix={this.state.cellMatrix} />
-                    <Shadow shadowPosition={this.state.shadowPosition}
+                    <Line
+                        linePosition={this.state.linePosition}
+                        orientation={this.state.lineOrientation}
+                        cellMatrix={this.state.cellMatrix}
+                    />
+                    <Shadow
+                        shadowPosition={this.state.shadowPosition}
                         orientation={this.state.lineOrientation}
                         cellMatrix={this.state.cellMatrix}
                         shadowSize={this.state.shadowSize}
                         verticalOffset={this.state.viewportElement ? this.state.viewportElement.offsetTop : 0}
                         horizontalOffset={this.state.viewportElement ? this.state.viewportElement.offsetLeft : 0}
+                    />
+                    <ContextMenu
+                        state={this.state}
+                        onRowContextMenu={(_, menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(this.state.selectedIds, menuOptions) : []}
+                        onColumnContextMenu={(_, menuOptions: MenuOption[]) => this.props.onColumnContextMenu ? this.props.onColumnContextMenu(this.state.selectedIds, menuOptions) : []}
+                        onRangeContextMenu={(_, menuOptions: MenuOption[]) => this.props.onRangeContextMenu ? this.props.onRangeContextMenu(this.state.selectedRanges, menuOptions) : []}
+                        contextMenuPosition={this.state.contextMenuPosition}
                     />
                 </div>
             </div >
@@ -153,7 +165,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     private copyHandler = (event: ClipboardEvent) => this.updateOnNewState(this.state.currentBehavior.handleCopy(event, this.state));
     private pasteHandler = (event: ClipboardEvent) => this.updateOnNewState(this.state.currentBehavior.handlePaste(event, this.state));
     private cutHandler = (event: ClipboardEvent) => this.updateOnNewState(this.state.currentBehavior.handleCut(event, this.state));
-    private handleContextMenu = (event: PointerEvent) => this.state.currentBehavior.handleContextMenu(event);
+    private handleContextMenu = (event: PointerEvent) => this.updateOnNewState(this.state.currentBehavior.handleContextMenu(event, this.state));
 
     private updateOnNewState(state: State) {
         if (state === this.state) return;

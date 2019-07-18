@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ColumnProps, RowProps, CellMatrixProps, DataChange } from '../../lib/Common';
+import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 
 const COL_SIZE = 10;
@@ -13,7 +13,6 @@ interface Row {
     rowId: string;
     cols: Cell[]
 }
-
 
 export class Spreadsheet extends React.Component<{}, { data: Row[], widths: number[] }> {
     constructor(props: {}) {
@@ -43,7 +42,7 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
             onDrop: (ids) => this.reorderColumns(ids as number[], idx),
             reorderable: true,
             resizable: true,
-            onResize: width => { this.state.widths[idx] = 120, this.forceUpdate(); }
+            onResize: width => { this.state.widths[idx] = width, this.forceUpdate(); }
         }));
         const rows: RowProps[] = this.state.data.map((row, rowIdx) => ({
             id: row.rowId,
@@ -67,7 +66,7 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
     }
 
     render() {
-        return <div>
+        return (<div>
             <button style={{ width: 100, height: 50 }} onClick={() => {
                 const data = [...this.state.data];
                 data.shift()
@@ -100,12 +99,16 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
             <DynaGrid style={{ position: 'absolute', top: 50, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
                 cellMatrixProps={this.generateCellMatrix()}
                 onDataChanged={changes => this.handleDataChanges(changes)}
+                onRowContextMenu={(selectedRowIds: Id[], menuOptions: MenuOption[]) => this.handleRowContextMenu(selectedRowIds, menuOptions)}
+                onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
+                onRangeContextMenu={(selectedRanges: Range[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRanges, menuOptions)}
                 cellTemplates={{}}
             />
         </div>
+        );
     }
 
-    handleDataChanges(dataChanges: DataChange[]) {
+    private handleDataChanges(dataChanges: DataChange[]) {
         const data: Row[] = this.state.data;
         dataChanges.forEach(change => {
             const row: any = data.find(row => row.rowId === change.rowId);
@@ -119,7 +122,69 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
         })
     }
 
-    reorderColumns(colIdxs: number[], to: number) {
+    private handleRangeContextMenu(selectedRanges: Range[], menuOptions: MenuOption[]): MenuOption[] {
+        let selectedRowIds: Id[] = [];
+        let selectedColIds: Id[] = [];
+        selectedRanges.forEach(range => {
+            range.cols.forEach(col => selectedColIds.push(col.id));
+            range.rows.forEach(row => selectedRowIds.push(row.id));
+        });
+
+        // delete duplicated ids
+        selectedRowIds = Array.from(new Set(selectedRowIds));
+        selectedColIds = Array.from(new Set(selectedColIds));
+
+        return menuOptions.concat([
+            {
+                title: 'Delete Row',
+                handler: () => {
+                    this.deleteRows(selectedRowIds);
+                }
+            },
+            {
+                title: 'Delete Column',
+                handler: () => {
+                    this.deleteColumns(selectedColIds);
+                }
+            }
+        ]);
+    }
+
+    private handleRowContextMenu(selectedRowIds: Id[], menuOptions: MenuOption[]): MenuOption[] {
+        return menuOptions.concat([
+            {
+                title: 'Delete Row',
+                handler: () => {
+                    this.deleteRows(selectedRowIds);
+                }
+            }
+        ]);
+    }
+
+    private handleColContextMenu(selectedColIds: Id[], menuOptions: MenuOption[]): MenuOption[] {
+        return menuOptions.concat([
+            {
+                title: 'Delete Column',
+                handler: () => {
+                    this.deleteColumns(selectedColIds)
+                }
+            }
+        ]);
+    }
+
+    private deleteRows(selectedRowIds: Id[]) {
+        const data = this.state.data;
+        const newData = data.filter(row => !selectedRowIds.includes(row.rowId));
+        this.setState({ data: newData })
+    }
+
+    private deleteColumns(selectedColIds: Id[]) {
+        const data = this.state.data;
+        const newData = data.map(row => ({ cols: row.cols.filter(col => !selectedColIds.includes(col.colId)), rowId: row.rowId }));
+        this.setState({ data: newData })
+    }
+
+    private reorderColumns(colIdxs: number[], to: number) {
         let data = [...this.state.data];
         if (to > colIdxs[0]) {
             data = data.map(r => this.calculateColumnReorder(r, colIdxs, 'right', to));
@@ -129,7 +194,7 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
         this.setState({ data })
     }
 
-    reorderRows(rowIdxs: number[], to: number) {
+    private reorderRows(rowIdxs: number[], to: number) {
         const data = [...this.state.data];
         const movedRows = data.filter((_, idx) => rowIdxs.includes(idx));
         const clearedData = data.filter((_, idx) => !rowIdxs.includes(idx));

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { State, Borders, Location } from "../Common";
 import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChange";
+import { ResizeHandle } from "./ResizeHandle";
 
 export interface CellRendererProps {
     state: State
@@ -57,6 +58,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
                     }
                 })
             }
+            {location.row.idx === 0 && location.col.resizable && <ResizeHandle />}
         </div >
     )
 }
