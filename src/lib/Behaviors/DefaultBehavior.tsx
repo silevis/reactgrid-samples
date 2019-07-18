@@ -25,13 +25,14 @@ export class DefaultBehavior extends Behavior {
 
     private getNewBehavior(event: any, location: PointerLocation, state: State): Behavior {
         // changing behavior will disable all keyboard event handlers
+
         if (location.row.idx == 0 && location.cellX > location.col.width - 6) {
             return new ResizeColumnBehavior();
-        } else if (location.row.idx == 0 && state.selectedIds.includes(location.col.id) && !event.ctrlKey) {
+        } else if (location.row.idx == 0 && state.selectedIds.includes(location.col.id) && !event.ctrlKey && state.selectionMode == 'column') {
             return new ColumnReorderBehavior();
         } else if (location.row.idx == 0) {
             return new ColumnSelectionBehavior();
-        } else if (location.col.idx == 0 && state.selectedIds.includes(location.row.id) && !event.ctrlKey) {
+        } else if (location.col.idx == 0 && state.selectedIds.includes(location.row.id) && !event.ctrlKey && state.selectionMode == 'row') {
             return new RowReorderBehavior();
         } else if (location.col.idx == 0) {
             return new RowSelectionBehavior();
@@ -92,7 +93,7 @@ export class DefaultBehavior extends Behavior {
 
     handleCopy(event: ClipboardEvent, state: State): State {
         copySelectedRangeToClipboard(state);
-        event.preventDefault()
+        event.preventDefault();
         return state;
     }
 
