@@ -1,6 +1,11 @@
 import { CellMatrixProps, Id } from "./PublicModel";
 import { Range } from "./Range";
 import { Column, Row, Location } from ".";
+import { number } from "prop-types";
+
+interface IndexLookup {
+    [id: string]: number;
+}
 
 // INTERNAL
 export class CellMatrix {
@@ -17,6 +22,9 @@ export class CellMatrix {
     readonly first: Location;
     readonly last: Location;
 
+    private readonly rowIndexLookup: IndexLookup = {};
+    private readonly columnIndexLookup: IndexLookup = {};
+
     constructor(public readonly props: CellMatrixProps) {
         const frozenBottomFirstIdx = props.rows.length - (props.frozenBottomRows || 0);
         const frozenRightFirstIdx = props.columns.length - (props.frozenRightColumns || 0);
@@ -30,6 +38,7 @@ export class CellMatrix {
                         : rows[idx - 1].top + rows[idx - 1].height;
                 rows.push({ ...row, top: top, idx: idx, bottom: top + row.height });
                 height += row.height;
+                this.rowIndexLookup[row.id] = idx;
                 return rows;
             },
             [] as Row[]
@@ -42,6 +51,7 @@ export class CellMatrix {
                         : cols[idx - 1].left + cols[idx - 1].width;
                 cols.push({ ...column, idx, left, right: left + column.width })
                 width += column.width;
+                this.columnIndexLookup[column.id] = idx;
                 return cols;
             },
             [] as Column[]
@@ -79,11 +89,14 @@ export class CellMatrix {
         return new Location(this.rows[rowIdx], this.cols[colIdx]);
     }
 
+    getLocationById(rowId: Id, colId: Id): Location {
+        return new Location(this.rows[this.rowIndexLookup[rowId]], this.cols[this.columnIndexLookup[colId]]);
+    }
+
     getCell(rowId: Id, colId: Id) {
-        const row = this.rows.find(r => r.id === rowId)
-        const col = this.cols.find(c => c.id === colId)
-        if (row && col)
-            return row.cells[col.idx]
+        const row = this.rows[this.rowIndexLookup[rowId]]
+        if (row)
+            return row.cells[this.columnIndexLookup[colId]]
         return undefined
     }
 }

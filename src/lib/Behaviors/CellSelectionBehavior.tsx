@@ -15,8 +15,8 @@ export class CellSelectionBehavior extends Behavior {
             }
 
         } else if (event.ctrlKey) {
-            const pointedRange = state.selectedRanges.find(range => range.contains(location));
-            const pointedRangeIdx = state.selectedRanges.findIndex(range => range.contains(location));
+            const pointedRangeIdx = state.selectedRanges.findIndex((range) => range.contains(location));
+            const pointedRange = state.selectedRanges[pointedRangeIdx]
 
             if (pointedRange) {
                 state = focusLocation(state, location, false);

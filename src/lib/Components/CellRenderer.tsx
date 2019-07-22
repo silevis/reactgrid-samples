@@ -13,7 +13,6 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
     const state = { ...props.state };
     const location = props.location;
     const cell = location.cell;
-    const borders = props.borders;
     const isFocused = (state.focusedLocation !== undefined) && (state.focusedLocation.col.idx === props.location.col.idx && state.focusedLocation.row.idx === props.location.row.idx);
     const lastKeyCode = props.state.lastKeyCode;
 

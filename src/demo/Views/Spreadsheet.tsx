@@ -2,7 +2,7 @@ import * as React from 'react'
 import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 
-const COL_SIZE = 10;
+const COL_SIZE = 20;
 const ROW_SIZE = 50;
 
 interface Cell {
