@@ -87,9 +87,8 @@ export class CellMatrix {
     }
 
     getCell(rowId: Id, colId: Id) {
+        // TODO define return type
         const row = this.rows[this.rowIndexLookup[rowId]]
-        if (row)
-            return row.cells[this.columnIndexLookup[colId]]
-        return undefined
+        return row.cells[this.columnIndexLookup[colId]]
     }
 }

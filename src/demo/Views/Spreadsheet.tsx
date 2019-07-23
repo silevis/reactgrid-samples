@@ -35,6 +35,16 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
         }
     }
 
+    componentDidMount() {
+        window.setInterval(() => {
+            const data = [...this.state.data];
+            data.splice(5, 0, { rowId: Math.random().toString(36).substr(2, 9), cols: [...data[0].cols.map(c => ({ data: c.data + c.colId, colId: c.colId }))] })
+            this.setState({ data })
+        }, 5000)
+    }
+
+
+
     private generateCellMatrix(): CellMatrixProps {
         const columns: ColumnProps[] = this.state.data[0].cols.map((c, idx) => ({
             id: c.colId,
