@@ -36,7 +36,7 @@ export class CheckboxCellTemplate implements CellTemplate<boolean> {
                 background: 'transparent'
             }}
             checked={props.cellData}
-            onChange={() => props.onCellDataChanged ? props.onCellDataChanged(!this.validate(props.cellData)) : null}
+            onChange={() => { props.onCellDataChanged ? props.onCellDataChanged(!this.validate(props.cellData)) : null }}
         />
     }
 }

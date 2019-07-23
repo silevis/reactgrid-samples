@@ -83,14 +83,7 @@ export class CellMatrix {
     }
 
     getLocation(rowIdx: number, colIdx: number): Location {
-        // TODO is this really needed?
-        //const properRowIdx = rowIdx < this.rows.length - 1 ? rowIdx : this.rows.length - 1;
-        //const properColIdx = colIdx < this.cols.length - 1 ? colIdx : this.cols.length - 1;
         return new Location(this.rows[rowIdx], this.cols[colIdx]);
-    }
-
-    getLocationById(rowId: Id, colId: Id): Location {
-        return new Location(this.rows[this.rowIndexLookup[rowId]], this.cols[this.columnIndexLookup[colId]]);
     }
 
     getCell(rowId: Id, colId: Id) {
