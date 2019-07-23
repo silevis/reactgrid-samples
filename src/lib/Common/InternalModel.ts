@@ -29,7 +29,8 @@ export interface Borders {
 export class Location {
     constructor(
         public readonly row: Row,
-        public readonly col: Column
+        public readonly col: Column,
+        //        public readonly cellMatrixId: number
     ) { }
     get cell() { return this.row.cells[this.col.idx] };
     equals(location?: Location) {

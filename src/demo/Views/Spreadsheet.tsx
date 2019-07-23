@@ -1,108 +1,110 @@
-import * as React from 'react'
+import * as React from 'react';
 import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 
-const COL_SIZE = 20;
-const ROW_SIZE = 50;
+const COL_COUNT = 20;
+const ROW_COUNT = 50;
 
-interface Cell {
-    colId: string;
+
+interface Field {
+    id: string;
+    width: number;
+}
+
+interface Record {
+    id: string;
     data: any;
 }
-interface Row {
-    rowId: string;
-    cols: Cell[]
-}
 
-export class Spreadsheet extends React.Component<{}, { data: Row[], widths: number[] }> {
+export class Spreadsheet extends React.Component<{}, { records: Record[], fields: Field[] }> {
+
     constructor(props: {}) {
         super(props);
 
-        const colIds: string[] = Array.from(Array(COL_SIZE), () => Math.random().toString(36).substr(2, 9));
-
+        let cnt = 0;
+        const fields = new Array(COL_COUNT).fill(120).map((width, idx) => ({ id: idx.toString(), width }));
         this.state = {
-            widths: Array(1000).fill(120),
-            data: Array(ROW_SIZE).fill(0).map((_, ri) =>
-                ({
-                    rowId: Math.random().toString(36).substr(2, 9),
-                    cols: Array(COL_SIZE).fill(0).map((_, ci) =>
-                        ({
-                            data: (ri + 100) + ' - ' + (ci + 100),
-                            colId: colIds[ci]
-                        }))
-                })
-            )
+            fields,
+            records: new Array(ROW_COUNT).fill(0).map(() => fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} }))
         }
+    }
+
+
+    private genId(): string {
+        return Math.random().toString(36).substr(2, 9);
     }
 
     componentDidMount() {
         window.setInterval(() => {
-            const data = [...this.state.data];
-            data.splice(5, 0, { rowId: Math.random().toString(36).substr(2, 9), cols: [...data[0].cols.map(c => ({ data: c.data + c.colId, colId: c.colId }))] })
-            this.setState({ data })
+            let cnt = 0;
+            const records: Record[] = [...this.state.records];
+            records.splice(5, 0, this.state.fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} }));
+            this.setState({ records })
         }, 5000)
     }
 
 
 
     private generateCellMatrix(): CellMatrixProps {
-        const columns: ColumnProps[] = this.state.data[0].cols.map((c, idx) => ({
-            id: c.colId,
-            width: this.state.widths[idx],
+        const columns: ColumnProps[] = this.state.fields.map((field, idx) => ({
+            id: field.id,
+            width: field.width,
             onDrop: (ids) => this.reorderColumns(ids as number[], idx),
             reorderable: true,
             resizable: true,
-            onResize: width => { this.state.widths[idx] = width, this.forceUpdate(); }
+            onResize: width => { this.state.fields[idx].width = width, this.forceUpdate(); }
         }));
-        const rows: RowProps[] = this.state.data.map((row, rowIdx) => ({
-            id: row.rowId,
+
+        const headers: RowProps = { id: 'header', height: 25, reorderable: false, cells: [{ data: '', type: 'header' }].concat(this.state.fields.map(field => ({ data: field.id, type: 'header' }))) };
+
+        const rows: RowProps[] = [headers].concat(this.state.records.map((record, rowIdx) => ({
+            id: record.id,
             height: 25,
             onDrop: (ids) => this.reorderRows(ids as number[], rowIdx),
             reorderable: true,
-            cells: row.cols.map((data, colIdx) => (rowIdx === 0 || colIdx === 0) ? { data: data.data, type: 'header' } : (rowIdx !== 0 && colIdx === 1) ? { data: data.data, type: 'checkbox' } : { data: data.data, type: 'text' })
-        }))
+            cells: this.state.fields.map((field, colIdx) => colIdx === 0 ? { data: record.id, type: 'header' } : (colIdx === 1) ? { data: record.data[field.id], type: 'checkbox' } : { data: record.data[field.id], type: 'text' })
+        })));
         return ({ frozenTopRows: 0, frozenLeftColumns: 0, frozenBottomRows: 0, frozenRightColumns: 0, rows, columns })
     }
 
-    private calculateColumnReorder(row: Row, colIdxs: number[], direction: string, destination: number) {
-        const movedColumns: Cell[] = row.cols.filter((_, idx) => colIdxs.includes(idx));
-        const clearedRow: Cell[] = row.cols.filter((_, idx) => !colIdxs.includes(idx));
+    private calculateColumnReorder(colIdxs: number[], direction: string, destination: number) {
+        const movedColumns: Field[] = this.state.fields.filter((_, idx) => colIdxs.includes(idx));
+        const clearedFields: Field[] = this.state.fields.filter((_, idx) => !colIdxs.includes(idx));
         if (direction === 'right') {
             destination = destination - colIdxs.length + 1
         }
-        clearedRow.splice(destination, 0, ...movedColumns)
-        row.cols = clearedRow
-        return row
+        clearedFields.splice(destination, 0, ...movedColumns)
+        return clearedFields
     }
 
     render() {
+        let cnt = 0;
         return (<div>
             <button style={{ width: 100, height: 50 }} onClick={() => {
-                const data = [...this.state.data];
-                data.shift()
-                this.setState({ data })
+                const records = [...this.state.records];
+                records.shift()
+                this.setState({ records })
             }}>
                 - rekord
             </button>
             <button style={{ width: 100, height: 50 }} onClick={() => {
-                const data = [...this.state.data];
-                data.splice(5, 0, { rowId: Math.random().toString(36).substr(2, 9), cols: [...data[0].cols.map(c => ({ data: c.data + c.colId, colId: c.colId }))] })
-                this.setState({ data })
+                const records = [...this.state.records];
+                records.splice(5, 0, this.state.fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} }));
+                this.setState({ records })
             }}>
                 + rekord
             </button>
             <button style={{ width: 100, height: 50 }} onClick={() => {
-                const data = [...this.state.data];
-                data.forEach(r => r.cols.shift())
-                this.setState({ data })
+                const fields = [...this.state.fields];
+                fields.shift()
+                this.setState({ fields })
             }}>
                 - kolumn
             </button>
             <button style={{ width: 100, height: 50 }} onClick={() => {
-                const colId = Math.random().toString(36).substr(2, 9);
-                const data = [...this.state.data];
-                data.forEach(r => r.cols.splice(2, 0, { colId: colId, data: '+' + colId }))
-                this.setState({ data })
+                const fields = [...this.state.fields];
+                fields.splice(3, 0, { id: this.genId(), width: 100 })
+                this.setState({ fields })
             }}>
                 + kolumn
             </button>
@@ -119,17 +121,11 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
     }
 
     private handleDataChanges(dataChanges: DataChange[]) {
-        const data: Row[] = this.state.data;
+        const state = { ...this.state }
         dataChanges.forEach(change => {
-            const row: any = data.find(row => row.rowId === change.rowId);
-            const cell: any = row ? row.cols.find((c: any) => c.colId === change.columnId) : null
-            if (cell && row) {
-                cell.data = change.newData as string;
-                row.cols.map((c: any) => c.colId == cell.colId ? c = cell : change)
-                const newData: Row[] = data.map(r => r.rowId == row.rowId ? r = row : r)
-                this.setState({ data: newData })
-            }
+            state.records.map(r => r.id == change.rowId ? r.data[change.columnId] = change.newData : r)
         })
+        this.setState(state)
     }
 
     private handleRangeContextMenu(selectedRanges: Range[], menuOptions: MenuOption[]): MenuOption[] {
@@ -195,34 +191,32 @@ export class Spreadsheet extends React.Component<{}, { data: Row[], widths: numb
     }
 
     private deleteRows(selectedRowIds: Id[]) {
-        const data = this.state.data;
-        const newData = data.filter(row => !selectedRowIds.includes(row.rowId));
-        this.setState({ data: newData })
+        const records = [...this.state.records].filter(r => r.id !== selectedRowIds.toString());
+        this.setState({ records })
     }
 
     private deleteColumns(selectedColIds: Id[]) {
-        const data = this.state.data;
-        const newData = data.map(row => ({ cols: row.cols.filter(col => !selectedColIds.includes(col.colId)), rowId: row.rowId }));
-        this.setState({ data: newData })
+        const fields = [...this.state.fields].filter(f => f.id !== selectedColIds.toString());
+        this.setState({ fields })
     }
 
     private reorderColumns(colIdxs: number[], to: number) {
-        let data = [...this.state.data];
+        let fields = [...this.state.fields];
         if (to > colIdxs[0]) {
-            data = data.map(r => this.calculateColumnReorder(r, colIdxs, 'right', to));
+            fields = this.calculateColumnReorder(colIdxs, 'right', to)
         } else {
-            data = data.map(r => this.calculateColumnReorder(r, colIdxs, 'left', to));
+            fields = this.calculateColumnReorder(colIdxs, 'left', to)
         }
-        this.setState({ data })
+        this.setState({ fields })
     }
 
     private reorderRows(rowIdxs: number[], to: number) {
-        const data = [...this.state.data];
-        const movedRows = data.filter((_, idx) => rowIdxs.includes(idx));
-        const clearedData = data.filter((_, idx) => !rowIdxs.includes(idx));
-        if (to > rowIdxs[0])
-            to = to - rowIdxs.length + 1
-        clearedData.splice(to, 0, ...movedRows)
-        this.setState({ data: clearedData })
+        //     const data = [...this.state.data];
+        //     const movedRows = data.filter((_, idx) => rowIdxs.includes(idx));
+        //     const clearedData = data.filter((_, idx) => !rowIdxs.includes(idx));
+        //     if (to > rowIdxs[0])
+        //         to = to - rowIdxs.length + 1
+        //     clearedData.splice(to, 0, ...movedRows)
+        //     this.setState({ data: clearedData })
     }
 }

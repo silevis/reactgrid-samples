@@ -17,11 +17,13 @@ export class CellMatrix {
     readonly width: number = 0;
     readonly height: number = 0;
 
+
     readonly cols: Column[];
     readonly rows: Row[];
     readonly first: Location;
     readonly last: Location;
 
+    private readonly id: number = Math.random()
     private readonly rowIndexLookup: IndexLookup = {};
     private readonly columnIndexLookup: IndexLookup = {};
 
@@ -84,6 +86,17 @@ export class CellMatrix {
 
     getLocation(rowIdx: number, colIdx: number): Location {
         return new Location(this.rows[rowIdx], this.cols[colIdx]);
+    }
+
+    validateLocation(location: Location): Location {
+        console.log(this.rowIndexLookup);
+        const colIdx = this.columnIndexLookup[location.col.id] || (location.col.idx < this.last.col.idx) ? location.col.idx : this.last.col.idx;
+        const rowIdx = this.rowIndexLookup[location.row.id] || (location.row.idx < this.last.row.idx) ? location.row.idx : this.last.row.idx;
+        return this.getLocation(rowIdx, colIdx);
+    }
+
+    validateRange(range: Range): Range {
+        return this.getRange(this.validateLocation(range.first), this.validateLocation(range.last));
     }
 
     getCell(rowId: Id, colId: Id) {
