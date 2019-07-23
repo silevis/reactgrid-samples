@@ -89,9 +89,8 @@ export class CellMatrix {
     }
 
     validateLocation(location: Location): Location {
-        console.log(this.rowIndexLookup);
-        const colIdx = this.columnIndexLookup[location.col.id] || (location.col.idx < this.last.col.idx) ? location.col.idx : this.last.col.idx;
-        const rowIdx = this.rowIndexLookup[location.row.id] || (location.row.idx < this.last.row.idx) ? location.row.idx : this.last.row.idx;
+        const colIdx = this.columnIndexLookup[location.col.id] ? this.columnIndexLookup[location.col.id] : (location.col.idx < this.last.col.idx) ? location.col.idx : this.last.col.idx;
+        const rowIdx = this.rowIndexLookup[location.row.id] ? this.rowIndexLookup[location.row.id] : (location.row.idx < this.last.row.idx) ? location.row.idx : this.last.row.idx;
         return this.getLocation(rowIdx, colIdx);
     }
 
