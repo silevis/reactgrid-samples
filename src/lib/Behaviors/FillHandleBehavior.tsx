@@ -110,6 +110,8 @@ export class FillHandleBehavior extends Behavior {
             return state;
         }
 
+        this.fillRange = state.cellMatrix.validateRange(this.fillRange)
+
         switch (this.fillDirection) {
             case 'right':
                 values = activeSelectedRange.rows.map((row: Row) =>
@@ -192,7 +194,6 @@ export class FillHandleBehavior extends Behavior {
     }
 
     renderPanePart(state: State, pane: Range): React.ReactNode {
-        console.log('renderpanepart')
         return this.fillDirection && this.fillRange && pane.intersectsWith(this.fillRange) &&
             <PartialArea range={state.cellMatrix.validateRange(this.fillRange)} pane={pane} style={{
                 backgroundColor: '',
