@@ -191,12 +191,12 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
     }
 
     private deleteRows(selectedRowIds: Id[]) {
-        const records = [...this.state.records].filter(r => r.id !== selectedRowIds.toString());
+        const records = [...this.state.records].filter(r => !selectedRowIds.toString().includes(r.id));
         this.setState({ records })
     }
 
     private deleteColumns(selectedColIds: Id[]) {
-        const fields = [...this.state.fields].filter(f => f.id !== selectedColIds.toString());
+        const fields = [...this.state.fields].filter(f => !selectedColIds.toString().includes(f.id));
         this.setState({ fields })
     }
 
