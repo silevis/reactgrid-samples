@@ -31,7 +31,8 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
             state = updateSelectedRanges(state)
         }
 
-        state = updateFocusedLocation(state)
+        if (state.focusedLocation)
+            state.focusedLocation = state.cellMatrix.validateLocation(state.focusedLocation)
 
         return {
             ...state,

@@ -40,7 +40,7 @@ export const Pane: React.FunctionComponent<PaneProps> = (props) =>
     <div key={props.id} className="dg-pane" style={{ position: 'relative', width: props.range.width, height: '100%', ...props.style }}>
         <GridContent state={props.state} range={props.range} borders={props.borders} />
         {renderSelectedRanges(props.state, props.range)}
-        {props.state.currentBehavior.renderPanePart(props.range)}
+        {props.state.currentBehavior.renderPanePart(props.state, props.range)}
         {props.state.focusedLocation && props.range.contains(props.state.focusedLocation) &&
             <CellFocus location={props.state.focusedLocation} />}
         {props.state.selectedRanges[props.state.activeSelectedRangeIdx] && props.range.contains(props.state.selectedRanges[props.state.activeSelectedRangeIdx].last) &&
