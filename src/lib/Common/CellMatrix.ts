@@ -1,7 +1,6 @@
 import { CellMatrixProps, Id } from "./PublicModel";
 import { Range } from "./Range";
-import { Column, Row, Location } from ".";
-import { number } from "prop-types";
+import { Column, Row, Location, Cell } from ".";
 
 interface IndexLookup {
     [id: string]: number;
@@ -102,7 +101,7 @@ export class CellMatrix {
         return this.getRange(this.validateLocation(range.first), this.validateLocation(range.last));
     }
 
-    getCell(rowId: Id, colId: Id) {
+    getCell(rowId: Id, colId: Id): Cell {
         // TODO define return type
         const row = this.rows[this.rowIndexLookup[rowId]]
         return row.cells[this.columnIndexLookup[colId]]

@@ -52,9 +52,8 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
                     onCellDataChanged: (newCellData) => {
                         props.state.updateState(state => trySetDataAndAppendChange(state,
                             location,
-                            cell.type,
-                            newCellData,
-                            props.state.cellTemplates[cell.type].cellDataToText(newCellData)))
+                            { data: newCellData, type: cell.type, text: props.state.cellTemplates[cell.type].cellDataToText(newCellData) }
+                        ))
                     }
                 })
             }

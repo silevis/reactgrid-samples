@@ -248,7 +248,7 @@ function handleSpecialKeys(event: KeyboardEvent, state: State) {
                 range.cols.forEach((col: Column) => {
                     // TODO dont use row.cells
                     if (state.cellTemplates[row.cells[col.idx].type].handleKeyDown(keyCodes.DELETE, row.cells[col.idx].data).editable)
-                        trySetDataAndAppendChange(state, new Location(row, col), 'text', '', '')
+                        trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' })
                 }
                 )
             )

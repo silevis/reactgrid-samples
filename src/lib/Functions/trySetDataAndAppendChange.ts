@@ -1,10 +1,10 @@
-import { Location, State } from "../Common";
+import { Location, State, Cell } from "../Common";
 
-export function trySetDataAndAppendChange(state: State, location: Location, type: string, data: any, text?: string): State {
+export function trySetDataAndAppendChange(state: State, location: Location, cell: Cell): State {
     const initialData = location.cell.data;
-    if (initialData === data)
+    if (initialData === cell.data)
         return state;
-    const newData = (type === location.cell.type) ? data : state.cellTemplates[location.cell.type].textToCellData(text ? text : '')
+    const newData = (cell.type === location.cell.type) ? cell.data : state.cellTemplates[location.cell.type].textToCellData(cell.text ? cell.text : '')
     state.queuedDataChanges.push({
         initialData,
         newData,

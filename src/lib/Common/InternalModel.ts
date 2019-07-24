@@ -25,6 +25,12 @@ export interface Borders {
     right?: boolean;
 }
 
+export interface Cell {
+    data: any;
+    type: string;
+    text?: string;
+}
+
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export class Location {
     constructor(
