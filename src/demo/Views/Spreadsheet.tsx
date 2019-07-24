@@ -43,8 +43,6 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
         }, 5000)
     }
 
-
-
     private generateCellMatrix(): CellMatrixProps {
         const columns: ColumnProps[] = this.state.fields.map((field, idx) => ({
             id: field.id,
@@ -55,16 +53,20 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
             onResize: width => { this.state.fields[idx].width = width, this.forceUpdate(); }
         }));
 
-        const headers: RowProps = { id: 'header', height: 25, reorderable: false, cells: [{ data: '', type: 'header' }].concat(this.state.fields.map(field => ({ data: field.id, type: 'header' }))) };
+        // const headers: RowProps = { id: 'header', height: 25, reorderable: false, cells: [{ data: '', type: 'header' }].concat(this.state.fields.map(field => ({ data: field.id, type: 'header' }))) };
 
-        const rows: RowProps[] = [headers].concat(this.state.records.map((record, rowIdx) => ({
+        const rows: RowProps[] = this.state.records.map((record, rowIdx) => ({
             id: record.id,
             height: 25,
             onDrop: (ids) => this.reorderRows(ids as number[], rowIdx),
             reorderable: true,
-            cells: this.state.fields.map((field, colIdx) => colIdx === 0 ? { data: record.id, type: 'header' } : (colIdx === 1) ? { data: record.data[field.id], type: 'checkbox' } : { data: record.data[field.id], type: 'text' })
-        })));
-        return ({ frozenTopRows: 0, frozenLeftColumns: 0, frozenBottomRows: 0, frozenRightColumns: 0, rows, columns })
+            cells: this.state.fields.map((field, colIdx) =>
+                rowIdx === 0 ? { data: field.id, type: 'header' }
+                    : colIdx === 0 ? { data: record.id, type: 'header' }
+                        : (colIdx === 1) ? { data: record.data[field.id], type: 'checkbox' }
+                            : { data: record.data[field.id], type: 'text' })
+        }));
+        return ({ frozenTopRows: 1, frozenLeftColumns: 0, frozenBottomRows: 1, frozenRightColumns: 0, rows, columns })
     }
 
     private calculateColumnReorder(colIdxs: number[], direction: string, destination: number) {
@@ -211,12 +213,12 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
     }
 
     private reorderRows(rowIdxs: number[], to: number) {
-        //     const data = [...this.state.data];
-        //     const movedRows = data.filter((_, idx) => rowIdxs.includes(idx));
-        //     const clearedData = data.filter((_, idx) => !rowIdxs.includes(idx));
-        //     if (to > rowIdxs[0])
-        //         to = to - rowIdxs.length + 1
-        //     clearedData.splice(to, 0, ...movedRows)
-        //     this.setState({ data: clearedData })
+        const records = [...this.state.records];
+        const movedRecords = records.filter((_, idx) => rowIdxs.includes(idx));
+        const clearedRecords = records.filter((_, idx) => !rowIdxs.includes(idx));
+        if (to > rowIdxs[0])
+            to = to - rowIdxs.length + 1
+        clearedRecords.splice(to, 0, ...movedRecords)
+        this.setState({ records: clearedRecords })
     }
 }
