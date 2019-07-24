@@ -7,7 +7,7 @@ import { PointerEventsController } from "../Common/PointerEventsController";
 import { CellEditor } from "./CellEditor";
 import { Line } from "./Line";
 import { Shadow } from "./Shadow";
-import { updateFocusedLocation, updateSelectedRows, updateSelectedColumns, updateSelectedRanges } from "../Functions/updateState";
+import { updateSelectedRows, updateSelectedColumns } from "../Functions/updateState";
 import { ContextMenu } from "./ContextMenu";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
@@ -28,7 +28,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
         } else if (state.selectionMode === 'column' && state.selectedIds.length > 0) {
             state = updateSelectedColumns(state);
         } else {
-            state = updateSelectedRanges(state)
+            state.selectedRanges = [...state.selectedRanges].map(range => state.cellMatrix.validateRange(range))
         }
 
         if (state.focusedLocation)
