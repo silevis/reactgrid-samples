@@ -2,7 +2,7 @@ import { State, Range, Column, Row, Location } from "../Common";
 
 // export function updateFocusedLocation(state: State): State {
 //     if (state.focusedLocation) {
-//         // TODO REMOVE FIND
+//         // TODO REMOVE FIND 
 //         const newFocusedCol = state.cellMatrix.cols.find(c => c.id === state.focusedLocation!.col.id)
 //         const newFocusedRow = state.cellMatrix.rows.find(r => r.id === state.focusedLocation!.row.id)
 //         const selectedRanges = state.selectedRanges

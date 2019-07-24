@@ -1,4 +1,4 @@
-import { State, KeyboardEvent, keyCodes, Row, Column, DataChange, Location } from "../../Common";
+import { State, KeyboardEvent, keyCodes, Row, Column, DataChange, Location, Cell } from "../../Common";
 import { focusLocation } from "../../Functions";
 import { handleResizeSelectionWithKeys } from "./handleResizeSelectionWithKeys";
 import { handleKeyNavigationInsideSelection as handleKeyNavigationInsideSelection } from "./handleKeyNavigationInsideSelection";
@@ -246,11 +246,10 @@ function handleSpecialKeys(event: KeyboardEvent, state: State) {
         state.selectedRanges.forEach(range =>
             range.rows.forEach((row: Row) =>
                 range.cols.forEach((col: Column) => {
-                    // TODO dont use row.cells
-                    if (state.cellTemplates[row.cells[col.idx].type].handleKeyDown(keyCodes.DELETE, row.cells[col.idx].data).editable)
+                    const cell = state.cellMatrix.getCell(row.id, col.id);
+                    if (state.cellTemplates[cell.type].handleKeyDown(keyCodes.DELETE, cell.data).editable)
                         trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' })
-                }
-                )
+                })
             )
         );
         return { ...state, dataChanges };

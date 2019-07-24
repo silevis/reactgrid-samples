@@ -123,10 +123,10 @@ export class DefaultBehavior extends Behavior {
         }
 
         if (pasteContent.length === 1 && pasteContent[0].length === 1) {
-            // TODO dont use row.cells
             activeSelectedRange.rows.forEach(row =>
                 activeSelectedRange.cols.forEach(col => {
-                    if (!state.cellTemplates[row.cells[col.idx].type].handleKeyDown(0, pasteContent[0][0].data).editable)
+                    const cell = state.cellMatrix.getCell(row.id, col.id);
+                    if (!state.cellTemplates[cell.type].handleKeyDown(0, pasteContent[0][0].data).editable)
                         return
                     state = trySetDataAndAppendChange(state, new Location(row, col), pasteContent[0][0])
                 })
