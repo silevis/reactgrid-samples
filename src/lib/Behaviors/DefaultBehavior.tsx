@@ -124,12 +124,12 @@ export class DefaultBehavior extends Behavior {
         }
 
         if (pasteContent.length === 1 && pasteContent[0].length === 1) {
-            // TODO dont use row.cells
             activeSelectedRange.rows.forEach(row =>
                 activeSelectedRange.cols.forEach(col => {
-                    if (!state.cellTemplates[row.cells[col.idx].type].handleKeyDown(0, pasteContent[0][0].data).editable)
+                    const cell = state.cellMatrix.getCell(row.id, col.id);
+                    if (!state.cellTemplates[cell.type].handleKeyDown(0, pasteContent[0][0].data).editable)
                         return
-                    state = trySetDataAndAppendChange(state, new Location(row, col), pasteContent[0][0].type, pasteContent[0][0].data, pasteContent[0][0].text)
+                    state = trySetDataAndAppendChange(state, new Location(row, col), pasteContent[0][0])
                 })
             )
         } else {
@@ -143,7 +143,7 @@ export class DefaultBehavior extends Behavior {
                         lastLocation = cellMatrix.getLocation(rowIdx, colIdx)
                         if (!state.cellTemplates[lastLocation.cell.type].handleKeyDown(0, pasteValue.data).editable)
                             return
-                        state = trySetDataAndAppendChange(state, lastLocation, pasteValue.type, pasteValue.data, pasteValue.text)
+                        state = trySetDataAndAppendChange(state, lastLocation, pasteValue)
                     }
                 })
             )
@@ -203,7 +203,7 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
             tableCell.style.border = '1px solid #D3D3D3'
             if (removeValues) {
                 if (state.cellTemplates[cell.type].handleKeyDown(0, cell.data).editable)
-                    state = trySetDataAndAppendChange(state, new Location(row, col), 'text', '', '');
+                    state = trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' });
             }
         })
     })

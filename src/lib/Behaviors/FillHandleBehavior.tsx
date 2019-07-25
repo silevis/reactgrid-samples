@@ -123,7 +123,7 @@ export class FillHandleBehavior extends Behavior {
                         const data = state.cellTemplates[values[i].type].validate(values[i].data);
                         if (!state.cellTemplates[location.cell.type].handleKeyDown(0, data).editable)
                             return;
-                        state = trySetDataAndAppendChange(state, location, values[i].type, data, state.cellTemplates[values[i].type].cellDataToText(data))
+                        state = trySetDataAndAppendChange(state, location, { type: values[i].type, data, text: state.cellTemplates[values[i].type].cellDataToText(data) })
                     })
                 );
                 state = {
@@ -142,7 +142,7 @@ export class FillHandleBehavior extends Behavior {
                         const data = state.cellTemplates[values[i].type].validate(values[i].data);
                         if (!state.cellTemplates[location.cell.type].handleKeyDown(0, data).editable)
                             return;
-                        state = trySetDataAndAppendChange(state, location, values[i].type, data, state.cellTemplates[values[i].type].cellDataToText(data))
+                        state = trySetDataAndAppendChange(state, location, { type: values[i].type, data, text: state.cellTemplates[values[i].type].cellDataToText(data) })
                     })
                 );
                 state = {
@@ -161,7 +161,7 @@ export class FillHandleBehavior extends Behavior {
                         const data = state.cellTemplates[values[i].type].validate(values[i].data);
                         if (!state.cellTemplates[location.cell.type].handleKeyDown(0, data).editable)
                             return;
-                        state = trySetDataAndAppendChange(state, location, values[i].type, data, state.cellTemplates[values[i].type].cellDataToText(data))
+                        state = trySetDataAndAppendChange(state, location, { type: values[i].type, data, text: state.cellTemplates[values[i].type].cellDataToText(data) })
                     })
                 );
                 state = {
@@ -180,7 +180,7 @@ export class FillHandleBehavior extends Behavior {
                         const data = state.cellTemplates[values[i].type].validate(values[i].data);
                         if (!state.cellTemplates[location.cell.type].handleKeyDown(0, data).editable)
                             return;
-                        state = trySetDataAndAppendChange(state, location, values[i].type, data, state.cellTemplates[values[i].type].cellDataToText(data))
+                        state = trySetDataAndAppendChange(state, location, { type: values[i].type, data, text: state.cellTemplates[values[i].type].cellDataToText(data) })
                     })
                 );
                 state = {

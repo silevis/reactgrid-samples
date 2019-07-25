@@ -1,5 +1,5 @@
 import * as React from "react";
-import { State, keyCodes, Location, CellMatrix } from "../Common";
+import { State, keyCodes, Location } from "../Common";
 import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChange";
 
 interface CellEditorProps {
@@ -29,7 +29,7 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
                 boxShadow: '1px 1px 6px rgba(0, 0, 0, 0.2)',
                 zIndex: 5,
             }}
-            onBlur={() => { if (lastKeyCode != keyCodes.ESC) props.state.updateState(state => trySetDataAndAppendChange(state, location, cellData.type, cellData.data, cellData.text)) }}
+            onBlur={() => { if (lastKeyCode != keyCodes.ESC) props.state.updateState(state => trySetDataAndAppendChange(state, location, cellData)) }}
             onKeyDown={e => {
                 lastKeyCode = e.keyCode
                 if (e.keyCode !== keyCodes.ENTER && e.keyCode !== keyCodes.ESC) {
