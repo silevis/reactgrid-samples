@@ -152,11 +152,11 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
                 selectedColIds.push(col.id);
                 range.rows.forEach((row, rowIdx) => {
                     selectedRowIds.push(row.id);
-                    if (row.cells[range.cols[colIdx].idx].type === 'header' && rowIdx > 1) {
+                    if (range.cols[colIdx].idx === 0) {
                         options = options.filter(option => option.title !== 'Delete Column');
                     }
-                    if (row.cells[range.cols[colIdx].idx].type === 'header' && colIdx > 0) {
-                        options = options.filter(option => option.title !== 'Delete Row');
+                    if (range.rows[rowIdx].idx === 0) {
+                        options = options.filter(option => option.title !== 'Delete Row')
                     }
                 })
             })

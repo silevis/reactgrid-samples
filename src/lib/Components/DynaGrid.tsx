@@ -169,7 +169,6 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
 
     private updateOnNewState(state: State) {
         if (state === this.state) return;
-        console.log(state.queuedDataChanges)
         // Force state to update immediately (SetState updates async)
         const dataChanges = state.queuedDataChanges;
         this.setState({ ...state, queuedDataChanges: [] });
