@@ -15,7 +15,6 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
     const cell = location.cell;
     const isFocused = (state.focusedLocation !== undefined) && (state.focusedLocation.col.idx === props.location.col.idx && state.focusedLocation.row.idx === props.location.row.idx);
     const lastKeyCode = props.state.lastKeyCode;
-
     const style: React.CSSProperties = {
         ...state.cellTemplates[cell.type].customStyle,
         boxSizing: 'border-box',
@@ -40,7 +39,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
         // borderRight: borders.right
         //     ? 'solid 1px #ccc'
         //     : 'solid 1px #e5e5e5',
-        touchAction: isFocused ? 'none' : 'auto' // prevent scrolling
+        touchAction: isFocused || props.state.cellMatrix.getCell(props.location.row.id, props.location.col.id).type === 'header' ? 'none' : 'auto' // prevent scrolling
     }
     return (
         <div className="cell" style={style}>

@@ -4,6 +4,7 @@ import { CellFocus } from "./CellFocus";
 import { FillHandle } from "./FillHandle";
 import { RowRenderer } from "./RowRenderer";
 import { PartialArea } from "./PartialArea";
+import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
 
 export interface PaneProps {
     id: string
@@ -22,12 +23,7 @@ interface RowsProps {
 class GridContent extends React.Component<RowsProps>{
 
     shouldComponentUpdate(nextProps: RowsProps) {
-        if (this.props.state.focusedLocation && nextProps.state.focusedLocation) {
-            if (this.props.state.focusedLocation.col.id !== nextProps.state.focusedLocation.col.id ||
-                this.props.state.focusedLocation.row.id !== nextProps.state.focusedLocation.row.id)
-                return true;
-        }
-        return this.props.state.visibleRange != nextProps.state.visibleRange || this.props.state.cellMatrix.props != nextProps.state.cellMatrix.props;
+        return nextProps.state.currentBehavior instanceof DefaultBehavior || this.props.state.visibleRange != nextProps.state.visibleRange || this.props.state.cellMatrix.props != nextProps.state.cellMatrix.props;
     }
 
     render() {
