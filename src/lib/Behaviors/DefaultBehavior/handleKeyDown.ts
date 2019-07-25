@@ -10,11 +10,14 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
     state.lastKeyCode = event.keyCode;
     if (!focusedLocation) { return state }
 
-    if (focusedLocation.cell.data != state.cellTemplates[focusedLocation.cell.type].handleKeyDown(event.keyCode, focusedLocation.cell.data)) {
+    if ((focusedLocation.cell.data != state.cellTemplates[focusedLocation.cell.type].handleKeyDown(event.keyCode, focusedLocation.cell.data) &&
+        state.selectedRanges.length == 1 && state.selectedRanges[0].first.equals(state.selectedRanges[0].last))) {
+
         state = trySetDataAndAppendChange(state, focusedLocation, {
             type: focusedLocation.cell.type,
             data: state.cellTemplates[focusedLocation.cell.type].handleKeyDown(event.keyCode, focusedLocation.cell.data).cellData
         })
+
     }
 
     if (state.selectedRanges.length > 0 && !event.ctrlKey && !isSelectedOneCell(state) && !isArrowKey(key) && !isSpecialKeys(key)) {
