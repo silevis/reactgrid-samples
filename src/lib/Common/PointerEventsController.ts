@@ -67,7 +67,7 @@ export class PointerEventsController {
                 event.pointerType !== undefined && // !== undefined only for cypress tests
                 currentTimestamp - this.eventTimestamps[this.currentIndex] < 500 &&
                 (currentLocation.row.idx > 0 && currentLocation.col.idx > 0)) {
-                state = focusLocation(state, currentLocation, true);
+                state = state.currentBehavior.handlePointerDown(event, currentLocation, state);
             }
             if (currentTimestamp - secondLastTimestamp < 500 && currentLocation.equals(this.eventLocations[0]) && currentLocation.equals(this.eventLocations[1])) {
                 state = state.currentBehavior.handleDoubleClick(event, currentLocation, state)
