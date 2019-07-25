@@ -1,6 +1,5 @@
 import * as React from "react";
 import { CellMatrix, Orientation } from "../Common";
-import { throws } from "assert";
 
 interface ShadowProps {
     shadowPosition: number;

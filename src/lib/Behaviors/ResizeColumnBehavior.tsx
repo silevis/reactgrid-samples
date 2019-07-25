@@ -1,9 +1,10 @@
-import { Column, Behavior, PointerLocation, State, PointerEvent } from '../Common';
+import { Column, Behavior, PointerLocation, State, PointerEvent, Direction } from '../Common';
 
 export class ResizeColumnBehavior extends Behavior {
     private minColumnWidth: number = 40;
     private resizedColumn!: Column;
     private initialLocation!: PointerLocation;
+    autoScrollDirection: Direction = 'horizontal';
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
         this.initialLocation = location;

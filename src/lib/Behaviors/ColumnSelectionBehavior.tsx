@@ -1,9 +1,10 @@
 import { focusLocation } from '../Functions';
-import { State, Location, Behavior } from '../Common';
+import { State, Location, Behavior, Direction } from '../Common';
 import { PointerEvent } from "../Common/domEvents";
 import { selectOneColumn, selectMultipleColumns, unSelectOneColumn } from '../Functions/selectRange';
 
 export class ColumnSelectionBehavior extends Behavior {
+    autoScrollDirection: Direction = 'horizontal';
 
     handlePointerDown(event: PointerEvent, location: Location, state: State): State {
         if (event.ctrlKey && state.selectionMode === 'column' && state.selectedIds.some(id => id === location.col.id)) {

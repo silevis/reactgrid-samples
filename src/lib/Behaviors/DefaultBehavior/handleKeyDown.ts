@@ -1,4 +1,4 @@
-import { State, KeyboardEvent, keyCodes, Row, Column, DataChange, Location, Cell } from "../../Common";
+import { State, KeyboardEvent, keyCodes, Row, Column, DataChange, Location } from "../../Common";
 import { focusLocation } from "../../Functions";
 import { handleResizeSelectionWithKeys } from "./handleResizeSelectionWithKeys";
 import { handleKeyNavigationInsideSelection as handleKeyNavigationInsideSelection } from "./handleKeyNavigationInsideSelection";

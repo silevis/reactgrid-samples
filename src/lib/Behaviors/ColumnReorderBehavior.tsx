@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { State, Behavior, PointerEvent, PointerLocation, Id } from '../Common';
+import { State, Behavior, PointerEvent, PointerLocation, Id, Direction } from '../Common';
 
 export class ColumnReorderBehavior extends Behavior {
     private initialColumnIdx!: number;
@@ -7,6 +6,7 @@ export class ColumnReorderBehavior extends Behavior {
     private shadowWidth!: number;
     private pointerOffset!: number;
     private selectedIdxs!: number[];
+    autoScrollDirection: Direction = 'horizontal';
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
         this.initialColumnIdx = location.col.idx;
