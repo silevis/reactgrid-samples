@@ -2,6 +2,7 @@ import * as React from 'react';
 import { CellTemplate, CellRenderProps } from '../Common';
 
 export class HeaderCellTemplate implements CellTemplate<string> {
+    readonly hasEditMode = false;
 
     validate(data: any): string {
         return (typeof (data) === 'string') ? data : '';

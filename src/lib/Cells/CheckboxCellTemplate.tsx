@@ -3,6 +3,8 @@ import { keyCodes } from '../Common/Constants';
 import { CellRenderProps as CellRenderProps, CellTemplate } from '../Common';
 
 export class CheckboxCellTemplate implements CellTemplate<boolean> {
+    readonly hasEditMode = false;
+
     validate(data: any): boolean {
         return (typeof (data) == typeof (true)) ? data : false;
     }
@@ -18,7 +20,7 @@ export class CheckboxCellTemplate implements CellTemplate<boolean> {
     handleKeyDown(keyCode: number, cellData: boolean) {
         if (keyCode == keyCodes.SPACE || keyCode == keyCodes.ENTER)
             cellData = !this.validate(cellData)
-        return { editable: false, cellData }
+        return { editable: true, cellData }
     }
 
     customStyle: React.CSSProperties = {};

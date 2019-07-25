@@ -53,6 +53,7 @@ export interface CellMatrixProps {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 // This interface is used for the communication between DynaGrid and a cell
 export interface CellTemplate<TCellData> {
+    hasEditMode: boolean;
     validate(data: any): TCellData | null
     // Convert plain text to cell data
     textToCellData(text: string): TCellData

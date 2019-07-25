@@ -3,6 +3,8 @@ import { keyCodes } from '../Common/Constants';
 import { CellRenderProps, CellTemplate } from '../Common';
 
 export class DateCellTemplate implements CellTemplate<string> {
+    readonly hasEditMode = true;
+
     validate(data: any): string {
         const date_regex = /^\d{4}\-\d{2}\-\d{2}$/;
         data = data ? data.toString().replace(/\s+/g, '') : data;

@@ -3,6 +3,8 @@ import { keyCodes } from '../Common/Constants';
 import { CellRenderProps, CellTemplate } from '../Common';
 
 export class TextCellTemplate implements CellTemplate<string> {
+    readonly hasEditMode = true;
+
     validate(data: any): string {
         return (typeof (data) === 'string') ? data : '';
     }

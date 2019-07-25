@@ -1,4 +1,4 @@
-import { State, Range, Column, Row, Location } from "../Common";
+import { State, Column, Row, Location } from "../Common";
 
 // export function updateFocusedLocation(state: State): State {
 //     if (state.focusedLocation) {

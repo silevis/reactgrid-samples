@@ -5,7 +5,6 @@ import { DynaGrid } from '../../lib/Components/DynaGrid';
 const COL_COUNT = 20;
 const ROW_COUNT = 50;
 
-
 interface Field {
     id: string;
     width: number;
@@ -66,7 +65,7 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
                         : (colIdx === 1) ? { data: record.data[field.id], type: 'checkbox' }
                             : { data: record.data[field.id], type: 'text' })
         }));
-        return ({ frozenTopRows: 1, frozenLeftColumns: 0, frozenBottomRows: 1, frozenRightColumns: 0, rows, columns })
+        return ({ frozenTopRows: 3, frozenLeftColumns: 1, frozenBottomRows: 3, frozenRightColumns: 1, rows, columns })
     }
 
     private calculateColumnReorder(colIdxs: number[], direction: string, destination: number) {
