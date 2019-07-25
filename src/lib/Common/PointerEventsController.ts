@@ -26,7 +26,10 @@ export class PointerEventsController {
         this.currentIndex = 1 - this.currentIndex;
         this.eventTimestamps[this.currentIndex] = new Date().valueOf();
         this.eventLocations[this.currentIndex] = currentLocation;
-        if (event.pointerType === 'mouse' || currentLocation.equals(previousLocation) || event.pointerType === undefined) { // === undefined only for cypress tests
+        if (event.pointerType === 'mouse' ||
+            (currentLocation.row.idx === 0 || currentLocation.col.idx === 0) ||
+            currentLocation.equals(previousLocation) ||
+            event.pointerType === undefined) { // === undefined only for cypress tests
             state = state.currentBehavior.handlePointerDown(event, currentLocation, state);
         }
         return state;
@@ -62,8 +65,9 @@ export class PointerEventsController {
             if (event.pointerType !== 'mouse' &&
                 currentLocation.equals(this.pointerDownLocation) &&
                 event.pointerType !== undefined && // !== undefined only for cypress tests
-                currentTimestamp - this.eventTimestamps[this.currentIndex] < 500) {
-                state = focusLocation(state, currentLocation, true);
+                currentTimestamp - this.eventTimestamps[this.currentIndex] < 500 &&
+                (currentLocation.row.idx > 0 && currentLocation.col.idx > 0)) {
+                state = state.currentBehavior.handlePointerDown(event, currentLocation, state);
             }
             if (currentTimestamp - secondLastTimestamp < 500 && currentLocation.equals(this.eventLocations[0]) && currentLocation.equals(this.eventLocations[1])) {
                 state = state.currentBehavior.handleDoubleClick(event, currentLocation, state)
