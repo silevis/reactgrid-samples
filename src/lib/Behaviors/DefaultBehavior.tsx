@@ -161,7 +161,7 @@ export class DefaultBehavior extends Behavior {
                 ...state,
                 selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, lastLocation!)],
                 activeSelectedRangeIdx: 0,
-                selectionMode: selectionMode,
+                selectionMode: selectionMode ? selectionMode : 'range',
                 selectedIds: selectedIds()
             }
         }
