@@ -23,7 +23,14 @@ interface RowsProps {
 class GridContent extends React.Component<RowsProps>{
 
     shouldComponentUpdate(nextProps: RowsProps) {
-        return nextProps.state.currentBehavior instanceof DefaultBehavior || this.props.state.visibleRange != nextProps.state.visibleRange || this.props.state.cellMatrix.props != nextProps.state.cellMatrix.props;
+        if (this.props.state.focusedLocation && nextProps.state.focusedLocation) {
+            if (this.props.state.focusedLocation.col.id !== nextProps.state.focusedLocation.col.id ||
+                this.props.state.focusedLocation.row.id !== nextProps.state.focusedLocation.row.id)
+                return true;
+        } else {
+            return true;
+        }
+        return this.props.state.visibleRange != nextProps.state.visibleRange || this.props.state.cellMatrix.props != nextProps.state.cellMatrix.props;
     }
 
     render() {

@@ -236,11 +236,11 @@ const resizeSelection = (
     const end = state.cellMatrix.getLocation(lastRowIdx, lastColIdx);
     let selectedRanges = state.selectedRanges.slice();
     selectedRanges[state.activeSelectedRangeIdx] = state.cellMatrix.getRange(start, end);
+    if (scroll) {
+        scrollIntoView(state, end);
+    }
     return {
         ...state,
         selectedRanges
     };
-    if (scroll) {
-        scrollIntoView(state, end);
-    }
 }
