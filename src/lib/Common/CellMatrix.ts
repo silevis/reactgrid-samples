@@ -87,6 +87,12 @@ export class CellMatrix {
         return new Location(this.rows[rowIdx], this.cols[colIdx]);
     }
 
+    getLocationById(rowId: Id, colId: Id): Location {
+        const row = this.rows[this.rowIndexLookup[rowId]]
+        const col = this.cols[this.columnIndexLookup[colId]]
+        return this.validateLocation(new Location(row, col))
+    }
+
     validateLocation(location: Location): Location {
         const colIdx = this.columnIndexLookup[location.col.id] ? this.columnIndexLookup[location.col.id]
             : (location.col.idx < this.last.col.idx) ? location.col.idx

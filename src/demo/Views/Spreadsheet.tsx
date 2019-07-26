@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '../../lib/Common';
+import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range, Location } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 
 const COL_COUNT = 20;
@@ -15,7 +15,7 @@ interface Record {
     data: any;
 }
 
-export class Spreadsheet extends React.Component<{}, { records: Record[], fields: Field[] }> {
+export class Spreadsheet extends React.Component<{}, { records: Record[], fields: Field[], focuses: { colId: Id, rowId: Id, color: string }[] }> {
 
     constructor(props: {}) {
         super(props);
@@ -24,7 +24,8 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
         const fields = new Array(COL_COUNT).fill(120).map((width, idx) => ({ id: idx.toString(), width }));
         this.state = {
             fields,
-            records: new Array(ROW_COUNT).fill(0).map(() => fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} }))
+            records: new Array(ROW_COUNT).fill(0).map(() => fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} })),
+            focuses: []
         }
     }
 
@@ -34,12 +35,48 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
     }
 
     componentDidMount() {
+        let count = 0;
         window.setInterval(() => {
-            let cnt = 0;
-            const records: Record[] = [...this.state.records];
-            records.splice(5, 0, this.state.fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} }));
-            this.setState({ records })
-        }, 5000)
+            switch (count++) {
+                case 0:
+                    this.setState({ focuses: [{ colId: this.state.fields[4].id, rowId: this.state.records[5].id, color: '#33ffad' }] })
+                    break;
+                case 1:
+                    this.handleDataChanges([{ columnId: this.state.fields[4].id, rowId: this.state.records[5].id, type: 'text', initialData: this.state.records[5].data[this.state.fields[4].id], newData: 'SILEVIS' }])
+                    break;
+                case 2:
+                    this.setState({ focuses: [{ colId: this.state.fields[4].id, rowId: this.state.records[0].id, color: '#33ffad' }] })
+                    break;
+                case 3:
+                    this.reorderColumns([4], 6)
+                    break;
+                case 4:
+                    const fields = [...this.state.fields];
+                    fields.splice(3, 0, { id: this.genId(), width: 125 })
+                    this.setState({ fields })
+                    break;
+                case 5:
+                    this.setState({ focuses: [{ colId: this.state.fields[3].id, rowId: this.state.records[5].id, color: '#33ffad' }] })
+                    break;
+                case 6:
+                    this.handleDataChanges([{ columnId: this.state.fields[3].id, rowId: this.state.records[5].id, type: 'text', initialData: this.state.records[1].data[this.state.fields[3].id], newData: 'GEFASOFCIK' }])
+                    break;
+                case 7:
+                    const records = [...this.state.records];
+                    records.shift()
+                    this.setState({ records })
+                    break;
+                case 8:
+                    const fieldss = [...this.state.fields];
+                    fieldss.shift()
+                    this.setState({ fields: fieldss })
+                    count = 0
+                    break;
+                default:
+                    count = 0
+                    break;
+            }
+        }, 1)
     }
 
     private generateCellMatrix(): CellMatrixProps {
@@ -116,6 +153,7 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
                 onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
                 onRangeContextMenu={(selectedRanges: Range[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRanges, menuOptions)}
                 cellTemplates={{}}
+                customFocuses={this.state.focuses}
             />
         </div>
         );

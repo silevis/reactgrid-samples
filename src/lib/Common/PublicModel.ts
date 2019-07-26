@@ -10,7 +10,7 @@ export interface DynaGridProps {
     readonly cellMatrixProps: CellMatrixProps;
     readonly style?: React.CSSProperties;
     readonly cellTemplates?: CellTemplates
-    //readonly additionalFocusses: ;
+    readonly customFocuses: { colId: Id, rowId: Id, color: string }[];
     //usersFocuses: { colIdx: number; rowIdx: number; color: string }[];
     //readonly onInitialized?: (grid: GridController) => void;
 

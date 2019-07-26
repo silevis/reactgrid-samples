@@ -38,6 +38,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
             ...state,
             currentlyEditedCell: state.isFocusedCellInEditMode && state.focusedLocation ? { ...state.focusedLocation.cell } : undefined,
             cellTemplates: { ...state.cellTemplates, ...props.cellTemplates },
+            customFocuses: props.customFocuses,
         };
     }
 
