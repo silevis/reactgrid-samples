@@ -36,47 +36,33 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
 
     componentDidMount() {
         let count = 0;
+        let idx = 0;
         window.setInterval(() => {
             switch (count++) {
                 case 0:
-                    this.setState({ focuses: [{ colId: this.state.fields[4].id, rowId: this.state.records[5].id, color: '#33ffad' }] })
+                    this.setState({ focuses: [{ colId: this.state.fields[idx + 2].id, rowId: this.state.records[idx + 4].id, color: '#33ffad' }] })
                     break;
                 case 1:
-                    this.handleDataChanges([{ columnId: this.state.fields[4].id, rowId: this.state.records[5].id, type: 'text', initialData: this.state.records[5].data[this.state.fields[4].id], newData: 'SILEVIS' }])
+                    this.handleDataChanges([{ columnId: this.state.fields[idx + 2].id, rowId: this.state.records[idx + 4].id, type: 'text', initialData: this.state.records[5].data[this.state.fields[4].id], newData: 'SILEVIS' }])
                     break;
                 case 2:
-                    this.setState({ focuses: [{ colId: this.state.fields[4].id, rowId: this.state.records[0].id, color: '#33ffad' }] })
+                    this.setState({ focuses: [{ colId: this.state.fields[idx + 2].id, rowId: this.state.records[idx + 4].id, color: '#33ffad' }] })
                     break;
                 case 3:
                     this.reorderColumns([4], 6)
                     break;
                 case 4:
-                    const fields = [...this.state.fields];
-                    fields.splice(3, 0, { id: this.genId(), width: 125 })
-                    this.setState({ fields })
+                    this.setState({ focuses: [{ colId: this.state.fields[idx + 6].id, rowId: this.state.records[idx + 7].id, color: '#33ffad' }] })
                     break;
                 case 5:
-                    this.setState({ focuses: [{ colId: this.state.fields[3].id, rowId: this.state.records[5].id, color: '#33ffad' }] })
-                    break;
-                case 6:
-                    this.handleDataChanges([{ columnId: this.state.fields[3].id, rowId: this.state.records[5].id, type: 'text', initialData: this.state.records[1].data[this.state.fields[3].id], newData: 'GEFASOFCIK' }])
-                    break;
-                case 7:
-                    const records = [...this.state.records];
-                    records.shift()
-                    this.setState({ records })
-                    break;
-                case 8:
-                    const fieldss = [...this.state.fields];
-                    fieldss.shift()
-                    this.setState({ fields: fieldss })
-                    count = 0
+                    this.handleDataChanges([{ columnId: this.state.fields[idx + 6].id, rowId: this.state.records[idx + 7].id, type: 'text', initialData: this.state.records[count + 7].data[this.state.fields[count + 6].id], newData: 'GEFASOFCIK' }])
                     break;
                 default:
                     count = 0
+                    idx++
                     break;
             }
-        }, 1)
+        }, 1000)
     }
 
     private generateCellMatrix(): CellMatrixProps {
