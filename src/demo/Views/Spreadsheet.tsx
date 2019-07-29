@@ -2,8 +2,8 @@ import * as React from 'react';
 import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range, Location } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 
-const COL_COUNT = 20;
-const ROW_COUNT = 50;
+const COL_COUNT = 10;
+const ROW_COUNT = 30;
 
 interface Field {
     id: string;
@@ -34,35 +34,60 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
         return Math.random().toString(36).substr(2, 9);
     }
 
+    getRandomInt(min: number, max: number) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    getRandomWord() {
+        const words = [
+            'SILEVIS',
+            'SOFTWARE',
+            'GEFASOFT',
+            'SAPIENT',
+            'FLEXBASE',
+            'DYNAGRID',
+            'GERMANEDGE',
+        ]
+        return words[this.getRandomInt(0, 6)]
+    }
+
     componentDidMount() {
         let count = 0;
-        let idx = 0;
+        let focusX = 0;
+        let focusY = 0;
         window.setInterval(() => {
             switch (count++) {
                 case 0:
-                    this.setState({ focuses: [{ colId: this.state.fields[idx + 2].id, rowId: this.state.records[idx + 4].id, color: '#33ffad' }] })
+                    focusX = this.getRandomInt(1, 10)
+                    focusY = this.getRandomInt(1, 30)
+                    this.setState({ focuses: [{ colId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, color: '#33ffad' }] })
                     break;
                 case 1:
-                    this.handleDataChanges([{ columnId: this.state.fields[idx + 2].id, rowId: this.state.records[idx + 4].id, type: 'text', initialData: this.state.records[5].data[this.state.fields[4].id], newData: 'SILEVIS' }])
+                    this.handleDataChanges([{ columnId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, type: 'text', initialData: '', newData: this.getRandomWord() }])
                     break;
                 case 2:
-                    this.setState({ focuses: [{ colId: this.state.fields[idx + 2].id, rowId: this.state.records[idx + 4].id, color: '#33ffad' }] })
+                    focusX = this.getRandomInt(1, 10)
+                    focusY = this.getRandomInt(1, 30)
+                    this.setState({ focuses: [{ colId: this.state.fields[focusX].id, rowId: this.state.records[0].id, color: '#33ffad' }] })
                     break;
                 case 3:
-                    this.reorderColumns([4], 6)
+                    this.reorderColumns([focusX], 6)
                     break;
                 case 4:
-                    this.setState({ focuses: [{ colId: this.state.fields[idx + 6].id, rowId: this.state.records[idx + 7].id, color: '#33ffad' }] })
+                    focusX = this.getRandomInt(1, 10)
+                    focusY = this.getRandomInt(1, 30)
+                    this.setState({ focuses: [{ colId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, color: '#33ffad' }] })
                     break;
                 case 5:
-                    this.handleDataChanges([{ columnId: this.state.fields[idx + 6].id, rowId: this.state.records[idx + 7].id, type: 'text', initialData: this.state.records[count + 7].data[this.state.fields[count + 6].id], newData: 'GEFASOFCIK' }])
+                    this.handleDataChanges([{ columnId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, type: 'text', initialData: '', newData: this.getRandomWord() }])
                     break;
                 default:
                     count = 0
-                    idx++
                     break;
             }
-        }, 1000)
+        }, 1500)
     }
 
     private generateCellMatrix(): CellMatrixProps {
@@ -85,8 +110,7 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
             cells: this.state.fields.map((field, colIdx) =>
                 rowIdx === 0 ? { data: field.id, type: 'header' }
                     : colIdx === 0 ? { data: record.id, type: 'header' }
-                        : (colIdx === 1) ? { data: record.data[field.id], type: 'checkbox' }
-                            : { data: record.data[field.id], type: 'text' })
+                        : { data: record.data[field.id], type: 'text' })
         }));
         return ({ frozenTopRows: 3, frozenLeftColumns: 1, frozenBottomRows: 3, frozenRightColumns: 1, rows, columns })
     }
