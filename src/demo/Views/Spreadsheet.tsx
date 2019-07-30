@@ -2,8 +2,8 @@ import * as React from 'react';
 import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 
-const COL_COUNT = 20;
-const ROW_COUNT = 50;
+let COL_COUNT = 3;
+let ROW_COUNT = 7;
 
 interface Field {
     id: string;
@@ -15,7 +15,7 @@ interface Record {
     data: any;
 }
 
-export class Spreadsheet extends React.Component<{}, { records: Record[], fields: Field[] }> {
+export class Spreadsheet extends React.Component<{}, { records: Record[], fields: Field[], focuses: { colId: Id, rowId: Id, color: string }[] }> {
 
     constructor(props: {}) {
         super(props);
@@ -24,7 +24,8 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
         const fields = new Array(COL_COUNT).fill(120).map((width, idx) => ({ id: idx.toString(), width }));
         this.state = {
             fields,
-            records: new Array(ROW_COUNT).fill(0).map(() => fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} }))
+            records: new Array(ROW_COUNT).fill(0).map(() => fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} })),
+            focuses: []
         }
     }
 
@@ -33,13 +34,56 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
         return Math.random().toString(36).substr(2, 9);
     }
 
+    getRandomInt(min: number, max: number) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    getRandomWord() {
+        const words = [
+            'SILEVIS',
+            'SOFTWARE',
+            'GEFASOFT',
+            'SAPIENT',
+            'FLEXBASE',
+            'DYNAGRID',
+            'GERMANEDGE',
+        ]
+        return words[this.getRandomInt(0, words.length)]
+    }
+
     componentDidMount() {
+        let count = 0;
+        let focusX = 0;
+        let focusY = 0;
+        let cnt = 0;
         window.setInterval(() => {
-            let cnt = 0;
-            const records: Record[] = [...this.state.records];
-            records.splice(5, 0, this.state.fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} }));
-            this.setState({ records })
-        }, 5000)
+            switch (count++) {
+                case 0:
+                    focusX = this.getRandomInt(1, COL_COUNT)
+                    focusY = this.getRandomInt(1, ROW_COUNT)
+                    this.setState({ focuses: [{ colId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, color: '#33ffad' }] })
+                    break;
+                case 1:
+                    this.handleDataChanges([{ columnId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, type: 'text', initialData: '', newData: this.getRandomWord() }])
+                    break;
+                case 2:
+                    focusX = this.getRandomInt(1, COL_COUNT)
+                    focusY = this.getRandomInt(1, ROW_COUNT)
+                    this.setState({ focuses: [{ colId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, color: '#33ffad' }] })
+                    break;
+                case 3:
+                    this.handleDataChanges([{ columnId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, type: 'text', initialData: '', newData: this.getRandomWord() }])
+                    break;
+                case 4:
+                    const records = [...this.state.records]
+                    records.splice(ROW_COUNT, 0, this.state.fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} }));
+                    ROW_COUNT++
+                    this.setState({ records })
+                    count = 0;
+            }
+        }, 250)
     }
 
     private generateCellMatrix(): CellMatrixProps {
@@ -62,8 +106,7 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
             cells: this.state.fields.map((field, colIdx) =>
                 rowIdx === 0 ? { data: field.id, type: 'header' }
                     : colIdx === 0 ? { data: record.id, type: 'header' }
-                        : (colIdx === 1) ? { data: record.data[field.id], type: 'checkbox' }
-                            : { data: record.data[field.id], type: 'text' })
+                        : { data: record.data[field.id], type: 'text' })
         }));
         return ({ frozenTopRows: 3, frozenLeftColumns: 1, frozenBottomRows: 3, frozenRightColumns: 1, rows, columns })
     }
@@ -84,13 +127,15 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
             <button style={{ width: 100, height: 50 }} onClick={() => {
                 const records = [...this.state.records];
                 records.shift()
+                ROW_COUNT--
                 this.setState({ records })
             }}>
                 - rekord
             </button>
             <button style={{ width: 100, height: 50 }} onClick={() => {
                 const records = [...this.state.records];
-                records.splice(5, 0, this.state.fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} }));
+                records.splice(4, 0, this.state.fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} }));
+                ROW_COUNT++
                 this.setState({ records })
             }}>
                 + rekord
@@ -98,6 +143,7 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
             <button style={{ width: 100, height: 50 }} onClick={() => {
                 const fields = [...this.state.fields];
                 fields.shift()
+                COL_COUNT--
                 this.setState({ fields })
             }}>
                 - kolumn
@@ -105,6 +151,7 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
             <button style={{ width: 100, height: 50 }} onClick={() => {
                 const fields = [...this.state.fields];
                 fields.splice(3, 0, { id: this.genId(), width: 100 })
+                COL_COUNT++
                 this.setState({ fields })
             }}>
                 + kolumn
@@ -116,6 +163,7 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
                 onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
                 onRangeContextMenu={(selectedRanges: Range[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRanges, menuOptions)}
                 cellTemplates={{}}
+                customFocuses={this.state.focuses}
             />
         </div>
         );

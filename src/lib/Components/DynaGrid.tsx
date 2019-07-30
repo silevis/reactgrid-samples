@@ -18,6 +18,8 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
 
     static getDerivedStateFromProps(props: DynaGridProps, state: State) {
 
+        const dataHasChanged = state.cellMatrix && props.cellMatrixProps !== state.cellMatrix.props
+
         state = {
             ...state,
             cellMatrix: new CellMatrix(props.cellMatrixProps)
@@ -30,14 +32,17 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
         } else {
             state.selectedRanges = [...state.selectedRanges].map(range => state.cellMatrix.validateRange(range))
         }
-
         if (state.focusedLocation)
             state.focusedLocation = state.cellMatrix.validateLocation(state.focusedLocation)
+
+        if (state.visibleRange && dataHasChanged)
+            state = recalcVisibleRange(state)
 
         return {
             ...state,
             currentlyEditedCell: state.isFocusedCellInEditMode && state.focusedLocation ? { ...state.focusedLocation.cell } : undefined,
             cellTemplates: { ...state.cellTemplates, ...props.cellTemplates },
+            customFocuses: props.customFocuses,
         };
     }
 
