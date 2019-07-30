@@ -58,32 +58,32 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
         let focusX = 0;
         let focusY = 0;
         let cnt = 0;
-        // window.setInterval(() => {
-        //     switch (count++) {
-        //         case 0:
-        //             focusX = this.getRandomInt(1, COL_COUNT)
-        //             focusY = this.getRandomInt(1, ROW_COUNT)
-        //             this.setState({ focuses: [{ colId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, color: '#33ffad' }] })
-        //             break;
-        //         case 1:
-        //             this.handleDataChanges([{ columnId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, type: 'text', initialData: '', newData: this.getRandomWord() }])
-        //             break;
-        //         case 2:
-        //             focusX = this.getRandomInt(1, COL_COUNT)
-        //             focusY = this.getRandomInt(1, ROW_COUNT)
-        //             this.setState({ focuses: [{ colId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, color: '#33ffad' }] })
-        //             break;
-        //         case 3:
-        //             this.handleDataChanges([{ columnId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, type: 'text', initialData: '', newData: this.getRandomWord() }])
-        //             break;
-        //         case 4:
-        //             const records = [...this.state.records]
-        //             records.splice(5, 0, this.state.fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} }));
-        //             ROW_COUNT++
-        //             this.setState({ records })
-        //             count = 0;
-        //     }
-        // }, 250)
+        window.setInterval(() => {
+            switch (count++) {
+                case 0:
+                    focusX = this.getRandomInt(1, COL_COUNT)
+                    focusY = this.getRandomInt(1, ROW_COUNT)
+                    this.setState({ focuses: [{ colId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, color: '#33ffad' }] })
+                    break;
+                case 1:
+                    this.handleDataChanges([{ columnId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, type: 'text', initialData: '', newData: this.getRandomWord() }])
+                    break;
+                case 2:
+                    focusX = this.getRandomInt(1, COL_COUNT)
+                    focusY = this.getRandomInt(1, ROW_COUNT)
+                    this.setState({ focuses: [{ colId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, color: '#33ffad' }] })
+                    break;
+                case 3:
+                    this.handleDataChanges([{ columnId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, type: 'text', initialData: '', newData: this.getRandomWord() }])
+                    break;
+                case 4:
+                    const records = [...this.state.records]
+                    records.splice(ROW_COUNT, 0, this.state.fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} }));
+                    ROW_COUNT++
+                    this.setState({ records })
+                    count = 0;
+            }
+        }, 250)
     }
 
     private generateCellMatrix(): CellMatrixProps {
