@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range, Location } from '../../lib/Common';
+import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 
-const COL_COUNT = 10;
-const ROW_COUNT = 30;
+let COL_COUNT = 3;
+let ROW_COUNT = 7;
 
 interface Field {
     id: string;
@@ -50,44 +50,40 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
             'DYNAGRID',
             'GERMANEDGE',
         ]
-        return words[this.getRandomInt(0, 6)]
+        return words[this.getRandomInt(0, words.length)]
     }
 
     componentDidMount() {
         let count = 0;
         let focusX = 0;
         let focusY = 0;
-        window.setInterval(() => {
-            switch (count++) {
-                case 0:
-                    focusX = this.getRandomInt(1, 10)
-                    focusY = this.getRandomInt(1, 30)
-                    this.setState({ focuses: [{ colId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, color: '#33ffad' }] })
-                    break;
-                case 1:
-                    this.handleDataChanges([{ columnId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, type: 'text', initialData: '', newData: this.getRandomWord() }])
-                    break;
-                case 2:
-                    focusX = this.getRandomInt(1, 10)
-                    focusY = this.getRandomInt(1, 30)
-                    this.setState({ focuses: [{ colId: this.state.fields[focusX].id, rowId: this.state.records[0].id, color: '#33ffad' }] })
-                    break;
-                case 3:
-                    this.reorderColumns([focusX], 6)
-                    break;
-                case 4:
-                    focusX = this.getRandomInt(1, 10)
-                    focusY = this.getRandomInt(1, 30)
-                    this.setState({ focuses: [{ colId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, color: '#33ffad' }] })
-                    break;
-                case 5:
-                    this.handleDataChanges([{ columnId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, type: 'text', initialData: '', newData: this.getRandomWord() }])
-                    break;
-                default:
-                    count = 0
-                    break;
-            }
-        }, 1500)
+        let cnt = 0;
+        // window.setInterval(() => {
+        //     switch (count++) {
+        //         case 0:
+        //             focusX = this.getRandomInt(1, COL_COUNT)
+        //             focusY = this.getRandomInt(1, ROW_COUNT)
+        //             this.setState({ focuses: [{ colId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, color: '#33ffad' }] })
+        //             break;
+        //         case 1:
+        //             this.handleDataChanges([{ columnId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, type: 'text', initialData: '', newData: this.getRandomWord() }])
+        //             break;
+        //         case 2:
+        //             focusX = this.getRandomInt(1, COL_COUNT)
+        //             focusY = this.getRandomInt(1, ROW_COUNT)
+        //             this.setState({ focuses: [{ colId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, color: '#33ffad' }] })
+        //             break;
+        //         case 3:
+        //             this.handleDataChanges([{ columnId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, type: 'text', initialData: '', newData: this.getRandomWord() }])
+        //             break;
+        //         case 4:
+        //             const records = [...this.state.records]
+        //             records.splice(5, 0, this.state.fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} }));
+        //             ROW_COUNT++
+        //             this.setState({ records })
+        //             count = 0;
+        //     }
+        // }, 250)
     }
 
     private generateCellMatrix(): CellMatrixProps {
@@ -131,13 +127,15 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
             <button style={{ width: 100, height: 50 }} onClick={() => {
                 const records = [...this.state.records];
                 records.shift()
+                ROW_COUNT--
                 this.setState({ records })
             }}>
                 - rekord
             </button>
             <button style={{ width: 100, height: 50 }} onClick={() => {
                 const records = [...this.state.records];
-                records.splice(5, 0, this.state.fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} }));
+                records.splice(4, 0, this.state.fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} }));
+                ROW_COUNT++
                 this.setState({ records })
             }}>
                 + rekord
@@ -145,6 +143,7 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
             <button style={{ width: 100, height: 50 }} onClick={() => {
                 const fields = [...this.state.fields];
                 fields.shift()
+                COL_COUNT--
                 this.setState({ fields })
             }}>
                 - kolumn
@@ -152,6 +151,7 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
             <button style={{ width: 100, height: 50 }} onClick={() => {
                 const fields = [...this.state.fields];
                 fields.splice(3, 0, { id: this.genId(), width: 100 })
+                COL_COUNT++
                 this.setState({ fields })
             }}>
                 + kolumn

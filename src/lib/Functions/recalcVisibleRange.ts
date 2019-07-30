@@ -13,6 +13,8 @@ export function recalcVisibleRange(state: State): State {
         (row: Row) => row.bottom >= scrollTop && row.top <= scrollTop + scrollAreaHeight
     );
     const visibleRange = new Range(visibleCols, visibleRows);
+
+    console.log(visibleRange)
     return {
         ...state,
         minScrollLeft: visibleRange.first.col.left,
