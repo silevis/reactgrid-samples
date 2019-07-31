@@ -57,6 +57,42 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
         let focusX = 0;
         let focusY = 0;
         let cnt = 0;
+        let count1 = 0;
+        let focusX1 = 0;
+        let focusY1 = 0;
+        let cnt1 = 0;
+        window.setInterval(() => {
+            switch (count1++) {
+                case 0:
+                    focusX1 = this.getRandomInt(1, COL_COUNT)
+                    focusY1 = this.getRandomInt(1, ROW_COUNT)
+                    this.setState({ focuses: [...this.state.focuses, { colId: this.state.fields[focusX1].id, rowId: this.state.records[focusY1].id, color: '#33ffad' }] })
+                    break;
+                case 1:
+                    this.handleDataChanges([{ columnId: this.state.fields[focusX1].id, rowId: this.state.records[focusY1].id, type: 'text', initialData: '', newData: this.getRandomWord() }])
+                    break;
+                case 2:
+                    this.setState({ focuses: [...this.state.focuses].filter(f => f.colId !== this.state.fields[focusX1].id) })
+                    break;
+                case 3:
+                    focusX1 = this.getRandomInt(1, COL_COUNT)
+                    focusY1 = this.getRandomInt(1, ROW_COUNT)
+                    this.setState({ focuses: [{ colId: this.state.fields[focusX1].id, rowId: this.state.records[focusY1].id, color: '#33ffad' }] })
+                    break;
+                case 4:
+                    this.handleDataChanges([{ columnId: this.state.fields[focusX1].id, rowId: this.state.records[focusY1].id, type: 'text', initialData: '', newData: this.getRandomWord() }])
+                    break;
+                case 5:
+                    this.setState({ focuses: [...this.state.focuses].filter(f => (f.colId !== this.state.fields[focusX1].id) && (f.rowId !== this.state.records[focusY1].id)) })
+                    break;
+                case 6:
+                    const records = [...this.state.records]
+                    records.splice(ROW_COUNT, 0, this.state.fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt1++).toString(); return record; }, { id: this.genId(), data: {} }));
+                    ROW_COUNT++
+                    this.setState({ records })
+                    count = 0;
+            }
+        }, 500)
         window.setInterval(() => {
             switch (count++) {
                 case 0:

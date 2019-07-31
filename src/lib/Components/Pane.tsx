@@ -49,8 +49,8 @@ export const Pane: React.FunctionComponent<PaneProps> = (props) =>
         <GridContent state={props.state} range={props.range} borders={props.borders} />
         {renderSelectedRanges(props.state, props.range)}
         {props.state.currentBehavior.renderPanePart(props.state, props.range)}
-        {props.state.customFocuses.map(focus => props.range.contains(props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)) &&
-            <CellFocus key={focus.id} location={props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)} color={focus.color} />)}
+        {props.state.customFocuses.map((focus, id) => props.range.contains(props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)) &&
+            <CellFocus key={id} location={props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)} color={focus.color} />)}
         {props.state.focusedLocation && props.range.contains(props.state.focusedLocation) &&
             <CellFocus location={props.state.focusedLocation} />}
         {props.state.selectedRanges[props.state.activeSelectedRangeIdx] && props.range.contains(props.state.selectedRanges[props.state.activeSelectedRangeIdx].last) &&

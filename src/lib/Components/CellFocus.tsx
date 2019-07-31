@@ -8,6 +8,7 @@ interface CellFocusProps {
 
 export const CellFocus: React.FunctionComponent<CellFocusProps> = (props) =>
     <div
+        key={props.color}
         className="dg-cell-focus"
         style={{
             boxSizing: 'border-box',
