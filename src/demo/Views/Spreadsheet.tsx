@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 
-let COL_COUNT = 3;
+let COL_COUNT = 5;
 let ROW_COUNT = 7;
 
 interface Field {
@@ -28,7 +28,6 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
             focuses: []
         }
     }
-
 
     private genId(): string {
         return Math.random().toString(36).substr(2, 9);
@@ -63,27 +62,33 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
                 case 0:
                     focusX = this.getRandomInt(1, COL_COUNT)
                     focusY = this.getRandomInt(1, ROW_COUNT)
-                    this.setState({ focuses: [{ colId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, color: '#33ffad' }] })
+                    this.setState({ focuses: [...this.state.focuses, { colId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, color: '#ffc061' }] })
                     break;
                 case 1:
                     this.handleDataChanges([{ columnId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, type: 'text', initialData: '', newData: this.getRandomWord() }])
                     break;
                 case 2:
-                    focusX = this.getRandomInt(1, COL_COUNT)
-                    focusY = this.getRandomInt(1, ROW_COUNT)
-                    this.setState({ focuses: [{ colId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, color: '#33ffad' }] })
+                    this.setState({ focuses: [...this.state.focuses].filter(f => (f.colId !== this.state.fields[focusX].id) && (f.rowId !== this.state.records[focusY].id)) })
                     break;
                 case 3:
-                    this.handleDataChanges([{ columnId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, type: 'text', initialData: '', newData: this.getRandomWord() }])
+                    focusX = this.getRandomInt(1, COL_COUNT)
+                    focusY = this.getRandomInt(1, ROW_COUNT)
+                    this.setState({ focuses: [{ colId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, color: '#ffc061' }] })
                     break;
                 case 4:
+                    this.handleDataChanges([{ columnId: this.state.fields[focusX].id, rowId: this.state.records[focusY].id, type: 'text', initialData: '', newData: this.getRandomWord() }])
+                    break;
+                case 5:
+                    this.setState({ focuses: [...this.state.focuses].filter(f => (f.colId !== this.state.fields[focusX].id) && (f.rowId !== this.state.records[focusY].id)) })
+                    break;
+                case 6:
                     const records = [...this.state.records]
                     records.splice(ROW_COUNT, 0, this.state.fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} }));
                     ROW_COUNT++
                     this.setState({ records })
                     count = 0;
             }
-        }, 250)
+        }, 500)
     }
 
     private generateCellMatrix(): CellMatrixProps {
@@ -108,7 +113,7 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
                     : colIdx === 0 ? { data: record.id, type: 'header' }
                         : { data: record.data[field.id], type: 'text' })
         }));
-        return ({ frozenTopRows: 3, frozenLeftColumns: 1, frozenBottomRows: 3, frozenRightColumns: 1, rows, columns })
+        return ({ frozenTopRows: 2, frozenLeftColumns: 2, frozenBottomRows: 2, frozenRightColumns: 2, rows, columns })
     }
 
     private calculateColumnReorder(colIdxs: number[], direction: string, destination: number) {
@@ -134,7 +139,7 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
             </button>
             <button style={{ width: 100, height: 50 }} onClick={() => {
                 const records = [...this.state.records];
-                records.splice(4, 0, this.state.fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} }));
+                records.splice(ROW_COUNT, 0, this.state.fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: this.genId(), data: {} }));
                 ROW_COUNT++
                 this.setState({ records })
             }}>
@@ -150,7 +155,7 @@ export class Spreadsheet extends React.Component<{}, { records: Record[], fields
             </button>
             <button style={{ width: 100, height: 50 }} onClick={() => {
                 const fields = [...this.state.fields];
-                fields.splice(3, 0, { id: this.genId(), width: 100 })
+                fields.splice(COL_COUNT, 0, { id: this.genId(), width: 100 })
                 COL_COUNT++
                 this.setState({ fields })
             }}>

@@ -3,7 +3,6 @@ import { State, Behavior, PointerEvent, PointerLocation, Direction } from '../Co
 export class RowReorderBehavior extends Behavior {
     private initialRowIdx!: number;
     private lastPossibleDropLocation?: PointerLocation;
-    private shadowWidth!: number;
     private pointerOffset!: number;
     private selectedIdxs!: number[];
     autoScrollDirection: Direction = 'vertical';
@@ -13,7 +12,6 @@ export class RowReorderBehavior extends Behavior {
         this.lastPossibleDropLocation = location;
         const indexes = state.selectedIndexes.sort();
         const rows = indexes.map(i => state.cellMatrix.rows[i]);
-        this.shadowWidth = rows.reduce((sum, row) => sum + row.height, 0);
         const upperIndexes = indexes.filter(i => i < location.row.idx);
         const upperRows = upperIndexes.map(i => state.cellMatrix.rows[i]);
         const upperRowsWidth = upperRows.reduce((sum, row) => sum + row.height, 0);
@@ -36,7 +34,7 @@ export class RowReorderBehavior extends Behavior {
 
     getShadowPosition(location: PointerLocation, state: State): number {
         const y = location.viewportY - this.pointerOffset;
-        const max = Math.min(state.viewportElement.clientHeight, state.cellMatrix.height) - this.shadowWidth;
+        const max = Math.min(state.viewportElement.clientHeight, state.cellMatrix.height) - state.shadowSize;
         if (y < 0) {
             return 0;
         } else if (y > max) {

@@ -3,7 +3,6 @@ import { State, Behavior, PointerEvent, PointerLocation, Id, Direction } from '.
 export class ColumnReorderBehavior extends Behavior {
     private initialColumnIdx!: number;
     private lastPossibleDropLocation?: PointerLocation;
-    private shadowWidth!: number;
     private pointerOffset!: number;
     private selectedIdxs!: number[];
     autoScrollDirection: Direction = 'horizontal';
@@ -11,14 +10,12 @@ export class ColumnReorderBehavior extends Behavior {
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
         this.initialColumnIdx = location.col.idx;
         this.lastPossibleDropLocation = location;
-        const indexes = state.selectedIndexes.sort();
-        const columns = indexes.map(i => state.cellMatrix.cols[i]);
-        const leftIndexes = indexes.filter(i => i < location.col.idx);
+        this.selectedIdxs = state.selectedIndexes.sort();
+        const columns = this.selectedIdxs.map(i => state.cellMatrix.cols[i]);
+        const leftIndexes = this.selectedIdxs.filter(i => i < location.col.idx);
         const leftColumns = leftIndexes.map(i => state.cellMatrix.cols[i]);
         const leftColumnsWidth = leftColumns.reduce((sum, col) => sum + col.width, 0);
         this.pointerOffset = leftColumnsWidth + location.cellX;
-        // changed from id to idx
-        this.selectedIdxs = columns.map(c => c.idx);
         return {
             ...state,
             lineOrientation: 'vertical',
@@ -36,7 +33,7 @@ export class ColumnReorderBehavior extends Behavior {
 
     getShadowPosition(location: PointerLocation, state: State): number {
         const x = location.viewportX - this.pointerOffset;
-        const max = Math.min(state.viewportElement.clientWidth, state.cellMatrix.width) - this.shadowWidth;
+        const max = Math.min(state.viewportElement.clientWidth, state.cellMatrix.width) - state.shadowSize;
         if (x < 0) {
             return 0;
         } else if (x > max) {
@@ -49,9 +46,12 @@ export class ColumnReorderBehavior extends Behavior {
         const dropLocation = this.getLastPossibleDropLocation(location)
         if (!dropLocation) return state;
         const drawRight = dropLocation.col.idx > this.initialColumnIdx;
+        const linePosition = Math.min(dropLocation.viewportX - dropLocation.cellX + (drawRight ? dropLocation.col.width : 0) + state.viewportElement.scrollLeft,
+            state.visibleRange.width + state.cellMatrix.frozenLeftRange.width + state.cellMatrix.frozenRightRange.width + state.viewportElement.scrollLeft
+        )
         return {
             ...state,
-            linePosition: dropLocation.viewportX - dropLocation.cellX + (drawRight ? dropLocation.col.width : 0) + state.viewportElement.scrollLeft
+            linePosition
         }
     }
 

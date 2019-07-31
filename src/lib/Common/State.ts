@@ -33,7 +33,7 @@ export class State {
     lastKeyCode: number = 0;
     readonly queuedDataChanges: DataChange[] = [];
     currentlyEditedCell?: { type: string, data: any, text?: string };
-    customFocuses: { colId: Id, rowId: Id, color: string }[] = [];
+    customFocuses: { id: Id, colId: Id, rowId: Id, color: string }[] = [];
 
     // CONTEXT MENU
     contextMenuPosition: number[] = [-1, -1] // [top, left]

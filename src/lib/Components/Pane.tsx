@@ -50,7 +50,7 @@ export const Pane: React.FunctionComponent<PaneProps> = (props) =>
         {renderSelectedRanges(props.state, props.range)}
         {props.state.currentBehavior.renderPanePart(props.state, props.range)}
         {props.state.customFocuses.map(focus => props.range.contains(props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)) &&
-            <CellFocus location={props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)} color={focus.color} />)}
+            <CellFocus key={focus.id} location={props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)} color={focus.color} />)}
         {props.state.focusedLocation && props.range.contains(props.state.focusedLocation) &&
             <CellFocus location={props.state.focusedLocation} />}
         {props.state.selectedRanges[props.state.activeSelectedRangeIdx] && props.range.contains(props.state.selectedRanges[props.state.activeSelectedRangeIdx].last) &&
