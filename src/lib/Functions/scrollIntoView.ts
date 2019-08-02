@@ -1,51 +1,67 @@
-import { State, Location, Column, Row, Direction } from "../Common";
+import { State, Direction, PointerLocation, Row } from "../Common";
 
-export function scrollIntoView(state: State, location: Location, direction: Direction = 'both') {
+export function scrollIntoView(state: State, location: any, direction: Direction = 'both') {
 
-    const top = getScrollTop(state, location.row, direction === 'horizontal');
-    const left = getScrollLeft(state, location.col, direction === 'vertical');
+    const top = getScrollTop(state, location, direction === 'horizontal');
+    const left = getScrollLeft(state, location, direction === 'vertical');
 
     state.viewportElement.scrollTo({ top, left, behavior: 'auto' });
 }
 
-function getScrollTop(state: State, row: Row, dontChange: boolean): number {
+function getScrollTop(state: State, location: PointerLocation, dontChange: boolean): number {
+    const row = location.row;
     const { scrollTop, clientHeight } = state.viewportElement;
+    const { frozenTopRange, frozenBottomRange, rows } = state.cellMatrix;
     if (dontChange || !row)
         return scrollTop;
 
-    const { frozenTopRange, frozenBottomRange } = state.cellMatrix;
-
-    const isRowOnFrozenPane = (frozenTopRange.last.row && frozenBottomRange.first.row) ? row.idx <= frozenTopRange.last.row.idx || row.idx >= frozenBottomRange.first.row.idx : false;
+    const browserScrollHeight = 17;
     const visibleContentHeight = Math.min(clientHeight, state.cellMatrix.height);
     const visibleScrollAreaHeight = visibleContentHeight - frozenTopRange.height - frozenBottomRange.height;
-    const isRowBelowTopPane = row.top < scrollTop;
+    const isBottomRowFrozen = frozenBottomRange.rows.some(r => row.idx === r.idx);
+    const shouldScrollToBottom = () => row.top + location.cellY > visibleScrollAreaHeight + scrollTop - browserScrollHeight;
+    const shouldScrollToTop = () => row.top + location.cellY < scrollTop + browserScrollHeight && !isBottomRowFrozen;
+    const isColumnBelowBottomPane = () => row.bottom > visibleScrollAreaHeight + scrollTop;
+    const isColumnBelowTopPane = () => row.top < scrollTop && !isBottomRowFrozen;
 
-    const isRowVisible = isRowOnFrozenPane || !isRowBelowTopPane && row.bottom < scrollTop + visibleScrollAreaHeight;
-    if (isRowVisible) {
-        return scrollTop;
-    } else if (isRowBelowTopPane) {
-        return row.top;
-    } else // row is below bottom pane
+    if (frozenBottomRange.rows.length === 0 && shouldScrollToBottom()) {
+        return rows[row.idx + 1] ? rows[row.idx + 1].bottom - visibleScrollAreaHeight : rows[row.idx].bottom - visibleScrollAreaHeight
+    } else if (isColumnBelowBottomPane()) {
         return row.bottom - visibleScrollAreaHeight;
+    } else if (frozenTopRange.rows.length === 0 && shouldScrollToTop()) {
+        return rows[row.idx - 1] ? rows[row.idx + - 1].top : rows[row.idx].top
+    } else if (isColumnBelowTopPane()) {
+        return row.top;
+    } else {
+        return scrollTop;
+    }
 }
 
-function getScrollLeft(state: State, column: Column, dontChange: boolean): number {
+function getScrollLeft(state: State, location: PointerLocation, dontChange: boolean): number {
+    const column = location.col;
     const { scrollLeft, clientWidth } = state.viewportElement;
+    const { frozenLeftRange, frozenRightRange, cols } = state.cellMatrix;
     if (dontChange || !column)
         return scrollLeft
 
-    const { frozenLeftRange, frozenRightRange } = state.cellMatrix;
-
-    const isColumnOnFrozenPane = (frozenLeftRange.last.col && frozenRightRange.first.col) ? column.idx <= frozenLeftRange.last.col.idx || column.idx >= frozenRightRange.first.col.idx : false;
+    const browserScrollWidth = 17;
     const visibleContentWidth = Math.min(clientWidth, state.cellMatrix.width);
     const visibleScrollAreaWidth = visibleContentWidth - frozenLeftRange.width - frozenRightRange.width;
-    const isColumnBelowLeftPane = column.left < scrollLeft;
+    const isRightRowFrozen = frozenRightRange.cols.some(col => column.idx === col.idx);
+    const shouldScrollToRight = () => column.left + location.cellX > visibleScrollAreaWidth + scrollLeft - browserScrollWidth;
+    const shouldScrollToLeft = () => column.left + location.cellX < scrollLeft + browserScrollWidth && !isRightRowFrozen;
+    const isColumnBelowRightPane = () => column.right > visibleScrollAreaWidth + scrollLeft;
+    const isColumnBelowLeftPane = () => column.left < scrollLeft && !isRightRowFrozen;
 
-    const isColumnVisible = isColumnOnFrozenPane || !isColumnBelowLeftPane && column.right < scrollLeft + visibleScrollAreaWidth;
-    if (isColumnVisible) {
-        return scrollLeft;
-    } else if (isColumnBelowLeftPane) {
-        return column.left;
-    } else // column is below right pane
+    if (frozenRightRange.cols.length === 0 && shouldScrollToRight()) {
+        return cols[column.idx + 1] ? cols[column.idx + 1].right - visibleScrollAreaWidth : cols[column.idx].right - visibleScrollAreaWidth;
+    } else if (isColumnBelowRightPane()) {
         return column.right - visibleScrollAreaWidth;
+    } else if (frozenLeftRange.cols.length === 0 && shouldScrollToLeft()) {
+        return cols[column.idx - 1] ? cols[column.idx + - 1].left : cols[column.idx].left;
+    } else if (isColumnBelowLeftPane()) {
+        return column.left;
+    } else {
+        return scrollLeft;
+    }
 }
