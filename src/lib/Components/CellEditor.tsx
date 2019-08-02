@@ -7,12 +7,12 @@ interface CellEditorProps {
 }
 
 export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
-    const [cellData, setCellData] = React.useState(props.state.currentlyEditedCell!)
+    const [cellData, setCellData] = React.useState(props.state.currentlyEditedCell!);
     const location = props.state.focusedLocation!;
-    const [position, setPosition] = React.useState(calculatedEditorPosition(location, props.state))
+    const [position, setPosition] = React.useState(calculatedEditorPosition(location, props.state));
     let lastKeyCode = props.state.lastKeyCode;
 
-    React.useEffect(() => setPosition(calculatedEditorPosition(location, props.state)), [])
+    React.useEffect(() => setPosition(calculatedEditorPosition(location, props.state)), []);
 
     return (
         <div
@@ -27,13 +27,13 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
                 border: '2px #3579f8 solid',
                 background: 'white',
                 boxShadow: '1px 1px 6px rgba(0, 0, 0, 0.2)',
-                zIndex: 5,
+                zIndex: 5
             }}
-            onBlur={() => { if (lastKeyCode != keyCodes.ESC) props.state.updateState(state => trySetDataAndAppendChange(state, location, cellData)) }}
+            onBlur={() => { if (lastKeyCode !== keyCodes.ESC) props.state.updateState(state => trySetDataAndAppendChange(state, location, cellData)) }}
             onKeyDown={e => {
-                lastKeyCode = e.keyCode
-                if (e.keyCode !== keyCodes.ENTER && e.keyCode !== keyCodes.ESC) {
-                    e.stopPropagation()
+                lastKeyCode = e.keyCode;
+                if (e.keyCode !== keyCodes.ENTER && e.keyCode !== keyCodes.ESC && e.keyCode !== keyCodes.TAB) {
+                    e.stopPropagation();
                 }
             }}
         >
@@ -49,7 +49,7 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
 
 const calculatedXAxisOffset = (location: Location, state: State) => {
     if (location.col.idx >= (state.cellMatrix.frozenRightRange.first.col ? state.cellMatrix.frozenRightRange.first.col.idx : state.cellMatrix.last.col.idx)) {
-        return Math.min(state.cellMatrix.width, state.viewportElement.clientWidth) - state.cellMatrix.frozenRightRange.width
+        return Math.min(state.cellMatrix.width, state.viewportElement.clientWidth) - state.cellMatrix.frozenRightRange.width;
     } else if (location.col.idx > (state.cellMatrix.frozenLeftRange.last.col ? state.cellMatrix.frozenLeftRange.last.col.idx : state.cellMatrix.first.col.idx)) {
         return state.cellMatrix.frozenLeftRange.width - state.viewportElement.scrollLeft;
     } else {
@@ -59,7 +59,7 @@ const calculatedXAxisOffset = (location: Location, state: State) => {
 
 const calculatedYAxisOffset = (location: Location, state: State) => {
     if (location.row.idx >= (state.cellMatrix.frozenBottomRange.first.row ? state.cellMatrix.frozenBottomRange.first.row.idx : state.cellMatrix.last.row.idx)) {
-        return Math.min(state.cellMatrix.height, state.viewportElement.clientHeight) - state.cellMatrix.frozenBottomRange.height
+        return Math.min(state.cellMatrix.height, state.viewportElement.clientHeight) - state.cellMatrix.frozenBottomRange.height;
     } else if (location.row.idx > (state.cellMatrix.frozenTopRange.last.row ? state.cellMatrix.frozenTopRange.last.row.idx : state.cellMatrix.first.row.idx)) {
         return state.cellMatrix.frozenTopRange.height - state.viewportElement.scrollTop;
     } else {
@@ -68,5 +68,8 @@ const calculatedYAxisOffset = (location: Location, state: State) => {
 }
 
 const calculatedEditorPosition = (location: Location, state: State) => {
-    return { left: location.col.left + calculatedXAxisOffset(location, state), top: location.row.top + calculatedYAxisOffset(location, state) }
+    return {
+        left: location.col.left + calculatedXAxisOffset(location, state),
+        top: location.row.top + calculatedYAxisOffset(location, state)
+    }
 }
