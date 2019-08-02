@@ -1,5 +1,5 @@
 import { PointerEvent, Location, State, StateUpdater } from ".";
-import { getLocationFromClient, scrollIntoView, focusLocation } from "../Functions";
+import { getLocationFromClient, scrollIntoView } from "../Functions";
 import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
 
 export class PointerEventsController {

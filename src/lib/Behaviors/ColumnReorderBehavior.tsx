@@ -1,4 +1,4 @@
-import { State, Behavior, PointerEvent, PointerLocation, Id, Direction } from '../Common';
+import { State, Behavior, PointerEvent, PointerLocation, Direction } from '../Common';
 
 export class ColumnReorderBehavior extends Behavior {
     private initialColumnIdx!: number;
@@ -56,7 +56,7 @@ export class ColumnReorderBehavior extends Behavior {
     }
 
     getLastPossibleDropLocation(currentLocation: PointerLocation): PointerLocation | undefined {
-        const position = currentLocation.col.idx <= this.initialColumnIdx ? 'before' : 'after'
+        const position = currentLocation.col.idx <= this.initialColumnIdx ? 'before' : 'after';
         if (!currentLocation.col.canDrop || currentLocation.col.canDrop(this.selectedIdxs, position)) {
             return this.lastPossibleDropLocation = currentLocation;
         }
