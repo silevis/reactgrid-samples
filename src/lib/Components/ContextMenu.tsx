@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Id, MenuOption, Location, State, Range } from '../Common';
-import { copySelectedRangeToClipboard } from '../Behaviors/DefaultBehavior';
+import { copySelectedRangeToClipboard, pasteData } from '../Behaviors/DefaultBehavior';
 
 interface ContextMenuProps {
     contextMenuPosition: number[],
@@ -89,8 +89,11 @@ function customContextMenuOptions(state: State): MenuOption[] {
             handler: () => copySelectedRangeToClipboard(state, true)
         },
         {
-            title: 'Paste (doesn\'t work)',
+            title: 'Paste',
             handler: () => {
+                navigator.clipboard.readText().then(e => state.updateState((state: State) =>
+                    pasteData(state, e.split('\n').map(line => line.split('\t').map(t => ({ text: t, data: t, type: 'text' })))
+                    )))
             }
         }
     ];

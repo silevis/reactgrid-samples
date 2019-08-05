@@ -3,7 +3,6 @@ import { focusLocation } from "../../Functions";
 import { handleResizeSelectionWithKeys } from "./handleResizeSelectionWithKeys";
 import { handleKeyNavigationInsideSelection as handleKeyNavigationInsideSelection } from "./handleKeyNavigationInsideSelection";
 import { trySetDataAndAppendChange } from "../../Functions/trySetDataAndAppendChange";
-
 export function handleKeyDown(state: State, event: KeyboardEvent): State {
     const focusedLocation = state.focusedLocation!;
     const key: string = event.key;
@@ -49,10 +48,6 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
         }
     }
 
-    if (!event.ctrlKey && (possibleCharactersToEnter(event) || isEnterKey(key) || isSpaceKey(key))) {
-        return { ...state, isFocusedCellInEditMode: state.cellTemplates[focusedLocation.cell.type].hasEditMode }
-    }
-
     if (event.keyCode === keyCodes.ESC && state.isFocusedCellInEditMode) {
         return focusLocation(
             state,
@@ -62,6 +57,10 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
             ),
             true
         );
+    }
+
+    if (!event.ctrlKey && (possibleCharactersToEnter(event) || isEnterKey(key) || isSpaceKey(key))) {
+        return { ...state, isFocusedCellInEditMode: state.cellTemplates[focusedLocation.cell.type].hasEditMode }
     }
 
     state.hiddenFocusElement.focus();

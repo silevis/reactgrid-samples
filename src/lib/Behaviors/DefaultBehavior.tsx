@@ -122,51 +122,9 @@ export class DefaultBehavior extends Behavior {
         } else {
             pasteContent = event.clipboardData.getData('text/plain').split('\n').map(line => line.split('\t').map(t => ({ text: t, data: t, type: 'text' })))
         }
-
-        if (pasteContent.length === 1 && pasteContent[0].length === 1) {
-            activeSelectedRange.rows.forEach(row =>
-                activeSelectedRange.cols.forEach(col => {
-                    const cell = state.cellMatrix.getCell(row.id, col.id);
-                    if (!state.cellTemplates[cell.type].handleKeyDown(0, pasteContent[0][0].data).editable)
-                        return
-                    state = trySetDataAndAppendChange(state, new Location(row, col), pasteContent[0][0])
-                })
-            )
-        } else {
-            let lastLocation: Location
-            const cellMatrix = state.cellMatrix
-            pasteContent.forEach((row, pasteRowIdx) =>
-                row.forEach((pasteValue: ClipboardData, pasteColIdx: number) => {
-                    const rowIdx = activeSelectedRange.rows[0].idx + pasteRowIdx
-                    const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx
-                    if (rowIdx <= cellMatrix.last.row.idx && colIdx <= cellMatrix.last.col.idx) {
-                        lastLocation = cellMatrix.getLocation(rowIdx, colIdx)
-                        if (!state.cellTemplates[lastLocation.cell.type].handleKeyDown(0, pasteValue.data).editable)
-                            return
-                        state = trySetDataAndAppendChange(state, lastLocation, pasteValue)
-                    }
-                })
-            )
-
-            const selectedIds = (): Id[] => {
-                const range = cellMatrix.getRange(activeSelectedRange.first, lastLocation!);
-                if (state.selectionMode == 'column' && activeSelectedRange.first.row == state.cellMatrix.first.row)
-                    return range.cols.map(c => c.id)
-                if (state.selectionMode == 'row' && activeSelectedRange.first.col == state.cellMatrix.first.col)
-                    return range.rows.map(r => r.id)
-                return []
-            }
-
-            return {
-                ...state,
-                selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, lastLocation!)],
-                activeSelectedRangeIdx: 0,
-                selectionMode: selectionMode ? selectionMode : 'range',
-                selectedIds: selectedIds()
-            }
-        }
         event.preventDefault()
-        return { ...state };
+        return { ...pasteData(state, pasteContent), selectionMode: selectionMode ? selectionMode : 'range', };
+
     }
 
     handleCut(event: ClipboardEvent, state: State): State {
@@ -177,6 +135,51 @@ export class DefaultBehavior extends Behavior {
         //state.hiddenFocusElement.focus();
         return { ...state };
     }
+}
+
+export function pasteData(state: State, pasteContent: ClipboardData[][]): State {
+    const activeSelectedRange = getActiveSelectedRange(state)
+    if (pasteContent.length === 1 && pasteContent[0].length === 1) {
+        activeSelectedRange.rows.forEach(row =>
+            activeSelectedRange.cols.forEach(col => {
+                const cell = state.cellMatrix.getCell(row.id, col.id);
+                if (!state.cellTemplates[cell.type].handleKeyDown(0, pasteContent[0][0].data).editable)
+                    return
+                state = trySetDataAndAppendChange(state, new Location(row, col), pasteContent[0][0])
+            })
+        )
+    } else {
+        let lastLocation: Location
+        const cellMatrix = state.cellMatrix
+        pasteContent.forEach((row, pasteRowIdx) =>
+            row.forEach((pasteValue: ClipboardData, pasteColIdx: number) => {
+                const rowIdx = activeSelectedRange.rows[0].idx + pasteRowIdx
+                const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx
+                if (rowIdx <= cellMatrix.last.row.idx && colIdx <= cellMatrix.last.col.idx) {
+                    lastLocation = cellMatrix.getLocation(rowIdx, colIdx)
+                    if (!state.cellTemplates[lastLocation.cell.type].handleKeyDown(0, pasteValue.data).editable)
+                        return
+                    state = trySetDataAndAppendChange(state, lastLocation, pasteValue)
+                }
+            })
+        )
+
+        const selectedIds = (): Id[] => {
+            const range = cellMatrix.getRange(activeSelectedRange.first, lastLocation!);
+            if (state.selectionMode == 'column' && activeSelectedRange.first.row == state.cellMatrix.first.row)
+                return range.cols.map(c => c.id)
+            if (state.selectionMode == 'row' && activeSelectedRange.first.col == state.cellMatrix.first.col)
+                return range.rows.map(r => r.id)
+            return []
+        }
+        return {
+            ...state,
+            selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, lastLocation!)],
+            activeSelectedRangeIdx: 0,
+            selectedIds: selectedIds()
+        }
+    }
+    return state
 }
 
 export function copySelectedRangeToClipboard(state: State, removeValues = false) {
