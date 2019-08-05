@@ -1,10 +1,9 @@
 import * as React from "react";
-import { Range, Borders, State } from "../Common";
+import { Range, Borders, State, keyCodes } from "../Common";
 import { CellFocus } from "./CellFocus";
 import { FillHandle } from "./FillHandle";
 import { RowRenderer } from "./RowRenderer";
 import { PartialArea } from "./PartialArea";
-import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
 
 export interface PaneProps {
     id: string
@@ -12,6 +11,7 @@ export interface PaneProps {
     style: React.CSSProperties,
     range: Range,
     borders: Borders,
+    className?: string
 }
 
 interface RowsProps {
@@ -24,11 +24,11 @@ class GridContent extends React.Component<RowsProps>{
 
     shouldComponentUpdate(nextProps: RowsProps) {
         if (this.props.state.focusedLocation && nextProps.state.focusedLocation) {
-            if (this.props.state.focusedLocation.col.id !== nextProps.state.focusedLocation.col.id ||
-                this.props.state.focusedLocation.row.id !== nextProps.state.focusedLocation.row.id)
+            if ((this.props.state.focusedLocation.col.id !== nextProps.state.focusedLocation.col.id || this.props.state.focusedLocation.row.id !== nextProps.state.focusedLocation.row.id) && // needed when select range by touch
+                nextProps.state.lastKeyCode !== keyCodes.ENTER && nextProps.state.lastKeyCode !== keyCodes.TAB) // improved performance during moving focus inside range
                 return true;
         } else {
-            return true;
+            return true; // needed when select range by touch after first focus
         }
         return this.props.state.visibleRange != nextProps.state.visibleRange || this.props.state.cellMatrix.props != nextProps.state.cellMatrix.props;
     }
