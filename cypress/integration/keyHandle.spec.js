@@ -38,10 +38,6 @@ context('Keyboard', () => {
         Utils.selectCell(200, 100);
         for (var i = 0; i < 2; i++) Utils.keyDown(Constants.keyCodes.ArrowDown, { shiftKey: true, force: true });
         Utils.keyDown(Constants.keyCodes.ArrowRight, { shiftKey: true, force: true }, 50);
-        // for (var i = 0; i < 6; i++) Utils.keyDown(Constants.keyCodes.Tab, { force: true });
-        // for (var i = 0; i < 6; i++) Utils.keyDown(Constants.keyCodes.Tab, { shiftKey: true, force: true });
-        // for (var i = 0; i < 6; i++) Utils.keyDown(Constants.keyCodes.Enter, { force: true });
-        // for (var i = 0; i < 6; i++) Utils.keyDown(Constants.keyCodes.Enter, { shiftKey: true, force: true });
         Utils.selectCell(500, 200, { ctrlKey: true });
         for (var i = 0; i < 2; i++) Utils.keyDown(Constants.keyCodes.ArrowDown, { shiftKey: true, force: true }, 50);
         Utils.keyDown(Constants.keyCodes.ArrowRight, { shiftKey: true, force: true }, 50);
@@ -54,11 +50,20 @@ context('Keyboard', () => {
         for (var i = 0; i < 18; i++) Utils.keyDown(Constants.keyCodes.Enter, { shiftKey: true, force: true }, 50);
     });
 
-
-    it('Enter key pressed should activate cell edit mode ', () => {
+    it('Enter key pressed should activate cell edit mode', () => {
         Utils.selectCell(200, 100);
         cy.wait(500);
         Utils.keyDown(Constants.keyCodes.Enter, { force: true });
+        cy.focused().type(Utils.randomText(), { force: true });
+    });
+
+    it('Escape key pressed should exit from edit mode without changes', () => {
+        Utils.selectCell(200, 100);
+        cy.wait(500);
+        Utils.keyDown(Constants.keyCodes.Enter, { force: true });
+        cy.focused().type(Utils.randomText(), { force: true });
+        cy.wait(500);
+        Utils.keyDown(Constants.keyCodes.Esc, { force: true });
     });
 
     it('Delete key pressed should delete data from the cell ', () => {
@@ -82,12 +87,14 @@ context('Keyboard', () => {
     it('Tab key pressed should exit from cell edit mode and move to next column ', () => {
         Utils.selectCell(200, 100);
         Utils.keyDown(Constants.keyCodes.Enter, { force: true });
+        cy.focused().type(Utils.randomText(), { force: true });
         Utils.keyDown(Constants.keyCodes.Tab, { force: true });
     });
 
     it('Enter key pressed should exit from cell edit mode and move to next row', () => {
         Utils.selectCell(200, 100);
         Utils.keyDown(Constants.keyCodes.Enter, { force: true });
+        cy.focused().type(Utils.randomText(), { force: true });
         Utils.keyDown(Constants.keyCodes.Enter, { force: true });
     });
 });

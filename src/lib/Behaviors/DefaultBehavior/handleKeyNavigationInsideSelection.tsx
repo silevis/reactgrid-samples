@@ -3,15 +3,15 @@ import { focusLocation } from '../../Functions';
 import { State, KeyboardEvent, Location } from '../../Common';
 import { getActiveSelectedRange } from '../../Functions/getActiveSelectedRange';
 
-export function handleKeyNavigationInsideSelection(state: State, event: KeyboardEvent): State {
+export function handleKeyNavigationInsideSelection(state: State, event: KeyboardEvent, shiftPressed: boolean): State {
     event.preventDefault();
-    if (event.keyCode === keyCodes.TAB && !event.shiftKey) {
+    if (event.keyCode === keyCodes.TAB && !shiftPressed) {
         return moveFocusInsideSelectedRange('right', state);
-    } else if (event.keyCode === keyCodes.TAB && event.shiftKey) {
+    } else if (event.keyCode === keyCodes.TAB && shiftPressed) {
         return moveFocusInsideSelectedRange('left', state);
-    } else if (event.keyCode === keyCodes.ENTER && !event.shiftKey) {
+    } else if (event.keyCode === keyCodes.ENTER && !shiftPressed) {
         return moveFocusInsideSelectedRange('down', state);
-    } else if (event.keyCode === keyCodes.ENTER && event.shiftKey) {
+    } else if (event.keyCode === keyCodes.ENTER && shiftPressed) {
         return moveFocusInsideSelectedRange('up', state);
     }
     return state;

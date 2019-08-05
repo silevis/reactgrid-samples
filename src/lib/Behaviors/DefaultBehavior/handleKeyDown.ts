@@ -6,7 +6,7 @@ import { trySetDataAndAppendChange } from "../../Functions/trySetDataAndAppendCh
 
 export function handleKeyDown(state: State, event: KeyboardEvent): State {
     const focusedLocation = state.focusedLocation!;
-    const key: string = event.key
+    const key: string = event.key;
     state.lastKeyCode = event.keyCode;
     if (!focusedLocation) { return state }
 
@@ -20,37 +20,39 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
 
     }
 
-    if (state.selectedRanges.length > 0 && !event.ctrlKey && !isSelectedOneCell(state) && !isArrowKey(key) && !isSpecialKeys(key)) {
-        return handleKeyNavigationInsideSelection(state, event)
-    } else {
-        if (isTabKey(key)) {
-            return handleTabKey(event, state)
-        }
-        if (isEnterKey(key)) {
-            return handleEnterKey(event, state)
-        }
+    if (event.shiftKey && !isEnterKey(key) && !isTabKey(key) && !possibleCharactersToEnter(event)) {
+        return handleResizeSelectionWithKeys(state, event);
     }
-    if (event.shiftKey) {
-        return handleResizeSelectionWithKeys(state, event)
-    }
+
     if (isArrowKey(key)) {
-        return handleArrows(event, state)
+        return handleArrows(event, state);
     }
+
     if (isSpecialNavKeys(key)) {
-        return handleSpecialNavKeys(event, state)
+        return handleSpecialNavKeys(event, state);
     }
+
     if (isSpecialKeys(key)) {
-        return handleSpecialKeys(event, state)
+        return handleSpecialKeys(event, state);
     }
-    if (!event.ctrlKey &&
-        !state.isFocusedCellInEditMode &&
-        (event.keyCode == keyCodes.ENTER ||
-            (event.keyCode >= keyCodes.ZERO && event.keyCode <= keyCodes.Z) ||
-            (event.keyCode >= keyCodes.NUM_PAD_0 && event.keyCode <= keyCodes.DIVIDE) ||
-            (event.keyCode >= keyCodes.SEMI_COLON && event.keyCode <= keyCodes.SINGLE_QUOTE) ||
-            event.keyCode === keyCodes.SPACE)) {
+
+    if (isSelectedOneCell(state)) {
+        if (isEnterKey(key)) {
+            return handleEnterKey(event, state, event.shiftKey);
+        }
+        if (isTabKey(key)) {
+            return handleTabKey(event, state, event.shiftKey);
+        }
+    } else {
+        if ((isEnterKey(key) || isTabKey(key))) {
+            return handleKeyNavigationInsideSelection(state, event, event.shiftKey);
+        }
+    }
+
+    if (!event.ctrlKey && (possibleCharactersToEnter(event) || isEnterKey(key) || isSpaceKey(key))) {
         return { ...state, isFocusedCellInEditMode: state.cellTemplates[focusedLocation.cell.type].hasEditMode }
     }
+
     if (event.keyCode === keyCodes.ESC && state.isFocusedCellInEditMode) {
         return focusLocation(
             state,
@@ -61,25 +63,30 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
             true
         );
     }
-    //event.stopPropagation();
-    //event.preventDefault();
+
     state.hiddenFocusElement.focus();
     return { ...state };
 }
 
 
 // TODO Check it
-const isArrowKey = (key: string): boolean => key.includes('Arrow')
-const isEnterKey = (key: string): boolean => key.includes('Enter')
+export const isArrowKey = (key: string): boolean => key.includes('Arrow');
+const isEnterKey = (key: string): boolean => key.includes('Enter');
+const isSpaceKey = (key: string): boolean => key.includes('');
 const isSpecialNavKeys = (key: string): boolean => {
-    const keys = ['Home', 'PageUp', 'PageDown', 'End']
-    return keys.some(el => el == key)
+    const keys = ['Home', 'PageUp', 'PageDown', 'End'];
+    return keys.some(el => el == key);
 }
-const isTabKey = (key: string): boolean => key.includes('Tab')
+const isTabKey = (key: string): boolean => key.includes('Tab');
 const isSpecialKeys = (key: string): boolean => {
-    const keys = ['Backspace', 'Delete']
-    return keys.some(el => el == key)
+    const keys = ['Backspace', 'Delete'];
+    return keys.some(el => el == key);
 }
+const possibleCharactersToEnter = (event: KeyboardEvent) =>
+    (event.keyCode >= keyCodes.ZERO && event.keyCode <= keyCodes.Z) ||
+    (event.keyCode >= keyCodes.NUM_PAD_0 && event.keyCode <= keyCodes.DIVIDE) ||
+    (event.keyCode >= keyCodes.SEMI_COLON && event.keyCode <= keyCodes.SINGLE_QUOTE);
+
 // or replace it
 // const isKeys = (key: string, keys: Array<string>): boolean => keys.some(el => el.includes(key))
 
@@ -87,7 +94,6 @@ const isSelectedOneCell = (state: State): boolean => {
     const activeSelectedRange = state.selectedRanges[state.activeSelectedRangeIdx];
     return state.selectedRanges.length <= 1 && state.selectedRanges.length > 0 && activeSelectedRange.cols.length <= 1 && activeSelectedRange.rows.length <= 1
 }
-
 
 function focusCell(colIdx: number, rowIdx: number, state: State): State {
     const location = state.cellMatrix.getLocation(rowIdx, colIdx);
@@ -163,7 +169,7 @@ function handleSpecialNavKeys(event: KeyboardEvent, state: State) {
     return state
 }
 
-function handleTabKey(event: KeyboardEvent, state: State) {
+function handleTabKey(event: KeyboardEvent, state: State, shiftPressed: boolean) {
     const focusedLocation = state.focusedLocation!;
     const cellMatrix = state.cellMatrix;
     if (event.keyCode === keyCodes.TAB || event.keyCode === keyCodes.ENTER) {
@@ -171,7 +177,7 @@ function handleTabKey(event: KeyboardEvent, state: State) {
     }
     if (
         event.keyCode === keyCodes.TAB &&
-        !event.shiftKey &&
+        !shiftPressed &&
         focusedLocation.col.idx < cellMatrix.last.col.idx
     ) {
         return focusLocation(
@@ -184,7 +190,7 @@ function handleTabKey(event: KeyboardEvent, state: State) {
         );
     } else if (
         event.keyCode === keyCodes.TAB &&
-        event.shiftKey &&
+        shiftPressed &&
         focusedLocation.col.idx > 0
     ) {
         return focusLocation(
@@ -199,11 +205,11 @@ function handleTabKey(event: KeyboardEvent, state: State) {
     return state
 }
 
-function handleEnterKey(event: KeyboardEvent, state: State) {
+function handleEnterKey(event: KeyboardEvent, state: State, shiftPressed: boolean) {
     const focusedLocation = state.focusedLocation!;
     const cellMatrix = state.cellMatrix;
     if (
-        !event.shiftKey &&
+        !shiftPressed &&
         state.isFocusedCellInEditMode &&
         focusedLocation.row.idx < cellMatrix.last.row.idx
     ) {
@@ -216,7 +222,7 @@ function handleEnterKey(event: KeyboardEvent, state: State) {
             true
         );
     } else if (
-        event.shiftKey &&
+        shiftPressed &&
         state.isFocusedCellInEditMode &&
         focusedLocation.row.idx > 0
     ) {
@@ -230,12 +236,12 @@ function handleEnterKey(event: KeyboardEvent, state: State) {
         );
     }
     if (
-        !event.shiftKey &&
+        !shiftPressed &&
         !state.isFocusedCellInEditMode
         // !state.isFocusedCellReadOnly 
     ) {
         return { ...state, isFocusedCellInEditMode: state.cellTemplates[focusedLocation.cell.type].hasEditMode };
-    } else if (event.shiftKey && event.keyCode === keyCodes.ENTER && focusedLocation.row.idx > 0) {
+    } else if (shiftPressed && event.keyCode === keyCodes.ENTER && focusedLocation.row.idx > 0) {
         return focusCell(focusedLocation.col.idx, focusedLocation.row.idx - 1, state);
     }
     else {

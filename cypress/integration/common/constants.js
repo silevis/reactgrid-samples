@@ -13,7 +13,8 @@ class Constants {
         Home: 36,
         End: 35,
         PageUp: 33,
-        PagdeDown: 34
+        PagdeDown: 34,
+        Esc: 27
     };
 }
 var constants = new Constants();
