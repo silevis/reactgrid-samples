@@ -20,7 +20,7 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
 
     }
 
-    if (event.shiftKey && !isEnterKey(key) && !isTabKey(key) && !possibleCharactersToEnter(event)) {
+    if (event.shiftKey && !isEnterKey(key) && !isTabKey(key) && !possibleCharactersToEnter(event) && !state.isFocusedCellInEditMode) {
         return handleResizeSelectionWithKeys(state, event);
     }
 
