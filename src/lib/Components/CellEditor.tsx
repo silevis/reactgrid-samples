@@ -1,7 +1,7 @@
 import * as React from "react";
 import { State, keyCodes, Location } from "../Common";
 import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChange";
-import { isArrowKey } from "../Behaviors/DefaultBehavior/handleKeyDown";
+// import { isArrowKey } from "../Behaviors/DefaultBehavior/handleKeyDown";
 
 interface CellEditorProps {
     state: State;

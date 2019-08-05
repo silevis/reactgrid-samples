@@ -59,10 +59,11 @@ class VirtualUser {
 
     iterate(state: SpreadsheetState): any {
         this.state = state;
+        // this.state.focuses = this.state.focuses.filter(focus => (this.state.records.some(r => r.id !== focus.rowId) && this.state.fields.some(f => f.id !== focus.colId)))
         switch (this.count++) {
             case 0:
-                this.focusX = getRandomInt(1, this.state.fields.length)
-                this.focusY = getRandomInt(1, this.state.records.length)
+                this.focusX = getRandomInt(0, this.state.fields.length)
+                this.focusY = getRandomInt(0, this.state.records.length)
                 var focuses = [...this.state.focuses].filter(f => f.color !== this.color)
                 this.state = { ...this.state, focuses: [...focuses, { colId: this.state.fields[this.focusX].id, rowId: this.state.records[this.focusY].id, color: this.color }] }
                 break;
@@ -74,8 +75,8 @@ class VirtualUser {
             case 2:
                 break;
             case 3:
-                this.focusX = getRandomInt(1, this.state.fields.length)
-                this.focusY = getRandomInt(1, this.state.records.length)
+                this.focusX = getRandomInt(0, this.state.fields.length)
+                this.focusY = getRandomInt(0, this.state.records.length)
                 var focuses = [...this.state.focuses].filter(f => f.color !== this.color)
                 this.state = { ...this.state, focuses: [...focuses, { colId: this.state.fields[this.focusX].id, rowId: this.state.records[this.focusY].id, color: this.color }] }
                 break;
@@ -102,7 +103,7 @@ export class Spreadsheet extends React.Component<{}, SpreadsheetState> {
         super(props);
 
         let cnt = 0;
-        const fields = new Array(COL_COUNT).fill(120).map((width, idx) => ({ id: idx.toString(), width }));
+        const fields = new Array(COL_COUNT).fill(125).map((width, idx) => ({ id: genId(), width }));
         this.state = {
             fields,
             records: new Array(ROW_COUNT).fill(0).map(() => fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: genId(), data: {} })),
@@ -117,12 +118,12 @@ export class Spreadsheet extends React.Component<{}, SpreadsheetState> {
         const user4 = new VirtualUser(this.state, this.prepareDataChanges, '#03fceb')
         const user5 = new VirtualUser(this.state, this.prepareDataChanges, '#0307fc')
         const user6 = new VirtualUser(this.state, this.prepareDataChanges, '#5b5b73')
-        window.setInterval(() => { user1.iterate(this.state); this.setState(user1.returnState()); }, 10)
-        window.setInterval(() => { user2.iterate(this.state); this.setState(user2.returnState()); }, 10)
-        window.setInterval(() => { user3.iterate(this.state); this.setState(user3.returnState()); }, 10)
-        window.setInterval(() => { user4.iterate(this.state); this.setState(user4.returnState()); }, 10)
-        window.setInterval(() => { user5.iterate(this.state); this.setState(user5.returnState()); }, 10)
-        window.setInterval(() => { user6.iterate(this.state); this.setState(user6.returnState()); }, 10)
+        // window.setInterval(() => { user1.iterate(this.state); this.setState(user1.returnState()); }, 10)
+        // window.setInterval(() => { user2.iterate(this.state); this.setState(user2.returnState()); }, 10)
+        // window.setInterval(() => { user3.iterate(this.state); this.setState(user3.returnState()); }, 10)
+        // window.setInterval(() => { user4.iterate(this.state); this.setState(user4.returnState()); }, 10)
+        // window.setInterval(() => { user5.iterate(this.state); this.setState(user5.returnState()); }, 10)
+        // window.setInterval(() => { user6.iterate(this.state); this.setState(user6.returnState()); }, 10)
     }
 
     private generateCellMatrix(): CellMatrixProps {
@@ -143,11 +144,11 @@ export class Spreadsheet extends React.Component<{}, SpreadsheetState> {
             onDrop: (ids) => this.reorderRows(ids as number[], rowIdx),
             reorderable: true,
             cells: this.state.fields.map((field, colIdx) =>
-                rowIdx === 0 ? { data: field.id, type: 'header' }
-                    : colIdx === 0 ? { data: record.id, type: 'header' }
+                rowIdx === 0 ? { data: record.data[field.id], type: 'text' }
+                    : colIdx === 0 ? { data: record.data[field.id], type: 'text' }
                         : { data: record.data[field.id], type: 'text' })
         }));
-        return ({ frozenTopRows: 2, frozenLeftColumns: 2, frozenBottomRows: 2, frozenRightColumns: 2, rows, columns })
+        return ({ frozenTopRows: 0, frozenLeftColumns: 0, frozenBottomRows: 0, frozenRightColumns: 0, rows, columns })
     }
 
     private calculateColumnReorder(colIdxs: number[], direction: string, destination: number) {
