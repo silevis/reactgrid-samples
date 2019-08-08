@@ -17,13 +17,11 @@ function getRandomInt(min: number, max: number) {
 
 function getRandomWord() {
     const words = [
-        'SILEVIS',
-        'SOFTWARE',
-        'GEFASOFT',
-        'SAPIENT',
-        'FLEXBASE',
-        'DYNAGRID',
-        'GERMANEDGE',
+        'SHARED',
+        'GRID',
+        'REACT',
+        'RAPID',
+        'RELIABLE',
     ]
     return words[getRandomInt(0, words.length)]
 }
@@ -112,14 +110,14 @@ export class Spreadsheet extends React.Component<{}, SpreadsheetState> {
     }
 
     componentDidMount() {
-        const user1 = new VirtualUser(this.state, this.prepareDataChanges, '#22ff00')
+        const user1 = new VirtualUser(this.state, this.prepareDataChanges, '#fff700')
         const user2 = new VirtualUser(this.state, this.prepareDataChanges, '#ea00ff')
         const user3 = new VirtualUser(this.state, this.prepareDataChanges, '#fcfc03')
         const user4 = new VirtualUser(this.state, this.prepareDataChanges, '#03fceb')
         const user5 = new VirtualUser(this.state, this.prepareDataChanges, '#0307fc')
         const user6 = new VirtualUser(this.state, this.prepareDataChanges, '#5b5b73')
-        // window.setInterval(() => { user1.iterate(this.state); this.setState(user1.returnState()); }, 10)
-        // window.setInterval(() => { user2.iterate(this.state); this.setState(user2.returnState()); }, 10)
+        window.setInterval(() => { user1.iterate(this.state); this.setState(user1.returnState()); }, 1000)
+        window.setInterval(() => { user2.iterate(this.state); this.setState(user2.returnState()); }, 1000)
         // window.setInterval(() => { user3.iterate(this.state); this.setState(user3.returnState()); }, 10)
         // window.setInterval(() => { user4.iterate(this.state); this.setState(user4.returnState()); }, 10)
         // window.setInterval(() => { user5.iterate(this.state); this.setState(user5.returnState()); }, 10)
@@ -196,15 +194,16 @@ export class Spreadsheet extends React.Component<{}, SpreadsheetState> {
             }}>
                 + kolumn
             </button>
-            <DynaGrid style={{ position: 'absolute', top: 50, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
-                cellMatrixProps={this.generateCellMatrix()}
-                onDataChanged={changes => this.handleDataChanges(changes)}
-                onRowContextMenu={(selectedRowIds: Id[], menuOptions: MenuOption[]) => this.handleRowContextMenu(selectedRowIds, menuOptions)}
-                onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
-                onRangeContextMenu={(selectedRanges: Range[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRanges, menuOptions)}
-                cellTemplates={{}}
-                customFocuses={this.state.focuses}
-            />
+            {this.state.records.length > 0 && this.state.fields.length > 0 &&
+                <DynaGrid style={{ position: 'absolute', top: 50, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
+                    cellMatrixProps={this.generateCellMatrix()}
+                    onDataChanged={changes => this.handleDataChanges(changes)}
+                    onRowContextMenu={(selectedRowIds: Id[], menuOptions: MenuOption[]) => this.handleRowContextMenu(selectedRowIds, menuOptions)}
+                    onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
+                    onRangeContextMenu={(selectedRanges: Range[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRanges, menuOptions)}
+                    cellTemplates={{}}
+                    customFocuses={this.state.focuses}
+                />}
         </div>
         );
     }
