@@ -125,8 +125,6 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                         orientation={this.state.lineOrientation}
                         cellMatrix={this.state.cellMatrix}
                         shadowSize={this.state.shadowSize}
-                        verticalOffset={this.state.viewportElement ? this.state.viewportElement.offsetTop : 0}
-                        horizontalOffset={this.state.viewportElement ? this.state.viewportElement.offsetLeft : 0}
                     />
                     <ContextMenu
                         state={this.state}

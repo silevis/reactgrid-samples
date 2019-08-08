@@ -2,8 +2,8 @@ import * as React from 'react';
 import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 
-let COL_COUNT = 5;
-let ROW_COUNT = 7;
+let COL_COUNT = 20;
+let ROW_COUNT = 100;
 
 function genId(): string {
     return Math.random().toString(36).substr(2, 9);

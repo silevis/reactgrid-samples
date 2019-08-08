@@ -14,40 +14,43 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
     let lastKeyCode = props.state.lastKeyCode;
 
     React.useEffect(() => setPosition(calculatedEditorPosition(location, props.state)), []);
-
     return (
-        <div
-            style={{
-                boxSizing: 'border-box',
-                position: 'fixed',
-                top: position.top + props.state.viewportElement.offsetTop - 1,
-                left: position.left + props.state.viewportElement.offsetLeft - 1,
-                height: location.row.height + 1,
-                width: location.col.width + 1,
-                paddingTop: 1,
-                border: '2px #3579f8 solid',
-                background: 'white',
-                boxShadow: '1px 1px 6px rgba(0, 0, 0, 0.2)',
-                zIndex: 5
-            }}
-            onBlur={() => { if (lastKeyCode !== keyCodes.ESC) props.state.updateState(state => trySetDataAndAppendChange(state, location, cellData)) }}
-            onKeyDown={e => {
-                const input: HTMLInputElement = e.target as HTMLInputElement;
-                lastKeyCode = e.keyCode;
+        <div style={{
+            position: 'absolute',
+            top: position.top + props.state.viewportElement.clientTop - 1,
+            left: position.left + props.state.viewportElement.offsetLeft - 1,
+        }}>
+            <div
+                style={{
+                    boxSizing: 'border-box',
+                    position: 'fixed',
+                    height: location.row.height + 1,
+                    width: location.col.width + 1,
+                    paddingTop: 1,
+                    border: '2px #3579f8 solid',
+                    background: 'white',
+                    boxShadow: '1px 1px 6px rgba(0, 0, 0, 0.2)',
+                    zIndex: 5
+                }}
+                onBlur={() => { if (lastKeyCode !== keyCodes.ESC) props.state.updateState(state => trySetDataAndAppendChange(state, location, cellData)) }}
+                onKeyDown={e => {
+                    const input: HTMLInputElement = e.target as HTMLInputElement;
+                    lastKeyCode = e.keyCode;
 
-                if (e.keyCode !== keyCodes.ENTER && e.keyCode !== keyCodes.ESC && e.keyCode !== keyCodes.TAB &&
-                    (e.keyCode === keyCodes.RIGHT_ARROW || e.keyCode === keyCodes.DOWN_ARROW) && input.selectionEnd! < input.value.length ||
-                    (e.keyCode === keyCodes.LEFT_ARROW || e.keyCode === keyCodes.UP_ARROW) && input.selectionEnd! > 0) {
-                    e.stopPropagation();
-                }
-            }}
-        >
-            {props.state.cellTemplates[cellData.type].renderContent({
-                cellData: props.state.cellTemplates[cellData.type].validate(cellData.data),
-                isInEditMode: true,
-                lastKeyCode: lastKeyCode,
-                onCellDataChanged: (cd) => { setCellData({ data: cd, type: cellData.type }) }
-            })}
+                    if (e.keyCode !== keyCodes.ENTER && e.keyCode !== keyCodes.ESC && e.keyCode !== keyCodes.TAB &&
+                        (e.keyCode === keyCodes.RIGHT_ARROW || e.keyCode === keyCodes.DOWN_ARROW) && input.selectionEnd! < input.value.length ||
+                        (e.keyCode === keyCodes.LEFT_ARROW || e.keyCode === keyCodes.UP_ARROW) && input.selectionEnd! > 0) {
+                        e.stopPropagation();
+                    }
+                }}
+            >
+                {props.state.cellTemplates[cellData.type].renderContent({
+                    cellData: props.state.cellTemplates[cellData.type].validate(cellData.data),
+                    isInEditMode: true,
+                    lastKeyCode: lastKeyCode,
+                    onCellDataChanged: (cd) => { setCellData({ data: cd, type: cellData.type }) }
+                })}
+            </div>
         </div>
     )
 }

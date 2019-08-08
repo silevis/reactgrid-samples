@@ -6,8 +6,6 @@ interface ShadowProps {
     orientation: Orientation;
     cellMatrix: CellMatrix;
     shadowSize: number;
-    verticalOffset: number;
-    horizontalOffset: number;
 }
 
 
