@@ -61,14 +61,8 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
         return (
             <div
                 className="dyna-grid"
-                onPointerDown={this.pointerDownHandler}
-                onContextMenu={this.handleContextMenu}
                 onKeyDown={this.keyDownHandler}
                 onKeyUp={this.keyUpHandler}
-                onCopy={this.copyHandler}
-                onCut={this.cutHandler}
-                onPaste={this.pasteHandler}
-                onPasteCapture={this.pasteCaptureHandler}
                 style={{ ...this.props.style }}
             >
                 <div
@@ -84,6 +78,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                         overflow: 'auto'
                     }}
                     onScroll={this.scrollHandler}
+
                 >
                     <div
                         data-cy="dyna-grid"
@@ -91,6 +86,12 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                         style={{
                             width: matrix.width, height: matrix.height, position: 'relative', outline: 'none'
                         }}
+                        onPointerDown={this.pointerDownHandler}
+                        onCopy={this.copyHandler}
+                        onCut={this.cutHandler}
+                        onPaste={this.pasteHandler}
+                        onPasteCapture={this.pasteCaptureHandler}
+                        onContextMenu={this.handleContextMenu}
                     >
                         {matrix.frozenTopRange.height > 0 &&
                             <PaneRow
