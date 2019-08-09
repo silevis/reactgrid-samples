@@ -9,6 +9,7 @@ import { Line } from "./Line";
 import { Shadow } from "./Shadow";
 import { updateSelectedRows, updateSelectedColumns } from "../Functions/updateState";
 import { ContextMenu } from "./ContextMenu";
+import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from "constants";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
 
@@ -59,82 +60,88 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
         const matrix = this.state.cellMatrix;
         return (
             <div
-                className="dyna-grid dg-viewport"
-                ref={this.viewportElementRefHandler}
-                style={{
-                    ...this.props.style,
-                    MozUserSelect: 'none',
-                    WebkitUserSelect: 'none',
-                    msUserSelect: 'none',
-                    userSelect: 'none',
-                    overflow: 'auto'
-                }}
-                onScroll={this.scrollHandler}
+                className="dyna-grid"
+                onPointerDown={this.pointerDownHandler}
+                onContextMenu={this.handleContextMenu}
+                onKeyDown={this.keyDownHandler}
+                onKeyUp={this.keyUpHandler}
+                onCopy={this.copyHandler}
+                onCut={this.cutHandler}
+                onPaste={this.pasteHandler}
+                onPasteCapture={this.pasteCaptureHandler}
+                style={{ ...this.props.style }}
             >
                 <div
-                    data-cy="dyna-grid"
-                    className="dg-content"
+                    className="dg-viewport"
+                    ref={this.viewportElementRefHandler}
                     style={{
-                        width: matrix.width, height: matrix.height, position: 'relative', outline: 'none'
+                        position: 'absolute',
+                        top: 0, left: 0, right: 0, bottom: 0,
+                        MozUserSelect: 'none',
+                        WebkitUserSelect: 'none',
+                        msUserSelect: 'none',
+                        userSelect: 'none',
+                        overflow: 'auto'
                     }}
-                    onPointerDown={this.pointerDownHandler}
-                    onContextMenu={this.handleContextMenu}
-                    onKeyDown={this.keyDownHandler}
-                    onKeyUp={this.keyUpHandler}
-                    onCopy={this.copyHandler}
-                    onCut={this.cutHandler}
-                    onPaste={this.pasteHandler}
-                    onPasteCapture={this.pasteCaptureHandler}
+                    onScroll={this.scrollHandler}
                 >
-                    {matrix.frozenTopRange.height > 0 &&
-                        <PaneRow
-                            id='T'
+                    <div
+                        data-cy="dyna-grid"
+                        className="dg-content"
+                        style={{
+                            width: matrix.width, height: matrix.height, position: 'relative', outline: 'none'
+                        }}
+                    >
+                        {matrix.frozenTopRange.height > 0 &&
+                            <PaneRow
+                                id='T'
+                                state={this.state}
+                                style={{ background: 'white', top: 0, position: 'sticky' }}
+                                range={matrix.frozenTopRange}
+                                borders={{ bottom: true }}
+                                zIndex={3}
+                            />}
+                        {matrix.scrollableRange.height > 0 && this.state.visibleRange &&
+                            <PaneRow
+                                id='M'
+                                state={this.state}
+                                style={{ height: matrix.scrollableRange.height }}
+                                range={matrix.scrollableRange.slice(this.state.visibleRange, 'rows')}
+                                borders={{}}
+                                zIndex={0}
+                            />}
+                        {matrix.frozenBottomRange.height > 0 &&
+                            <PaneRow
+                                id='B'
+                                state={this.state}
+                                style={{ background: 'white', bottom: 0, position: 'sticky' }}
+                                range={matrix.frozenBottomRange}
+                                borders={{ top: true }}
+                                zIndex={3}
+                            />}
+                        <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} />
+                        <Line
+                            linePosition={this.state.linePosition}
+                            orientation={this.state.lineOrientation}
+                            cellMatrix={this.state.cellMatrix}
+                        />
+                        <Shadow
+                            shadowPosition={this.state.shadowPosition}
+                            orientation={this.state.lineOrientation}
+                            cellMatrix={this.state.cellMatrix}
+                            shadowSize={this.state.shadowSize}
+                        />
+                        <ContextMenu
                             state={this.state}
-                            style={{ background: 'white', top: 0, position: 'sticky' }}
-                            range={matrix.frozenTopRange}
-                            borders={{ bottom: true }}
-                            zIndex={3}
-                        />}
-                    {matrix.scrollableRange.height > 0 && this.state.visibleRange &&
-                        <PaneRow
-                            id='M'
-                            state={this.state}
-                            style={{ height: matrix.scrollableRange.height }}
-                            range={matrix.scrollableRange.slice(this.state.visibleRange, 'rows')}
-                            borders={{}}
-                            zIndex={0}
-                        />}
-                    {matrix.frozenBottomRange.height > 0 &&
-                        <PaneRow
-                            id='B'
-                            state={this.state}
-                            style={{ background: 'white', bottom: 0, position: 'sticky' }}
-                            range={matrix.frozenBottomRange}
-                            borders={{ top: true }}
-                            zIndex={3}
-                        />}
-                    <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={this.hiddenElementRefHandler} />
-                    {this.state.isFocusedCellInEditMode && this.state.currentlyEditedCell && <CellEditor state={this.state} />}
-                    <Line
-                        linePosition={this.state.linePosition}
-                        orientation={this.state.lineOrientation}
-                        cellMatrix={this.state.cellMatrix}
-                    />
-                    <Shadow
-                        shadowPosition={this.state.shadowPosition}
-                        orientation={this.state.lineOrientation}
-                        cellMatrix={this.state.cellMatrix}
-                        shadowSize={this.state.shadowSize}
-                    />
-                    <ContextMenu
-                        state={this.state}
-                        onRowContextMenu={(_, menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(this.state.selectedIds, menuOptions) : []}
-                        onColumnContextMenu={(_, menuOptions: MenuOption[]) => this.props.onColumnContextMenu ? this.props.onColumnContextMenu(this.state.selectedIds, menuOptions) : []}
-                        onRangeContextMenu={(_, menuOptions: MenuOption[]) => this.props.onRangeContextMenu ? this.props.onRangeContextMenu(this.state.selectedRanges, menuOptions) : []}
-                        contextMenuPosition={this.state.contextMenuPosition}
-                    />
-                </div>
-            </div >
+                            onRowContextMenu={(_, menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(this.state.selectedIds, menuOptions) : []}
+                            onColumnContextMenu={(_, menuOptions: MenuOption[]) => this.props.onColumnContextMenu ? this.props.onColumnContextMenu(this.state.selectedIds, menuOptions) : []}
+                            onRangeContextMenu={(_, menuOptions: MenuOption[]) => this.props.onRangeContextMenu ? this.props.onRangeContextMenu(this.state.selectedRanges, menuOptions) : []}
+                            contextMenuPosition={this.state.contextMenuPosition}
+                        />
+                    </div>
+                </div >
+                {this.state.isFocusedCellInEditMode && this.state.currentlyEditedCell && <CellEditor state={this.state} />}
+            </div>
         );
     }
 

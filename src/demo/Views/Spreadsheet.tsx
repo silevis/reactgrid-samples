@@ -95,16 +95,21 @@ class VirtualUser {
 
 }
 
-export class Spreadsheet extends React.Component<{}, SpreadsheetState> {
+interface SpreadsheetProps {
+    columnCount: number;
+    rowCount: number
+}
 
-    constructor(props: {}) {
+export class Spreadsheet extends React.Component<SpreadsheetProps, SpreadsheetState> {
+
+    constructor(props: SpreadsheetProps) {
         super(props);
 
         let cnt = 0;
-        const fields = new Array(COL_COUNT).fill(125).map((width, idx) => ({ id: genId(), width }));
+        const fields = new Array(props.columnCount).fill(125).map((width, idx) => ({ id: genId(), width }));
         this.state = {
             fields,
-            records: new Array(ROW_COUNT).fill(0).map(() => fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: genId(), data: {} })),
+            records: new Array(props.rowCount).fill(0).map(() => fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: genId(), data: {} })),
             focuses: []
         }
     }
@@ -146,7 +151,7 @@ export class Spreadsheet extends React.Component<{}, SpreadsheetState> {
                     : colIdx === 0 ? { data: record.data[field.id], type: 'text' }
                         : { data: record.data[field.id], type: 'text' })
         }));
-        return ({ frozenTopRows: 0, frozenLeftColumns: 0, frozenBottomRows: 0, frozenRightColumns: 0, rows, columns })
+        return ({ frozenTopRows: 0, frozenLeftColumns: 0, frozenBottomRows: 1, frozenRightColumns: 1, rows, columns })
     }
 
     private calculateColumnReorder(colIdxs: number[], direction: string, destination: number) {

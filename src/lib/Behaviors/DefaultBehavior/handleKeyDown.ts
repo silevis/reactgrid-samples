@@ -3,6 +3,7 @@ import { focusLocation } from "../../Functions";
 import { handleResizeSelectionWithKeys } from "./handleResizeSelectionWithKeys";
 import { handleKeyNavigationInsideSelection as handleKeyNavigationInsideSelection } from "./handleKeyNavigationInsideSelection";
 import { trySetDataAndAppendChange } from "../../Functions/trySetDataAndAppendChange";
+
 export function handleKeyDown(state: State, event: KeyboardEvent): State {
     const focusedLocation = state.focusedLocation!;
     const key: string = event.key;
@@ -102,6 +103,7 @@ function focusCell(colIdx: number, rowIdx: number, state: State): State {
 function handleArrows(event: KeyboardEvent, state: State): State {
     const focusedLocation = state.focusedLocation!;
     const cellMatrix = state.cellMatrix;
+    event.preventDefault();
     if (!event.shiftKey) {
         if (event.keyCode === keyCodes.LEFT_ARROW && focusedLocation.col.idx > 0) {
             return focusCell(focusedLocation.col.idx - 1, focusedLocation.row.idx, state);
@@ -244,6 +246,14 @@ function handleEnterKey(event: KeyboardEvent, state: State, shiftPressed: boolea
         return focusCell(focusedLocation.col.idx, focusedLocation.row.idx - 1, state);
     }
     else {
+        return focusLocation(
+            state,
+            cellMatrix.getLocation(
+                focusedLocation.row.idx,
+                focusedLocation.col.idx
+            ),
+            true
+        );
         // state.currentBehavior.handleKeyDown(event)
         // TODO
         // return this.innerBehavior.handleKeyDown(event);

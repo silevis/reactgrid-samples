@@ -204,7 +204,7 @@ export default class Demo extends React.Component<{}, { gridType: 'planning' | '
                     records={this.records}
                     fields={this.fields}
                 />} */}
-                {<Spreadsheet />}
+                {<Spreadsheet columnCount={7} rowCount={20} />}
 
                 {/* {state.gridType === 'planning' && <PlanningDataGrid
                     groups={this.planningGroups}
