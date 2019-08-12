@@ -32,11 +32,7 @@ export class ColumnReorderBehavior extends Behavior {
     }
 
     getShadowPosition(location: PointerLocation, state: State): number {
-        const cellMatrixX =
-            state.cellMatrix.cols
-                .filter(col => col.idx < location.col.idx)
-                .reduce((prev: number, curr: Column) => prev + curr.width, 0);
-        const x = cellMatrixX + location.cellX - this.pointerOffset;
+        const x = location.viewportX + state.viewportElement.scrollLeft - this.pointerOffset;
         const max = state.cellMatrix.width - state.shadowSize;
         if (x < 0) {
             return 0;
