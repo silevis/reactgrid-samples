@@ -1,4 +1,4 @@
-import { State, Behavior, PointerEvent, PointerLocation, Direction } from '../Common';
+import { State, Behavior, PointerEvent, PointerLocation, Direction, Row } from '../Common';
 
 export class RowReorderBehavior extends Behavior {
     private initialRowIdx!: number;
@@ -33,8 +33,12 @@ export class RowReorderBehavior extends Behavior {
     }
 
     getShadowPosition(location: PointerLocation, state: State): number {
-        const y = location.viewportY - this.pointerOffset;
-        const max = Math.min(state.viewportElement.clientHeight, state.cellMatrix.height) - state.shadowSize;
+        const cellMatrixY =
+            state.cellMatrix.rows
+                .filter(row => row.idx < location.row.idx)
+                .reduce((prev: number, curr: Row) => prev + curr.height, 0);
+        const y = cellMatrixY + location.cellY - this.pointerOffset;
+        const max = state.cellMatrix.height - state.shadowSize;
         if (y < 0) {
             return 0;
         } else if (y > max) {
@@ -47,9 +51,12 @@ export class RowReorderBehavior extends Behavior {
         const dropLocation = this.getLastPossibleDropLocation(location)
         if (!dropLocation) return state;
         const drawRight = dropLocation.row.idx > this.initialRowIdx;
+        const linePosition = Math.min(dropLocation.viewportY - dropLocation.cellY + (drawRight ? dropLocation.row.height : 0) + state.viewportElement.scrollTop,
+            state.visibleRange.height + state.cellMatrix.frozenTopRange.height + state.cellMatrix.frozenBottomRange.height + state.viewportElement.scrollTop
+        )
         return {
             ...state,
-            linePosition: dropLocation.viewportY - dropLocation.cellY + (drawRight ? dropLocation.row.height : 0)
+            linePosition
         }
     }
 
