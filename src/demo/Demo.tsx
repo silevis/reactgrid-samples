@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Spreadsheet } from './Views/Spreadsheet';
+import { DynaGridDemo } from './Views/DynaGridDemo';
 // import { Field } from './Views/HorizontalDataGrid';
 // import { PlanningGroup, PlanningItem, PlanningRecord } from './Views/PlanningDataGrid';
 
@@ -204,7 +205,9 @@ export default class Demo extends React.Component<{}, { gridType: 'planning' | '
                     records={this.records}
                     fields={this.fields}
                 />} */}
-                {<Spreadsheet columnCount={7} rowCount={20} />}
+
+                {/* {<Spreadsheet columnCount={7} rowCount={20} />} */}
+                {<DynaGridDemo/>}
 
                 {/* {state.gridType === 'planning' && <PlanningDataGrid
                     groups={this.planningGroups}

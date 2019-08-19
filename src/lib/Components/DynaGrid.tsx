@@ -9,7 +9,6 @@ import { Line } from "./Line";
 import { Shadow } from "./Shadow";
 import { updateSelectedRows, updateSelectedColumns } from "../Functions/updateState";
 import { ContextMenu } from "./ContextMenu";
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from "constants";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
 
@@ -38,6 +37,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
 
         if (state.visibleRange && dataHasChanged)
             state = recalcVisibleRange(state)
+
 
         return {
             ...state,
