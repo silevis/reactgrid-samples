@@ -42,20 +42,25 @@ class GridContent extends React.Component<RowsProps>{
             </>
         )
     }
-}
+} 
 
-export const Pane: React.FunctionComponent<PaneProps> = (props) =>
-    <div key={props.id} className="dg-pane" style={{ position: 'relative', width: props.range.width, height: '100%', ...props.style }}>
+export const Pane: React.FunctionComponent<PaneProps> = (props) =>{
+    console.log(props)
+    return(
+        <div key={props.id} className="dg-pane" style={{ position: 'relative', width: props.range.width, height: '100%', ...props.style }}>
         <GridContent state={props.state} range={props.range} borders={props.borders} />
         {renderSelectedRanges(props.state, props.range)}
         {props.state.currentBehavior.renderPanePart(props.state, props.range)}
-        {props.state.customFocuses.map((focus, id) => props.range.contains(props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)) &&
+        {props.state.customFocuses && props.state.customFocuses.map((focus, id) => props.range.contains(props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)) &&
             <CellFocus key={id} location={props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)} color={focus.color} />)}
         {props.state.focusedLocation && props.range.contains(props.state.focusedLocation) &&
             <CellFocus location={props.state.focusedLocation} />}
         {props.state.selectedRanges[props.state.activeSelectedRangeIdx] && props.range.contains(props.state.selectedRanges[props.state.activeSelectedRangeIdx].last) &&
             <FillHandle state={props.state} location={props.state.selectedRanges[props.state.activeSelectedRangeIdx].last} />}
     </div>
+    )
+}
+   
 
 function renderSelectedRanges(state: State, pane: Range) {
     return state.selectedRanges.map((range, i) => !(state.focusedLocation && range.contains(state.focusedLocation) && range.cols.length === 1 && range.rows.length === 1) && pane.intersectsWith(range) && <PartialArea key={i} pane={pane} range={range} style={{
