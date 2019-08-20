@@ -37,8 +37,8 @@ interface Record {
 }
 
 interface IDynaGridDemoState {
-    fields: any;
-    records: any;
+    fields: Column[];
+    records: Record[];
     focuses: any;
     // ... TODO zmodyfikowac any -> na typ tablicwy
 }
@@ -170,12 +170,6 @@ class VirtualUser {
         state = { ...state, focuses: [...focuses, { colId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, color: this.color }] }
     }
 
-    // updateField2(state: IDynaGridDemoState) {
-    //     if (state.fields[this.focusX] == undefined || state.records[this.focusY] == undefined)
-    //                 break;
-    //             state = { ...handleData([{ columnId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, type: 'text', initialData: '', newData: getRandomWord() }]), focuses: state.focuses }
-    // }
-
     makeChanges(state: IDynaGridDemoState, handleData: (data: any) => IDynaGridDemoState) {
         switch (this.count++) {
             case 0:
@@ -208,34 +202,40 @@ class VirtualUser {
 }
 
 export class DynaGridDemo extends React.Component {
-    
+
     state = {
         fields: [...fields],
         records: [...records],
         focuses: [],
+        virtualUsers: false,
+        resizing: false,
+        reordering: false,
+        frozenPanes: false,
     }
 
     intervalId: number = 0;
 
     componentDidMount() {
-        const virtEnv: VirtualEnv = new VirtualEnv(this.state, this.prepareDataChanges);
+        if (this.state.virtualUsers) {
+            const virtEnv: VirtualEnv = new VirtualEnv(this.state, this.prepareDataChanges);
 
-        virtEnv
-            .addUser(new VirtualUser('#fff700')) 
-            .addUser(new VirtualUser('#03fceb'))
-            .addUser(new VirtualUser('#5b5b73'));
+            virtEnv
+                .addUser(new VirtualUser('#fff700'))
+                .addUser(new VirtualUser('#03fceb'))
+                .addUser(new VirtualUser('#5b5b73'));
 
-        this.intervalId = window.setInterval(() => { 
-            let state = virtEnv.updateView();
-            this.setState(state);
-        }, 1000)
+            this.intervalId = window.setInterval(() => {
+                let state = virtEnv.updateView();
+                this.setState(state);
+            }, 1000)
+        }
     }
 
     componentWillUnmount() {
         window.clearInterval(this.intervalId)
     }
 
-    private generateMatrix(): CellMatrixProps  {
+    private generateMatrix(): CellMatrixProps {
         const columns: ColumnProps[] = this.state.fields.map((field, idx) => ({
             id: field.id,
             width: field.width,
@@ -249,11 +249,11 @@ export class DynaGridDemo extends React.Component {
             id: record.id,
             height: 25,
             reorderable: true,
-            cells: this.state.fields.map(field => {return {data: record[field.name], type: rowIdx == 0 ? 'header' : field.type }}),
+            cells: this.state.fields.map(field => { return { data: record[field.name], type: rowIdx == 0 ? 'header' : field.type } }),
             onDrop: (ids) => this.reorderRows(ids as number[], rowIdx),
         }))
-        
-        return {columns, rows}
+
+        return { columns, rows }
     }
 
 
@@ -264,15 +264,15 @@ export class DynaGridDemo extends React.Component {
     private prepareDataChanges = (dataChanges: DataChange[]) => {
         const state = { ...this.state }
         dataChanges.forEach(change => {
-            state.records.forEach(r =>  {
-               if (r.id == change.rowId){
-                   const field = this.state.fields.find(c => c.id == change.columnId)
-                   if (field !== undefined){
-                       r[field.name] = change.newData;
-                   }
+            state.records.forEach(r => {
+                if (r.id == change.rowId) {
+                    const field = this.state.fields.find(c => c.id == change.columnId)
+                    if (field !== undefined) {
+                        r[field.name] = change.newData;
+                    }
                 }
             })
-        })   
+        })
         return state
     }
 
@@ -303,11 +303,25 @@ export class DynaGridDemo extends React.Component {
         this.setState({ records: clearedRecords })
     }
 
-    render(){
-        return <DynaGrid 
-                cellMatrixProps={this.generateMatrix()}
-                onDataChanged={changes => this.handleDataChanges(changes)}
-                customFocuses={this.state.focuses} />
+    render() {
+        return <div>
+            <ul>
+                <li>siema</li>
+                <li>siema</li>
+                <li>siema</li>
+            </ul>
+            <div style={{
+                position: 'absolute',
+                width: '100%',
+                height: '50%'
+            }}>
+                <DynaGrid
+                    cellMatrixProps={this.generateMatrix()}
+                    onDataChanged={changes => this.handleDataChanges(changes)}
+                    customFocuses={this.state.focuses}
+                />
+            </div>
+        </div>
     }
 }
 
