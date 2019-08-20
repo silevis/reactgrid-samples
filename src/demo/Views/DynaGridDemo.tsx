@@ -1,24 +1,7 @@
 import * as React from 'react';
 import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
-
-function getRandomInt(min: number, max: number) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min)) + min;
-}
-
-function getRandomWord() {
-    const words = [
-        'SHARED',
-        'GRID',
-        'REACT',
-        'RAPID',
-        'RELIABLE',
-    ]
-    return words[getRandomInt(0, words.length)]
-}
-
+import { VirtualEnv, VirtualUser } from '../../lib/Common/VirtualUser';
 interface Column {
     id: number;
     name: string;
@@ -36,9 +19,9 @@ interface Record {
     onHoliday: boolean;
 }
 
-interface IDynaGridDemoState {
-    fields: Column[];
-    records: Record[];
+export interface IDynaGridDemoState {
+    fields: any;
+    records: any;
     focuses: any;
     // ... TODO zmodyfikowac any -> na typ tablicwy
 }
@@ -127,79 +110,7 @@ const records: any[] = [
     },
 ]
 
-class VirtualEnv {
 
-    handleData: (data: any) => IDynaGridDemoState;
-    private virtualUsers: VirtualUser[] = [];
-    state: IDynaGridDemoState;
-
-    constructor(state: IDynaGridDemoState, handleData: (data: any) => IDynaGridDemoState) {
-        this.state = state;
-        this.handleData = handleData;
-    }
-
-    addUser(virtualUser: VirtualUser): VirtualEnv {
-        this.virtualUsers = [... this.virtualUsers, virtualUser]
-        return this;
-    }
-
-    updateView = () => {
-        let modifiedState: IDynaGridDemoState = this.state;
-        this.virtualUsers.forEach(virtualUser => {
-            modifiedState = virtualUser.makeChanges(modifiedState, this.handleData);
-        });
-        return modifiedState
-    }
-}
-
-class VirtualUser {
-
-    color: string;
-
-    constructor(color: string) {
-        this.color = color;
-    }
-    private count = 0;
-    private focusX = 0;
-    private focusY = 0;
-
-    updateField(state: IDynaGridDemoState) {
-        this.focusX = getRandomInt(1, state.fields.length)
-        this.focusY = getRandomInt(1, state.records.length)
-        var focuses = [...state.focuses].filter(f => f.color !== this.color)
-        state = { ...state, focuses: [...focuses, { colId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, color: this.color }] }
-    }
-
-    makeChanges(state: IDynaGridDemoState, handleData: (data: any) => IDynaGridDemoState) {
-        switch (this.count++) {
-            case 0:
-                this.updateField(state);
-                break;
-            case 1:
-                if (state.fields[this.focusX] == undefined || state.records[this.focusY] == undefined)
-                    break;
-                state = { ...handleData([{ columnId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, type: 'text', initialData: '', newData: getRandomWord() }]), focuses: state.focuses }
-                break;
-            case 2:
-                break;
-            case 3:
-                this.focusX = getRandomInt(1, state.fields.length)
-                this.focusY = getRandomInt(1, state.records.length)
-                var focuses = [...state.focuses].filter(f => f.color !== this.color)
-                state = { ...state, focuses: [...focuses, { colId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, color: this.color }] }
-                break;
-            case 4:
-                if (state.fields[this.focusX] == undefined || state.records[this.focusY] == undefined)
-                    break;
-                state = { ...handleData([{ columnId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, type: 'text', initialData: '', newData: getRandomWord() }]), focuses: state.focuses }
-                break;
-            case 5:
-                this.count = 0;
-                break;
-        }
-        return state;
-    }
-}
 
 export class DynaGridDemo extends React.Component {
 
@@ -213,26 +124,24 @@ export class DynaGridDemo extends React.Component {
         frozenPanes: false,
     }
 
-    intervalId: number = 0;
+    // intervalId: number = 0;
 
     componentDidMount() {
-        if (this.state.virtualUsers) {
-            const virtEnv: VirtualEnv = new VirtualEnv(this.state, this.prepareDataChanges);
+        // const virtEnv: VirtualEnv = new VirtualEnv(this.state, this.prepareDataChanges);
 
-            virtEnv
-                .addUser(new VirtualUser('#fff700'))
-                .addUser(new VirtualUser('#03fceb'))
-                .addUser(new VirtualUser('#5b5b73'));
+        // virtEnv
+        //     .addUser(new VirtualUser('#fff700')) 
+        //     .addUser(new VirtualUser('#03fceb'))
+        //     .addUser(new VirtualUser('#5b5b73'));
 
-            this.intervalId = window.setInterval(() => {
-                let state = virtEnv.updateView();
-                this.setState(state);
-            }, 1000)
-        }
+        // this.intervalId = window.setInterval(() => { 
+        //     let state = virtEnv.updateView();
+        //     this.setState(state);
+        // }, 1000)
     }
 
     componentWillUnmount() {
-        window.clearInterval(this.intervalId)
+        // window.clearInterval(this.intervalId)
     }
 
     private generateMatrix(): CellMatrixProps {
