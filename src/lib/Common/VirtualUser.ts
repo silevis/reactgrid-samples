@@ -38,7 +38,6 @@ export class VirtualEnv {
 
     updateView = () => {
         let modifiedState: IDynaGridDemoState = this.state;
-        modifiedState.virtualUsers = true;
         this.virtualUsers.forEach(virtualUser => {
             modifiedState = virtualUser.makeChanges(modifiedState, this.handleData);
         });
@@ -71,6 +70,7 @@ export class VirtualUser {
     }
 
     makeChanges(state: IDynaGridDemoState, handleData: (data: any) => IDynaGridDemoState) {
+        state = { ...state, virtualUsers: true }
         switch (this.count++) {
             case 0:
                 state = this.updateFocusesState(state);

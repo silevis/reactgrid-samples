@@ -132,6 +132,7 @@ export class DynaGridDemo extends React.Component {
     intervalId: number = 0;
 
     private setVirtualEnv() {
+        this.setState({ virtualUsers: true })
         const virtEnv: VirtualEnv = new VirtualEnv(this.state, this.prepareDataChanges);
 
         virtEnv
@@ -140,15 +141,15 @@ export class DynaGridDemo extends React.Component {
             .addUser(new VirtualUser('#5b5b73'));
 
         this.intervalId = window.setInterval(() => {
-            let state = virtEnv.updateView();
+            const state = virtEnv.updateView();
             this.setState(state);
         }, 1000)
 
     }
 
     private unsetVirtualEnv() {
+        this.setState({ virtualUsers: false, focuses: [] });
         window.clearInterval(this.intervalId)
-        this.setState({ virtualUsers: false });
     }
 
     private generateMatrix(): CellMatrixProps {
