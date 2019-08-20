@@ -239,8 +239,8 @@ export class DynaGridDemo extends React.Component {
         const columns: ColumnProps[] = this.state.fields.map((field, idx) => ({
             id: field.id,
             width: field.width,
-            reorderable: true,
-            resizable: true,
+            reorderable: this.state.reordering,
+            resizable: this.state.resizing,
             onDrop: (ids) => this.reorderColumns(ids as number[], idx),
             onResize: width => { this.state.fields[idx].width = width, this.forceUpdate(); }
         }));
@@ -248,12 +248,12 @@ export class DynaGridDemo extends React.Component {
         const rows: RowProps[] = this.state.records.map((record, rowIdx) => ({
             id: record.id,
             height: 25,
-            reorderable: true,
+            reorderable: this.state.resizing,
             cells: this.state.fields.map(field => { return { data: record[field.name], type: rowIdx == 0 ? 'header' : field.type } }),
             onDrop: (ids) => this.reorderRows(ids as number[], rowIdx),
         }))
-
-        return { columns, rows }
+        const frozenPanes = { frozenBottomRows: 1, frozenLeftColumns: 1, frozenRightColumns: 1, frozenTopRows: 1 }
+        return Object.assign({ columns, rows }, this.state.frozenPanes ? frozenPanes : {})
     }
 
 
@@ -306,9 +306,10 @@ export class DynaGridDemo extends React.Component {
     render() {
         return <div>
             <ul>
-                <li>siema</li>
-                <li>siema</li>
-                <li>siema</li>
+                <li>resize <button onClick={() => this.setState({ resizing: !this.state.resizing })}>{this.state.resizing ? 'on' : 'off'}</button></li>
+                <li>reorder<button onClick={() => this.setState({ reordering: !this.state.reordering })}>{this.state.reordering ? 'on' : 'off'}</button></li>
+                <li>frozenPanes<button onClick={() => this.setState({ frozenPanes: !this.state.frozenPanes })}>{this.state.frozenPanes ? 'on' : 'off'}</button></li>
+                <li>virtualUsers<button onClick={() => { this.setState({ virtualUsers: !this.state.virtualUsers }); this.forceUpdate() }}>{this.state.virtualUsers ? 'on' : 'off'}</button></li>
             </ul>
             <div style={{
                 position: 'absolute',
