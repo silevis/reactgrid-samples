@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Spreadsheet } from './Views/Spreadsheet';
-import { ReactGridDemo } from './Views/ReactGridDemo';
 // import { Field } from './Views/HorizontalDataGrid';
 // import { PlanningGroup, PlanningItem, PlanningRecord } from './Views/PlanningDataGrid';
 
