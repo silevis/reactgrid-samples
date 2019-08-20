@@ -2,6 +2,23 @@ import * as React from 'react';
 import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 
+function getRandomInt(min: number, max: number) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function getRandomWord() {
+    const words = [
+        'SHARED',
+        'GRID',
+        'REACT',
+        'RAPID',
+        'RELIABLE',
+    ]
+    return words[getRandomInt(0, words.length)]
+}
+
 interface Column {
     id: number;
     name: string;
@@ -17,6 +34,13 @@ interface Record {
     country: string;
     position: string;
     onHoliday: boolean;
+}
+
+interface IDynaGridDemoState {
+    fields: any;
+    records: any;
+    focuses: any;
+    // ... TODO zmodyfikowac any -> na typ tablicwy
 }
 
 const fields: Column[] = [
@@ -83,14 +107,132 @@ const records: any[] = [
         position: 'CEO',
         onHoliday: false,
     },
+    {
+        id: 2,
+        name: 'Arkadiusz',
+        surname: "Kowalewski",
+        age: 19,
+        country: 'Czech Republic',
+        position: 'Manager',
+        onHoliday: true,
+    },
+    {
+        id: 3,
+        name: 'Marlena',
+        surname: "Zalewska",
+        age: 34,
+        country: 'South Sudan',
+        position: 'Director',
+        onHoliday: false,
+    },
 ]
+
+class VirtualEnv {
+
+    handleData: (data: any) => IDynaGridDemoState;
+    private virtualUsers: VirtualUser[] = [];
+    state: IDynaGridDemoState;
+
+    constructor(state: IDynaGridDemoState, handleData: (data: any) => IDynaGridDemoState) {
+        this.state = state;
+        this.handleData = handleData;
+    }
+
+    addUser(virtualUser: VirtualUser): VirtualEnv {
+        this.virtualUsers = [... this.virtualUsers, virtualUser]
+        return this;
+    }
+
+    updateView = () => {
+        let modifiedState: IDynaGridDemoState = this.state;
+        this.virtualUsers.forEach(virtualUser => {
+            modifiedState = virtualUser.makeChanges(modifiedState, this.handleData);
+        });
+        return modifiedState
+    }
+}
+
+class VirtualUser {
+
+    color: string;
+
+    constructor(color: string) {
+        this.color = color;
+    }
+    private count = 0;
+    private focusX = 0;
+    private focusY = 0;
+
+    updateField(state: IDynaGridDemoState) {
+        this.focusX = getRandomInt(1, state.fields.length)
+        this.focusY = getRandomInt(1, state.records.length)
+        var focuses = [...state.focuses].filter(f => f.color !== this.color)
+        state = { ...state, focuses: [...focuses, { colId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, color: this.color }] }
+    }
+
+    // updateField2(state: IDynaGridDemoState) {
+    //     if (state.fields[this.focusX] == undefined || state.records[this.focusY] == undefined)
+    //                 break;
+    //             state = { ...handleData([{ columnId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, type: 'text', initialData: '', newData: getRandomWord() }]), focuses: state.focuses }
+    // }
+
+    makeChanges(state: IDynaGridDemoState, handleData: (data: any) => IDynaGridDemoState) {
+        switch (this.count++) {
+            case 0:
+                this.updateField(state);
+                break;
+            case 1:
+                if (state.fields[this.focusX] == undefined || state.records[this.focusY] == undefined)
+                    break;
+                state = { ...handleData([{ columnId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, type: 'text', initialData: '', newData: getRandomWord() }]), focuses: state.focuses }
+                break;
+            case 2:
+                break;
+            case 3:
+                this.focusX = getRandomInt(1, state.fields.length)
+                this.focusY = getRandomInt(1, state.records.length)
+                var focuses = [...state.focuses].filter(f => f.color !== this.color)
+                state = { ...state, focuses: [...focuses, { colId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, color: this.color }] }
+                break;
+            case 4:
+                if (state.fields[this.focusX] == undefined || state.records[this.focusY] == undefined)
+                    break;
+                state = { ...handleData([{ columnId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, type: 'text', initialData: '', newData: getRandomWord() }]), focuses: state.focuses }
+                break;
+            case 5:
+                this.count = 0;
+                break;
+        }
+        return state;
+    }
+}
 
 export class DynaGridDemo extends React.Component {
     
     state = {
         fields: [...fields],
         records: [...records],
-        isLoaded: false,
+        focuses: [],
+    }
+
+    intervalId: number = 0;
+
+    componentDidMount() {
+        const virtEnv: VirtualEnv = new VirtualEnv(this.state, this.prepareDataChanges);
+
+        virtEnv
+            .addUser(new VirtualUser('#fff700')) 
+            .addUser(new VirtualUser('#03fceb'))
+            .addUser(new VirtualUser('#5b5b73'));
+
+        this.intervalId = window.setInterval(() => { 
+            let state = virtEnv.updateView();
+            this.setState(state);
+        }, 1000)
+    }
+
+    componentWillUnmount() {
+        window.clearInterval(this.intervalId)
     }
 
     private generateMatrix(): CellMatrixProps  {
@@ -99,6 +241,7 @@ export class DynaGridDemo extends React.Component {
             width: field.width,
             reorderable: true,
             resizable: true,
+            onDrop: (ids) => this.reorderColumns(ids as number[], idx),
             onResize: width => { this.state.fields[idx].width = width, this.forceUpdate(); }
         }));
 
@@ -106,10 +249,11 @@ export class DynaGridDemo extends React.Component {
             id: record.id,
             height: 25,
             reorderable: true,
-            cells: this.state.fields.map(field => {return {data: record[field.name], type: rowIdx == 0 ? 'header' : field.type }})
+            cells: this.state.fields.map(field => {return {data: record[field.name], type: rowIdx == 0 ? 'header' : field.type }}),
+            onDrop: (ids) => this.reorderRows(ids as number[], rowIdx),
         }))
         
-        return { columns, rows}
+        return {columns, rows}
     }
 
 
@@ -117,7 +261,7 @@ export class DynaGridDemo extends React.Component {
         this.setState(this.prepareDataChanges(dataChanges))
     }
 
-    private prepareDataChanges(dataChanges: DataChange[]) {
+    private prepareDataChanges = (dataChanges: DataChange[]) => {
         const state = { ...this.state }
         dataChanges.forEach(change => {
             state.records.forEach(r =>  {
@@ -128,15 +272,42 @@ export class DynaGridDemo extends React.Component {
                    }
                 }
             })
-        }
-    )   
+        })   
         return state
+    }
+
+    private calculateColumnReorder(colIdxs: number[], direction: string, destination: number) {
+        const movedColumns: Column[] = this.state.fields.filter((_, idx) => colIdxs.includes(idx));
+        const clearedFields: Column[] = this.state.fields.filter((_, idx) => !colIdxs.includes(idx));
+        if (direction === 'right') {
+            destination = destination - colIdxs.length + 1
+        }
+        clearedFields.splice(destination, 0, ...movedColumns)
+        return clearedFields
+    }
+
+    private reorderColumns(colIdxs: number[], to: number) {
+        let fields = [...this.state.fields];
+        const direction = to > colIdxs[0] ? 'right' : 'left'
+        fields = this.calculateColumnReorder(colIdxs, direction, to)
+        this.setState({ fields })
+    }
+
+    private reorderRows(rowIdxs: number[], to: number) {
+        const records = [...this.state.records];
+        const movedRecords = records.filter((_, idx) => rowIdxs.includes(idx));
+        const clearedRecords = records.filter((_, idx) => !rowIdxs.includes(idx));
+        if (to > rowIdxs[0])
+            to = to - rowIdxs.length + 1
+        clearedRecords.splice(to, 0, ...movedRecords)
+        this.setState({ records: clearedRecords })
     }
 
     render(){
         return <DynaGrid 
                 cellMatrixProps={this.generateMatrix()}
-                onDataChanged={changes => this.handleDataChanges(changes)} />
+                onDataChanged={changes => this.handleDataChanges(changes)}
+                customFocuses={this.state.focuses} />
     }
 }
 
