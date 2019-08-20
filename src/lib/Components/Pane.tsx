@@ -45,7 +45,6 @@ class GridContent extends React.Component<RowsProps>{
 } 
 
 export const Pane: React.FunctionComponent<PaneProps> = (props) =>{
-    console.log(props)
     return(
         <div key={props.id} className="dg-pane" style={{ position: 'relative', width: props.range.width, height: '100%', ...props.style }}>
         <GridContent state={props.state} range={props.range} borders={props.borders} />

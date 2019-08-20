@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {Component} from 'react';
 import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 
@@ -7,6 +6,7 @@ interface Column {
     id: number;
     name: string;
     type: string;
+    width: number;
 }
 
 interface Record {
@@ -24,57 +24,64 @@ const fields: Column[] = [
         id: 1,
         name: 'id',
         type: 'number',
+        width: 125,
     },
     {
         id: 2,
         name: 'name',
         type: 'text',
+        width: 125,
     },
     {
         id: 3,
         name: 'surname',
         type: 'text',
+        width: 125,
     },
     {
         id: 4,
         name: 'age',
         type: 'number',
+        width: 125,
     },
     {
         id: 5,
         name: 'country',
         type: 'text',
+        width: 125,
     },
     {
         id: 6,
         name: 'position',
         type: 'text',
+        width: 125,
     },
     {
         id: 7,
         name: 'onHoliday',
         type: 'checkbox',
+        width: 125,
     },
 ]
 
-const records: {[key:string]: any}[] = [
+const records: any[] = [
     {
-        'id': 'Id',
-        'name': 'Name',
-        'surname': "Surname",
-        'age': 'age',
-        'country': 'Country',
-        'position': 'Position',
-        'onHoliday': 'On Holiday',
+        id: 'Id',
+        name: 'Name',
+        surname: "Surname",
+        age: 'age',
+        country: 'Country',
+        position: 'Position',
+        onHoliday: 'On Holiday',
     },
     {
-        'id': 1,
-        'name': 'Marcin',
-        'surname': "Kowalski",
-        'age': 21,
-        'country': 'Poland',
-        'position': 'CEO',
-        'onHoliday': false,
+        id: 1,
+        name: 'Marcin',
+        surname: "Kowalski",
+        age: 21,
+        country: 'Poland',
+        position: 'CEO',
+        onHoliday: false,
     },
 ]
 
@@ -89,9 +96,10 @@ export class DynaGridDemo extends React.Component {
     private generateMatrix(): CellMatrixProps  {
         const columns: ColumnProps[] = this.state.fields.map((field, idx) => ({
             id: field.id,
-            width: 125,
+            width: field.width,
             reorderable: true,
             resizable: true,
+            onResize: width => { this.state.fields[idx].width = width, this.forceUpdate(); }
         }));
 
         const rows: RowProps[] = this.state.records.map((record, rowIdx) => ({
@@ -112,8 +120,16 @@ export class DynaGridDemo extends React.Component {
     private prepareDataChanges(dataChanges: DataChange[]) {
         const state = { ...this.state }
         dataChanges.forEach(change => {
-            state.records.forEach(r => r['id'] == change.rowId ? r['country'] = change.newData : r)
-        })
+            state.records.forEach(r =>  {
+               if (r.id == change.rowId){
+                   const field = this.state.fields.find(c => c.id == change.columnId)
+                   if (field !== undefined){
+                       r[field.name] = change.newData;
+                   }
+                }
+            })
+        }
+    )   
         return state
     }
 
