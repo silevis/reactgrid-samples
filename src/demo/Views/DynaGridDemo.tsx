@@ -2,6 +2,8 @@ import * as React from 'react';
 import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 import { VirtualEnv, VirtualUser } from '../../lib/Common/VirtualUser';
+import { any } from 'prop-types';
+import { ThemeConsumer } from 'styled-components';
 interface Column {
     id: number;
     name: string;
@@ -20,10 +22,13 @@ interface Record {
 }
 
 export interface IDynaGridDemoState {
-    fields: any;
-    records: any;
-    focuses: any;
-    // ... TODO zmodyfikowac any -> na typ tablicwy
+    fields: Column[];
+    records: Record[];
+    focuses: { colId: number, rowId: number, color: string }[];
+    virtualUsers: boolean;
+    resizing: boolean;
+    reordering: boolean;
+    frozenPanes: boolean;
 }
 
 const fields: Column[] = [
@@ -124,24 +129,26 @@ export class DynaGridDemo extends React.Component {
         frozenPanes: false,
     }
 
-    // intervalId: number = 0;
+    intervalId: number = 0;
 
-    componentDidMount() {
-        // const virtEnv: VirtualEnv = new VirtualEnv(this.state, this.prepareDataChanges);
+    private setVirtualEnv() {
+        const virtEnv: VirtualEnv = new VirtualEnv(this.state, this.prepareDataChanges);
 
-        // virtEnv
-        //     .addUser(new VirtualUser('#fff700')) 
-        //     .addUser(new VirtualUser('#03fceb'))
-        //     .addUser(new VirtualUser('#5b5b73'));
+        virtEnv
+            .addUser(new VirtualUser('#fff700'))
+            .addUser(new VirtualUser('#03fceb'))
+            .addUser(new VirtualUser('#5b5b73'));
 
-        // this.intervalId = window.setInterval(() => { 
-        //     let state = virtEnv.updateView();
-        //     this.setState(state);
-        // }, 1000)
+        this.intervalId = window.setInterval(() => {
+            let state = virtEnv.updateView();
+            this.setState(state);
+        }, 1000)
+
     }
 
-    componentWillUnmount() {
-        // window.clearInterval(this.intervalId)
+    private unsetVirtualEnv() {
+        window.clearInterval(this.intervalId)
+        this.setState({ virtualUsers: false });
     }
 
     private generateMatrix(): CellMatrixProps {
@@ -157,7 +164,7 @@ export class DynaGridDemo extends React.Component {
         const rows: RowProps[] = this.state.records.map((record, rowIdx) => ({
             id: record.id,
             height: 25,
-            reorderable: this.state.resizing,
+            reorderable: this.state.reordering,
             cells: this.state.fields.map(field => { return { data: record[field.name], type: rowIdx == 0 ? 'header' : field.type } }),
             onDrop: (ids) => this.reorderRows(ids as number[], rowIdx),
         }))
@@ -215,10 +222,10 @@ export class DynaGridDemo extends React.Component {
     render() {
         return <div>
             <ul>
-                <li>resize <button onClick={() => this.setState({ resizing: !this.state.resizing })}>{this.state.resizing ? 'on' : 'off'}</button></li>
+                <li>resize<button onClick={() => this.setState({ resizing: !this.state.resizing })}>{this.state.resizing ? 'on' : 'off'}</button></li>
                 <li>reorder<button onClick={() => this.setState({ reordering: !this.state.reordering })}>{this.state.reordering ? 'on' : 'off'}</button></li>
                 <li>frozenPanes<button onClick={() => this.setState({ frozenPanes: !this.state.frozenPanes })}>{this.state.frozenPanes ? 'on' : 'off'}</button></li>
-                <li>virtualUsers<button onClick={() => { this.setState({ virtualUsers: !this.state.virtualUsers }); this.forceUpdate() }}>{this.state.virtualUsers ? 'on' : 'off'}</button></li>
+                <li>virtualUsers<button onClick={() => { this.state.virtualUsers ? this.unsetVirtualEnv() : this.setVirtualEnv(); }}>{this.state.virtualUsers ? 'on' : 'off'}</button></li>
             </ul>
             <div style={{
                 position: 'absolute',
