@@ -141,7 +141,7 @@ export class DynaGridDemo extends React.Component {
             .addUser(new VirtualUser('#5b5b73'));
 
         this.intervalId = window.setInterval(() => {
-            const state = virtEnv.updateView();
+            const state = virtEnv.updateView(this.state);
             this.setState(state);
         }, 1000)
 
