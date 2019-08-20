@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '.';
 import { DynaGrid } from '../Components/DynaGrid';
-import {IDynaGridDemoState} from '../../demo/Views/DynaGridDemo'
+import {IDynaGridDemoState} from '../../demo/Views/DynaGridDemo';
 
 function getRandomInt(min: number, max: number) {
     min = Math.ceil(min);
