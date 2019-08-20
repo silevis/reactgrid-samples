@@ -1,7 +1,8 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import { Id, MenuOption, Location, State, Range } from '../Common';
 import { copySelectedRangeToClipboard, pasteData } from '../Behaviors/DefaultBehavior';
+import './ContextMenu.css';
+
 
 interface ContextMenuProps {
     contextMenuPosition: number[],
@@ -12,22 +13,6 @@ interface ContextMenuProps {
     onRangeContextMenu?: (selectedRanges: Range[], menuOptions: MenuOption[]) => MenuOption[];
 }
 
-const ContextMenuContainer = styled.div`
-    position: fixed;
-    background: white;
-    font-size: 13px;
-    box-shadow: 0 4px 5px 3px rgba(0, 0, 0, .2);
-    z-index: 1000;
-
-    .dg-context-menu-option {
-        padding: 10px 40px 10px 20px;
-        cursor: pointer;
-
-        &:hover {
-            background: #f2f2f2;
-        }
-    }
-`;
 
 export class ContextMenu extends React.Component<ContextMenuProps> {
     render() {
@@ -50,8 +35,8 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
 
         return (
             (contextMenuPosition[0] !== -1 && contextMenuPosition[1] !== -1 && contextMenuOptions.length > 0 &&
-                <ContextMenuContainer
-                    className="dg-context-menu"
+                <div
+                    className="dg-context-menu context-menu-container"
                     style={{
                         top: contextMenuPosition[0] + 'px',
                         left: contextMenuPosition[1] + 'px'
@@ -72,7 +57,7 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
                             </div>
                         );
                     })}
-                </ContextMenuContainer>
+                </div>
             )
         );
     }

@@ -9,7 +9,6 @@ import { Line } from "./Line";
 import { Shadow } from "./Shadow";
 import { updateSelectedRows, updateSelectedColumns } from "../Functions/updateState";
 import { ContextMenu } from "./ContextMenu";
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from "constants";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
 
@@ -23,6 +22,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
 
         state = {
             ...state,
+            floatingCellEditor: props.floatingCellEditor,
             cellMatrix: new CellMatrix(props.cellMatrixProps)
         }
 
@@ -84,7 +84,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                         data-cy="dyna-grid"
                         className="dg-content"
                         style={{
-                            width: matrix.width, height: matrix.height, position: 'relative', outline: 'none'
+                            width: matrix.width, height: matrix.height, position: 'relative', outline: 'none', fontSize: 12
                         }}
                         onPointerDown={this.pointerDownHandler}
                         onCopy={this.copyHandler}

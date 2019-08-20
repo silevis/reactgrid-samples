@@ -47,7 +47,7 @@ export class NumberCellTemplate implements CellTemplate<number> {
                 padding: 0,
                 border: 0,
                 background: 'transparent',
-                fontSize: 16,
+                fontSize: 12,
                 outline: 'none',
             }}
             ref={input => {

@@ -18,6 +18,7 @@ export class State {
     constructor(public readonly updateState: StateUpdater) { }
     readonly cellMatrix!: CellMatrix;
     readonly currentBehavior: Behavior = new DefaultBehavior();
+    readonly floatingCellEditor: boolean = false;
 
     cellTemplates: CellTemplates = {
         'text': new TextCellTemplate(),
