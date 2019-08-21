@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
-import { VirtualEnv, VirtualUser } from '../../lib/Common/VirtualUser';
+import { VirtualEnv, VirtualUser, DynaGridDataGenerator } from '../../lib/Common/VirtualUser';
 import { any } from 'prop-types';
 import { ThemeConsumer } from 'styled-components';
 interface Column {
@@ -11,7 +11,7 @@ interface Column {
     width: number;
 }
 
-interface Record {
+export interface Record {
     id: number;
     name: string;
     surname: string;
@@ -141,10 +141,16 @@ export class DynaGridDemo extends React.Component {
             .addUser(new VirtualUser('#5b5b73'));
 
         this.intervalId = window.setInterval(() => {
-            const state = virtEnv.updateView();
+            const state = virtEnv.updateView(this.state);
             this.setState(state);
         }, 1000)
 
+    }
+
+    private addNewRecord() {
+        const dataGen: DynaGridDataGenerator = new DynaGridDataGenerator();
+        const records = [...this.state.records, dataGen.createNewUser()];
+        this.setState({records});
     }
 
     private unsetVirtualEnv() {
@@ -227,6 +233,7 @@ export class DynaGridDemo extends React.Component {
                 <li>reorder<button onClick={() => this.setState({ reordering: !this.state.reordering })}>{this.state.reordering ? 'on' : 'off'}</button></li>
                 <li>frozenPanes<button onClick={() => this.setState({ frozenPanes: !this.state.frozenPanes })}>{this.state.frozenPanes ? 'on' : 'off'}</button></li>
                 <li>virtualUsers<button onClick={() => { this.state.virtualUsers ? this.unsetVirtualEnv() : this.setVirtualEnv(); }}>{this.state.virtualUsers ? 'on' : 'off'}</button></li>
+                <li>addNewRecord<button onClick={() => { this.addNewRecord() }}>add</button></li>
             </ul>
             <div style={{
                 position: 'absolute',
