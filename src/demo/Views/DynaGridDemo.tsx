@@ -226,6 +226,78 @@ export class DynaGridDemo extends React.Component {
         this.setState({ records: clearedRecords })
     }
 
+    private handleRowContextMenu(selectedRowIds: Id[], menuOptions: MenuOption[]): MenuOption[] {
+        return menuOptions.concat([
+            {
+                title: 'Delete Row',
+                handler: () => {
+                    this.deleteRows(selectedRowIds);
+                }
+            }
+        ]);
+    }
+
+    private handleColContextMenu(selectedColIds: Id[], menuOptions: MenuOption[]): MenuOption[] {
+        return menuOptions.concat([
+            {
+                title: 'Delete Column',
+                handler: () => {
+                    this.deleteColumns(selectedColIds)
+                }
+            }
+        ]);
+    }
+
+    private deleteRows(selectedRowIds: Id[]) {
+        const records = [...this.state.records].filter(r => !selectedRowIds.toString().includes(r.id));
+        this.setState({ records })
+    }
+
+    private deleteColumns(selectedColIds: Id[]) {
+        const fields = [...this.state.fields].filter(f => !selectedColIds.includes(f.id));
+        this.setState({ fields })
+    }
+
+    private handleRangeContextMenu(selectedRanges: Range[], menuOptions: MenuOption[]): MenuOption[] {
+        let selectedRowIds: Id[] = [];
+        let selectedColIds: Id[] = [];
+        let options = menuOptions.concat([
+            {
+                title: 'Delete Row',
+                handler: () => {
+                    this.deleteRows(selectedRowIds);
+                }
+            },
+            {
+                title: 'Delete Column',
+                handler: () => {
+                    this.deleteColumns(selectedColIds);
+                }
+            }
+        ]);
+
+        selectedRanges.forEach((range, idx) => {
+            range.cols.forEach((col, colIdx) => {
+                selectedColIds.push(col.id);
+                range.rows.forEach((row, rowIdx) => {
+                    selectedRowIds.push(row.id);
+                    if (range.cols[colIdx].idx === 0) {
+                        options = options.filter(option => option.title !== 'Delete Column');
+                    }
+                    if (range.rows[rowIdx].idx === 0) {
+                        options = options.filter(option => option.title !== 'Delete Row')
+                    }
+                })
+            })
+        });
+
+        // delete duplicated ids
+        selectedRowIds = Array.from(new Set(selectedRowIds));
+        selectedColIds = Array.from(new Set(selectedColIds));
+
+        return options;
+    }
+
     render() {
         return <div>
             <ul>
@@ -244,6 +316,9 @@ export class DynaGridDemo extends React.Component {
                     cellMatrixProps={this.generateMatrix()}
                     onDataChanged={changes => this.handleDataChanges(changes)}
                     customFocuses={this.state.focuses}
+                    onRowContextMenu={(selectedRowIds: Id[], menuOptions: MenuOption[]) => this.handleRowContextMenu(selectedRowIds, menuOptions)}
+                    onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
+                    onRangeContextMenu={(selectedRanges: Range[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRanges, menuOptions)}
                 />
             </div>
         </div>
