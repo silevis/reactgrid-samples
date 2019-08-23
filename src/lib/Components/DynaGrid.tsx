@@ -108,7 +108,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                                 borders={{ bottom: true }}
                                 zIndex={3}
                             />}
-                        {matrix.scrollableRange.height > 0 && matrix.scrollableRange.first.col && this.state.visibleRange &&
+                        {matrix.scrollableRange.height > 0 && matrix.scrollableRange.first.col && matrix.scrollableRange.first.row && matrix.scrollableRange.last.row && this.state.visibleRange &&
                             <PaneRow
                                 id='M'
                                 state={this.state}

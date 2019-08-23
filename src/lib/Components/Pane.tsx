@@ -44,16 +44,14 @@ class GridContent extends React.Component<RowsProps>{
         )
     }
 } 
-
+ 
 function renderCustomFocuses(props: any) {
+    const customFocuses = props.state.customFocuses.filter((value: any) => Object.keys(value).length !== 0);
     return (
-        props.state.customFocuses && props.state.customFocuses.map((focus: any, id: number) => {
+        customFocuses && customFocuses.map((focus: any, id: number) => {
             try {
-                return props.range.contains(props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)) 
-                        && <CellFocus key={id} location={props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)} color={focus.color} />
-            } catch (error) {
-                console.error('can\'t render focus on non exst row');
-            }
+                return props.range.contains(props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)) && <CellFocus key={id} location={props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)} color={focus.color} />
+            } catch (error) {}
         })
     )  
 }
