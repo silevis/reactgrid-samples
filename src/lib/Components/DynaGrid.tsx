@@ -103,7 +103,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                             <PaneRow
                                 id='T'
                                 state={this.state}
-                                style={{ background: 'white', top: 0, position: 'sticky' }}
+                                style={{ background: 'white', top: 0, position: 'sticky', boxShadow: '0px 3px 3px -3px rgba(0,0,0,0.2)' }}
                                 range={matrix.frozenTopRange}
                                 borders={{ bottom: true }}
                                 zIndex={3}
@@ -121,7 +121,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                             <PaneRow
                                 id='B'
                                 state={this.state}
-                                style={{ background: 'white', bottom: 0, position: 'sticky' }}
+                                style={{ background: 'white', bottom: 0, position: 'sticky', boxShadow: '0px -3px 3px -3px rgba(0,0,0,0.2)' }}
                                 range={matrix.frozenBottomRange}
                                 borders={{ top: true }}
                                 zIndex={3}
