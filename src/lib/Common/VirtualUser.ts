@@ -10,17 +10,6 @@ function getRandomInt(min: number, max: number) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function getRandomWord() {
-    const words = [
-        'SHARED',
-        'GRID',
-        'REACT',
-        'RAPID',
-        'RELIABLE',
-    ]
-    return words[getRandomInt(0, words.length)]
-}
-
 export class DynaGridDataGenerator {
 
     static nextId: number = 3;
@@ -123,11 +112,12 @@ export class VirtualUser {
         this.focusX = getRandomInt(1, state.fields.length)
         this.focusY = getRandomInt(1, state.records.length)
         var focuses = [...state.focuses].filter(f => f.color !== this.color)
-        return { ...state, focuses: [...focuses, { colId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, color: this.color }] }
+        const newFocus: any = state.records.length !== 1 && state.fields[this.focusX] ? {colId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, color: this.color} : {};
+        return { ...state, focuses: [...focuses, newFocus] }
     }
 
     getUpdatedFieldState(state: IDynaGridDemoState, handleData: (data: any) => IDynaGridDemoState): any {
-        if (state.fields[this.focusX] == undefined || state.records[this.focusY] == undefined)
+        if (state == null || state.fields[this.focusX] == undefined || state.records[this.focusY] == undefined)
             return null;
 
         const { name, type } = state.fields[this.focusX];

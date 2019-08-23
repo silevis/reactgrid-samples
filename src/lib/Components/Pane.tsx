@@ -4,6 +4,7 @@ import { CellFocus } from "./CellFocus";
 import { FillHandle } from "./FillHandle";
 import { RowRenderer } from "./RowRenderer";
 import { PartialArea } from "./PartialArea";
+import { func } from "prop-types";
 
 export interface PaneProps {
     id: string
@@ -44,14 +45,26 @@ class GridContent extends React.Component<RowsProps>{
     }
 } 
 
+function renderCustomFocuses(props: any) {
+    return (
+        props.state.customFocuses && props.state.customFocuses.map((focus: any, id: number) => {
+            try {
+                return props.range.contains(props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)) 
+                        && <CellFocus key={id} location={props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)} color={focus.color} />
+            } catch (error) {
+                console.error('can\'t render focus on non exst row');
+            }
+        })
+    )  
+}
+
 export const Pane: React.FunctionComponent<PaneProps> = (props) =>{
     return(
         <div key={props.id} className="dg-pane" style={{ position: 'relative', width: props.range.width, height: '100%', ...props.style }}>
         <GridContent state={props.state} range={props.range} borders={props.borders} />
         {renderSelectedRanges(props.state, props.range)}
         {props.state.currentBehavior.renderPanePart(props.state, props.range)}
-        {props.state.customFocuses && props.state.customFocuses.map((focus, id) => props.range.contains(props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)) &&
-            <CellFocus key={id} location={props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)} color={focus.color} />)}
+        {renderCustomFocuses(props)}
         {props.state.focusedLocation && props.range.contains(props.state.focusedLocation) &&
             <CellFocus location={props.state.focusedLocation} />}
         {props.state.selectedRanges[props.state.activeSelectedRangeIdx] && props.range.contains(props.state.selectedRanges[props.state.activeSelectedRangeIdx].last) &&

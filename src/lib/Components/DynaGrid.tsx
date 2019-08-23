@@ -32,8 +32,14 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
         } else {
             state.selectedRanges = [...state.selectedRanges].map(range => state.cellMatrix.validateRange(range))
         }
-        if (state.focusedLocation)
-            state.focusedLocation = state.cellMatrix.validateLocation(state.focusedLocation)
+        if (state.focusedLocation) {
+            try {
+                state.focusedLocation = state.cellMatrix.validateLocation(state.focusedLocation);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+            
 
         if (state.visibleRange && dataHasChanged)
             state = recalcVisibleRange(state)
@@ -102,7 +108,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                                 borders={{ bottom: true }}
                                 zIndex={3}
                             />}
-                        {matrix.scrollableRange.height > 0 && this.state.visibleRange &&
+                        {matrix.scrollableRange.height > 0 && matrix.scrollableRange.first.col && this.state.visibleRange &&
                             <PaneRow
                                 id='M'
                                 state={this.state}

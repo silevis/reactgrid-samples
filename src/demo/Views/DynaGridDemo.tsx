@@ -227,6 +227,7 @@ export class DynaGridDemo extends React.Component {
     }
 
     private handleRowContextMenu(selectedRowIds: Id[], menuOptions: MenuOption[]): MenuOption[] {
+        if (selectedRowIds.length === 0) return menuOptions;
         return menuOptions.concat([
             {
                 title: 'Delete Row',
@@ -238,6 +239,7 @@ export class DynaGridDemo extends React.Component {
     }
 
     private handleColContextMenu(selectedColIds: Id[], menuOptions: MenuOption[]): MenuOption[] {
+        if (selectedColIds.length === 0) return menuOptions;
         return menuOptions.concat([
             {
                 title: 'Delete Column',
