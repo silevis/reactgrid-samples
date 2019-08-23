@@ -37,7 +37,7 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
                 height: 4.5,
                 backgroundColor: '#3579f8',
                 border: '1px solid white',
-                cursor: 'crosshair'
+                cursor: 'crosshair',
             }}
             data-cy="dg-fill-handle"
         />

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 import { VirtualEnv, VirtualUser, DynaGridDataGenerator } from '../../lib/Common/VirtualUser';
-import { any } from 'prop-types';
+import { any, number } from 'prop-types';
 import { ThemeConsumer } from 'styled-components';
 interface Column {
     id: number;
@@ -28,7 +28,7 @@ export interface IDynaGridDemoState {
     virtualUsers: boolean;
     resizing: boolean;
     reordering: boolean;
-    frozenPanes: boolean;
+    frozenPanes: { top: number, bottom: number, left: number, right: number, active: boolean };
 }
 
 const fields: Column[] = [
@@ -126,7 +126,7 @@ export class DynaGridDemo extends React.Component {
         virtualUsers: false,
         resizing: false,
         reordering: false,
-        frozenPanes: false,
+        frozenPanes: { top: 0, bottom: 0, left: 0, right: 0, active: false },
     }
 
     intervalId: number = 0;
@@ -149,8 +149,11 @@ export class DynaGridDemo extends React.Component {
 
     private addNewRecord() {
         const dataGen: DynaGridDataGenerator = new DynaGridDataGenerator();
-        const records = [...this.state.records, dataGen.createNewUser()];
-        this.setState({records});
+        const records = [...this.state.records];
+        for (let x = 0; x < 5000; x++) {
+            records.push(dataGen.createNewUser());
+        }
+        this.setState({ records });
     }
 
     private unsetVirtualEnv() {
@@ -175,8 +178,13 @@ export class DynaGridDemo extends React.Component {
             cells: this.state.fields.map(field => { return { data: record[field.name], type: rowIdx == 0 ? 'header' : field.type } }),
             onDrop: (ids) => this.reorderRows(ids as number[], rowIdx),
         }))
-        const frozenPanes = { frozenBottomRows: 1, frozenLeftColumns: 1, frozenRightColumns: 1, frozenTopRows: 1 }
-        return Object.assign({ columns, rows }, this.state.frozenPanes ? frozenPanes : {})
+        const frozenPanes = {
+            frozenBottomRows: this.state.frozenPanes.bottom,
+            frozenLeftColumns: this.state.frozenPanes.left,
+            frozenRightColumns: this.state.frozenPanes.right,
+            frozenTopRows: this.state.frozenPanes.top
+        }
+        return Object.assign({ columns, rows }, frozenPanes)
     }
 
 
@@ -233,7 +241,19 @@ export class DynaGridDemo extends React.Component {
                 handler: () => {
                     this.deleteRows(selectedRowIds);
                 }
-            }
+            },
+            {
+                title: 'Pin row to the top',
+                handler: () => {
+                    this.pinRows(selectedRowIds, 'top');
+                }
+            },
+            {
+                title: 'Pin row to the bottom',
+                handler: () => {
+                    this.pinRows(selectedRowIds, 'bottom');
+                }
+            },
         ]);
     }
 
@@ -244,7 +264,19 @@ export class DynaGridDemo extends React.Component {
                 handler: () => {
                     this.deleteColumns(selectedColIds)
                 }
-            }
+            },
+            {
+                title: 'Pin column to the left',
+                handler: () => {
+                    this.pinColumns(selectedColIds, 'left');
+                }
+            },
+            {
+                title: 'Pin column to the right',
+                handler: () => {
+                    this.pinColumns(selectedColIds, 'right');
+                }
+            },
         ]);
     }
 
@@ -258,22 +290,67 @@ export class DynaGridDemo extends React.Component {
         this.setState({ fields })
     }
 
+    private pinColumns(ids: Id[], direction: 'left' | 'right') {
+        const indexes: number[] = [];
+        ids.forEach(id => indexes.push(this.state.fields.findIndex(f => f.id == id)))
+        if (direction == 'left') {
+            this.reorderColumns(indexes, this.state.frozenPanes.left)
+            this.setState({ frozenPanes: { ...this.state.frozenPanes, left: this.state.frozenPanes.left + indexes.length } })
+        } else {
+            this.reorderColumns(indexes, this.state.fields.length - this.state.frozenPanes.right - 1)
+            this.setState({ frozenPanes: { ...this.state.frozenPanes, right: this.state.frozenPanes.right + indexes.length } })
+        }
+    }
+
+    private pinRows(ids: Id[], direction: 'top' | 'bottom') {
+        const indexes: number[] = [];
+        ids.forEach(id => indexes.push(this.state.records.findIndex(r => r.id == id)))
+        if (direction == 'top') {
+            this.reorderRows(indexes, this.state.frozenPanes.top)
+            this.setState({ frozenPanes: { ...this.state.frozenPanes, top: this.state.frozenPanes.top + indexes.length } })
+        } else {
+            this.reorderRows(indexes, this.state.records.length - this.state.frozenPanes.bottom - 1)
+            this.setState({ frozenPanes: { ...this.state.frozenPanes, bottom: this.state.frozenPanes.bottom + indexes.length } })
+        }
+    }
+
     private handleRangeContextMenu(selectedRanges: Range[], menuOptions: MenuOption[]): MenuOption[] {
         let selectedRowIds: Id[] = [];
         let selectedColIds: Id[] = [];
         let options = menuOptions.concat([
             {
-                title: 'Delete Row',
+                title: 'Delete row',
                 handler: () => {
                     this.deleteRows(selectedRowIds);
                 }
             },
             {
-                title: 'Delete Column',
+                title: 'Delete column',
                 handler: () => {
                     this.deleteColumns(selectedColIds);
                 }
-            }
+            },
+            {
+                title: 'Pin column to the left',
+                handler: () => {
+                    this.pinColumns(selectedColIds, 'left');
+                }
+            },
+            {
+                title: 'Pin column to the right',
+                handler: () => {
+                    this.pinColumns(selectedColIds, 'right');
+                }
+            },
+            {
+                title: 'Pin row to the top', handler: () => this.pinRows(selectedRowIds, 'top')
+            },
+            {
+                title: 'Pin row to the bottom',
+                handler: () => {
+                    this.pinRows(selectedRowIds, 'bottom');
+                }
+            },
         ]);
 
         selectedRanges.forEach((range, idx) => {
@@ -282,10 +359,16 @@ export class DynaGridDemo extends React.Component {
                 range.rows.forEach((row, rowIdx) => {
                     selectedRowIds.push(row.id);
                     if (range.cols[colIdx].idx === 0) {
-                        options = options.filter(option => option.title !== 'Delete Column');
+                        options = options.filter(option =>
+                            option.title !== 'Delete column' &&
+                            option.title !== 'Pin row to the right' &&
+                            option.title !== 'Pin row to the left')
                     }
                     if (range.rows[rowIdx].idx === 0) {
-                        options = options.filter(option => option.title !== 'Delete Row')
+                        options = options.filter(option =>
+                            option.title !== 'Delete row' &&
+                            option.title !== 'Pin row to the top' &&
+                            option.title !== 'Pin row to the bottom')
                     }
                 })
             })
@@ -301,11 +384,28 @@ export class DynaGridDemo extends React.Component {
     render() {
         return <div>
             <ul>
-                <li>resize<button onClick={() => this.setState({ resizing: !this.state.resizing })}>{this.state.resizing ? 'on' : 'off'}</button></li>
+                <li>resize
+                    <button onClick={() => this.setState({ resizing: !this.state.resizing })}>
+                        {this.state.resizing ? 'on' : 'off'}
+                    </button>
+                </li>
                 <li>reorder<button onClick={() => this.setState({ reordering: !this.state.reordering })}>{this.state.reordering ? 'on' : 'off'}</button></li>
-                <li>frozenPanes<button onClick={() => this.setState({ frozenPanes: !this.state.frozenPanes })}>{this.state.frozenPanes ? 'on' : 'off'}</button></li>
-                <li>virtualUsers<button onClick={() => { this.state.virtualUsers ? this.unsetVirtualEnv() : this.setVirtualEnv(); }}>{this.state.virtualUsers ? 'on' : 'off'}</button></li>
-                <li>addNewRecord<button onClick={() => { this.addNewRecord() }}>add</button></li>
+                <li>frozenPanes
+                    <button onClick={() =>
+                        this.setState({ frozenPanes: this.state.frozenPanes.active ? { top: 0, bottom: 0, left: 0, right: 0, active: false } : { top: 1, bottom: 1, left: 1, right: 1, active: true } })}>
+                        {this.state.frozenPanes.active ? 'on' : 'off'}
+                    </button>
+                </li>
+                <li>virtualUsers
+                    <button onClick={() => { this.state.virtualUsers ? this.unsetVirtualEnv() : this.setVirtualEnv(); }}>
+                        {this.state.virtualUsers ? 'on' : 'off'}
+                    </button>
+                </li>
+                <li>addNewRecord
+                    <button onClick={() => { this.addNewRecord() }}>
+                        add
+                    </button>
+                </li>
             </ul>
             <div style={{
                 position: 'absolute',
