@@ -185,7 +185,7 @@ export default class Demo extends React.Component<{}, { gridType: 'planning' | '
     }
 
     render() {
-        return <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', top: 0, bottom: 0, right: 0, left: 0, fontFamily: ' Sans-Serif' }}>
+        return <div style={{ position: 'absolute', top: 0, bottom: 0, right: 0, left: 0, overflow: 'hidden', marginLeft: 100 }}>
             {/* <div>
                 <input type="radio" name="gridType" checked={state.gridType === 'spreadsheet'} onChange={_ => this.setState({ gridType: 'spreadsheet' })} /> Spreadsheet
                 <input type="radio" name="gridType" checked={state.gridType === 'vertical'} onChange={_ => this.setState({ gridType: 'vertical' })} /> VerticalDataGrid
@@ -193,9 +193,9 @@ export default class Demo extends React.Component<{}, { gridType: 'planning' | '
                 <input type="radio" name="gridType" checked={state.gridType === 'planning'} onChange={_ => this.setState({ gridType: 'planning' })} /> PlanningDataGrid
                 <input type="radio" name="gridType" checked={state.gridType === 'pivot'} onChange={_ => this.setState({ gridType: 'pivot' })} /> Pivot Grid
             </div> */}
-            <div style={{ position: 'relative', flexGrow: 1, }}>
+            {/* <div style={{ position: 'relative', flexGrow: 1, }}> */}
 
-                {/* {state.gridType === 'vertical' && <VerticalDataGrid
+            {/* {state.gridType === 'vertical' && <VerticalDataGrid
                     records={this.records}
                     fields={this.fields}
                 />}
@@ -204,17 +204,17 @@ export default class Demo extends React.Component<{}, { gridType: 'planning' | '
                     records={this.records}
                     fields={this.fields}
                 />} */}
-                {<Spreadsheet columnCount={50} rowCount={100} buttons={false} />}
-                {/* {<ReactGridDemo />} */}
+            {<Spreadsheet columnCount={100} rowCount={100} buttons={false} />}
+            {/* {<ReactGridDemo />} */}
 
-                {/* {state.gridType === 'planning' && <PlanningDataGrid
+            {/* {state.gridType === 'planning' && <PlanningDataGrid
                     groups={this.planningGroups}
                     items={this.planningItems}
                     records={this.planningRecords}
                 />}
 
                 {state.gridType === 'pivot' && <PivotGrid />} */}
-            </div>
+            {/* </div> */}
         </div>
 
     }

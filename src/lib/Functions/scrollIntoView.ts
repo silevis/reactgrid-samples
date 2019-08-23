@@ -1,11 +1,12 @@
 import { State, Direction, PointerLocation, Row } from "../Common";
+import { isBrowserIEorEdge } from "./isBrowserIEorEdge";
 
 export function scrollIntoView(state: State, location: any, direction: Direction = 'both') {
 
     const top = getScrollTop(state, location, direction === 'horizontal');
     const left = getScrollLeft(state, location, direction === 'vertical');
 
-    state.viewportElement.scrollTo({ top, left, behavior: 'auto' });
+    !isBrowserIEorEdge() ? state.hiddenScrollableElement.scrollTo({ top, left, behavior: 'auto' }) : state.viewportElement.scrollTo({ top, left, behavior: 'auto' });
 }
 
 function getScrollTop(state: State, location: PointerLocation, dontChange: boolean): number {
@@ -26,11 +27,11 @@ function getScrollTop(state: State, location: PointerLocation, dontChange: boole
 
     if (frozenBottomRange.rows.length === 0 && shouldScrollToBottom()) {
         return rows[row.idx + 1] ? rows[row.idx + 1].bottom - visibleScrollAreaHeight : rows[row.idx].bottom - visibleScrollAreaHeight
-    } else if (isColumnBelowBottomPane()) {
+    } else if (isColumnBelowBottomPane() && (state.focusedLocation && frozenBottomRange.rows.length > 0) && state.focusedLocation.row.idx < frozenBottomRange.rows[0].idx) {
         return row.bottom - visibleScrollAreaHeight;
     } else if (frozenTopRange.rows.length === 0 && shouldScrollToTop()) {
         return rows[row.idx - 1] ? rows[row.idx + - 1].top : rows[row.idx].top
-    } else if (isColumnBelowTopPane()) {
+    } else if (isColumnBelowTopPane() && state.focusedLocation && state.focusedLocation.row.idx > frozenTopRange.rows.length) {
         return row.top;
     } else {
         return scrollTop;
@@ -47,21 +48,26 @@ function getScrollLeft(state: State, location: PointerLocation, dontChange: bool
     const browserScrollWidth = 17;
     const visibleContentWidth = Math.min(clientWidth, state.cellMatrix.width);
     const visibleScrollAreaWidth = visibleContentWidth - frozenLeftRange.width - frozenRightRange.width;
-    const isRightRowFrozen = frozenRightRange.cols.some(col => column.idx === col.idx);
+    const isRightColFrozen = frozenRightRange.cols.some(col => column.idx === col.idx);
     const shouldScrollToRight = () => column.left + location.cellX > visibleScrollAreaWidth + scrollLeft - browserScrollWidth;
-    const shouldScrollToLeft = () => column.left + location.cellX < scrollLeft + browserScrollWidth && !isRightRowFrozen;
+    const shouldScrollToLeft = () => column.left + location.cellX < scrollLeft + browserScrollWidth && !isRightColFrozen;
     const isColumnBelowRightPane = () => column.right > visibleScrollAreaWidth + scrollLeft;
-    const isColumnBelowLeftPane = () => column.left < scrollLeft && !isRightRowFrozen;
+    const isColumnBelowLeftPane = () => column.left < scrollLeft && !isRightColFrozen;
 
     if (frozenRightRange.cols.length === 0 && shouldScrollToRight()) {
+        console.log('A')
         return cols[column.idx + 1] ? cols[column.idx + 1].right - visibleScrollAreaWidth : cols[column.idx].right - visibleScrollAreaWidth;
-    } else if (isColumnBelowRightPane()) {
+    } else if (isColumnBelowRightPane() && (state.focusedLocation && frozenRightRange.cols.length > 0) && state.focusedLocation.col.idx < frozenRightRange.cols[0].idx) {
+        console.log('B')
         return column.right - visibleScrollAreaWidth;
     } else if (frozenLeftRange.cols.length === 0 && shouldScrollToLeft()) {
+        console.log('C')
         return cols[column.idx - 1] ? cols[column.idx + - 1].left : cols[column.idx].left;
-    } else if (isColumnBelowLeftPane()) {
+    } else if (isColumnBelowLeftPane() && state.focusedLocation && state.focusedLocation.col.idx > frozenLeftRange.cols.length) {
+        console.log('D')
         return column.left;
     } else {
+        console.log('E')
         return scrollLeft;
     }
 }

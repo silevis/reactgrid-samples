@@ -108,7 +108,7 @@ export class Spreadsheet extends React.Component<SpreadsheetProps, SpreadsheetSt
         super(props);
 
         let cnt = 0;
-        const fields = new Array(props.columnCount).fill(75).map((width, idx) => ({ id: genId(), width }));
+        const fields = new Array(props.columnCount).fill(120).map((width, idx) => ({ id: genId(), width }));
         this.state = {
             fields,
             records: new Array(props.rowCount).fill(0).map(() => fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: genId(), data: {} })),
@@ -123,6 +123,18 @@ export class Spreadsheet extends React.Component<SpreadsheetProps, SpreadsheetSt
         window.setInterval(() => { user1.iterate(this.state); this.setState(user1.returnState()); }, 1000)
         window.setInterval(() => { user2.iterate(this.state); this.setState(user2.returnState()); }, 1000)
 
+        // const user1 = new VirtualUser(this.state, this.prepareDataChanges, '#fff700')
+        // const user2 = new VirtualUser(this.state, this.prepareDataChanges, '#ea00ff')
+        // const user3 = new VirtualUser(this.state, this.prepareDataChanges, '#fcfc03')
+        // const user4 = new VirtualUser(this.state, this.prepareDataChanges, '#03fceb')
+        // const user5 = new VirtualUser(this.state, this.prepareDataChanges, '#0307fc')
+        // const user6 = new VirtualUser(this.state, this.prepareDataChanges, '#5b5b73')
+        // window.setInterval(() => { user1.iterate(this.state); this.setState(user1.returnState()); }, 1000)
+        // window.setInterval(() => { user2.iterate(this.state); this.setState(user2.returnState()); }, 1000)
+        // window.setInterval(() => { user3.iterate(this.state); this.setState(user3.returnState()); }, 10)
+        // window.setInterval(() => { user4.iterate(this.state); this.setState(user4.returnState()); }, 10)
+        // window.setInterval(() => { user5.iterate(this.state); this.setState(user5.returnState()); }, 10)
+        // window.setInterval(() => { user6.iterate(this.state); this.setState(user6.returnState()); }, 10)
     }
 
     private generateCellMatrix(): CellMatrixProps {
@@ -139,7 +151,7 @@ export class Spreadsheet extends React.Component<SpreadsheetProps, SpreadsheetSt
 
         const rows: RowProps[] = this.state.records.map((record, rowIdx) => ({
             id: record.id,
-            height: 20,
+            height: 25,
             onDrop: (ids) => this.reorderRows(ids as number[], rowIdx),
             reorderable: true,
             cells: this.state.fields.map((field, colIdx) =>
@@ -147,7 +159,7 @@ export class Spreadsheet extends React.Component<SpreadsheetProps, SpreadsheetSt
                     : colIdx === 0 ? { data: record.data[field.id], type: 'header' }
                         : { data: record.data[field.id], type: 'text' })
         }));
-        return ({ frozenTopRows: 2, frozenLeftColumns: 1, frozenBottomRows: 2, frozenRightColumns: 1, rows, columns })
+        return ({ frozenTopRows: 3, frozenLeftColumns: 3, frozenBottomRows: 3, frozenRightColumns: 3, rows, columns })
     }
 
     private calculateColumnReorder(colIdxs: number[], direction: string, destination: number) {
@@ -161,7 +173,6 @@ export class Spreadsheet extends React.Component<SpreadsheetProps, SpreadsheetSt
     }
 
     render() {
-        console.log(this.generateCellMatrix())
         let cnt = 0;
         const buttons = <div>
             <button onClick={() => {
