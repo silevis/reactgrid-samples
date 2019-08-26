@@ -250,7 +250,7 @@ export class DynaGridDemo extends React.Component {
 
     private handleColContextMenu(selectedColIds: Id[], menuOptions: MenuOption[]): MenuOption[] {
         if (selectedColIds.length === 0) return menuOptions;
-        return menuOptions.concat([
+        menuOptions = menuOptions.concat([
             {
                 title: 'Delete Column', handler: () => this.setState({ columns: this.deleteColumns(selectedColIds) })
             },
@@ -264,6 +264,13 @@ export class DynaGridDemo extends React.Component {
                 title: 'Unpin', handler: () => this.setState(this.unpinColumns(selectedColIds))
             },
         ]);
+
+        if (this.state.fields.filter(f => selectedColIds.includes(f.id)).some(f => f.pinned == true))
+            menuOptions = menuOptions.filter(o => o.title !== 'Pin column to the left' && o.title !== 'Pin column to the right')
+        else if (this.state.fields.filter(f => !selectedColIds.includes(f.id)).some(f => f.pinned == false))
+            menuOptions = menuOptions.filter(o => o.title !== 'Unpin')
+
+        return menuOptions
     }
 
     private deleteRows(selectedRowIds: Id[]): Record[] {
@@ -280,14 +287,14 @@ export class DynaGridDemo extends React.Component {
         if (direction == 'left') {
             return {
                 ...this.state,
-                fields: this.reorderedColumns(indexes, this.state.frozenPanes.left).map(f => { return ids.includes(f.id) ? { ...f, pinned: true } : f }),
+                fields: this.reorderedColumns(indexes, this.state.frozenPanes.left).map(f => ids.includes(f.id) ? { ...f, pinned: true } : f),
                 frozenPanes: { ...this.state.frozenPanes, left: this.state.frozenPanes.left + indexes.length }
             }
 
         } else {
             return {
                 ...this.state,
-                fields: this.reorderedColumns(indexes, this.state.fields.length - this.state.frozenPanes.right - 1).map(f => { return ids.includes(f.id) ? { ...f, pinned: true } : f }),
+                fields: this.reorderedColumns(indexes, this.state.fields.length - this.state.frozenPanes.right - 1).map(f => ids.includes(f.id) ? { ...f, pinned: true } : f),
                 frozenPanes: { ...this.state.frozenPanes, right: this.state.frozenPanes.right + indexes.length },
             }
         }
@@ -308,7 +315,7 @@ export class DynaGridDemo extends React.Component {
         fields = this.calculateColumnReorder(fields, left, 'left', this.state.frozenPanes.left - left.length)
         return {
             ...this.state,
-            fields,
+            fields: fields.map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
             frozenPanes: {
                 ...this.state.frozenPanes,
                 left: this.state.frozenPanes.left - left.length,
