@@ -117,7 +117,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                                 borders={{}}
                                 zIndex={0}
                             />}
-                        {matrix.frozenBottomRange.height > 0 &&
+                        {matrix.frozenBottomRange.height > 0 && matrix.rows.length > 1 &&
                             <PaneRow
                                 id='B'
                                 state={this.state}
