@@ -3,7 +3,8 @@ import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Ran
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 import { VirtualEnv, VirtualUser, DynaGridDataGenerator } from '../../lib/Common/VirtualUser';
 import { any, number } from 'prop-types';
-import { ThemeConsumer } from 'styled-components';
+import styled, { ThemeConsumer } from 'styled-components';
+import { FeatureListContainer } from '../Views/DemoComponents/FeatureListContainer'
 interface Column {
     id: number;
     name: string;
@@ -30,6 +31,30 @@ export interface IDynaGridDemoState {
     reordering: boolean;
     frozenPanes: { top: number, bottom: number, left: number, right: number, active: boolean };
 }
+
+export interface IDemoActions {
+    toggleResizeAction(): void;
+    toggleReorderAction(): void;
+    toogleFreezePaneAction(): void;
+    toggleVirtualUsersAction(): void;
+    addNewRecordAction(): void;
+}
+
+const DemoContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-family: 'Sans-Serif';
+    margin: 0;
+    padding: 0;
+`;
+
+const DynaGridContainer = styled.div`
+    position: relative;
+    margin-left: 10px;
+    width: 100%;
+    min-height: 400px;
+`;
 
 const fields: Column[] = [
     {
@@ -383,37 +408,31 @@ export class DynaGridDemo extends React.Component {
         return options;
     }
 
+    demoActions: IDemoActions = {
+        toggleResizeAction: () => {
+            this.setState({ resizing: !this.state.resizing })
+        },
+        toggleReorderAction: () => {
+            this.setState({ reordering: !this.state.reordering })
+        },
+        toogleFreezePaneAction: () => {
+            this.setState({ frozenPanes: this.state.frozenPanes.active ? { top: 0, bottom: 0, left: 0, right: 0, active: false } : 
+                { top: 1, bottom: 1, left: 1, right: 1, active: true } })
+        },
+        toggleVirtualUsersAction: () => {
+            this.state.virtualUsers ? this.unsetVirtualEnv() : this.setVirtualEnv()
+        },
+        addNewRecordAction: () => {
+            this.addNewRecord();
+        }
+    }
+
     render() {
-        return <div>
-            <ul>
-                <li>resize
-                    <button onClick={() => this.setState({ resizing: !this.state.resizing })}>
-                        {this.state.resizing ? 'on' : 'off'}
-                    </button>
-                </li>
-                <li>reorder<button onClick={() => this.setState({ reordering: !this.state.reordering })}>{this.state.reordering ? 'on' : 'off'}</button></li>
-                <li>frozenPanes
-                    <button onClick={() =>
-                        this.setState({ frozenPanes: this.state.frozenPanes.active ? { top: 0, bottom: 0, left: 0, right: 0, active: false } : { top: 1, bottom: 1, left: 1, right: 1, active: true } })}>
-                        {this.state.frozenPanes.active ? 'on' : 'off'}
-                    </button>
-                </li>
-                <li>virtualUsers
-                    <button onClick={() => { this.state.virtualUsers ? this.unsetVirtualEnv() : this.setVirtualEnv(); }}>
-                        {this.state.virtualUsers ? 'on' : 'off'}
-                    </button>
-                </li>
-                <li>addNewRecord
-                    <button onClick={() => { this.addNewRecord() }}>
-                        add
-                    </button>
-                </li>
-            </ul>
-            <div style={{
-                position: 'absolute',
-                width: '100%',
-                height: '50%'
-            }}>
+        return <DemoContainer>
+            <FeatureListContainer 
+                demoActions={this.demoActions} 
+                state={this.state}/>
+            <DynaGridContainer>
                 <DynaGrid
                     cellMatrixProps={this.generateMatrix()}
                     onDataChanged={changes => this.handleDataChanges(changes)}
@@ -422,8 +441,7 @@ export class DynaGridDemo extends React.Component {
                     onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
                     onRangeContextMenu={(selectedRanges: Range[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRanges, menuOptions)}
                 />
-            </div>
-        </div>
+            </DynaGridContainer>
+        </DemoContainer>
     }
 }
-
