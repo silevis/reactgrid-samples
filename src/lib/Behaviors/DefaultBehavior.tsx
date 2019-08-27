@@ -121,7 +121,7 @@ export class DefaultBehavior extends Behavior {
             pasteContent = event.clipboardData.getData('text/plain').split('\n').map(line => line.split('\t').map(t => ({ text: t, data: t, type: 'text' })))
         }
         event.preventDefault()
-        return { ...pasteData(state, pasteContent), selectionMode: selectionMode ? selectionMode : 'range', };
+        return { ...pasteData(state, pasteContent), selectionMode: selectionMode ? selectionMode : 'range' };
 
     }
 

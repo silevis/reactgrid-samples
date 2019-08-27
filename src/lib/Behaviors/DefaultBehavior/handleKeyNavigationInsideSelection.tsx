@@ -21,8 +21,8 @@ export function moveFocusInsideSelectedRange(direction: 'left' | 'right' | 'up' 
     const activeSelectedRange = getActiveSelectedRange(state)
     const focusedCell = state.focusedLocation!
     const selectedRangeIdx = state.activeSelectedRangeIdx
-    const colCount = activeSelectedRange.cols.length;
-    const rowCount = activeSelectedRange.rows.length;
+    const colCount = activeSelectedRange ? activeSelectedRange.cols.length : 0;
+    const rowCount = activeSelectedRange ? activeSelectedRange.rows.length : 0;
     const delta = direction === 'up' || direction === 'left' ? -1 : 1;
 
     const currentPosInRange =

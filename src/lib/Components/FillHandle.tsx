@@ -18,6 +18,7 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
             height: 20,
             touchAction: 'none', // prevent scrolling
             background: 'rgba(255, 255, 255, 0.01)',
+            pointerEvents: 'auto',
             zIndex: 1
         }}
         data-cy="dg-touch-fill-handle"
@@ -37,7 +38,7 @@ export const FillHandle: React.FunctionComponent<FillHandleProps> = (props) =>
                 height: 4.5,
                 backgroundColor: '#3579f8',
                 border: '1px solid white',
-                cursor: 'crosshair'
+                cursor: 'crosshair',
             }}
             data-cy="dg-fill-handle"
         />
