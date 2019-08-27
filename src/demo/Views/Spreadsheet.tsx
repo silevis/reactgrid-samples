@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 
+
 let COL_COUNT = 20;
 let ROW_COUNT = 100;
 
@@ -97,7 +98,8 @@ class VirtualUser {
 
 interface SpreadsheetProps {
     columnCount: number;
-    rowCount: number
+    rowCount: number;
+    buttons: boolean;
 }
 
 export class Spreadsheet extends React.Component<SpreadsheetProps, SpreadsheetState> {
@@ -106,7 +108,7 @@ export class Spreadsheet extends React.Component<SpreadsheetProps, SpreadsheetSt
         super(props);
 
         let cnt = 0;
-        const fields = new Array(props.columnCount).fill(125).map((width, idx) => ({ id: genId(), width }));
+        const fields = new Array(props.columnCount).fill(120).map((width, idx) => ({ id: genId(), width }));
         this.state = {
             fields,
             records: new Array(props.rowCount).fill(0).map(() => fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: genId(), data: {} })),
@@ -117,12 +119,18 @@ export class Spreadsheet extends React.Component<SpreadsheetProps, SpreadsheetSt
     componentDidMount() {
         const user1 = new VirtualUser(this.state, this.prepareDataChanges, '#fff700')
         const user2 = new VirtualUser(this.state, this.prepareDataChanges, '#ea00ff')
-        const user3 = new VirtualUser(this.state, this.prepareDataChanges, '#fcfc03')
-        const user4 = new VirtualUser(this.state, this.prepareDataChanges, '#03fceb')
-        const user5 = new VirtualUser(this.state, this.prepareDataChanges, '#0307fc')
-        const user6 = new VirtualUser(this.state, this.prepareDataChanges, '#5b5b73')
+
         window.setInterval(() => { user1.iterate(this.state); this.setState(user1.returnState()); }, 1000)
         window.setInterval(() => { user2.iterate(this.state); this.setState(user2.returnState()); }, 1000)
+
+        // const user1 = new VirtualUser(this.state, this.prepareDataChanges, '#fff700')
+        // const user2 = new VirtualUser(this.state, this.prepareDataChanges, '#ea00ff')
+        // const user3 = new VirtualUser(this.state, this.prepareDataChanges, '#fcfc03')
+        // const user4 = new VirtualUser(this.state, this.prepareDataChanges, '#03fceb')
+        // const user5 = new VirtualUser(this.state, this.prepareDataChanges, '#0307fc')
+        // const user6 = new VirtualUser(this.state, this.prepareDataChanges, '#5b5b73')
+        // window.setInterval(() => { user1.iterate(this.state); this.setState(user1.returnState()); }, 1000)
+        // window.setInterval(() => { user2.iterate(this.state); this.setState(user2.returnState()); }, 1000)
         // window.setInterval(() => { user3.iterate(this.state); this.setState(user3.returnState()); }, 10)
         // window.setInterval(() => { user4.iterate(this.state); this.setState(user4.returnState()); }, 10)
         // window.setInterval(() => { user5.iterate(this.state); this.setState(user5.returnState()); }, 10)
@@ -147,11 +155,11 @@ export class Spreadsheet extends React.Component<SpreadsheetProps, SpreadsheetSt
             onDrop: (ids) => this.reorderRows(ids as number[], rowIdx),
             reorderable: true,
             cells: this.state.fields.map((field, colIdx) =>
-                rowIdx === 0 ? { data: record.data[field.id], type: 'text' }
-                    : colIdx === 0 ? { data: record.data[field.id], type: 'text' }
+                rowIdx === 0 ? { data: record.data[field.id], type: 'header' }
+                    : colIdx === 0 ? { data: record.data[field.id], type: 'header' }
                         : { data: record.data[field.id], type: 'text' })
         }));
-        return ({ frozenTopRows: 0, frozenLeftColumns: 0, frozenBottomRows: 1, frozenRightColumns: 1, rows, columns })
+        return ({ frozenTopRows: 3, frozenLeftColumns: 3, frozenBottomRows: 3, frozenRightColumns: 3, rows, columns })
     }
 
     private calculateColumnReorder(colIdxs: number[], direction: string, destination: number) {
@@ -166,8 +174,8 @@ export class Spreadsheet extends React.Component<SpreadsheetProps, SpreadsheetSt
 
     render() {
         let cnt = 0;
-        return (<div>
-            <button style={{ width: 100, height: 50 }} onClick={() => {
+        const buttons = <div>
+            <button onClick={() => {
                 const records = [...this.state.records];
                 records.shift()
                 ROW_COUNT--
@@ -175,7 +183,7 @@ export class Spreadsheet extends React.Component<SpreadsheetProps, SpreadsheetSt
             }}>
                 - rekord
             </button>
-            <button style={{ width: 100, height: 50 }} onClick={() => {
+            <button onClick={() => {
                 const records = [...this.state.records];
                 records.splice(ROW_COUNT, 0, this.state.fields.reduce((record: Record, field: Field) => { record.data[field.id] = (cnt++).toString(); return record; }, { id: genId(), data: {} }));
                 ROW_COUNT++
@@ -183,7 +191,7 @@ export class Spreadsheet extends React.Component<SpreadsheetProps, SpreadsheetSt
             }}>
                 + rekord
             </button>
-            <button style={{ width: 100, height: 50 }} onClick={() => {
+            <button onClick={() => {
                 const fields = [...this.state.fields];
                 fields.shift()
                 COL_COUNT--
@@ -191,7 +199,7 @@ export class Spreadsheet extends React.Component<SpreadsheetProps, SpreadsheetSt
             }}>
                 - kolumn
             </button>
-            <button style={{ width: 100, height: 50 }} onClick={() => {
+            <button onClick={() => {
                 const fields = [...this.state.fields];
                 fields.splice(COL_COUNT, 0, { id: genId(), width: 100 })
                 COL_COUNT++
@@ -199,17 +207,22 @@ export class Spreadsheet extends React.Component<SpreadsheetProps, SpreadsheetSt
             }}>
                 + kolumn
             </button>
-            {this.state.records.length > 0 && this.state.fields.length > 0 &&
-                <DynaGrid style={{ position: 'absolute', top: 50, bottom: 0, left: 0, right: 0, fontFamily: 'Sans-Serif' }}
-                    cellMatrixProps={this.generateCellMatrix()}
-                    onDataChanged={changes => this.handleDataChanges(changes)}
-                    onRowContextMenu={(selectedRowIds: Id[], menuOptions: MenuOption[]) => this.handleRowContextMenu(selectedRowIds, menuOptions)}
-                    onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
-                    onRangeContextMenu={(selectedRanges: Range[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRanges, menuOptions)}
-                    cellTemplates={{}}
-                    customFocuses={this.state.focuses}
-                />}
         </div>
+        return (
+            <div>
+                {this.props.buttons && buttons}
+                {this.state.records.length > 0 && this.state.fields.length > 0 &&
+                    <DynaGrid style={{ fontFamily: 'Sans-Serif' }}
+                        cellMatrixProps={this.generateCellMatrix()}
+                        onDataChanged={changes => this.handleDataChanges(changes)}
+                        onRowContextMenu={(selectedRowIds: Id[], menuOptions: MenuOption[]) => this.handleRowContextMenu(selectedRowIds, menuOptions)}
+                        onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
+                        onRangeContextMenu={(selectedRanges: Range[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRanges, menuOptions)}
+                        cellTemplates={{}}
+                        // floatingCellEditor={false}
+                        customFocuses={this.state.focuses}
+                    />}
+            </div>
         );
     }
 

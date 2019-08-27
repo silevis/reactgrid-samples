@@ -1,14 +1,29 @@
 import { State, KeyboardEvent, keyCodes, Row, Column, DataChange, Location } from "../../Common";
-import { focusLocation } from "../../Functions";
+import { focusLocation, isBrowserIE, getDataToPasteInIE } from "../../Functions";
 import { handleResizeSelectionWithKeys } from "./handleResizeSelectionWithKeys";
 import { handleKeyNavigationInsideSelection as handleKeyNavigationInsideSelection } from "./handleKeyNavigationInsideSelection";
 import { trySetDataAndAppendChange } from "../../Functions/trySetDataAndAppendChange";
+import { copySelectedRangeToClipboard, pasteData } from "../DefaultBehavior";
 
 export function handleKeyDown(state: State, event: KeyboardEvent): State {
     const focusedLocation = state.focusedLocation!;
     const key: string = event.key;
     state.lastKeyCode = event.keyCode;
     if (!focusedLocation) { return state }
+
+    if (isBrowserIE()) {
+        if (event.ctrlKey && event.keyCode === 67) { // Copy
+            copySelectedRangeToClipboard(state);
+        }
+
+        if (event.ctrlKey && event.keyCode === 88) { // Cut
+            copySelectedRangeToClipboard(state, true);
+        }
+
+        if (event.ctrlKey && event.keyCode === 86) { // Paste
+            state = pasteData(state, getDataToPasteInIE());
+        }
+    }
 
     if ((focusedLocation.cell.data != state.cellTemplates[focusedLocation.cell.type].handleKeyDown(event.keyCode, focusedLocation.cell.data) &&
         state.selectedRanges.length == 1 && state.selectedRanges[0].first.equals(state.selectedRanges[0].last))) {

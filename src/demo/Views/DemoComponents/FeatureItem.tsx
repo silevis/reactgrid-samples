@@ -5,9 +5,10 @@ interface IFeatureItemProps {
     name: string;
     currentState?: boolean;
     action(): void;
+    children?: any;
 }
 
-const StyledFeatureItemWrapper = styled.div`
+const StyledFeatureItem = styled.div`
     display: flex;
     flex-wrap: nowrap;
     background-color: transparent;
@@ -19,26 +20,31 @@ const StyledFeatureItemWrapper = styled.div`
 
 const StyledFeatureCheckbox = styled.div`
     display: block;
-    padding: 10px;
+    padding: 3px;
     border: 1px solid #bbbbbb;
-    width: 5px;
-    height: 5px;
+    width: 1px;
+    height: 1px;
     border-radius: 50%;
     background-color: white;
 `;
 
-const StyledFeatureCheckboxActive = styled(StyledFeatureCheckbox)`
-    border: 1px solid green;
-    background-color: green;
+const StyledSpan = styled.span`
+    color: ${props => props.color || "#000000"};
 `;
 
-export class FeatureItem extends React.Component<IFeatureItemProps> {
-    render() {
-        return (
-            <StyledFeatureItemWrapper onClick={this.props.action}>
-                <span>{this.props.name}</span>
-                {this.props.currentState !== undefined ? this.props.currentState ? <StyledFeatureCheckboxActive/> : <StyledFeatureCheckbox/> : <></> }
-            </StyledFeatureItemWrapper>
-        )
-    }
+const StyledFeatureCheckboxActive = styled(StyledFeatureCheckbox)`
+    border: 1px solid #8BC34A;
+    background-color: #8BC34A;
+`;
+
+export const FeatureItem = (props: IFeatureItemProps) => {
+    const { currentState, action, name } = props;
+    const checkboxState = currentState ? <StyledFeatureCheckboxActive/> : <StyledFeatureCheckbox/>
+    const spanColor = currentState == undefined ? '' : currentState ? '' : '#999999' ;
+    return (
+        <StyledFeatureItem onClick={action}>
+            <StyledSpan color={spanColor}>{name}</StyledSpan>
+            {currentState == undefined || checkboxState }
+        </StyledFeatureItem>
+    )
 }

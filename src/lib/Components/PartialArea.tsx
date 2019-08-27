@@ -19,6 +19,7 @@ export const PartialArea: React.FunctionComponent<PartialRangeProps> = (props) =
     const hasLeftBorder = range.first.col.idx >= pane.first.col.idx;
     return (
         <div
+            className="dg-partial-area"
             key={range.first.col.idx + pane.last.col.idx}
             style={{
                 ...style,
@@ -30,7 +31,7 @@ export const PartialArea: React.FunctionComponent<PartialRangeProps> = (props) =
                 borderTop: hasTopBorder ? (style.borderTop ? style.borderTop : style.border) : '',
                 borderBottom: hasBottomBorder ? (style.borderBottom ? style.borderBottom : style.border) : '',
                 borderRight: hasRightBorder ? (style.borderRight ? style.borderRight : style.border) : '',
-                borderLeft: hasLeftBorder ? (style.borderLeft ? style.borderLeft : style.border) : '',
+                borderLeft: hasLeftBorder ? (style.borderLeft ? style.borderLeft : style.border) : ''
             }}
         />
     )
