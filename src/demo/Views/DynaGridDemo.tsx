@@ -118,6 +118,7 @@ const records: any[] = [
         country: 'Country',
         position: 'Position',
         onHoliday: 'On Holiday',
+        pinned: true,
     },
     {
         id: 1,
@@ -127,6 +128,7 @@ const records: any[] = [
         country: 'Poland',
         position: 'CEO',
         onHoliday: false,
+        pinned: false,
     },
     {
         id: 2,
@@ -136,6 +138,7 @@ const records: any[] = [
         country: 'Czech Republic',
         position: 'Manager',
         onHoliday: true,
+        pinned: false,
     },
     {
         id: 3,
@@ -145,6 +148,7 @@ const records: any[] = [
         country: 'South Sudan',
         position: 'Director',
         onHoliday: false,
+        pinned: false,
     },
 ]
 
@@ -183,7 +187,7 @@ export class DynaGridDemo extends React.Component {
     private addNewRecord() {
         const dataGen: DynaGridDataGenerator = new DynaGridDataGenerator();
         const records = [...this.state.records];
-        for (let x = 0; x < 5000; x++) {
+        for (let x = 0; x < 10; x++) {
             records.push(dataGen.createNewUser());
         }
         this.setState({ records });
@@ -261,7 +265,7 @@ export class DynaGridDemo extends React.Component {
 
     private handleRowContextMenu(selectedRowIds: Id[], menuOptions: MenuOption[]): MenuOption[] {
         if (selectedRowIds.length === 0) return menuOptions;
-        return menuOptions.concat([
+        menuOptions = menuOptions.concat([
             {
                 title: 'Delete Row', handler: () => this.setState(this.deleteRows(selectedRowIds))
             },
@@ -271,7 +275,17 @@ export class DynaGridDemo extends React.Component {
             {
                 title: 'Pin row to the bottom', handler: () => this.setState(this.pinRows(selectedRowIds, 'bottom'))
             },
+            {
+                title: 'Unpin row(s)', handler: () => this.setState(this.unpinRows(selectedRowIds))
+            },
         ]);
+
+        if (this.state.records.filter(r => selectedRowIds.includes(r.id)).some(r => r.pinned == true))
+            menuOptions = menuOptions.filter(o => o.title !== 'Pin row to the top' && o.title !== 'Pin row to the bottom')
+        else if (this.state.records.filter(r => !selectedRowIds.includes(r.id)).some(r => r.pinned == false))
+            menuOptions = menuOptions.filter(o => o.title !== 'Unpin row(s)')
+
+        return menuOptions
     }
 
     private handleColContextMenu(selectedColIds: Id[], menuOptions: MenuOption[]): MenuOption[] {
@@ -287,14 +301,14 @@ export class DynaGridDemo extends React.Component {
                 title: 'Pin column to the right', handler: () => this.setState(this.pinColumns(selectedColIds, 'right'))
             },
             {
-                title: 'Unpin', handler: () => this.setState(this.unpinColumns(selectedColIds))
+                title: 'Unpin column(s)', handler: () => this.setState(this.unpinColumns(selectedColIds))
             },
         ]);
 
         if (this.state.fields.filter(f => selectedColIds.includes(f.id)).some(f => f.pinned == true))
             menuOptions = menuOptions.filter(o => o.title !== 'Pin column to the left' && o.title !== 'Pin column to the right')
         else if (this.state.fields.filter(f => !selectedColIds.includes(f.id)).some(f => f.pinned == false))
-            menuOptions = menuOptions.filter(o => o.title !== 'Unpin')
+            menuOptions = menuOptions.filter(o => o.title !== 'Unpin column(s)')
 
         return menuOptions
     }
@@ -327,27 +341,51 @@ export class DynaGridDemo extends React.Component {
     }
 
     private unpinColumns(ids: Id[]) {
-        let fields = [...this.state.fields]
-        const left: number[] = [];
-        const right: number[] = [];
-        ids.map(id => this.state.fields.findIndex(f => f.id == id)).filter(i => this.state.fields[i].pinned == true).forEach(i => {
-            if (i > this.state.frozenPanes.left) {
-                right.push(i)
-            } else {
-                left.push(i)
+        const indexes: number[] = ids.map(id => this.state.fields.findIndex(f => f.id == id)).filter(i => this.state.fields[i].pinned == true)
+        if (indexes[0] > this.state.frozenPanes.left) {
+            return {
+                ...this.state,
+                fields: this.calculateColumnReorder([...this.state.fields], indexes, 'right', this.state.fields.length - this.state.frozenPanes.right).map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
+                frozenPanes: {
+                    ...this.state.frozenPanes,
+                    right: this.state.frozenPanes.right - indexes.length
+                }
             }
-        })
-        fields = this.calculateColumnReorder(fields, right, 'right', this.state.fields.length - this.state.frozenPanes.right)
-        fields = this.calculateColumnReorder(fields, left, 'left', this.state.frozenPanes.left - left.length)
-        return {
-            ...this.state,
-            fields: fields.map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
-            frozenPanes: {
-                ...this.state.frozenPanes,
-                left: this.state.frozenPanes.left - left.length,
-                right: this.state.frozenPanes.right - right.length
+
+        } else {
+            return {
+                ...this.state,
+                fields: this.calculateColumnReorder([...this.state.fields], indexes, 'left', this.state.frozenPanes.left - indexes.length).map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
+                frozenPanes: {
+                    ...this.state.frozenPanes,
+                    left: this.state.frozenPanes.left - indexes.length,
+                }
             }
         }
+    }
+
+    private unpinRows(ids: Id[]) {
+        const indexes: number[] = ids.map(id => this.state.records.findIndex(r => r.id == id)).filter(i => this.state.records[i].pinned == true)
+        if (indexes[0] > this.state.frozenPanes.top) {
+            return {
+                ...this.state,
+                records: this.reorderedRows([...this.state.records], indexes, this.state.records.length - this.state.frozenPanes.bottom).map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
+                frozenPanes: {
+                    ...this.state.frozenPanes,
+                    bottom: this.state.frozenPanes.bottom - indexes.length
+                }
+            }
+        } else {
+            return {
+                ...this.state,
+                records: this.reorderedRows([...this.state.records], indexes, this.state.frozenPanes.top - indexes.length).map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
+                frozenPanes: {
+                    ...this.state.frozenPanes,
+                    top: this.state.frozenPanes.top - indexes.length,
+                }
+            }
+        }
+
     }
 
     private pinRows(ids: Id[], direction: 'top' | 'bottom'): IDynaGridDemoState {
@@ -356,13 +394,13 @@ export class DynaGridDemo extends React.Component {
         if (direction == 'top') {
             return {
                 ...this.state,
-                records: this.reorderedRows([...this.state.records], indexes, this.state.frozenPanes.top),
+                records: this.reorderedRows([...this.state.records], indexes, this.state.frozenPanes.top).map(r => ids.includes(r.id) ? { ...r, pinned: true } : r),
                 frozenPanes: { ...this.state.frozenPanes, top: this.state.frozenPanes.top + indexes.length }
             }
         } else {
             return {
                 ...this.state,
-                records: this.reorderedRows([...this.state.records], indexes, this.state.records.length - this.state.frozenPanes.bottom - 1),
+                records: this.reorderedRows([...this.state.records], indexes, this.state.records.length - this.state.frozenPanes.bottom - 1).map(r => ids.includes(r.id) ? { ...r, pinned: true } : r),
                 frozenPanes: { ...this.state.frozenPanes, bottom: this.state.frozenPanes.bottom + indexes.length }
             }
         }
@@ -378,18 +416,6 @@ export class DynaGridDemo extends React.Component {
             {
                 title: 'Delete column', handler: () => this.setState({ records: this.deleteColumns(selectedColIds) })
             },
-            {
-                title: 'Pin column to the left', handler: () => this.setState(this.pinColumns(selectedColIds, 'left'))
-            },
-            {
-                title: 'Pin column to the right', handler: () => this.setState(this.pinColumns(selectedColIds, 'right'))
-            },
-            {
-                title: 'Pin row to the top', handler: () => this.setState(this.pinRows(selectedRowIds, 'top'))
-            },
-            {
-                title: 'Pin row to the bottom', handler: () => this.setState(this.pinRows(selectedRowIds, 'bottom'))
-            },
         ]);
 
         selectedRanges.forEach((range, idx) => {
@@ -400,8 +426,8 @@ export class DynaGridDemo extends React.Component {
                     if (range.cols[colIdx].idx === 0) {
                         options = options.filter(option =>
                             option.title !== 'Delete column' &&
-                            option.title !== 'Pin row to the right' &&
-                            option.title !== 'Pin row to the left')
+                            option.title !== 'Pin column to the right' &&
+                            option.title !== 'Pin column to the left')
                     }
                     if (range.rows[rowIdx].idx === 0) {
                         options = options.filter(option =>
@@ -428,8 +454,10 @@ export class DynaGridDemo extends React.Component {
             this.setState({ reordering: !this.state.reordering })
         },
         toogleFreezePaneAction: () => {
-            this.setState({ frozenPanes: this.state.frozenPanes.active ? { top: 0, bottom: 0, left: 0, right: 0, active: false } : 
-                { top: 1, bottom: 1, left: 1, right: 1, active: true } })
+            this.setState({
+                frozenPanes: this.state.frozenPanes.active ? { top: 0, bottom: 0, left: 0, right: 0, active: false } :
+                    { top: 1, bottom: 1, left: 1, right: 1, active: true }
+            })
         },
         toggleVirtualUsersAction: () => {
             this.state.virtualUsers ? this.unsetVirtualEnv() : this.setVirtualEnv()
@@ -441,9 +469,9 @@ export class DynaGridDemo extends React.Component {
 
     render() {
         return <DemoContainer>
-            <FeatureListContainer 
-                demoActions={this.demoActions} 
-                state={this.state}/>
+            <FeatureListContainer
+                demoActions={this.demoActions}
+                state={this.state} />
             <DynaGridContainer>
                 <DynaGrid
                     cellMatrixProps={this.generateMatrix()}
