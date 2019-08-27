@@ -1,0 +1,16 @@
+.context-menu-container {
+     position: fixed;
+    background: white;
+    font-size: 12;
+    box-shadow: 0 4px 5px 3px rgba(0, 0, 0, .2);
+    z-index: 1000;
+}
+
+.context-menu-container .dg-context-menu-option {
+        padding: 8px 20px 8px 15px;
+        cursor: pointer; 
+    }
+
+.context-menu-container .dg-context-menu-option:hover {
+            background: #f2f2f2;
+        }

@@ -186,7 +186,7 @@ export default class Demo extends React.Component<{}, { gridType: 'planning' | '
     }
 
     render() {
-        return <DynaGridDemo/>
+        return <DynaGridDemo />
     }
 }
 

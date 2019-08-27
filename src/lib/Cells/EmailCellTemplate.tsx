@@ -38,7 +38,7 @@ export class EmailCellTemplate implements CellTemplate<string> {
                 padding: 0,
                 border: 0,
                 background: 'transparent',
-                fontSize: 16,
+                fontSize: 14,
                 outline: 'none'
             }}
             ref={input => {

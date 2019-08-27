@@ -29,6 +29,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
         width: location.col.width,
         height: location.row.height,
         padding: '0 1px',
+        fontSize: 14,
         // paddingLeft: 2,
         // paddingRight: 2,
         //borderTop: borders.top ? 'solid 1px #ccc' : '',

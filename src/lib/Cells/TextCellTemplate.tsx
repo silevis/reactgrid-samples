@@ -21,7 +21,7 @@ export class TextCellTemplate implements CellTemplate<string> {
         return { editable: true, cellData }
     }
 
-    customStyle: React.CSSProperties = {};
+    customStyle: React.CSSProperties = { background: '#fff' };
 
     renderContent: (props: CellRenderProps<string>) => React.ReactNode = (props) => {
         if (!props.isInEditMode)
@@ -29,13 +29,14 @@ export class TextCellTemplate implements CellTemplate<string> {
         const preserveValueKeyCodes = [0, keyCodes.ENTER];
         return <input
             style={{
+                position: 'inherit',
                 width: '100%',
                 height: '100%',
                 padding: 0,
                 border: 0,
                 background: 'transparent',
-                fontSize: 16,
-                outline: 'none'
+                fontSize: 14,
+                outline: 'none',
             }}
             ref={input => {
                 if (input) {

@@ -1,8 +1,9 @@
 import { Column, Row, Range, State } from "../Common";
+import { isBrowserIE, isBrowserEdge } from "../Functions";
 
 export function recalcVisibleRange(state: State): State {
     const matrix = state.cellMatrix;
-    const { scrollTop, scrollLeft, clientWidth, clientHeight } = state.viewportElement;
+    const { scrollTop, scrollLeft, clientWidth, clientHeight } = isBrowserIE() || isBrowserEdge() ? state.hiddenScrollableElement : state.viewportElement;
     const scrollAreaWidth = clientWidth - matrix.frozenLeftRange.width - matrix.frozenRightRange.width;
     const scrollAreaHeight = clientHeight - matrix.frozenTopRange.height - matrix.frozenBottomRange.height;
     // TODO improve calculation of visibleCols & visibleRows
