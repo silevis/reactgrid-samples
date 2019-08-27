@@ -6,43 +6,58 @@ import { FeatureItem } from '../DemoComponents/FeatureItem'
 interface IFeatureListContainer {
     demoActions: IDemoActions;
     state: IDynaGridDemoState;
+    children?: any;
 }
 
-const FeatureList = styled.ul`
+const StyledFeatureList = styled.ul`
     list-style-type: none;
     margin: 0;
     padding: 0;
+    min-width: 200px;
+    font-family: 'Arial', Helvetica, sans-serif;
 `;
+
+const StyledFeatureListHeader = styled.h3`
+    font-family: 'Arial', Helvetica, sans-serif;
+    margin-top: 0;
+`;
+
+const FeatureListHeader = (props: any) => <StyledFeatureListHeader>{props.children}</StyledFeatureListHeader>
 
 const FeatureListItem = styled.li`
     &:not(:last-child ){
-        border-bottom: 1px solid #bbbbbb;
+        border-bottom: 1px solid #cccccc;
         padding-bottom: 5px;
     }
     cursor: pointer;
 `;
 
-export class FeatureListContainer extends React.Component<IFeatureListContainer> {
-    render() {
-        return (
+const StyledFeatureListContainer = styled.div``;
+
+const FeatureList = (props: any) =>  <StyledFeatureList>{props.children}</StyledFeatureList>
+
+export const FeatureListContainer = (props: IFeatureListContainer) => {
+    return (
+        <StyledFeatureListContainer>
+            <FeatureListHeader>Feature list</FeatureListHeader>
             <FeatureList>
                 <FeatureListItem>
-                    <FeatureItem name="Resize" action={this.props.demoActions.toggleResizeAction} currentState={this.props.state.resizing}/>
+                    <FeatureItem name="Resize" action={props.demoActions.toggleResizeAction} currentState={props.state.resizing}/>
                 </FeatureListItem>
                 <FeatureListItem>
-                    <FeatureItem name="Reorder" action={this.props.demoActions.toggleReorderAction} currentState={this.props.state.reordering}/>
+                    <FeatureItem name="Reorder" action={props.demoActions.toggleReorderAction} currentState={props.state.reordering}/>
                 </FeatureListItem>
                 <FeatureListItem>
-                    <FeatureItem name="Freeze pane" action={this.props.demoActions.toogleFreezePaneAction} currentState={this.props.state.frozenPanes.active}/>
+                    <FeatureItem name="Freeze pane" action={props.demoActions.toogleFreezePaneAction} currentState={props.state.frozenPanes.active}/>
                 </FeatureListItem>
                 <FeatureListItem>
-                    <FeatureItem name="Virtual users" action={this.props.demoActions.toggleVirtualUsersAction} currentState={this.props.state.virtualUsers}/>
+                    <FeatureItem name="Virtual users" action={props.demoActions.toggleVirtualUsersAction} currentState={props.state.virtualUsers}/>
                 </FeatureListItem>
                 <FeatureListItem>
-                    <FeatureItem name="Add new record" action={this.props.demoActions.addNewRecordAction}/>
+                    <FeatureItem name="Add new record" action={props.demoActions.addNewRecordAction}/>
                 </FeatureListItem>
-                {this.props.children}
+                {props.children}
             </FeatureList>
-        )
-    }
+        </StyledFeatureListContainer>
+    )
 }

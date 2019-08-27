@@ -42,10 +42,30 @@ export interface IDemoActions {
 }
 
 const DemoContainer = styled.div`
+    margin: 0;
+    padding: 0;
+`;
+
+const H1 = styled.h1`
+    text-align: center;
+    margin: 10px 0;
+`;
+
+const H3 = styled.h3`
+    text-align: center;
+    margin: 6px 0;
+`;
+
+const DemoHeader = styled.div`
+    font-family: 'Arial', Helvetica, sans-serif;
+    margin: 30px 0;
+    padding: 0;
+`;
+
+const DemoBody = styled.div`
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    font-family: 'Sans-Serif';
+    justify-content: flex-start;
     margin: 0;
     padding: 0;
 `;
@@ -55,6 +75,7 @@ const DynaGridContainer = styled.div`
     margin-left: 10px;
     width: 100%;
     min-height: 400px;
+    font-family: 'Arial', Helvetica, sans-serif
 `;
 
 const fields: Column[] = [
@@ -441,19 +462,25 @@ export class DynaGridDemo extends React.Component {
 
     render() {
         return <DemoContainer>
-            <FeatureListContainer 
-                demoActions={this.demoActions} 
-                state={this.state}/>
-            <DynaGridContainer>
-                <DynaGrid
-                    cellMatrixProps={this.generateMatrix()}
-                    onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
-                    customFocuses={this.state.focuses}
-                    onRowContextMenu={(selectedRowIds: Id[], menuOptions: MenuOption[]) => this.handleRowContextMenu(selectedRowIds, menuOptions)}
-                    onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
-                    onRangeContextMenu={(selectedRanges: Range[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRanges, menuOptions)}
-                />
-            </DynaGridContainer>
+            <DemoHeader>
+                <H1>Customize your reactGrid</H1>
+                <H3>Choose from the most popular features</H3>
+            </DemoHeader>
+            <DemoBody>
+                <FeatureListContainer 
+                    demoActions={this.demoActions} 
+                    state={this.state}/>
+                <DynaGridContainer>
+                    <DynaGrid
+                        cellMatrixProps={this.generateMatrix()}
+                        onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
+                        customFocuses={this.state.focuses}
+                        onRowContextMenu={(selectedRowIds: Id[], menuOptions: MenuOption[]) => this.handleRowContextMenu(selectedRowIds, menuOptions)}
+                        onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
+                        onRangeContextMenu={(selectedRanges: Range[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRanges, menuOptions)}
+                    />
+                </DynaGridContainer>
+            </DemoBody>
         </DemoContainer>
     }
 }
