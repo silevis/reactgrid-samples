@@ -219,7 +219,7 @@ export class Spreadsheet extends React.Component<SpreadsheetProps, SpreadsheetSt
                         onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
                         onRangeContextMenu={(selectedRanges: Range[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRanges, menuOptions)}
                         cellTemplates={{}}
-                        floatingCellEditor={false}
+                        // floatingCellEditor={false}
                         customFocuses={this.state.focuses}
                     />}
             </div>

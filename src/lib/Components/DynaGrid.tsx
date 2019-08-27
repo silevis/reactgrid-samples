@@ -27,7 +27,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
 
         state = {
             ...state,
-            floatingCellEditor: props.floatingCellEditor,
+            // floatingCellEditor: props.floatingCellEditor,
             cellMatrix: new CellMatrix(props.cellMatrixProps)
         }
 
