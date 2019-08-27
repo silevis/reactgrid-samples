@@ -18,6 +18,7 @@ export class State {
     constructor(public readonly updateState: StateUpdater) { }
     readonly cellMatrix!: CellMatrix;
     readonly currentBehavior: Behavior = new DefaultBehavior();
+    readonly floatingCellEditor: boolean = false;
 
     cellTemplates: CellTemplates = {
         'text': new TextCellTemplate(),
@@ -30,6 +31,7 @@ export class State {
     }
     hiddenFocusElement!: HTMLDivElement;
     readonly viewportElement!: HTMLDivElement;
+    hiddenScrollableElement!: HTMLDivElement;
     lastKeyCode: number = 0;
     readonly queuedDataChanges: DataChange[] = [];
     currentlyEditedCell?: { type: string, data: any, text?: string };
