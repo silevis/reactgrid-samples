@@ -162,6 +162,24 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     private internetExplorerAndEdgeDynagrid() {
         const matrix = this.state.cellMatrix;
         const hiddenScrollableElement = this.state.hiddenScrollableElement;
+        const isClickedOutOfGrid = (event: PointerEvent) => {
+            const rightEmptySpace = hiddenScrollableElement.clientWidth - this.state.cellMatrix.width;
+            const bottomEmptySpace = hiddenScrollableElement.clientHeight - this.state.cellMatrix.height;
+
+            if (this.state.cellMatrix.width > hiddenScrollableElement.clientWidth) {
+                if (event.clientX > hiddenScrollableElement.clientWidth + hiddenScrollableElement.getBoundingClientRect().left) return true;
+            } else {
+                if (event.clientX > hiddenScrollableElement.clientWidth - rightEmptySpace + hiddenScrollableElement.getBoundingClientRect().left) return true;
+            }
+
+            if (this.state.cellMatrix.height > hiddenScrollableElement.clientHeight) {
+                if (event.clientY > hiddenScrollableElement.clientHeight + hiddenScrollableElement.getBoundingClientRect().top) return true;
+            } else {
+                if (event.clientY > hiddenScrollableElement.clientHeight - bottomEmptySpace + hiddenScrollableElement.getBoundingClientRect().top) return true;
+            }
+            return false;
+        }
+
         return (
             <div
                 className="dyna-grid-ie-edge"
@@ -187,29 +205,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                         overflowY: this.isVerticalScrollbarVisible() ? 'scroll' : 'auto',
                         zIndex: 1
                     }}
-                    onPointerDown={e => {
-                        const rightEmptySpace = hiddenScrollableElement.clientWidth - this.state.cellMatrix.width;
-                        if (this.state.cellMatrix.width > hiddenScrollableElement.clientWidth) {
-                            if (e.clientX > hiddenScrollableElement.clientWidth + hiddenScrollableElement.getBoundingClientRect().left) {
-                                e.stopPropagation()
-                            }
-                        } else {
-                            if (e.clientX > hiddenScrollableElement.clientWidth - rightEmptySpace + hiddenScrollableElement.getBoundingClientRect().left) {
-                                e.stopPropagation()
-                            }
-                        }
-
-                        const bottomEmptySpace = hiddenScrollableElement.clientHeight - this.state.cellMatrix.height;
-                        if (this.state.cellMatrix.height > hiddenScrollableElement.clientHeight) {
-                            if (e.clientY > hiddenScrollableElement.clientHeight + hiddenScrollableElement.getBoundingClientRect().top) {
-                                e.stopPropagation()
-                            }
-                        } else {
-                            if (e.clientY > hiddenScrollableElement.clientHeight - bottomEmptySpace + hiddenScrollableElement.getBoundingClientRect().top) {
-                                e.stopPropagation()
-                            }
-                        }
-                    }}
+                    onPointerDown={e => { if (isClickedOutOfGrid(e)) e.stopPropagation() }}
                     onScroll={this.scrollHandler}
                 >
                     <div style={{ width: matrix.width, height: matrix.height }}></div>

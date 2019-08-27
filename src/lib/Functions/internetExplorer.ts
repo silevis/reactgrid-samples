@@ -1,6 +1,3 @@
-import { pasteData } from "../Behaviors/DefaultBehavior";
-import { State } from "../Common";
-
 export function isBrowserIE() {
   const userAgent = window.navigator.userAgent;
   return userAgent.indexOf('Trident/') > 0;
