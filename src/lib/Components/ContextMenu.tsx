@@ -24,10 +24,10 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
         const rangeOptions = onRangeContextMenu && onRangeContextMenu(state.selectedRanges, customContextMenuOptions(state));
 
         if (focusedLocation) {
-            if (state.selectedIds.includes(focusedLocation.col.id) && colOptions) {
-                contextMenuOptions = colOptions;
-            } else if (state.selectedIds.includes(focusedLocation.row.id) && rowOptions) {
+            if (state.selectedIds.includes(focusedLocation.row.id) && rowOptions) {
                 contextMenuOptions = rowOptions;
+            } else if (state.selectedIds.includes(focusedLocation.col.id) && colOptions) {
+                contextMenuOptions =  colOptions;
             } else if (rangeOptions) {
                 contextMenuOptions = rangeOptions;
             }

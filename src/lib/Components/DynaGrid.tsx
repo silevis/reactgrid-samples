@@ -38,11 +38,18 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
         } else {
             state.selectedRanges = [...state.selectedRanges].map(range => state.cellMatrix.validateRange(range))
         }
-        if (state.focusedLocation)
-            state.focusedLocation = state.cellMatrix.validateLocation(state.focusedLocation)
+        if (state.focusedLocation) {
+            try {
+                state.focusedLocation = state.cellMatrix.validateLocation(state.focusedLocation);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
 
         if (state.visibleRange && dataHasChanged)
             state = recalcVisibleRange(state)
+
 
         return {
             ...state,
@@ -108,7 +115,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                                     borders={{ bottom: true }}
                                     zIndex={3}
                                 />}
-                            {matrix.scrollableRange.height > 0 && this.state.visibleRange &&
+                            {matrix.scrollableRange.height > 0 && matrix.scrollableRange.first.col && matrix.scrollableRange.first.row && matrix.scrollableRange.last.row && this.state.visibleRange &&
                                 <PaneRow
                                     id='M'
                                     state={this.state}
@@ -117,7 +124,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                                     borders={{}}
                                     zIndex={0}
                                 />}
-                            {matrix.frozenBottomRange.height > 0 &&
+                            {matrix.frozenBottomRange.height > 0 && matrix.rows.length > 1 &&
                                 <PaneRow
                                     id='B'
                                     state={this.state}
@@ -319,7 +326,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                         }
                     </div>
                 }
-                {matrix.frozenBottomRange.height > 0 && this.state.visibleRange && this.state.visibleRange.width > 0 &&
+                {matrix.frozenBottomRange.height > 0 && this.state.visibleRange && this.state.visibleRange.width > 0 && matrix.rows.length > 1 &&
                     <div
                         className="dg-frozen-bottom"
                         style={{
@@ -386,7 +393,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                         className="dg-content"
                         style={{ width: matrix.width, height: matrix.height }}
                     >
-                        {matrix.scrollableRange.height > 0 && this.state.visibleRange && this.state.visibleRange.width > 0 && this.state.visibleRange.height > 0 &&
+                        {matrix.scrollableRange.height > 0 && matrix.scrollableRange.first.col && matrix.scrollableRange.first.row && matrix.scrollableRange.last.row && this.state.visibleRange &&
                             <Pane
                                 id="MC"
                                 state={this.state}
