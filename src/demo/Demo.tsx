@@ -185,7 +185,7 @@ export default class Demo extends React.Component<{}, { gridType: 'planning' | '
     }
 
     render() {
-        return <div style={{ position: 'absolute', top: 0, bottom: 0, right: 0, left: 0, overflow: 'hidden', marginLeft: 100 }}>
+        return <div style={{ position: 'absolute', top: 0, bottom: 0, right: 0, left: 0, overflow: 'hidden' }}>
             {/* <div>
                 <input type="radio" name="gridType" checked={state.gridType === 'spreadsheet'} onChange={_ => this.setState({ gridType: 'spreadsheet' })} /> Spreadsheet
                 <input type="radio" name="gridType" checked={state.gridType === 'vertical'} onChange={_ => this.setState({ gridType: 'vertical' })} /> VerticalDataGrid
@@ -204,7 +204,7 @@ export default class Demo extends React.Component<{}, { gridType: 'planning' | '
                     records={this.records}
                     fields={this.fields}
                 />} */}
-            {<Spreadsheet columnCount={100} rowCount={100} buttons={false} />}
+            {<Spreadsheet columnCount={10} rowCount={10} buttons={false} />}
             {/* {<ReactGridDemo />} */}
 
             {/* {state.gridType === 'planning' && <PlanningDataGrid

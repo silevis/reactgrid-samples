@@ -1,7 +1,7 @@
 import * as React from "react";
 import { DynaGridProps, CellMatrix, PointerEvent, State, StateUpdater, MenuOption } from "../Common";
 import { PaneRow } from "./PaneRow";
-import { recalcVisibleRange, isBrowserIEorEdge } from "../Functions";
+import { recalcVisibleRange, isBrowserIE, isBrowserEdge } from "../Functions";
 import { KeyboardEvent, ClipboardEvent } from "../Common";
 import { PointerEventsController } from "../Common/PointerEventsController";
 import { CellEditor } from "./CellEditor";
@@ -64,7 +64,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     render() {
         const matrix = this.state.cellMatrix;
         return (
-            !isBrowserIEorEdge() ? this.internetExplorerAndEdgeDynagrid() :
+            isBrowserIE() || isBrowserEdge() ? this.internetExplorerAndEdgeDynagrid() :
                 <div
                     className="dyna-grid"
                     onKeyDown={this.keyDownHandler}
@@ -154,6 +154,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
 
     private internetExplorerAndEdgeDynagrid() {
         const matrix = this.state.cellMatrix;
+        const hiddenScrollableElement = this.state.hiddenScrollableElement;
         return (
             <div
                 className="dyna-grid-ie-edge"
@@ -180,24 +181,24 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                         zIndex: 1
                     }}
                     onPointerDown={e => {
-                        const rightEmptySpace = this.state.hiddenScrollableElement.clientWidth - this.state.cellMatrix.width;
-                        if (this.state.cellMatrix.width > this.state.hiddenScrollableElement.clientWidth) {
-                            if (e.clientX > this.state.hiddenScrollableElement.clientWidth + this.state.hiddenScrollableElement.getBoundingClientRect().left) {
+                        const rightEmptySpace = hiddenScrollableElement.clientWidth - this.state.cellMatrix.width;
+                        if (this.state.cellMatrix.width > hiddenScrollableElement.clientWidth) {
+                            if (e.clientX > hiddenScrollableElement.clientWidth + hiddenScrollableElement.getBoundingClientRect().left) {
                                 e.stopPropagation()
                             }
                         } else {
-                            if (e.clientX > this.state.hiddenScrollableElement.clientWidth - rightEmptySpace + this.state.hiddenScrollableElement.getBoundingClientRect().left) {
+                            if (e.clientX > hiddenScrollableElement.clientWidth - rightEmptySpace + hiddenScrollableElement.getBoundingClientRect().left) {
                                 e.stopPropagation()
                             }
                         }
 
-                        const bottomEmptySpace = this.state.hiddenScrollableElement.clientHeight - this.state.cellMatrix.height;
-                        if (this.state.cellMatrix.height > this.state.hiddenScrollableElement.clientHeight) {
-                            if (e.clientY > this.state.hiddenScrollableElement.clientHeight + this.state.hiddenScrollableElement.getBoundingClientRect().top) {
+                        const bottomEmptySpace = hiddenScrollableElement.clientHeight - this.state.cellMatrix.height;
+                        if (this.state.cellMatrix.height > hiddenScrollableElement.clientHeight) {
+                            if (e.clientY > hiddenScrollableElement.clientHeight + hiddenScrollableElement.getBoundingClientRect().top) {
                                 e.stopPropagation()
                             }
                         } else {
-                            if (e.clientY > this.state.hiddenScrollableElement.clientHeight - bottomEmptySpace + this.state.hiddenScrollableElement.getBoundingClientRect().top) {
+                            if (e.clientY > hiddenScrollableElement.clientHeight - bottomEmptySpace + hiddenScrollableElement.getBoundingClientRect().top) {
                                 e.stopPropagation()
                             }
                         }
@@ -211,7 +212,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                         className="dg-frozen-top"
                         style={{
                             position: 'absolute', top: 0,
-                            width: this.isHorizontalScrollbarVisible() ? this.state.hiddenScrollableElement.clientWidth : matrix.frozenLeftRange.width + this.state.visibleRange.width + (matrix.frozenRightRange.width > 0 ? matrix.frozenRightRange.width : 0),
+                            width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : matrix.frozenLeftRange.width + this.state.visibleRange.width + (matrix.frozenRightRange.width > 0 ? matrix.frozenRightRange.width : 0),
                             height: matrix.frozenTopRange.height,
                             background: '#fff',
                             zIndex: 2,
@@ -263,7 +264,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                     <div
                         style={{
                             position: 'absolute', top: matrix.frozenTopRange.height,
-                            width: this.isHorizontalScrollbarVisible() ? this.state.hiddenScrollableElement.clientWidth : matrix.frozenLeftRange.width + this.state.visibleRange.width + (matrix.frozenRightRange.width > 0 ? matrix.frozenRightRange.width : 0),
+                            width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : matrix.frozenLeftRange.width + this.state.visibleRange.width + (matrix.frozenRightRange.width > 0 ? matrix.frozenRightRange.width : 0),
                             height: this.isVerticalScrollbarVisible() ? this.state.viewportElement.clientHeight - matrix.frozenTopRange.height - matrix.frozenBottomRange.height : this.state.visibleRange.height,
                             zIndex: 2,
                             pointerEvents: 'none'
@@ -324,7 +325,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                         style={{
                             position: 'absolute',
                             bottom: this.isHorizontalScrollbarVisible() && this.isVerticalScrollbarVisible() ? 17 : (!this.isVerticalScrollbarVisible() ? `calc(100% - ${matrix.frozenTopRange.height + this.state.visibleRange.height + matrix.frozenBottomRange.height}px)` : 0),
-                            width: this.isHorizontalScrollbarVisible() ? this.state.hiddenScrollableElement.clientWidth : matrix.frozenLeftRange.width + this.state.visibleRange.width + (matrix.frozenRightRange.width > 0 ? matrix.frozenRightRange.width : 0),
+                            width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : matrix.frozenLeftRange.width + this.state.visibleRange.width + (matrix.frozenRightRange.width > 0 ? matrix.frozenRightRange.width : 0),
                             height: matrix.frozenBottomRange.height,
                             background: '#fff',
                             zIndex: 2,
@@ -445,7 +446,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     }
 
     private scrollHandler = () => {
-        const { scrollTop, scrollLeft } = !isBrowserIEorEdge() ? this.state.hiddenScrollableElement : this.state.viewportElement;
+        const { scrollTop, scrollLeft } = isBrowserIE() || isBrowserEdge() ? this.state.hiddenScrollableElement : this.state.viewportElement;
         if (
             scrollTop < this.state.minScrollTop || scrollTop > this.state.maxScrollTop ||
             scrollLeft < this.state.minScrollLeft || scrollLeft > this.state.maxScrollLeft
@@ -453,22 +454,22 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
             this.updateOnNewState(recalcVisibleRange(this.state));
         }
 
-        if (!isBrowserIEorEdge()) {
+        if (isBrowserIE() || isBrowserEdge()) {
             if (this.frozenTopScrollableElement) {
                 this.frozenTopScrollableElement.scrollLeft = this.state.hiddenScrollableElement.scrollLeft;
             }
             if (this.frozenBottomScrollableElement) {
-                this.frozenBottomScrollableElement.scrollLeft = this.state.hiddenScrollableElement.scrollLeft;
+                this.frozenBottomScrollableElement.scrollLeft = scrollLeft;
             }
             if (this.frozenLeftScrollableElement) {
-                this.frozenLeftScrollableElement.scrollTop = this.state.hiddenScrollableElement.scrollTop;
+                this.frozenLeftScrollableElement.scrollTop = scrollTop;
             }
             if (this.frozenRightScrollableElement) {
-                this.frozenRightScrollableElement.scrollTop = this.state.hiddenScrollableElement.scrollTop;
+                this.frozenRightScrollableElement.scrollTop = scrollTop;
             }
             if (this.state.viewportElement && this.state.hiddenScrollableElement) {
-                this.state.viewportElement.scrollTop = this.state.hiddenScrollableElement.scrollTop;
-                this.state.viewportElement.scrollLeft = this.state.hiddenScrollableElement.scrollLeft;
+                this.state.viewportElement.scrollTop = scrollTop;
+                this.state.viewportElement.scrollLeft = scrollLeft;
             }
         }
     }

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Id, MenuOption, Location, State, Range } from '../Common';
 import { copySelectedRangeToClipboard, pasteData } from '../Behaviors/DefaultBehavior';
+import { isBrowserIE, getDataToPasteInIE } from '../Functions';
 import './ContextMenu.css';
-
 
 interface ContextMenuProps {
     contextMenuPosition: number[],
@@ -76,9 +76,11 @@ function customContextMenuOptions(state: State): MenuOption[] {
         {
             title: 'Paste',
             handler: () => {
-                navigator.clipboard.readText().then(e => state.updateState((state: State) =>
-                    pasteData(state, e.split('\n').map(line => line.split('\t').map(t => ({ text: t, data: t, type: 'text' })))
-                    )))
+                if (isBrowserIE()) {
+                    setTimeout(() => state.updateState((state: State) => pasteData(state, getDataToPasteInIE())));
+                } else {
+                    navigator.clipboard.readText().then(e => state.updateState((state: State) => pasteData(state, e.split('\n').map(line => line.split('\t').map(t => ({ text: t, data: t, type: 'text' }))))));
+                }
             }
         }
     ];

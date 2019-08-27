@@ -21,7 +21,7 @@ export class Line extends React.Component<LineProps> {
                     left: isVertical ? this.props.linePosition : 0,
                     width: isVertical ? 2 : cellMatrix.width,
                     height: isVertical ? cellMatrix.height : 2,
-                    zIndex: 2
+                    zIndex: 3
                 }}
             />
         )

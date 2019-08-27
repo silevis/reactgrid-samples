@@ -1,12 +1,12 @@
-import { State, Direction, PointerLocation, Row } from "../Common";
-import { isBrowserIEorEdge } from "./isBrowserIEorEdge";
+import { State, Direction, PointerLocation } from "../Common";
+import { isBrowserIE, isBrowserEdge } from "../Functions";
 
 export function scrollIntoView(state: State, location: any, direction: Direction = 'both') {
 
     const top = getScrollTop(state, location, direction === 'horizontal');
     const left = getScrollLeft(state, location, direction === 'vertical');
 
-    !isBrowserIEorEdge() ? state.hiddenScrollableElement.scrollTo({ top, left, behavior: 'auto' }) : state.viewportElement.scrollTo({ top, left, behavior: 'auto' });
+    isBrowserIE() || isBrowserEdge() ? state.hiddenScrollableElement.scrollTo({ top, left, behavior: 'auto' }) : state.viewportElement.scrollTo({ top, left, behavior: 'auto' });
 }
 
 function getScrollTop(state: State, location: PointerLocation, dontChange: boolean): number {
@@ -55,19 +55,14 @@ function getScrollLeft(state: State, location: PointerLocation, dontChange: bool
     const isColumnBelowLeftPane = () => column.left < scrollLeft && !isRightColFrozen;
 
     if (frozenRightRange.cols.length === 0 && shouldScrollToRight()) {
-        console.log('A')
         return cols[column.idx + 1] ? cols[column.idx + 1].right - visibleScrollAreaWidth : cols[column.idx].right - visibleScrollAreaWidth;
     } else if (isColumnBelowRightPane() && (state.focusedLocation && frozenRightRange.cols.length > 0) && state.focusedLocation.col.idx < frozenRightRange.cols[0].idx) {
-        console.log('B')
         return column.right - visibleScrollAreaWidth;
     } else if (frozenLeftRange.cols.length === 0 && shouldScrollToLeft()) {
-        console.log('C')
         return cols[column.idx - 1] ? cols[column.idx + - 1].left : cols[column.idx].left;
     } else if (isColumnBelowLeftPane() && state.focusedLocation && state.focusedLocation.col.idx > frozenLeftRange.cols.length) {
-        console.log('D')
         return column.left;
     } else {
-        console.log('E')
         return scrollLeft;
     }
 }

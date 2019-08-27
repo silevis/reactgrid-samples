@@ -3,4 +3,5 @@ export { getLocationFromClient } from './getLocationFromClient';
 export { print } from './print';
 export { scrollIntoView } from './scrollIntoView';
 export { recalcVisibleRange } from './recalcVisibleRange';
-export { isBrowserIEorEdge } from './isBrowserIEorEdge';
+export * from './internetExplorer';
+export * from './microsoftEdge';
