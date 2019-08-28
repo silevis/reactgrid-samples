@@ -2,29 +2,6 @@ import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
 import { CellRenderProps, CellTemplate } from '../Common';
 
-class Svg extends React.Component<{ url: string }> {
-    state = {
-        svg: '',
-        loading: false,
-    }
-
-    componentDidMount() {
-        fetch(this.props.url)
-            .then(res => res.text())
-            .then(text => this.setState({ svg: text }));
-    }
-
-    render() {
-        const { loading, svg } = this.state;
-        if (loading) {
-            return <div className="spinner" />;
-        } else if (!svg) {
-            return <div className="error" />
-        }
-        return <div dangerouslySetInnerHTML={{ __html: this.state.svg }} />;
-    }
-}
-
 export class FlagCellTemplate implements CellTemplate<string> {
     readonly hasEditMode = true;
 
@@ -47,8 +24,43 @@ export class FlagCellTemplate implements CellTemplate<string> {
     customStyle: React.CSSProperties = { background: '#fff' };
 
     renderContent: (props: CellRenderProps<string>) => React.ReactNode = (props) => {
-        if (!props.isInEditMode)
-            return <Svg url={'https://restcountries.eu/data/col.svg'} />;
-        return props.cellData
+        if (!props.isInEditMode) {
+            const flagISO = props.cellData.toLowerCase(); // ISO 3166-1, 2/3 letters
+            const flagURL = 'https://restcountries.eu/data/' + flagISO + '.svg';
+            // return <img style={style} onError={this.handleOnError} src={flagURL} />
+            return <div style={{
+                margin: 'auto auto', 
+                width: '35px', 
+                height: '21px', 
+                backgroundSize: 'cover', 
+                border: '1px solid #cccccc', 
+                backgroundImage: 'url("' + flagURL + '"), url("https://upload.wikimedia.org/wikipedia/commons/0/04/Nuvola_unknown_flag.svg")', 
+                backgroundPosition: 'center center' }} />
+        }
+        const preserveValueKeyCodes = [0, keyCodes.ENTER];
+        return <input
+            style={{
+                position: 'inherit',
+                width: '100%',
+                height: '100%',
+                padding: 0,
+                border: 0,
+                background: 'transparent',
+                fontSize: 14,
+                outline: 'none',
+            }}
+            ref={input => {
+                if (input) {
+                    input.focus();
+                    // input.setSelectionRange(input.value.length, input.value.length);
+                }
+            }}
+            defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? props.cellData : ''}
+            onChange={e => props.onCellDataChanged ? props.onCellDataChanged(e.currentTarget.value) : null}
+            onCopy={e => e.stopPropagation()}
+            onCut={e => e.stopPropagation()}
+            onPaste={e => e.stopPropagation()}
+            onPointerDown={e => e.stopPropagation()}
+        />
     }
 }
