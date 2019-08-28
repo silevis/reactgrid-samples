@@ -8,6 +8,7 @@ import { CheckboxCellTemplate } from "../Cells/CheckboxCellTemplate";
 import { DateCellTemplate } from "../Cells/DateCellTemplate";
 import { EmailCellTemplate } from "../Cells/EmailCellTemplate";
 import { TimeCellTemplate } from "../Cells/TimeCellTemplate";
+import { FlagCellTemplate } from "../Cells/FlagCellTemplate";
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // INTERNAL
@@ -28,6 +29,7 @@ export class State {
         'date': new DateCellTemplate(),
         'email': new EmailCellTemplate(),
         'time': new TimeCellTemplate(),
+        'flag': new FlagCellTemplate(),
     }
     hiddenFocusElement!: HTMLDivElement;
     readonly viewportElement!: HTMLDivElement;

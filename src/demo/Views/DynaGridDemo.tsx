@@ -110,7 +110,7 @@ const fields: Column[] = [
     {
         id: 5,
         name: 'country',
-        type: 'text',
+        type: 'flag',
         width: 125,
         pinned: false,
     },
