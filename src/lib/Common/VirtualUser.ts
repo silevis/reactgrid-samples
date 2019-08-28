@@ -1,8 +1,4 @@
-import * as React from 'react';
-import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '.';
-import { DynaGrid } from '../Components/DynaGrid';
 import { IDynaGridDemoState, Record } from '../../demo/Views/DynaGridDemo';
-import { State } from './State';
 
 function getRandomInt(min: number, max: number) {
     min = Math.ceil(min);
@@ -16,7 +12,7 @@ export class DynaGridDataGenerator {
     static data: any = {
         name: ['Jacob', 'Tom', 'John', 'Allie', 'Zoe', 'Ashe', 'Fred', 'Rob', 'Alison', 'Arcady', 'Tom', 'Jerry'],
         surname: ['Hudson', 'Perkins', 'Mason', 'Armstrong', 'King', 'Collins', 'Bush', 'Maddison', 'Del Rey', 'Goletz', 'Ferrer'],
-        country: ['Poland', 'Czech Republic', 'Russian Federation', 'USA', 'Slovakia', 'Spain', 'Norway', 'Japan', 'Mexico', 'France', 'Hungary'],
+        country: ['fra', 'hun', 'lbn', 'mli', 'deu', 'pol', 'prt', 'svk', 'gbr', 'alb', 'aut', 'bra'],
         position: ['Director', 'Manager', 'Software Dev', 'QA', 'Automated Tester', 'Unemployed', 'Scrum Master', 'Project owner'],
     }
 
