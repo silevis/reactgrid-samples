@@ -2,7 +2,6 @@ import * as React from 'react';
 import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 import { VirtualEnv, VirtualUser, DynaGridDataGenerator } from '../../lib/Common/VirtualUser';
-import { any, number } from 'prop-types';
 import styled, { ThemeConsumer } from 'styled-components';
 import { FeatureListContainer } from '../Views/DemoComponents/FeatureListContainer'
 interface Column {
@@ -21,6 +20,7 @@ export interface Record {
     country: string;
     position: string;
     onHoliday: boolean;
+    pinned: boolean;
 }
 
 export interface IDynaGridDemoState {
@@ -139,7 +139,7 @@ const records: any[] = [
         country: 'Country',
         position: 'Position',
         onHoliday: 'On Holiday',
-        pinned: true,
+        pinned: false,
     },
     {
         id: 1,
@@ -234,7 +234,7 @@ export class DynaGridDemo extends React.Component {
             height: 25,
             reorderable: this.state.reordering,
             cells: this.state.fields.map(field => { return { data: record[field.name], type: rowIdx == 0 ? 'header' : field.type } }),
-            onDrop: (ids) => this.setState({ records: this.reorderedRows([...this.state.records], ids as number[], rowIdx) }),
+            onDrop: (ids) => this.setState({ records: this.reorderedRows(ids as number[], rowIdx) }),
         }))
         const frozenPanes = {
             frozenBottomRows: this.state.frozenPanes.bottom,
@@ -275,9 +275,10 @@ export class DynaGridDemo extends React.Component {
         return this.calculateColumnReorder([...this.state.fields], colIdxs, direction, to)
     }
 
-    private reorderedRows(records: Record[], rowIdxs: number[], to: number) {
-        const movedRecords = records.filter((_, idx) => rowIdxs.includes(idx));
-        const clearedRecords = records.filter((_, idx) => !rowIdxs.includes(idx));
+    private reorderedRows(rowIdxs: number[], to: number) {
+        console.log(rowIdxs, to)
+        const movedRecords = [...this.state.records].filter((_, idx) => rowIdxs.includes(idx));
+        const clearedRecords = [...this.state.records].filter((_, idx) => !rowIdxs.includes(idx));
         if (to > rowIdxs[0])
             to = to - rowIdxs.length + 1
         clearedRecords.splice(to, 0, ...movedRecords)
@@ -303,7 +304,7 @@ export class DynaGridDemo extends React.Component {
 
         if (this.state.records.filter(r => selectedRowIds.includes(r.id)).some(r => r.pinned == true))
             menuOptions = menuOptions.filter(o => o.title !== 'Pin row to the top' && o.title !== 'Pin row to the bottom')
-        else if (this.state.records.filter(r => !selectedRowIds.includes(r.id)).some(r => r.pinned == false))
+        else if (this.state.records.filter(r => selectedRowIds.includes(r.id)).some(r => r.pinned == false))
             menuOptions = menuOptions.filter(o => o.title !== 'Unpin row(s)')
 
         return menuOptions
@@ -343,8 +344,7 @@ export class DynaGridDemo extends React.Component {
     }
 
     private pinColumns(ids: Id[], direction: 'left' | 'right'): IDynaGridDemoState {
-        const indexes: number[] = [];
-        ids.forEach(id => indexes.push(this.state.fields.findIndex(f => f.id == id)))
+        const indexes: number[] = ids.map(id => this.state.fields.findIndex(f => f.id == id));
         if (direction == 'left') {
             return {
                 ...this.state,
@@ -390,7 +390,7 @@ export class DynaGridDemo extends React.Component {
         if (indexes[0] > this.state.frozenPanes.top) {
             return {
                 ...this.state,
-                records: this.reorderedRows([...this.state.records], indexes, this.state.records.length - this.state.frozenPanes.bottom).map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
+                records: this.reorderedRows(indexes, this.state.records.length - this.state.frozenPanes.bottom).map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
                 frozenPanes: {
                     ...this.state.frozenPanes,
                     bottom: this.state.frozenPanes.bottom - indexes.length
@@ -399,7 +399,7 @@ export class DynaGridDemo extends React.Component {
         } else {
             return {
                 ...this.state,
-                records: this.reorderedRows([...this.state.records], indexes, this.state.frozenPanes.top - indexes.length).map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
+                records: this.reorderedRows(indexes, this.state.frozenPanes.top - 1).map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
                 frozenPanes: {
                     ...this.state.frozenPanes,
                     top: this.state.frozenPanes.top - indexes.length,
@@ -415,13 +415,13 @@ export class DynaGridDemo extends React.Component {
         if (direction == 'top') {
             return {
                 ...this.state,
-                records: this.reorderedRows([...this.state.records], indexes, this.state.frozenPanes.top).map(r => ids.includes(r.id) ? { ...r, pinned: true } : r),
+                records: this.reorderedRows(indexes, this.state.frozenPanes.top).map(r => ids.includes(r.id) ? { ...r, pinned: true } : r),
                 frozenPanes: { ...this.state.frozenPanes, top: this.state.frozenPanes.top + indexes.length }
             }
         } else {
             return {
                 ...this.state,
-                records: this.reorderedRows([...this.state.records], indexes, this.state.records.length - this.state.frozenPanes.bottom - 1).map(r => ids.includes(r.id) ? { ...r, pinned: true } : r),
+                records: this.reorderedRows(indexes, this.state.records.length - this.state.frozenPanes.bottom - 1).map(r => ids.includes(r.id) ? { ...r, pinned: true } : r),
                 frozenPanes: { ...this.state.frozenPanes, bottom: this.state.frozenPanes.bottom + indexes.length }
             }
         }

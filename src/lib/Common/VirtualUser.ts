@@ -14,42 +14,42 @@ export class DynaGridDataGenerator {
 
     static nextId: number = 3;
     static data: any = {
-        name: ['Jacob','Tom','John','Allie','Zoe','Ashe', 'Fred', 'Rob', 'Alison', 'Arcady', 'Tom', 'Jerry'],
+        name: ['Jacob', 'Tom', 'John', 'Allie', 'Zoe', 'Ashe', 'Fred', 'Rob', 'Alison', 'Arcady', 'Tom', 'Jerry'],
         surname: ['Hudson', 'Perkins', 'Mason', 'Armstrong', 'King', 'Collins', 'Bush', 'Maddison', 'Del Rey', 'Goletz', 'Ferrer'],
         country: ['Poland', 'Czech Republic', 'Russian Federation', 'USA', 'Slovakia', 'Spain', 'Norway', 'Japan', 'Mexico', 'France', 'Hungary'],
         position: ['Director', 'Manager', 'Software Dev', 'QA', 'Automated Tester', 'Unemployed', 'Scrum Master', 'Project owner'],
     }
 
-    constructor() {  
+    constructor() {
     }
 
-    getDataAttrByKey(key: string) : any{
+    getDataAttrByKey(key: string): any {
         const randomArray = DynaGridDataGenerator.data[key];
         if (randomArray !== undefined)
             return randomArray[getRandomInt(0, randomArray.length)];
         return null
     }
 
-    getRandomName() : string{
+    getRandomName(): string {
         const names = DynaGridDataGenerator.data.name;
         return names[getRandomInt(0, names.length)];
     }
 
-    getRandomSurname() : string{
+    getRandomSurname(): string {
         const surnames = DynaGridDataGenerator.data.surname;
         return surnames[getRandomInt(0, surnames.length)];
     }
 
-    getRandomCountry() : string{
+    getRandomCountry(): string {
         const countries = DynaGridDataGenerator.data.country;
         return countries[getRandomInt(0, countries.length)];
     }
 
-    getRandomAge(min: number = 10, max: number = 70): number{
+    getRandomAge(min: number = 10, max: number = 70): number {
         return getRandomInt(min, max)
     }
 
-    getRandomPosition() : string{
+    getRandomPosition(): string {
         const positions = DynaGridDataGenerator.data.position;
         return positions[getRandomInt(0, positions.length)];
     }
@@ -58,7 +58,7 @@ export class DynaGridDataGenerator {
         return Math.random() < .5;
     }
 
-    createNewUser (): Record  {
+    createNewUser(): Record {
         ++DynaGridDataGenerator.nextId;
         const id = DynaGridDataGenerator.nextId;
         const name = this.getRandomName();
@@ -67,7 +67,7 @@ export class DynaGridDataGenerator {
         const country = this.getRandomCountry();
         const position = this.getRandomPosition();
         const onHoliday = this.getRandomBoolean();
-        return { id, name, surname, age, country, position, onHoliday }
+        return { id, name, surname, age, country, position, onHoliday, pinned: false }
     }
 
 }
@@ -112,7 +112,7 @@ export class VirtualUser {
         this.focusX = getRandomInt(1, state.fields.length)
         this.focusY = getRandomInt(1, state.records.length)
         var focuses = [...state.focuses].filter(f => f.color !== this.color)
-        const newFocus: any = state.records.length !== 1 && state.fields[this.focusX] ? {colId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, color: this.color} : {};
+        const newFocus: any = state.records.length !== 1 && state.fields[this.focusX] ? { colId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, color: this.color } : {};
         return { ...state, focuses: [...focuses, newFocus] }
     }
 
@@ -122,22 +122,22 @@ export class VirtualUser {
 
         const { name, type } = state.fields[this.focusX];
         const dataGen: DynaGridDataGenerator = new DynaGridDataGenerator();
-        
+
         let newFieldData: any = dataGen.getDataAttrByKey(name);
         if (newFieldData == null) {
-            switch(type) { 
-                case 'checkbox': { 
+            switch (type) {
+                case 'checkbox': {
                     // newFieldData = state.records[this.focusY].onHoliday // ... TODO odwracanie stanu checkboxa
                     newFieldData = dataGen.getRandomBoolean();
-                    break; 
-                } 
-                case 'number': { 
+                    break;
+                }
+                case 'number': {
                     newFieldData = dataGen.getRandomAge(10, 70);
-                    break; 
-                } 
+                    break;
+                }
                 default:
-                   break; 
-            } 
+                    break;
+            }
         }
         return { ...handleData([{ columnId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, type: type, initialData: '', newData: newFieldData }]), focuses: state.focuses }
     }
