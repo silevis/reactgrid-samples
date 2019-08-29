@@ -34,15 +34,15 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
 
         return (
             <div
-                className="dyna-grid-ie-edge"
+                className="dyna-grid-legacy-browser"
                 onKeyDown={props.onKeyDown}
                 onKeyUp={props.onKeyUp}
                 onPointerDown={props.onPointerDown}
                 onContextMenu={props.onContextMenu}
-                style={{ MozUserSelect: 'none', WebkitUserSelect: 'none', msUserSelect: 'none', userSelect: 'none' }}
+                style={{ width: '100%', height: '100%', MozUserSelect: 'none', WebkitUserSelect: 'none', msUserSelect: 'none', userSelect: 'none' }}
             >
                 <div
-                    ref={((hiddenScrollableElement: HTMLDivElement) => (state as State).hiddenScrollableElement = hiddenScrollableElement)}
+                    ref={(hiddenScrollableElement: HTMLDivElement) => hiddenScrollableElement && this.hiddenScrollableElementRefHandler(state, hiddenScrollableElement)}
                     className="dg-hidden-scrollable-element"
                     style={{
                         position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
@@ -64,20 +64,21 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                             height: cellMatrix.frozenTopRange.height,
                             background: '#fff',
                             zIndex: 2,
-                            pointerEvents: 'none'
+                            pointerEvents: 'none',
+                            boxShadow: '0 3px 3px -3px rgba(0, 0, 0, .2)'
                         }}
                     >
                         {cellMatrix.frozenLeftRange.width > 0 &&
                             <Pane
                                 id="TL"
                                 state={state}
-                                style={{ position: 'absolute', top: 0, left: 0 }}
+                                style={{ position: 'absolute', top: 0, left: 0, boxShadow: '3px 0px 3px -3px rgba(0, 0, 0, .2)', zIndex: 1 }}
                                 range={cellMatrix.frozenLeftRange.slice(cellMatrix.frozenTopRange, 'rows')}
                                 borders={{}}
                             />
                         }
                         <div
-                            ref={(frozenTopElement: HTMLDivElement) => this.frozenTopScrollableElement = frozenTopElement}
+                            ref={(frozenTopScrollableElement: HTMLDivElement) => frozenTopScrollableElement && this.frozenTopScrollableElementRefHandler(state, frozenTopScrollableElement)}
                             style={{
                                 position: 'absolute', top: 0, left: cellMatrix.frozenLeftRange.width,
                                 width: `calc(100% - ${cellMatrix.frozenLeftRange.width + cellMatrix.frozenRightRange.width}px + 2px)`, height: 'calc(100% + 2px)',
@@ -100,7 +101,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                                 id="TR"
                                 state={state}
                                 style={{
-                                    position: 'absolute', top: 0, right: 0
+                                    position: 'absolute', top: 0, right: 0, boxShadow: '-3px 0px 3px -3px rgba(0, 0, 0, .2)', zIndex: 1
                                 }}
                                 range={cellMatrix.frozenRightRange.slice(cellMatrix.frozenTopRange, 'rows')}
                                 borders={{}}
@@ -113,19 +114,21 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                         style={{
                             position: 'absolute', top: cellMatrix.frozenTopRange.height,
                             width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : cellMatrix.frozenLeftRange.width + state.visibleRange.width + (cellMatrix.frozenRightRange.width > 0 ? cellMatrix.frozenRightRange.width : 0),
-                            height: this.isVerticalScrollbarVisible() ? state.viewportElement.clientHeight - cellMatrix.frozenTopRange.height - cellMatrix.frozenBottomRange.height : state.visibleRange.height,
+                            height: this.isVerticalScrollbarVisible() ? hiddenScrollableElement.clientHeight - cellMatrix.frozenTopRange.height - cellMatrix.frozenBottomRange.height : state.visibleRange.height,
                             zIndex: 2,
-                            pointerEvents: 'none'
+                            pointerEvents: 'none',
+                            borderLeft: '.1px transparent solid'
                         }}
                     >
                         {cellMatrix.frozenLeftRange.width > 0 &&
                             <div
                                 className="dg-frozen-left"
-                                ref={(frozenLeftElement: HTMLDivElement) => this.frozenLeftScrollableElement = frozenLeftElement}
+                                ref={(frozenLeftScrollableElement: HTMLDivElement) => frozenLeftScrollableElement && this.frozenLeftScrollableElementRefHandler(state, frozenLeftScrollableElement)}
                                 style={{
                                     position: 'absolute',
                                     width: cellMatrix.frozenLeftRange.width, height: '100%',
-                                    overflow: 'hidden'
+                                    overflow: 'hidden',
+                                    boxShadow: '3px 0px 3px -3px rgba(0, 0, 0, .2)', zIndex: 1
                                 }}>
                                 <Pane
                                     id="ML"
@@ -144,11 +147,12 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                         {cellMatrix.frozenRightRange.width > 0 &&
                             <div
                                 className="dg-frozen-right"
-                                ref={(frozenRightElement: HTMLDivElement) => this.frozenRightScrollableElement = frozenRightElement}
+                                ref={(frozenRightScrollableElement: HTMLDivElement) => frozenRightScrollableElement && this.frozenRightScrollableElementRefHandler(state, frozenRightScrollableElement)}
                                 style={{
                                     position: 'absolute', right: 0,
                                     width: cellMatrix.frozenRightRange.width, height: '100%',
-                                    overflow: 'hidden'
+                                    overflow: 'hidden',
+                                    boxShadow: '-3px 0px 3px -3px rgba(0, 0, 0, .2)', zIndex: 1
                                 }}
                             >
                                 <Pane
@@ -177,20 +181,21 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                             height: cellMatrix.frozenBottomRange.height,
                             background: '#fff',
                             zIndex: 2,
-                            pointerEvents: 'none'
+                            pointerEvents: 'none',
+                            boxShadow: '0 -3px 3px -3px rgba(0, 0, 0, .2)'
                         }}>
                         {cellMatrix.frozenLeftRange.width > 0 &&
                             <Pane
                                 id="BL"
                                 state={state}
-                                style={{ position: 'absolute', bottom: 0, left: 0 }}
+                                style={{ position: 'absolute', bottom: 0, left: 0, boxShadow: '3px 0px 3px -3px rgba(0, 0, 0, .2)', zIndex: 1 }}
                                 range={cellMatrix.frozenLeftRange.slice(cellMatrix.frozenBottomRange, 'rows')}
                                 borders={{}}
                             />
                         }
                         {state.visibleRange && state.visibleRange.width > 0 &&
                             <div
-                                ref={(frozenBottomElement: HTMLDivElement) => this.frozenBottomScrollableElement = frozenBottomElement}
+                                ref={(frozenBottomScrollableElement: HTMLDivElement) => frozenBottomScrollableElement && this.frozenBottomScrollableElementRefHandler(state, frozenBottomScrollableElement)}
                                 style={{
                                     position: 'absolute', bottom: 0, left: cellMatrix.frozenLeftRange.width,
                                     width: `calc(100% - ${cellMatrix.frozenLeftRange.width + cellMatrix.frozenRightRange.width}px)`, height: cellMatrix.frozenBottomRange.height,
@@ -213,7 +218,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                             <Pane
                                 id="BR"
                                 state={state}
-                                style={{ position: 'absolute', bottom: 0, right: 0 }}
+                                style={{ position: 'absolute', bottom: 0, right: 0, boxShadow: '-3px 0px 3px -3px rgba(0, 0, 0, .2)', zIndex: 1 }}
                                 range={cellMatrix.frozenRightRange.slice(cellMatrix.frozenBottomRange, 'rows')}
                                 borders={{}}
                             />
@@ -273,16 +278,34 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
         )
     }
 
+    private hiddenScrollableElementRefHandler(state: State, hiddenScrollableElement: HTMLDivElement) {
+        state.hiddenScrollableElement = hiddenScrollableElement;
+    }
+
+    private frozenTopScrollableElementRefHandler(state: State, frozenTopScrollableElement: HTMLDivElement) {
+        this.frozenTopScrollableElement = frozenTopScrollableElement;
+        this.frozenTopScrollableElement.scrollLeft = state.hiddenScrollableElement.scrollLeft;
+    }
+
+    private frozenRightScrollableElementRefHandler(state: State, frozenRightScrollableElement: HTMLDivElement) {
+        this.frozenRightScrollableElement = frozenRightScrollableElement;
+        this.frozenRightScrollableElement.scrollTop = state.hiddenScrollableElement.scrollTop;
+    }
+    private frozenBottomScrollableElementRefHandler(state: State, frozenBottomScrollableElement: HTMLDivElement) {
+        this.frozenBottomScrollableElement = frozenBottomScrollableElement;
+        this.frozenBottomScrollableElement.scrollLeft = state.hiddenScrollableElement.scrollLeft;
+    }
+    private frozenLeftScrollableElementRefHandler(state: State, frozenLeftScrollableElement: HTMLDivElement) {
+        this.frozenLeftScrollableElement = frozenLeftScrollableElement;
+        this.frozenLeftScrollableElement.scrollTop = state.hiddenScrollableElement.scrollTop;
+    }
+
     private scrollHandler = () => {
         const state: State = this.props.state;
         const { scrollTop, scrollLeft } = state.hiddenScrollableElement;
 
-        if (scrollTop < state.minScrollTop || scrollTop > state.maxScrollTop || scrollLeft < state.minScrollLeft || scrollLeft > state.maxScrollLeft) {
-            state.updateState((state: State) => recalcVisibleRange(state))
-        }
-
         if (this.frozenTopScrollableElement) {
-            this.frozenTopScrollableElement.scrollLeft = state.hiddenScrollableElement.scrollLeft;
+            this.frozenTopScrollableElement.scrollLeft = scrollLeft;
         }
         if (this.frozenBottomScrollableElement) {
             this.frozenBottomScrollableElement.scrollLeft = scrollLeft;
@@ -293,9 +316,14 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
         if (this.frozenRightScrollableElement) {
             this.frozenRightScrollableElement.scrollTop = scrollTop;
         }
-        if (state.viewportElement && state.hiddenScrollableElement) {
+
+        if (state.viewportElement) {
             state.viewportElement.scrollTop = scrollTop;
             state.viewportElement.scrollLeft = scrollLeft;
+        }
+
+        if (scrollTop < state.minScrollTop || scrollTop > state.maxScrollTop || scrollLeft < state.minScrollLeft || scrollLeft > state.maxScrollLeft) {
+            state.updateState((state: State) => recalcVisibleRange(state))
         }
     }
 

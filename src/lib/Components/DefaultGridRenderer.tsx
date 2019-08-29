@@ -29,6 +29,7 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
         className="dyna-grid"
         onKeyDown={props.onKeyDown}
         onKeyUp={props.onKeyUp}
+        style={{ width: '100%', height: '100%' }}
     >
         <div
             className="dg-viewport"
@@ -60,7 +61,7 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                 {props.state.cellMatrix.frozenTopRange.height > 0 &&
                     <PaneRow id='T'
                         state={props.state}
-                        style={{ background: 'white', top: 0, position: 'sticky' }}
+                        style={{ background: 'white', top: 0, position: 'sticky', boxShadow: '0 3px 3px -3px rgba(0, 0, 0, .2)' }}
                         range={props.state.cellMatrix.frozenTopRange}
                         borders={{ bottom: true }}
                         zIndex={3}
@@ -78,7 +79,7 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                     <PaneRow
                         id='B'
                         state={props.state}
-                        style={{ background: 'white', bottom: 0, position: 'sticky' }}
+                        style={{ background: 'white', bottom: 0, position: 'sticky', boxShadow: '0 -3px 3px -3px rgba(0, 0, 0, .2)' }}
                         range={props.state.cellMatrix.frozenBottomRange}
                         borders={{ top: true }}
                         zIndex={3}
