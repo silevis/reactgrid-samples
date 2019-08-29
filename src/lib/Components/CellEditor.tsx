@@ -54,26 +54,21 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
 const calculatedXAxisOffset = (location: Location, state: State) => {
     if (state.cellMatrix.frozenRightRange.first.col && location.col.idx >= state.cellMatrix.frozenRightRange.first.col.idx) {
         return Math.min(state.cellMatrix.width, state.viewportElement.clientWidth) - state.cellMatrix.frozenRightRange.width;
-    } else if (location.col.idx == state.cellMatrix.last.col.idx) {
-        return 0;
-    }
-    if (location.col.idx > (state.cellMatrix.frozenLeftRange.last.col ? state.cellMatrix.frozenLeftRange.last.col.idx : state.cellMatrix.first.col.idx)) {
+    } else if (location.col.idx > (state.cellMatrix.frozenLeftRange.last.col ? state.cellMatrix.frozenLeftRange.last.col.idx : state.cellMatrix.first.col.idx) ||
+        location.col.idx == state.cellMatrix.last.col.idx) {
         return state.cellMatrix.frozenLeftRange.width - state.viewportElement.scrollLeft;
-    } else {
-        return 0;
     }
+    return 0;
 }
 
 const calculatedYAxisOffset = (location: Location, state: State) => {
     if (state.cellMatrix.frozenBottomRange.first.row && location.row.idx >= state.cellMatrix.frozenBottomRange.first.row.idx) {
         return Math.min(state.cellMatrix.height, state.viewportElement.clientHeight) - state.cellMatrix.frozenBottomRange.height;
-    } else if (location.row.idx == state.cellMatrix.last.row.idx) {
-        return 0;
-    } else if (location.row.idx > (state.cellMatrix.frozenTopRange.last.row ? state.cellMatrix.frozenTopRange.last.row.idx : state.cellMatrix.first.row.idx)) {
+    } else if (location.row.idx > (state.cellMatrix.frozenTopRange.last.row ? state.cellMatrix.frozenTopRange.last.row.idx : state.cellMatrix.first.row.idx) ||
+        location.row.idx == state.cellMatrix.last.row.idx) {
         return state.cellMatrix.frozenTopRange.height - state.viewportElement.scrollTop;
-    } else {
-        return 0;
     }
+    return 0;
 }
 
 const calculatedEditorPosition = (location: Location, state: State) => {
