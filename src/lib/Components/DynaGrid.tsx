@@ -40,7 +40,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
 
 
         if (state.visibleRange && dataHasChanged)
-            state = recalcVisibleRange(state)
+            state = recalcVisibleRange(state, isBrowserIE() || isBrowserEdge() ? true : false)
 
 
         return {

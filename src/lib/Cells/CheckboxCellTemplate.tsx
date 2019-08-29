@@ -36,6 +36,7 @@ export class CheckboxCellTemplate implements CellTemplate<boolean> {
                 padding: 0,
                 border: 0,
                 background: 'transparent',
+                pointerEvents: 'auto',
                 zIndex: 1
             }}
             checked={props.cellData}

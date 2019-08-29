@@ -33,7 +33,10 @@ export class State {
     }
     hiddenFocusElement!: HTMLDivElement;
     readonly viewportElement!: HTMLDivElement;
+
+    // element for LegacyBrowserGridRenderer
     hiddenScrollableElement!: HTMLDivElement;
+
     lastKeyCode: number = 0;
     readonly queuedDataChanges: DataChange[] = [];
     currentlyEditedCell?: { type: string, data: any, text?: string };
