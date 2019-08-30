@@ -276,7 +276,6 @@ export class DynaGridDemo extends React.Component {
     }
 
     private reorderedRows(rowIdxs: number[], to: number) {
-        console.log(rowIdxs, to)
         const movedRecords = [...this.state.records].filter((_, idx) => rowIdxs.includes(idx));
         const clearedRecords = [...this.state.records].filter((_, idx) => !rowIdxs.includes(idx));
         if (to > rowIdxs[0])
