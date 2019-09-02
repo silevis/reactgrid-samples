@@ -32,11 +32,8 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
             }}
             onBlur={() => { if (lastKeyCode !== keyCodes.ESC) props.state.updateState(state => trySetDataAndAppendChange(state, location, cellData)) }}
             onKeyDown={e => {
-                const input: HTMLInputElement = e.target as HTMLInputElement;
                 lastKeyCode = e.keyCode;
-                if (e.keyCode !== keyCodes.ENTER && e.keyCode !== keyCodes.ESC && e.keyCode !== keyCodes.TAB ||
-                    (e.keyCode === keyCodes.RIGHT_ARROW || e.keyCode === keyCodes.DOWN_ARROW) && input.selectionEnd! < input.value.length ||
-                    (e.keyCode === keyCodes.LEFT_ARROW || e.keyCode === keyCodes.UP_ARROW) && input.selectionEnd! > 0) {
+                if (e.keyCode !== keyCodes.ENTER && e.keyCode !== keyCodes.ESC && e.keyCode !== keyCodes.TAB) {
                     e.stopPropagation();
                 }
             }}
