@@ -1,6 +1,6 @@
 import * as React from "react";
 import { DynaGridProps, CellMatrix, PointerEvent, State, StateUpdater, MenuOption } from "../Common";
-import { recalcVisibleRange, isBrowserIE, isBrowserEdge } from "../Functions";
+import { recalcVisibleRange, isBrowserIE, isBrowserEdge, focusLocation } from "../Functions";
 import { KeyboardEvent, ClipboardEvent } from "../Common";
 import { PointerEventsController } from "../Common/PointerEventsController";
 import { updateSelectedRows, updateSelectedColumns } from "../Functions/updateState";
@@ -19,7 +19,6 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
 
         state = {
             ...state,
-            // floatingCellEditor: props.floatingCellEditor,
             cellMatrix: new CellMatrix(props.cellMatrixProps)
         }
 
@@ -37,7 +36,6 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                 console.log(error);
             }
         }
-
 
         if (state.visibleRange && dataHasChanged)
             state = recalcVisibleRange(state, isBrowserIE() || isBrowserEdge() ? true : false)
@@ -75,7 +73,6 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                     viewportElementRefHandler={this.viewportElementRefHandler}
                     hiddenElementRefHandler={this.hiddenElementRefHandler}
                 />
-
                 : <DefaultGridRenderer
                     state={this.state}
                     onKeyDown={this.keyDownHandler}

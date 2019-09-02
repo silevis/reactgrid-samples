@@ -180,10 +180,10 @@ export default class Demo extends React.Component<{}, { gridType: 'planning' | '
         }
     }
 
-    componentWillMount() {
-        this.setState({ gridType: 'pivot' })
-        this.generateData()
-    }
+    // componentWillMount() {
+    //     this.setState({ gridType: 'pivot' })
+    //     this.generateData()
+    // }
 
     render() {
         return <DynaGridDemo />

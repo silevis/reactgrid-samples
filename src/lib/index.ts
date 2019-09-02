@@ -1,5 +1,5 @@
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export { DynaGrid as Grid } from "./Components/DynaGrid";
+export { DynaGridDemo as Demo } from "../demo/Views/DynaGridDemo"
 // export { CellMatrix, CellMatrixProps } from "./Common/CellMatrix";
 // export { Column, ColProps, Row, RowProps } from './Common/Model';
 // export { Range } from "./Common/Range";

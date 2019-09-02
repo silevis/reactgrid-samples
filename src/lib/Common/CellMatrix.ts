@@ -96,10 +96,11 @@ export class CellMatrix {
     validateLocation(location: Location): Location {
         if (this.last.col == undefined) throw new Error('Last column is undefined')
         if (location.row == undefined) throw new Error('Location row is undefined')
-        const colIdx = this.columnIndexLookup[location.col.id] ? this.columnIndexLookup[location.col.id]
+        console.log(this.columnIndexLookup[location.col.id])
+        const colIdx = this.columnIndexLookup[location.col.id] !== undefined ? this.columnIndexLookup[location.col.id]
             : (location.col.idx < this.last.col.idx) ? location.col.idx
                 : this.last.col.idx;
-        const rowIdx = this.rowIndexLookup[location.row.id] ? this.rowIndexLookup[location.row.id]
+        const rowIdx = this.rowIndexLookup[location.row.id] !== undefined ? this.rowIndexLookup[location.row.id]
             : (location.row.idx < this.last.row.idx) ? location.row.idx
                 : this.last.row.idx;
         return this.getLocation(rowIdx, colIdx);
