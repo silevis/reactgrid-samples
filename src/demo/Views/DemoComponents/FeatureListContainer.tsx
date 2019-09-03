@@ -54,10 +54,13 @@ export const FeatureListContainer = (props: IFeatureListContainer) => {
                     <FeatureItem name="Freeze pane" action={props.demoActions.toogleFreezePaneAction} currentState={props.state.frozenPanes.active}/>
                 </FeatureListItem>
                 <FeatureListItem>
-                    <FeatureItem name="Virtual users" action={props.demoActions.toggleVirtualUsersAction} currentState={props.state.virtualUsers}/>
+                    <FeatureItem name="Multiple focus" action={props.demoActions.toggleVirtualUsersAction} currentState={props.state.virtualUsers}/>
                 </FeatureListItem>
                 <FeatureListItem>
                     <FeatureItem name="Add new record" action={props.demoActions.addNewRecordAction}/>
+                </FeatureListItem>
+                <FeatureListItem>
+                    <FeatureItem name="Add new field" action={props.demoActions.addNewFieldAction}/>
                 </FeatureListItem>
                 {props.children}
             </FeatureList>

@@ -41,6 +41,7 @@ export interface IDemoActions {
     toogleFreezePaneAction(): void;
     toggleVirtualUsersAction(): void;
     addNewRecordAction(): void;
+    addNewFieldAction(): void;
 }
 
 const DemoContainer = styled.div`
@@ -210,6 +211,24 @@ export class DynaGridDemo extends React.Component<{}, IDynaGridDemoState> {
         this.setState({ records });
     }
 
+    private addNewField() {
+        const nextId = Math.max(...this.state.fields.map(field => field.id), 1) + 1;
+        const randomCapitalLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+        const fieldName = nextId + randomCapitalLetter;
+        const newField: Column = {
+            id: nextId,
+            name: fieldName,
+            type: "text",
+            width: 125,
+            pinned: false,
+        };
+        // TODO ... identyfikowanie headera po innym  Id
+        const updatedHeaderRecord: Record = { ...this.state.records.find((record: any) => { return record.id === 'Id' ?  record : undefined }) , [fieldName]: fieldName };
+        const updatedRecords: Record[] = [...this.state.records.map((record: any): Record => { return record.id === 'Id' ? updatedHeaderRecord : record } )];
+
+        this.setState({ fields: [...this.state.fields, newField], records: updatedRecords});
+    }
+
     private unsetVirtualEnv() {
         this.setState({ virtualUsers: false, focuses: [] });
         window.clearInterval(this.intervalId)
@@ -309,7 +328,7 @@ export class DynaGridDemo extends React.Component<{}, IDynaGridDemoState> {
         if (selectedColIds.length === 0) return menuOptions;
         menuOptions = menuOptions.concat([
             {
-                title: 'Delete Column', handler: () => this.setState({ records: this.deleteRows(selectedColIds) })
+                title: 'Delete Column', handler: () => this.setState({ fields: this.deleteColumns(selectedColIds) })
             },
             {
                 title: 'Pin column to the left', handler: () => this.setState(this.pinColumns(selectedColIds, 'left'))
@@ -483,13 +502,16 @@ export class DynaGridDemo extends React.Component<{}, IDynaGridDemoState> {
         },
         addNewRecordAction: () => {
             this.addNewRecord();
+        },
+        addNewFieldAction: () => {
+            this.addNewField();
         }
     }
 
     render() {
         return <DemoContainer>
             <DemoHeader>
-                <H1>Customize your reactGrid</H1>
+                <H1>Customize your ReactGrid</H1>
                 <H3>Choose from the most popular features</H3>
             </DemoHeader>
             <DemoBody>
