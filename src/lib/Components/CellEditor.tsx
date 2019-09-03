@@ -1,6 +1,7 @@
 import * as React from "react";
 import { State, keyCodes, Location } from "../Common";
 import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChange";
+import { isBrowserIE } from "../Functions";
 
 // import { isArrowKey } from "../Behaviors/DefaultBehavior/handleKeyDown";
 
@@ -15,6 +16,12 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
     let lastKeyCode = props.state.lastKeyCode;
 
     React.useEffect(() => setPosition(calculatedEditorPosition(location, props.state)), []);
+
+    // TODO https://github.com/silevis/reactgrid/issues/33
+    if (isBrowserIE()) {
+        props.state.hiddenFocusElement.focus();
+    }
+
     return (
         <div
             style={{

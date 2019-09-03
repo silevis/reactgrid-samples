@@ -41,7 +41,7 @@ export class TextCellTemplate implements CellTemplate<string> {
             ref={input => {
                 if (input) {
                     input.focus();
-                    // input.setSelectionRange(input.value.length, input.value.length);
+                    input.setSelectionRange(input.value.length, input.value.length);
                 }
             }}
             defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? props.cellData : ''}
