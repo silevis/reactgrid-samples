@@ -63,7 +63,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                             width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : cellMatrix.frozenLeftRange.width + state.visibleRange.width + (cellMatrix.frozenRightRange.width > 0 ? cellMatrix.frozenRightRange.width : 0),
                             height: cellMatrix.frozenTopRange.height,
                             background: '#fff',
-                            zIndex: 2,
+                            zIndex: 3,
                             pointerEvents: 'none',
                             boxShadow: '0 3px 3px -3px rgba(0, 0, 0, .2)'
                         }}
@@ -117,7 +117,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                             height: this.isVerticalScrollbarVisible() ? hiddenScrollableElement.clientHeight - cellMatrix.frozenTopRange.height - cellMatrix.frozenBottomRange.height : state.visibleRange.height,
                             zIndex: 2,
                             pointerEvents: 'none',
-                            borderLeft: '.1px transparent solid'
+                            borderLeft: '.1px transparent solid' // delete black line on IE
                         }}
                     >
                         {cellMatrix.frozenLeftRange.width > 0 &&
@@ -180,7 +180,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                             width: this.isHorizontalScrollbarVisible() ? hiddenScrollableElement.clientWidth : cellMatrix.frozenLeftRange.width + state.visibleRange.width + (cellMatrix.frozenRightRange.width > 0 ? cellMatrix.frozenRightRange.width : 0),
                             height: cellMatrix.frozenBottomRange.height,
                             background: '#fff',
-                            zIndex: 2,
+                            zIndex: 3,
                             pointerEvents: 'none',
                             boxShadow: '0 -3px 3px -3px rgba(0, 0, 0, .2)'
                         }}>

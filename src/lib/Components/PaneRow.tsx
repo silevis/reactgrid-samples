@@ -49,7 +49,7 @@ export const PaneRow: React.FunctionComponent<PaneRowProps> = (props) => {
                 <Pane
                     id={props.id + 'R'}
                     state={props.state}
-                    style={{ background: 'white', right: 0, position: 'sticky', boxShadow: '-3px 0px 3px -3px rgba(0,0,0,0.2)' }}
+                    style={{ background: 'white', right: 0, position: 'sticky', zIndex: props.zIndex + 1, boxShadow: '-3px 0px 3px -3px rgba(0,0,0,0.2)' }}
                     range={matrix.frozenRightRange.slice(props.range, 'rows')}
                     borders={{ ...props.borders, left: true }}
                 />
