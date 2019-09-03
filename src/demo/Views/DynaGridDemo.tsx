@@ -29,13 +29,15 @@ export interface IDynaGridDemoState {
     focuses: { colId: number, rowId: number, color: string }[];
     virtualUsers: boolean;
     resizing: boolean;
-    reordering: boolean;
+    columnReordering: boolean;
+    rowReordering: boolean;
     frozenPanes: { top: number, bottom: number, left: number, right: number, active: boolean };
 }
 
 export interface IDemoActions {
     toggleResizeAction(): void;
-    toggleReorderAction(): void;
+    toggleColumnReorderAction(): void;
+    toggleRowReorderAction(): void;
     toogleFreezePaneAction(): void;
     toggleVirtualUsersAction(): void;
     addNewRecordAction(): void;
@@ -168,7 +170,7 @@ const records: any[] = [
 
 
 
-export class DynaGridDemo extends React.Component {
+export class DynaGridDemo extends React.Component<{}, IDynaGridDemoState> {
 
     state = {
         fields: [...fields],
@@ -176,7 +178,8 @@ export class DynaGridDemo extends React.Component {
         focuses: [],
         virtualUsers: false,
         resizing: false,
-        reordering: false,
+        columnReordering: false,
+        rowReordering: false,
         frozenPanes: { top: 0, bottom: 0, left: 0, right: 0, active: false },
     }
 
@@ -216,16 +219,16 @@ export class DynaGridDemo extends React.Component {
         const columns: ColumnProps[] = this.state.fields.map((field, idx) => ({
             id: field.id,
             width: field.width,
-            reorderable: this.state.reordering,
+            reorderable: this.state.columnReordering,
             resizable: this.state.resizing,
             onDrop: (ids) => this.setState({ fields: this.reorderedColumns(ids as number[], idx) }),
             onResize: width => { this.state.fields[idx].width = width, this.forceUpdate(); }
         }));
 
-        const rows: RowProps[] = this.state.records.map((record, rowIdx) => ({
+        const rows: RowProps[] = this.state.records.map((record: any, rowIdx) => ({
             id: record.id,
             height: 25,
-            reorderable: this.state.reordering,
+            reorderable: this.state.rowReordering,
             cells: this.state.fields.map(field => { return { data: record[field.name], type: rowIdx == 0 ? 'header' : field.type } }),
             onDrop: (ids) => this.setState({ records: this.reorderedRows(ids as number[], rowIdx) }),
         }))
@@ -281,7 +284,7 @@ export class DynaGridDemo extends React.Component {
         if (selectedRowIds.length === 0) return menuOptions;
         menuOptions = menuOptions.concat([
             {
-                title: 'Delete Row', handler: () => this.setState(this.deleteRows(selectedRowIds))
+                title: 'Delete row', handler: () => this.setState({ records: this.deleteRows(selectedRowIds) })
             },
             {
                 title: 'Pin row to the top', handler: () => this.setState(this.pinRows(selectedRowIds, 'top'))
@@ -306,7 +309,7 @@ export class DynaGridDemo extends React.Component {
         if (selectedColIds.length === 0) return menuOptions;
         menuOptions = menuOptions.concat([
             {
-                title: 'Delete Column', handler: () => this.setState({ columns: this.deleteColumns(selectedColIds) })
+                title: 'Delete Column', handler: () => this.setState({ records: this.deleteRows(selectedColIds) })
             },
             {
                 title: 'Pin column to the left', handler: () => this.setState(this.pinColumns(selectedColIds, 'left'))
@@ -328,7 +331,7 @@ export class DynaGridDemo extends React.Component {
     }
 
     private deleteRows(selectedRowIds: Id[]): Record[] {
-        return [...this.state.records].filter(r => !selectedRowIds.toString().includes(r.id));
+        return [...this.state.records].filter(r => !selectedRowIds.includes(r.id));
     }
 
     private deleteColumns(selectedColIds: Id[]): Column[] {
@@ -427,7 +430,7 @@ export class DynaGridDemo extends React.Component {
                 title: 'Delete row', handler: () => this.setState({ records: this.deleteRows(selectedRowIds) })
             },
             {
-                title: 'Delete column', handler: () => this.setState({ records: this.deleteColumns(selectedColIds) })
+                title: 'Delete column', handler: () => this.setState({ fields: this.deleteColumns(selectedColIds) })
             },
         ]);
 
@@ -463,8 +466,11 @@ export class DynaGridDemo extends React.Component {
         toggleResizeAction: () => {
             this.setState({ resizing: !this.state.resizing })
         },
-        toggleReorderAction: () => {
-            this.setState({ reordering: !this.state.reordering })
+        toggleColumnReorderAction: () => {
+            this.setState({ columnReordering: !this.state.columnReordering })
+        },
+        toggleRowReorderAction: () => {
+            this.setState({ rowReordering: !this.state.rowReordering })
         },
         toogleFreezePaneAction: () => {
             this.setState({
