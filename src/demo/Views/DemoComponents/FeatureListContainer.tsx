@@ -45,16 +45,22 @@ export const FeatureListContainer = (props: IFeatureListContainer) => {
                     <FeatureItem name="Resize" action={props.demoActions.toggleResizeAction} currentState={props.state.resizing} />
                 </FeatureListItem>
                 <FeatureListItem>
-                    <FeatureItem name="Reorder" action={props.demoActions.toggleReorderAction} currentState={props.state.reordering} />
+                    <FeatureItem name="Column reorder" action={props.demoActions.toggleColumnReorderAction} currentState={props.state.columnReordering} />
+                </FeatureListItem>
+                <FeatureListItem>
+                    <FeatureItem name="Row reorder" action={props.demoActions.toggleRowReorderAction} currentState={props.state.rowReordering} />
                 </FeatureListItem>
                 <FeatureListItem>
                     <FeatureItem name="Freeze pane" action={props.demoActions.toggleFreezePaneAction} currentState={props.state.frozenPanes.active} />
                 </FeatureListItem>
                 <FeatureListItem>
-                    <FeatureItem name="Virtual users" action={props.demoActions.toggleVirtualUsersAction} currentState={props.state.virtualUsers} />
+                    <FeatureItem name="Multiple focus" action={props.demoActions.toggleVirtualUsersAction} currentState={props.state.virtualUsers} />
                 </FeatureListItem>
                 <FeatureListItem>
                     <FeatureItem name="Add new record" action={props.demoActions.addNewRecordAction} />
+                </FeatureListItem>
+                <FeatureListItem>
+                    <FeatureItem name="Add new field" action={props.demoActions.addNewFieldAction} />
                 </FeatureListItem>
                 {props.children}
             </FeatureList>
