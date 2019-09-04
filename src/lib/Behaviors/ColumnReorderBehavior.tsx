@@ -7,17 +7,6 @@ export class ColumnReorderBehavior extends Behavior {
     private selectedIdxs!: number[];
     autoScrollDirection: Direction = 'horizontal';
 
-    private isTheSameRange = (location: PointerLocation, state: State): boolean => {
-        if (this.initialColumnIdx < state.cellMatrix.frozenLeftRange.cols.length)
-            return location.col.idx < state.cellMatrix.frozenLeftRange.cols.length
-        if (this.initialColumnIdx > state.cellMatrix.frozenLeftRange.cols.length + state.cellMatrix.scrollableRange.cols.length - 1)
-            return location.col.idx > state.cellMatrix.frozenLeftRange.cols.length + state.cellMatrix.scrollableRange.cols.length - 1;
-        if (this.initialColumnIdx > state.cellMatrix.frozenLeftRange.cols.length - 1)
-            return location.col.idx > state.cellMatrix.frozenLeftRange.cols.length - 1 &&
-                location.col.idx < state.cellMatrix.frozenLeftRange.cols.length + state.cellMatrix.scrollableRange.cols.length;
-        return false
-    }
-
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
         this.initialColumnIdx = location.col.idx;
         this.lastPossibleDropLocation = location;
@@ -44,21 +33,9 @@ export class ColumnReorderBehavior extends Behavior {
 
     getShadowPosition(location: PointerLocation, state: State): number {
         const x = location.viewportX + state.viewportElement.scrollLeft - this.pointerOffset;
-        // column is in the left frozen range
-        let min = 0;
-        let max = state.cellMatrix.frozenLeftRange.width - state.shadowSize;
-        if (this.initialColumnIdx > state.cellMatrix.frozenLeftRange.cols.length + state.cellMatrix.scrollableRange.cols.length - 1) {
-            // column is in the right frozen range
-            min = state.cellMatrix.width - state.cellMatrix.frozenRightRange.width;
-            max = state.cellMatrix.width - state.shadowSize;
-        } else if (this.initialColumnIdx > state.cellMatrix.frozenLeftRange.cols.length - 1) {
-            // column is in the scrollable range
-            min = state.cellMatrix.frozenLeftRange.width;
-            max = state.cellMatrix.width - state.cellMatrix.frozenRightRange.width - state.shadowSize;
-        }
-
-        if (x < min) {
-            return min;
+        const max = state.cellMatrix.width - state.shadowSize;
+        if (x < 0) {
+            return 0;
         } else if (x > max) {
             return max;
         }
@@ -80,7 +57,7 @@ export class ColumnReorderBehavior extends Behavior {
 
     getLastPossibleDropLocation(currentLocation: PointerLocation, state: State): PointerLocation | undefined {
         const position = currentLocation.col.idx <= this.initialColumnIdx ? 'before' : 'after';
-        if (this.isTheSameRange(currentLocation, state) && (!currentLocation.col.canDrop || currentLocation.col.canDrop(this.selectedIdxs, position))) {
+        if (!currentLocation.col.canDrop || currentLocation.col.canDrop(this.selectedIdxs, position)) {
             return this.lastPossibleDropLocation = currentLocation;
         }
         return this.lastPossibleDropLocation;

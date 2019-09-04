@@ -34,7 +34,7 @@ const FeatureListItem = styled.li`
 
 const StyledFeatureListContainer = styled.div``;
 
-const FeatureList = (props: any) =>  <StyledFeatureList>{props.children}</StyledFeatureList>
+const FeatureList = (props: any) => <StyledFeatureList>{props.children}</StyledFeatureList>
 
 export const FeatureListContainer = (props: IFeatureListContainer) => {
     return (
@@ -42,19 +42,19 @@ export const FeatureListContainer = (props: IFeatureListContainer) => {
             <FeatureListHeader>Feature list</FeatureListHeader>
             <FeatureList>
                 <FeatureListItem>
-                    <FeatureItem name="Resize" action={props.demoActions.toggleResizeAction} currentState={props.state.resizing}/>
+                    <FeatureItem name="Resize" action={props.demoActions.toggleResizeAction} currentState={props.state.resizing} />
                 </FeatureListItem>
                 <FeatureListItem>
-                    <FeatureItem name="Reorder" action={props.demoActions.toggleReorderAction} currentState={props.state.reordering}/>
+                    <FeatureItem name="Reorder" action={props.demoActions.toggleReorderAction} currentState={props.state.reordering} />
                 </FeatureListItem>
                 <FeatureListItem>
-                    <FeatureItem name="Freeze pane" action={props.demoActions.toogleFreezePaneAction} currentState={props.state.frozenPanes.active}/>
+                    <FeatureItem name="Freeze pane" action={props.demoActions.toggleFreezePaneAction} currentState={props.state.frozenPanes.active} />
                 </FeatureListItem>
                 <FeatureListItem>
-                    <FeatureItem name="Virtual users" action={props.demoActions.toggleVirtualUsersAction} currentState={props.state.virtualUsers}/>
+                    <FeatureItem name="Virtual users" action={props.demoActions.toggleVirtualUsersAction} currentState={props.state.virtualUsers} />
                 </FeatureListItem>
                 <FeatureListItem>
-                    <FeatureItem name="Add new record" action={props.demoActions.addNewRecordAction}/>
+                    <FeatureItem name="Add new record" action={props.demoActions.addNewRecordAction} />
                 </FeatureListItem>
                 {props.children}
             </FeatureList>

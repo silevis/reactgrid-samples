@@ -36,7 +36,7 @@ export interface IDynaGridDemoState {
 export interface IDemoActions {
     toggleResizeAction(): void;
     toggleReorderAction(): void;
-    toogleFreezePaneAction(): void;
+    toggleFreezePaneAction(): void;
     toggleVirtualUsersAction(): void;
     addNewRecordAction(): void;
 }
@@ -466,7 +466,7 @@ export class DynaGridDemo extends React.Component {
         toggleReorderAction: () => {
             this.setState({ reordering: !this.state.reordering })
         },
-        toogleFreezePaneAction: () => {
+        toggleFreezePaneAction: () => {
             this.setState({
                 frozenPanes: this.state.frozenPanes.active ? { top: 0, bottom: 0, left: 0, right: 0, active: false } :
                     { top: 1, bottom: 1, left: 1, right: 1, active: true }
