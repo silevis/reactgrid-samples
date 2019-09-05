@@ -14,7 +14,7 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
     const location = props.state.focusedLocation!;
     const [position, setPosition] = React.useState(calculatedEditorPosition(location, props.state));
     let lastKeyCode = props.state.lastKeyCode;
-
+    const cellType = props.state.cellTemplates[cellData.type] ? cellData.type : 'text';
     React.useEffect(() => setPosition(calculatedEditorPosition(location, props.state)), []);
 
     // TODO https://github.com/silevis/reactgrid/issues/33
@@ -45,11 +45,11 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
                 }
             }}
         >
-            {props.state.cellTemplates[cellData.type].renderContent({
-                cellData: props.state.cellTemplates[cellData.type].validate(cellData.data),
+            {props.state.cellTemplates[cellType].renderContent({
+                cellData: props.state.cellTemplates[cellType].validate(cellData.data),
                 isInEditMode: true,
                 lastKeyCode: lastKeyCode,
-                onCellDataChanged: (cd) => { setCellData({ data: cd, type: cellData.type }) }
+                onCellDataChanged: (cd) => { setCellData({ data: cd, type: cellType }) }
             })}
         </div>
     )

@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '../../lib/Common';
+import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range, CellTemplate, CellTemplates } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 import { VirtualEnv, VirtualUser, DynaGridDataGenerator } from '../../lib/Common/VirtualUser';
 import styled, { ThemeConsumer } from 'styled-components';
 import { FeatureListContainer } from '../Views/DemoComponents/FeatureListContainer'
+import { FlagCellTemplate } from './FlagCellTemplate';
 interface Column {
     id: number;
     name: string;
@@ -31,6 +32,7 @@ export interface IDynaGridDemoState {
     resizing: boolean;
     columnReordering: boolean;
     rowReordering: boolean;
+    flagCell: boolean; 
     frozenPanes: { top: number, bottom: number, left: number, right: number, active: boolean };
 }
 
@@ -40,6 +42,7 @@ export interface IDemoActions {
     toggleRowReorderAction(): void;
     toogleFreezePaneAction(): void;
     toggleVirtualUsersAction(): void;
+    toggleFlagCellAction(): void;
     addNewRecordAction(): void;
     addNewFieldAction(): void;
 }
@@ -181,6 +184,7 @@ export class DynaGridDemo extends React.Component<{}, IDynaGridDemoState> {
         resizing: false,
         columnReordering: false,
         rowReordering: false,
+        flagCell: false,
         frozenPanes: { top: 0, bottom: 0, left: 0, right: 0, active: false },
     }
 
@@ -505,7 +509,17 @@ export class DynaGridDemo extends React.Component<{}, IDynaGridDemoState> {
         },
         addNewFieldAction: () => {
             this.addNewField();
+        },
+        toggleFlagCellAction: () => {
+            this.setState( { flagCell: !this.state.flagCell });
         }
+    }
+
+    getCustomCellTemplates(): any {
+        const cellTemplates: CellTemplates = {
+            'flag': new FlagCellTemplate,
+        };
+        return this.state.flagCell ? cellTemplates : {};
     }
 
     render() {
@@ -526,6 +540,7 @@ export class DynaGridDemo extends React.Component<{}, IDynaGridDemoState> {
                         onRowContextMenu={(selectedRowIds: Id[], menuOptions: MenuOption[]) => this.handleRowContextMenu(selectedRowIds, menuOptions)}
                         onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
                         onRangeContextMenu={(selectedRanges: Range[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRanges, menuOptions)}
+                        cellTemplates={this.getCustomCellTemplates()}
                     />
                 </DynaGridContainer>
             </DemoBody>

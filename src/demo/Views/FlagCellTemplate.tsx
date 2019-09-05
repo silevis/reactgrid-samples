@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { keyCodes } from '../Common/Constants';
-import { CellRenderProps, CellTemplate } from '../Common';
+import { keyCodes } from '../../lib/Common/Constants';
+import { CellRenderProps, CellTemplate } from '../../lib/Common';
 
 export class FlagCellTemplate implements CellTemplate<string> {
     readonly hasEditMode = true;
@@ -27,7 +27,6 @@ export class FlagCellTemplate implements CellTemplate<string> {
         if (!props.isInEditMode) {
             const flagISO = props.cellData.toLowerCase(); // ISO 3166-1, 2/3 letters
             const flagURL = 'https://restcountries.eu/data/' + flagISO + '.svg';
-            // return <img style={style} onError={this.handleOnError} src={flagURL} />
             return <div style={{
                 margin: 'auto auto', 
                 width: '35px', 
@@ -39,6 +38,7 @@ export class FlagCellTemplate implements CellTemplate<string> {
         }
         const preserveValueKeyCodes = [0, keyCodes.ENTER];
         return <input
+            type='text'
             style={{
                 position: 'inherit',
                 width: '100%',
@@ -50,10 +50,7 @@ export class FlagCellTemplate implements CellTemplate<string> {
                 outline: 'none',
             }}
             ref={input => {
-                if (input) {
-                    input.focus();
-                    // input.setSelectionRange(input.value.length, input.value.length);
-                }
+                input && input.focus();
             }}
             defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? props.cellData : ''}
             onChange={e => props.onCellDataChanged ? props.onCellDataChanged(e.currentTarget.value) : null}
