@@ -66,6 +66,9 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
                     state={this.state}
                     onKeyDown={this.keyDownHandler}
                     onKeyUp={this.keyUpHandler}
+                    onCopy={this.copyHandler}
+                    onCut={this.cutHandler}
+                    onPaste={this.pasteHandler}
                     onPointerDown={this.pointerDownHandler}
                     onContextMenu={this.handleContextMenu}
                     onRowContextMenu={(_, menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(this.state.selectedIds, menuOptions) : []}

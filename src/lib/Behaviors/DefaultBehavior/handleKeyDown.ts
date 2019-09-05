@@ -12,21 +12,7 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
     state.lastKeyCode = event.keyCode;
     if (!focusedLocation) { return state }
 
-    if (isBrowserIE()) {
-        if (event.ctrlKey && event.keyCode === 67) { // Copy
-            copySelectedRangeToClipboard(state);
-        }
-
-        if (event.ctrlKey && event.keyCode === 88) { // Cut
-            copySelectedRangeToClipboard(state, true);
-        }
-
-        if (event.ctrlKey && event.keyCode === 86) { // Paste
-            state = pasteData(state, getDataToPasteInIE());
-        }
-    }
-
-    const cellTemplate = state.cellTemplates[focusedLocation.cell.type] ? state.cellTemplates[focusedLocation.cell.type] : new TextCellTemplate() ;
+    const cellTemplate = state.cellTemplates[focusedLocation.cell.type] ? state.cellTemplates[focusedLocation.cell.type] : new TextCellTemplate();
     if ((focusedLocation.cell.data != cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data) &&
         state.selectedRanges.length == 1 && state.selectedRanges[0].first.equals(state.selectedRanges[0].last))) {
 
@@ -259,8 +245,8 @@ function handleEnterKey(event: KeyboardEvent, state: State, shiftPressed: boolea
         // !state.isFocusedCellReadOnly 
     ) {
         const cellTemplate = state.cellTemplates[focusedLocation.cell.type]
-                                ? state.cellTemplates[focusedLocation.cell.type]
-                                : new TextCellTemplate ;
+            ? state.cellTemplates[focusedLocation.cell.type]
+            : new TextCellTemplate;
         return { ...state, isFocusedCellInEditMode: cellTemplate.hasEditMode };
     } else if (shiftPressed && event.keyCode === keyCodes.ENTER && focusedLocation.row.idx > 0) {
         return focusCell(focusedLocation.col.idx, focusedLocation.row.idx - 1, state);

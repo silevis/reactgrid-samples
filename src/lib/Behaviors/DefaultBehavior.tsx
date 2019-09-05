@@ -130,11 +130,8 @@ export class DefaultBehavior extends Behavior {
     }
 
     handleCut(event: ClipboardEvent, state: State): State {
-        // this.grid.preventFocusChange = true;
         copySelectedRangeToClipboard(state, true)
-        // this.grid.preventFocusChange = false;
         event.preventDefault()
-        //state.hiddenFocusElement.focus();
         return { ...state };
     }
 }
@@ -228,5 +225,48 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
     div.focus()
     document.execCommand('selectAll', false, undefined)
     document.execCommand('copy')
+    document.body.removeChild(div)
+}
+
+export function copySelectedRangeToClipboardInIE(state: State, removeValues = false) {
+    const div = document.createElement('div')
+    const activeSelectedRange = getActiveSelectedRange(state)
+    if (!activeSelectedRange)
+        return
+
+    let text = '';
+    activeSelectedRange.rows.forEach((row, rowIdx) => {
+        activeSelectedRange.cols.forEach((col, colIdx) => {
+            const prevCol = (colIdx - 1 >= 0) ? activeSelectedRange.cols[colIdx - 1] : undefined;
+            const nextCol = (colIdx + 1 < activeSelectedRange.cols.length) ? activeSelectedRange.cols[colIdx + 1] : undefined;
+            const cell = state.cellMatrix.getCell(row.id, col.id)!
+            const prevCell = prevCol ? state.cellMatrix.getCell(row.id, prevCol.id) : undefined;
+            const nextCell = nextCol ? state.cellMatrix.getCell(row.id, nextCol.id) : undefined;
+            let data = state.cellTemplates[cell.type].validate(cell.data);
+            text = text + data;
+            if (!cell.data) {
+                text = text + '\t';
+                if (prevCell && prevCell.data && prevCell.data.length > 0 && nextCell && nextCell.data && nextCell.data.length > 0) {
+                    text = text + '\t'
+                }
+            } else {
+                if (nextCell && nextCell.data && nextCell.data.length > 0) {
+                    text = text + '\t'
+                }
+            }
+            if (removeValues) {
+                if (state.cellTemplates[cell.type].handleKeyDown(0, cell.data).editable)
+                    state = trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' });
+            }
+        })
+        if (!activeSelectedRange.cols.some(el => state.cellMatrix.getCell(row.id, el.id).data)) {
+            text = text.substring(0, text.length - 1);
+        }
+        text = (activeSelectedRange.rows.length > 1 && rowIdx < activeSelectedRange.rows.length - 1) ? text + '\n' : text;
+    });
+    div.setAttribute('contenteditable', 'true');
+    document.body.appendChild(div);
+    div.focus();
+    (window as any).clipboardData.setData('text', text);
     document.body.removeChild(div)
 }

@@ -2,10 +2,11 @@ import * as React from "react";
 import { Line } from "./Line";
 import { Shadow } from "./Shadow";
 import { ContextMenu } from "./ContextMenu";
-import { MenuOption, State, PointerEvent, Id, Range, KeyboardEvent } from "../Common";
+import { MenuOption, State, PointerEvent, Id, Range, KeyboardEvent, ClipboardEvent } from "../Common";
 import { CellEditor } from "./CellEditor";
 import { Pane } from "./Pane";
-import { recalcVisibleRange } from "../Functions";
+import { recalcVisibleRange, getDataToPasteInIE, isBrowserIE } from "../Functions";
+import { pasteData, copySelectedRangeToClipboardInIE } from "../Behaviors/DefaultBehavior";
 
 interface LegacyBrowserGridRendererProps {
     state: State,
@@ -13,6 +14,9 @@ interface LegacyBrowserGridRendererProps {
     hiddenElementRefHandler: (hiddenFocusElement: HTMLInputElement) => void,
     onKeyDown: (event: KeyboardEvent) => void,
     onKeyUp: (event: KeyboardEvent) => void,
+    onCopy: (event: ClipboardEvent) => void,
+    onCut: (event: ClipboardEvent) => void,
+    onPaste: (event: ClipboardEvent) => void,
     onPointerDown: (event: PointerEvent) => void,
     onContextMenu: (event: PointerEvent) => void,
     onRowContextMenu?: (selectedRowIds: Id[], menuOptions: MenuOption[]) => MenuOption[],
@@ -35,6 +39,9 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
         return (
             <div
                 className="dyna-grid-legacy-browser"
+                onCopy={(e: ClipboardEvent) => isBrowserIE() ? copySelectedRangeToClipboardInIE(state) : props.onCopy(e)}
+                onCut={(e: ClipboardEvent) => isBrowserIE() ? copySelectedRangeToClipboardInIE(state, true) : props.onCut(e)}
+                onPaste={(e: ClipboardEvent) => isBrowserIE() ? state.updateState((state: State) => pasteData(state, getDataToPasteInIE())) : props.onPaste(e)}
                 onKeyDown={props.onKeyDown}
                 onKeyUp={props.onKeyUp}
                 onPointerDown={props.onPointerDown}
@@ -55,7 +62,8 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                 >
                     <div style={{ width: cellMatrix.width, height: cellMatrix.height }}></div>
                 </div>
-                {cellMatrix.frozenTopRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 &&
+                {
+                    cellMatrix.frozenTopRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 &&
                     <div
                         className="dg-frozen-top"
                         style={{
@@ -109,7 +117,8 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                         }
                     </div>
                 }
-                {cellMatrix.scrollableRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 &&
+                {
+                    cellMatrix.scrollableRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 &&
                     <div
                         style={{
                             position: 'absolute', top: cellMatrix.frozenTopRange.height,
@@ -171,7 +180,8 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                         }
                     </div>
                 }
-                {cellMatrix.frozenBottomRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 && cellMatrix.rows.length > 1 &&
+                {
+                    cellMatrix.frozenBottomRange.height > 0 && state.visibleRange && state.visibleRange.width > 0 && cellMatrix.rows.length > 1 &&
                     <div
                         className="dg-frozen-bottom"
                         style={{
@@ -252,7 +262,22 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                                 borders={{ right: false, bottom: false }}
                             />
                         }
-                        <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={props.hiddenElementRefHandler} />
+                        <input
+                            style={{
+                                position: 'absolute',
+                                width: 1,
+                                height: 1,
+                                opacity: 0,
+                                background: 'white'
+                            }}
+                            ref={(input: HTMLInputElement) => {
+                                if (input) {
+                                    props.hiddenElementRefHandler(input)
+                                    input.setSelectionRange(0, 1)
+                                }
+                            }}
+                            value="&nbsp;"
+                        />
                         <Line
                             linePosition={state.linePosition}
                             orientation={state.lineOrientation}
