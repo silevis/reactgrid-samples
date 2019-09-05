@@ -1,25 +1,31 @@
 {
-  "name": "react-dyna-grid",
-  "version": "1.0.4",
+  "name": "reactgrid",
+  "version": "2.0.0",
+  "main": "lib/index.js",
+  "typings": "ilb/index.d.ts",
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "smoothscroll-polyfill": "^0.4.4"
+  },
+  "devDependencies": {
     "@types/jest": "24.0.11",
     "@types/node": "11.13.6",
     "@types/react": "16.8.14",
     "@types/react-dom": "16.8.4",
     "@types/smoothscroll-polyfill": "^0.3.1",
     "@types/styled-components": "^4.1.15",
-    "babel-polyfill": "^6.26.0",
     "cypress": "^3.3.1",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
     "react-scripts": "2.1.8",
-    "smoothscroll-polyfill": "^0.4.4",
     "styled-components": "^4.2.0",
+    "react-dom": "^16.8.6",
     "typescript": "3.4.4"
+  },
+  "peerDependencies": {
+    "react": "^16.8.6"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "tsc -p .",
     "eject": "react-scripts eject",
     "test": "node_modules\\.bin\\cypress open",
     "test:automatic": "node_modules\\.bin\\cypress run --browser chrome --spec 'cypress/integration/*'"
