@@ -24,10 +24,16 @@ export interface Record {
     pinned: boolean;
 }
 
+export interface Focus {
+    colId: number;
+    rowId: number; 
+    color: string;
+}
+
 export interface IDynaGridDemoState {
     fields: Column[];
     records: Record[];
-    focuses: { colId: number, rowId: number, color: string }[];
+    focuses: Focus[];
     virtualUsers: boolean;
     resizing: boolean;
     columnReordering: boolean;
@@ -307,7 +313,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         if (selectedRowIds.length === 0) return menuOptions;
         menuOptions = menuOptions.concat([
             {
-                title: 'Delete row', handler: () => this.setState({ records: this.deleteRows(selectedRowIds) })
+                title: 'Delete row', handler: () => this.setState({ records: this.deleteRows(selectedRowIds), focuses: this.deleteRowsFocuses(selectedRowIds) })
             },
             {
                 title: 'Pin row to the top', handler: () => this.setState(this.pinRows(selectedRowIds, 'top'))
@@ -332,7 +338,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         if (selectedColIds.length === 0) return menuOptions;
         menuOptions = menuOptions.concat([
             {
-                title: 'Delete Column', handler: () => this.setState({ fields: this.deleteColumns(selectedColIds) })
+                title: 'Delete Column', handler: () => this.setState({ fields: this.deleteColumns(selectedColIds), focuses: this.deleteColumnsFocuses(selectedColIds) })
             },
             {
                 title: 'Pin column to the left', handler: () => this.setState(this.pinColumns(selectedColIds, 'left'))
@@ -359,6 +365,14 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
 
     private deleteColumns(selectedColIds: Id[]): Column[] {
         return [...this.state.fields].filter(f => !selectedColIds.includes(f.id));
+    }
+
+    private deleteRowsFocuses(selectedRowIds: Id[]): Focus[] {
+        return [...this.state.focuses].filter((focusRow: Focus) => !selectedRowIds.includes(focusRow.rowId));
+    }
+
+    private deleteColumnsFocuses(selectedColIds: Id[]): Focus[] {
+        return [...this.state.focuses].filter((focusRow: Focus) => !selectedColIds.includes(focusRow.colId));
     }
 
     private pinColumns(ids: Id[], direction: 'left' | 'right'): IDynaGridDemoState {
@@ -450,10 +464,10 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         let selectedColIds: Id[] = [];
         let options = menuOptions.concat([
             {
-                title: 'Delete row', handler: () => this.setState({ records: this.deleteRows(selectedRowIds) })
+                title: 'Delete row', handler: () => this.setState({ records: this.deleteRows(selectedRowIds), focuses: this.deleteRowsFocuses(selectedRowIds) })
             },
             {
-                title: 'Delete column', handler: () => this.setState({ fields: this.deleteColumns(selectedColIds) })
+                title: 'Delete column', handler: () => this.setState({ fields: this.deleteColumns(selectedColIds), focuses: this.deleteColumnsFocuses(selectedColIds) })
             },
         ]);
 
@@ -523,6 +537,8 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
     }
 
     render() {
+        console.log(this.state.focuses);
+        
         return <DemoContainer>
             <DemoHeader>
                 <H1>Customize your ReactGrid</H1>
