@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Spreadsheet } from './Views/Spreadsheet';
-import { DynaGridDemo } from './Views/DynaGridDemo';
+// import { DynaGridDemo } from './Views/DynaGridDemo';
 // import { Field } from './Views/HorizontalDataGrid';
 // import { PlanningGroup, PlanningItem, PlanningRecord } from './Views/PlanningDataGrid';
 
@@ -186,7 +186,7 @@ export default class Demo extends React.Component<{}, { gridType: 'planning' | '
     // }
 
     render() {
-        return <DynaGridDemo />
+        return <></>
     }
 }
 

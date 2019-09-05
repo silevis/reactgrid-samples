@@ -6,7 +6,6 @@
       "dom.iterable",
       "esnext"
     ],
-    "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -15,15 +14,22 @@
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "preserve",
+    "jsx": "react",
     "noImplicitAny": true,
     "noUnusedLocals": false,
+    "declaration": true,
     "noUnusedParameters": false,
-    "removeComments": true
+    "removeComments": true,
+    "outDir": "./lib",
+    "allowJs": false,
+    "noEmit": false,
+    "isolatedModules": false
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.test.tsx"
   ]
 }

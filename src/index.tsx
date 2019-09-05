@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import Demo from './demo/Demo';
+import DynaGridDemo from "./demo/Views/DynaGridDemo"
 import 'babel-polyfill';
 import smoothscroll from 'smoothscroll-polyfill';
 
@@ -8,6 +8,6 @@ import smoothscroll from 'smoothscroll-polyfill';
 // this index.tsx is required by react-scripts-ts
 smoothscroll.polyfill();
 ReactDOM.render(
-  <Demo />,
+  <DynaGridDemo />,
   document.getElementById('root') as HTMLElement
 )

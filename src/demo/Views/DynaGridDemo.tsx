@@ -171,7 +171,7 @@ const records: any[] = [
 
 
 
-export class DynaGridDemo extends React.Component<{}, IDynaGridDemoState> {
+export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState> {
 
     state = {
         fields: [...fields],
