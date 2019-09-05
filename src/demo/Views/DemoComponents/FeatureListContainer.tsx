@@ -35,7 +35,7 @@ const FeatureListItem = styled.li`
 
 const StyledFeatureListContainer = styled.div``;
 
-const FeatureList = (props: any) =>  <StyledFeatureList>{props.children}</StyledFeatureList>
+const FeatureList = (props: any) => <StyledFeatureList>{props.children}</StyledFeatureList>
 
 export const FeatureListContainer = (props: IFeatureListContainer) => {
     return (
@@ -43,19 +43,19 @@ export const FeatureListContainer = (props: IFeatureListContainer) => {
             <FeatureListHeader>Feature list</FeatureListHeader>
             <FeatureList>
                 <FeatureListItem>
-                    <FeatureItem name="Resize" action={props.demoActions.toggleResizeAction} currentState={props.state.resizing}/>
+                    <FeatureItem name="Resize" action={props.demoActions.toggleResizeAction} currentState={props.state.resizing} />
                 </FeatureListItem>
                 <FeatureListItem>
-                    <FeatureItem name="Column reorder" action={props.demoActions.toggleColumnReorderAction} currentState={props.state.columnReordering}/>
+                    <FeatureItem name="Column reorder" action={props.demoActions.toggleColumnReorderAction} currentState={props.state.columnReordering} />
                 </FeatureListItem>
                 <FeatureListItem>
-                    <FeatureItem name="Row reorder" action={props.demoActions.toggleRowReorderAction} currentState={props.state.rowReordering}/>
+                    <FeatureItem name="Row reorder" action={props.demoActions.toggleRowReorderAction} currentState={props.state.rowReordering} />
                 </FeatureListItem>
                 <FeatureListItem>
-                    <FeatureItem name="Freeze pane" action={props.demoActions.toogleFreezePaneAction} currentState={props.state.frozenPanes.active}/>
+                    <FeatureItem name="Freeze pane" action={props.demoActions.toggleFreezePaneAction} currentState={props.state.frozenPanes.active} />
                 </FeatureListItem>
                 <FeatureListItem>
-                    <FeatureItem name="Multiple focus" action={props.demoActions.toggleVirtualUsersAction} currentState={props.state.virtualUsers}/>
+                    <FeatureItem name="Multiple focus" action={props.demoActions.toggleVirtualUsersAction} currentState={props.state.virtualUsers} />
                 </FeatureListItem>
                 <FeatureListItem>
                     <FeatureItem name="Enable flag cell" action={props.demoActions.toggleFlagCellAction} currentState={props.state.flagCell}/>
@@ -64,7 +64,7 @@ export const FeatureListContainer = (props: IFeatureListContainer) => {
                     <FeatureItem name="Add new record" action={props.demoActions.addNewRecordAction}/>
                 </FeatureListItem>
                 <FeatureListItem>
-                    <FeatureItem name="Add new field" action={props.demoActions.addNewFieldAction}/>
+                    <FeatureItem name="Add new field" action={props.demoActions.addNewFieldAction} />
                 </FeatureListItem>
                 {props.children}
             </FeatureList>

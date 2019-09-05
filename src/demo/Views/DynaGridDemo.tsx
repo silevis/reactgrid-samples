@@ -40,7 +40,7 @@ export interface IDemoActions {
     toggleResizeAction(): void;
     toggleColumnReorderAction(): void;
     toggleRowReorderAction(): void;
-    toogleFreezePaneAction(): void;
+    toggleFreezePaneAction(): void;
     toggleVirtualUsersAction(): void;
     toggleFlagCellAction(): void;
     addNewRecordAction(): void;
@@ -227,10 +227,10 @@ export class DynaGridDemo extends React.Component<{}, IDynaGridDemoState> {
             pinned: false,
         };
         // TODO ... identyfikowanie headera po innym  Id
-        const updatedHeaderRecord: Record = { ...this.state.records.find((record: any) => { return record.id === 'Id' ?  record : undefined }) , [fieldName]: fieldName };
-        const updatedRecords: Record[] = [...this.state.records.map((record: any): Record => { return record.id === 'Id' ? updatedHeaderRecord : record } )];
+        const updatedHeaderRecord: Record = { ...this.state.records.find((record: any) => { return record.id === 'Id' ? record : undefined }), [fieldName]: fieldName };
+        const updatedRecords: Record[] = [...this.state.records.map((record: any): Record => { return record.id === 'Id' ? updatedHeaderRecord : record })];
 
-        this.setState({ fields: [...this.state.fields, newField], records: updatedRecords});
+        this.setState({ fields: [...this.state.fields, newField], records: updatedRecords });
     }
 
     private unsetVirtualEnv() {
@@ -495,7 +495,7 @@ export class DynaGridDemo extends React.Component<{}, IDynaGridDemoState> {
         toggleRowReorderAction: () => {
             this.setState({ rowReordering: !this.state.rowReordering })
         },
-        toogleFreezePaneAction: () => {
+        toggleFreezePaneAction: () => {
             this.setState({
                 frozenPanes: this.state.frozenPanes.active ? { top: 0, bottom: 0, left: 0, right: 0, active: false } :
                     { top: 1, bottom: 1, left: 1, right: 1, active: true }

@@ -7,17 +7,6 @@ export class RowReorderBehavior extends Behavior {
     private selectedIdxs!: number[];
     autoScrollDirection: Direction = 'vertical';
 
-    private isTheSameRange = (location: PointerLocation, state: State): boolean => {
-        if (this.initialRowIdx < state.cellMatrix.frozenTopRange.rows.length)
-            return location.row.idx < state.cellMatrix.frozenTopRange.rows.length
-        if (this.initialRowIdx > state.cellMatrix.frozenTopRange.rows.length + state.cellMatrix.scrollableRange.rows.length - 1)
-            return location.row.idx > state.cellMatrix.frozenTopRange.rows.length + state.cellMatrix.scrollableRange.rows.length - 1;
-        if (this.initialRowIdx > state.cellMatrix.frozenTopRange.rows.length - 1)
-            return location.row.idx > state.cellMatrix.frozenTopRange.rows.length - 1 &&
-                location.row.idx < state.cellMatrix.frozenTopRange.rows.length + state.cellMatrix.scrollableRange.rows.length;
-        return false
-    }
-
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
         this.initialRowIdx = location.row.idx;
         this.lastPossibleDropLocation = location;
@@ -45,20 +34,9 @@ export class RowReorderBehavior extends Behavior {
 
     getShadowPosition(location: PointerLocation, state: State): number {
         const y = location.viewportY + state.viewportElement.scrollTop - this.pointerOffset;
-        let min = 0;
-        let max = state.cellMatrix.frozenTopRange.height - state.shadowSize;
-        if (this.initialRowIdx > state.cellMatrix.frozenTopRange.rows.length + state.cellMatrix.scrollableRange.rows.length - 1) {
-            // column is in the right frozen range
-            min = state.cellMatrix.height - state.cellMatrix.frozenBottomRange.height;
-            max = state.cellMatrix.height - state.shadowSize;
-        } else if (this.initialRowIdx > state.cellMatrix.frozenTopRange.rows.length - 1) {
-            // column is in the scrollable range
-            min = state.cellMatrix.frozenTopRange.height;
-            max = state.cellMatrix.height - state.cellMatrix.frozenBottomRange.height - state.shadowSize;
-        }
-
-        if (y < min) {
-            return min;
+        const max = state.cellMatrix.height - state.shadowSize;
+        if (y < 0) {
+            return 0;
         } else if (y > max) {
             return max;
         }
@@ -80,7 +58,7 @@ export class RowReorderBehavior extends Behavior {
 
     getLastPossibleDropLocation(currentLocation: PointerLocation, state: State): PointerLocation | undefined {
         const position = currentLocation.row.idx <= this.initialRowIdx ? 'before' : 'after'
-        if (this.isTheSameRange(currentLocation, state) && (!currentLocation.row.canDrop || currentLocation.row.canDrop(this.selectedIdxs, position))) {
+        if (!currentLocation.row.canDrop || currentLocation.row.canDrop(this.selectedIdxs, position)) {
             return this.lastPossibleDropLocation = currentLocation;
         }
         return this.lastPossibleDropLocation;
