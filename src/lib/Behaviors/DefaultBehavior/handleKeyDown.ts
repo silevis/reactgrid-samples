@@ -4,6 +4,7 @@ import { handleResizeSelectionWithKeys } from "./handleResizeSelectionWithKeys";
 import { handleKeyNavigationInsideSelection as handleKeyNavigationInsideSelection } from "./handleKeyNavigationInsideSelection";
 import { trySetDataAndAppendChange } from "../../Functions/trySetDataAndAppendChange";
 import { copySelectedRangeToClipboard, pasteData } from "../DefaultBehavior";
+import { TextCellTemplate } from "../../Cells/TextCellTemplate";
 
 export function handleKeyDown(state: State, event: KeyboardEvent): State {
     const focusedLocation = state.focusedLocation!;
@@ -25,12 +26,13 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
         }
     }
 
-    if ((focusedLocation.cell.data != state.cellTemplates[focusedLocation.cell.type].handleKeyDown(event.keyCode, focusedLocation.cell.data) &&
+    const cellTemplate = state.cellTemplates[focusedLocation.cell.type] ? state.cellTemplates[focusedLocation.cell.type] : new TextCellTemplate() ;
+    if ((focusedLocation.cell.data != cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data) &&
         state.selectedRanges.length == 1 && state.selectedRanges[0].first.equals(state.selectedRanges[0].last))) {
 
         state = trySetDataAndAppendChange(state, focusedLocation, {
             type: focusedLocation.cell.type,
-            data: state.cellTemplates[focusedLocation.cell.type].handleKeyDown(event.keyCode, focusedLocation.cell.data).cellData
+            data: cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data).cellData
         })
 
     }
@@ -76,7 +78,7 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
     }
 
     if (!event.ctrlKey && (possibleCharactersToEnter(event) || isEnterKey(key) || isSpaceKey(key))) {
-        return { ...state, isFocusedCellInEditMode: state.cellTemplates[focusedLocation.cell.type].hasEditMode }
+        return { ...state, isFocusedCellInEditMode: cellTemplate.hasEditMode }
     }
 
     state.hiddenFocusElement.focus();
@@ -256,7 +258,10 @@ function handleEnterKey(event: KeyboardEvent, state: State, shiftPressed: boolea
         !state.isFocusedCellInEditMode
         // !state.isFocusedCellReadOnly 
     ) {
-        return { ...state, isFocusedCellInEditMode: state.cellTemplates[focusedLocation.cell.type].hasEditMode };
+        const cellTemplate = state.cellTemplates[focusedLocation.cell.type]
+                                ? state.cellTemplates[focusedLocation.cell.type]
+                                : new TextCellTemplate ;
+        return { ...state, isFocusedCellInEditMode: cellTemplate.hasEditMode };
     } else if (shiftPressed && event.keyCode === keyCodes.ENTER && focusedLocation.row.idx > 0) {
         return focusCell(focusedLocation.col.idx, focusedLocation.row.idx - 1, state);
     }

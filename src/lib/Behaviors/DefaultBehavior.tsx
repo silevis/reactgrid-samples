@@ -10,6 +10,7 @@ import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChang
 import { FillHandleBehavior } from "./FillHandleBehavior";
 import { getLocationFromClient, focusLocation } from "../Functions";
 import { ResizeColumnBehavior } from "./ResizeColumnBehavior";
+import { TextCellTemplate } from "../Cells/TextCellTemplate";
 
 interface ClipboardData {
     type: string;
@@ -70,9 +71,12 @@ export class DefaultBehavior extends Behavior {
             event.preventDefault();
             event.stopPropagation();
         } else if (location.equals(state.focusedLocation)) {
+            const cellTemplate = state.cellTemplates[state.focusedLocation!.cell.type] 
+                                    ? state.cellTemplates[state.focusedLocation!.cell.type] 
+                                    : new TextCellTemplate ;
             return {
                 ...state,
-                isFocusedCellInEditMode: state.cellTemplates[state.focusedLocation!.cell.type].hasEditMode
+                isFocusedCellInEditMode: cellTemplate.hasEditMode
             };
         }
         return state;
@@ -141,7 +145,10 @@ export function pasteData(state: State, pasteContent: ClipboardData[][]): State 
         activeSelectedRange.rows.forEach(row =>
             activeSelectedRange.cols.forEach(col => {
                 const cell = state.cellMatrix.getCell(row.id, col.id);
-                if (!state.cellTemplates[cell.type].handleKeyDown(0, pasteContent[0][0].data).editable)
+                const cellTemplate = state.cellTemplates[cell.type]
+                                    ? state.cellTemplates[cell.type]
+                                    : new TextCellTemplate ;
+                if (!cellTemplate.handleKeyDown(0, pasteContent[0][0].data).editable)
                     return
                 state = trySetDataAndAppendChange(state, new Location(row, col), pasteContent[0][0])
             })
@@ -155,7 +162,10 @@ export function pasteData(state: State, pasteContent: ClipboardData[][]): State 
                 const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx
                 if (rowIdx <= cellMatrix.last.row.idx && colIdx <= cellMatrix.last.col.idx) {
                     lastLocation = cellMatrix.getLocation(rowIdx, colIdx)
-                    if (!state.cellTemplates[lastLocation.cell.type].handleKeyDown(0, pasteValue.data).editable)
+                    const cellTemplate = state.cellTemplates[lastLocation.cell.type]
+                                    ? state.cellTemplates[lastLocation.cell.type]
+                                    : new TextCellTemplate ;
+                    if (!cellTemplate.handleKeyDown(0, pasteValue.data).editable)
                         return
                     state = trySetDataAndAppendChange(state, lastLocation, pasteValue)
                 }
@@ -195,7 +205,10 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
         activeSelectedRange.cols.forEach(col => {
             const tableCell = tableRow.insertCell()
             const cell = state.cellMatrix.getCell(row.id, col.id)!
-            const data = state.cellTemplates[cell.type].validate(cell.data)
+            const cellTemplate = state.cellTemplates[cell.type]
+                                    ? state.cellTemplates[cell.type]
+                                    : new TextCellTemplate ;
+            const data = cellTemplate.validate(cell.data)
             tableCell.textContent = data;  // for undefined values
             if (!cell.data) {
                 tableCell.innerHTML = '<img>';
@@ -204,7 +217,7 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
             tableCell.setAttribute('data-type', cell.type)
             tableCell.style.border = '1px solid #D3D3D3'
             if (removeValues) {
-                if (state.cellTemplates[cell.type].handleKeyDown(0, cell.data).editable)
+                if (cellTemplate.handleKeyDown(0, cell.data).editable)
                     state = trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' });
             }
         })

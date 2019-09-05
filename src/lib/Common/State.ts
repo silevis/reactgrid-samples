@@ -1,14 +1,6 @@
 import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, DataChange } from ".";
 import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
 import { CellTemplates, Id } from "./PublicModel";
-import { TextCellTemplate } from "../Cells/TextCellTemplate";
-import { HeaderCellTemplate } from "../Cells/HeaderCellTemplate";
-import { NumberCellTemplate } from "../Cells/NumberCellTemplate";
-import { CheckboxCellTemplate } from "../Cells/CheckboxCellTemplate";
-import { DateCellTemplate } from "../Cells/DateCellTemplate";
-import { EmailCellTemplate } from "../Cells/EmailCellTemplate";
-import { TimeCellTemplate } from "../Cells/TimeCellTemplate";
-import { FlagCellTemplate } from "../Cells/FlagCellTemplate";
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // INTERNAL
@@ -21,16 +13,7 @@ export class State {
     readonly currentBehavior: Behavior = new DefaultBehavior();
     readonly floatingCellEditor: boolean = false;
 
-    cellTemplates: CellTemplates = {
-        'text': new TextCellTemplate(),
-        'number': new NumberCellTemplate(),
-        'header': new HeaderCellTemplate(),
-        'checkbox': new CheckboxCellTemplate(),
-        'date': new DateCellTemplate(),
-        'email': new EmailCellTemplate(),
-        'time': new TimeCellTemplate(),
-        'flag': new FlagCellTemplate(),
-    }
+    cellTemplates!: CellTemplates;
     hiddenFocusElement!: HTMLDivElement;
     readonly viewportElement!: HTMLDivElement;
 

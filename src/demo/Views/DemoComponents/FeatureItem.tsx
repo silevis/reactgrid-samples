@@ -12,7 +12,7 @@ const StyledFeatureItem = styled.div`
     display: flex;
     flex-wrap: nowrap;
     background-color: transparent;
-    height: 40px;
+    height: 30px;
     align-items: center;
     padding: 0px 10px;
     justify-content: space-between;
@@ -30,6 +30,7 @@ const StyledFeatureCheckbox = styled.div`
 
 const StyledSpan = styled.span`
     color: ${props => props.color || "#000000"};
+    user-select: none;
 `;
 
 const StyledFeatureCheckboxActive = styled(StyledFeatureCheckbox)`

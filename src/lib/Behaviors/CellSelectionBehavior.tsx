@@ -2,6 +2,7 @@ import { focusLocation } from '../Functions';
 import { State, Location, Behavior } from '../Common';
 import { PointerEvent } from "../Common/domEvents";
 import { selectRange, updateActiveSelectedRange } from '../Functions/selectRange';
+import { TextCellTemplate } from '../Cells/TextCellTemplate';
 
 export class CellSelectionBehavior extends Behavior {
 
@@ -46,7 +47,10 @@ export class CellSelectionBehavior extends Behavior {
             event.preventDefault();
             event.stopPropagation();
         } else if (location.equals(state.focusedLocation)) {
-            return { ...state, isFocusedCellInEditMode: state.cellTemplates[state.focusedLocation!.cell.type].hasEditMode };
+            const defaultType = state.cellTemplates[state.focusedLocation!.cell.type]
+                                    ? state.cellTemplates[state.focusedLocation!.cell.type] 
+                                    : new TextCellTemplate();
+            return { ...state, isFocusedCellInEditMode: defaultType.hasEditMode };
         }
         return state;
     }

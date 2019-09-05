@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { State, Range, PointerEvent, CellMatrix, Behavior, Row, Column, Location, DataChange } from "../Common";
+import { State, Range, PointerEvent, CellMatrix, Behavior, Row, Column, Location, DataChange, Cell } from "../Common";
 import { PartialArea } from '../Components/PartialArea';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
 import { trySetDataAndAppendChange } from '../Functions/trySetDataAndAppendChange';
+import { TextCellTemplate } from '../Cells/TextCellTemplate';
 
 type Direction = '' | 'left' | 'right' | 'up' | 'down';
 
@@ -117,15 +118,7 @@ export class FillHandleBehavior extends Behavior {
                 values = activeSelectedRange.rows.map((row: Row) =>
                     new Location(row, state.cellMatrix.cols[activeSelectedRange.last.col.idx]).cell
                 );
-                this.fillRange.rows.forEach((row: Row, i: number) =>
-                    this.fillRange!.cols.forEach((col: Column) => {
-                        const location = new Location(row, col)
-                        const data = state.cellTemplates[values[i].type].validate(values[i].data);
-                        if (!state.cellTemplates[location.cell.type].handleKeyDown(0, data).editable)
-                            return;
-                        state = trySetDataAndAppendChange(state, location, { type: values[i].type, data, text: state.cellTemplates[values[i].type].cellDataToText(data) })
-                    })
-                );
+                state = this.iterateFillRangeRows(state, values);
                 state = {
                     ...state,
                     selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, new Location(activeSelectedRange.last.row, location.col))],
@@ -136,15 +129,7 @@ export class FillHandleBehavior extends Behavior {
                 values = activeSelectedRange.rows.map((row: Row) =>
                     new Location(row, state.cellMatrix.cols[activeSelectedRange.last.col.idx]).cell
                 );
-                this.fillRange.rows.forEach((row: Row, i: number) =>
-                    this.fillRange!.cols.forEach((col: Column) => {
-                        const location = new Location(row, col)
-                        const data = state.cellTemplates[values[i].type].validate(values[i].data);
-                        if (!state.cellTemplates[location.cell.type].handleKeyDown(0, data).editable)
-                            return;
-                        state = trySetDataAndAppendChange(state, location, { type: values[i].type, data, text: state.cellTemplates[values[i].type].cellDataToText(data) })
-                    })
-                );
+                state = this.iterateFillRangeRows(state, values);
                 state = {
                     ...state,
                     selectedRanges: [cellMatrix.getRange(activeSelectedRange.last, new Location(activeSelectedRange.first.row, location.col))],
@@ -155,15 +140,7 @@ export class FillHandleBehavior extends Behavior {
                 values = activeSelectedRange.cols.map((col: Column) =>
                     new Location(state.cellMatrix.rows[activeSelectedRange.last.row.idx], col).cell
                 );
-                this.fillRange.rows.forEach((row: Row) =>
-                    this.fillRange!.cols.forEach((col: Column, i: number) => {
-                        const location = new Location(row, col)
-                        const data = state.cellTemplates[values[i].type].validate(values[i].data);
-                        if (!state.cellTemplates[location.cell.type].handleKeyDown(0, data).editable)
-                            return;
-                        state = trySetDataAndAppendChange(state, location, { type: values[i].type, data, text: state.cellTemplates[values[i].type].cellDataToText(data) })
-                    })
-                );
+                state = this.iterateFillRangeCols(state, values);
                 state = {
                     ...state,
                     selectedRanges: [cellMatrix.getRange(activeSelectedRange.last, new Location(location.row, activeSelectedRange.first.col))],
@@ -174,15 +151,7 @@ export class FillHandleBehavior extends Behavior {
                 values = activeSelectedRange.cols.map((col: Column) =>
                     new Location(state.cellMatrix.rows[activeSelectedRange.last.row.idx], col).cell
                 );
-                this.fillRange.rows.forEach((row: Row) =>
-                    this.fillRange!.cols.forEach((col: Column, i: number) => {
-                        const location = new Location(row, col)
-                        const data = state.cellTemplates[values[i].type].validate(values[i].data);
-                        if (!state.cellTemplates[location.cell.type].handleKeyDown(0, data).editable)
-                            return;
-                        state = trySetDataAndAppendChange(state, location, { type: values[i].type, data, text: state.cellTemplates[values[i].type].cellDataToText(data) })
-                    })
-                );
+                state = this.iterateFillRangeCols(state, values);
                 state = {
                     ...state,
                     selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, new Location(location.row, activeSelectedRange.last.col))],
@@ -190,6 +159,34 @@ export class FillHandleBehavior extends Behavior {
                 };
                 break;
         }
+        return state;
+    }
+
+    private iterateFillRangeRows(state: State, values: Cell[]): State {
+        this.fillRange && this.fillRange.rows.forEach((row: Row, i: number) =>
+            this.fillRange!.cols.forEach((col: Column) => {
+                state = this.updateCellData(new Location(row, col), state, values[i]);
+            })
+        );
+        return state;
+    }
+
+    private iterateFillRangeCols(state: State, values: Cell[]): State {
+        this.fillRange && this.fillRange.rows.forEach((row: Row) =>
+            this.fillRange!.cols.forEach((col: Column, i: number) => {
+                this.updateCellData(new Location(row, col), state, values[i]);
+            })
+        );
+        return state;
+    }
+
+    private updateCellData(location: Location, state: State, cell: Cell): State {
+        const cellTemplate = state.cellTemplates[cell.type] ? state.cellTemplates[cell.type] : new TextCellTemplate();
+        const data = cellTemplate.validate(cell.data);
+        const locationCellTemplate = state.cellTemplates[location.cell.type] ? state.cellTemplates[location.cell.type] : new TextCellTemplate();
+        if (!locationCellTemplate.handleKeyDown(0, data).editable)
+            return state;
+        state = trySetDataAndAppendChange(state, location, { type: cell.type, data, text: cellTemplate.cellDataToText(data) })
         return state;
     }
 

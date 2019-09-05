@@ -131,6 +131,10 @@ export class VirtualUser {
                     newFieldData = dataGen.getRandomAge(10, 70);
                     break;
                 }
+                case 'text': {
+                    newFieldData = dataGen.getRandomName() + ' and ' +  dataGen.getRandomName();
+                    break;
+                }
                 default:
                     break;
             }

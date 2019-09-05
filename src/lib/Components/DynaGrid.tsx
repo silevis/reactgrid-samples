@@ -6,6 +6,7 @@ import { PointerEventsController } from "../Common/PointerEventsController";
 import { updateSelectedRows, updateSelectedColumns } from "../Functions/updateState";
 import { DefaultGridRenderer } from "./DefaultGridRenderer";
 import { LegacyBrowserGridRenderer } from "./LegacyBrowserGridRenderer";
+import { DefaultCellTemplates } from '../Common/DefaultCellTemplates'
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
 
@@ -44,7 +45,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
         return {
             ...state,
             currentlyEditedCell: state.isFocusedCellInEditMode && state.focusedLocation ? { ...state.focusedLocation.cell } : undefined,
-            cellTemplates: { ...state.cellTemplates, ...props.cellTemplates },
+            cellTemplates: { ...DefaultCellTemplates.getTemplates(), ...props.cellTemplates },
             customFocuses: props.customFocuses,
         };
     }

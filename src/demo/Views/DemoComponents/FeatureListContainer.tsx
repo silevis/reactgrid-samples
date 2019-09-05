@@ -20,6 +20,7 @@ const StyledFeatureList = styled.ul`
 const StyledFeatureListHeader = styled.h3`
     font-family: 'Arial', Helvetica, sans-serif;
     margin-top: 0;
+    margin-bottom: 10px;
 `;
 
 const FeatureListHeader = (props: any) => <StyledFeatureListHeader>{props.children}</StyledFeatureListHeader>
@@ -27,8 +28,8 @@ const FeatureListHeader = (props: any) => <StyledFeatureListHeader>{props.childr
 const FeatureListItem = styled.li`
     &:not(:last-child ){
         border-bottom: 1px solid #cccccc;
-        padding-bottom: 5px;
     }
+    font-size: 14px;
     cursor: pointer;
 `;
 
@@ -57,7 +58,10 @@ export const FeatureListContainer = (props: IFeatureListContainer) => {
                     <FeatureItem name="Multiple focus" action={props.demoActions.toggleVirtualUsersAction} currentState={props.state.virtualUsers} />
                 </FeatureListItem>
                 <FeatureListItem>
-                    <FeatureItem name="Add new record" action={props.demoActions.addNewRecordAction} />
+                    <FeatureItem name="Enable flag cell" action={props.demoActions.toggleFlagCellAction} currentState={props.state.flagCell}/>
+                </FeatureListItem>
+                <FeatureListItem>
+                    <FeatureItem name="Add new record" action={props.demoActions.addNewRecordAction}/>
                 </FeatureListItem>
                 <FeatureListItem>
                     <FeatureItem name="Add new field" action={props.demoActions.addNewFieldAction} />
