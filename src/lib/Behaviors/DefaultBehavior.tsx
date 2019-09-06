@@ -36,7 +36,7 @@ export class DefaultBehavior extends Behavior {
             return new RowReorderBehavior();
         } else if (location.col.idx == 0) {
             return new RowSelectionBehavior();
-        } else if ((event.pointerType === 'mouse' || event.pointerType === undefined) && event.target.className === 'dg-fill-handle' && !state.disableFillhandle) { // event.pointerType === undefined -> for cypress tests (is always undefined)
+        } else if ((event.pointerType === 'mouse' || event.pointerType === undefined) && event.target.className === 'dg-fill-handle' && !state.disableFillHandle) { // event.pointerType === undefined -> for cypress tests (is always undefined)
             return new FillHandleBehavior();
         } else {
             return new CellSelectionBehavior();

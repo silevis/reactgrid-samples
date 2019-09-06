@@ -24,7 +24,7 @@ export class State {
     readonly queuedDataChanges: DataChange[] = [];
     currentlyEditedCell?: { type: string, data: any, text?: string };
     customFocuses: Focus[] = [];
-    disableFillhandle?: boolean;
+    disableFillHandle?: boolean;
     disableRangeSelection?: boolean;
     disableColumnSelection?: boolean;
     disableRowSelection?: boolean;
