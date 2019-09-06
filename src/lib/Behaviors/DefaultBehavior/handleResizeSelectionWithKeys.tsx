@@ -1,11 +1,13 @@
-import { State, KeyboardEvent, keyCodes } from "../../Common";
-import { scrollIntoView } from "../../Functions";
+import { State, KeyboardEvent, keyCodes, Location } from "../../Common";
+import { scrollIntoView, focusLocation } from "../../Functions";
 
 export function handleResizeSelectionWithKeys(state: State, event: KeyboardEvent) {
     const activeSelectedRange = state.selectedRanges[state.activeSelectedRangeIdx]
     const focusedCell = state.focusedLocation!;
     if (event.keyCode === keyCodes.UP_ARROW && event.shiftKey && activeSelectedRange.first.row.idx > 0) {
-        if (activeSelectedRange.last.row.idx > focusedCell.row.idx) {
+        if (state.disableRangeSelection) {
+            return focusLocation(state, state.cellMatrix.getLocation(focusedCell.row.idx - 1, focusedCell.col.idx ));
+        } else if (activeSelectedRange.last.row.idx > focusedCell.row.idx) {
             return resizeSelection(
                 activeSelectedRange.first.col.idx,
                 activeSelectedRange.last.col.idx,
@@ -31,7 +33,9 @@ export function handleResizeSelectionWithKeys(state: State, event: KeyboardEvent
         event.shiftKey &&
         activeSelectedRange.last.row.idx < state.cellMatrix.last.row.idx
     ) {
-        if (activeSelectedRange.first.row.idx < focusedCell.row.idx) {
+        if (state.disableRangeSelection) {
+            return focusLocation(state, state.cellMatrix.getLocation(focusedCell.row.idx + 1, focusedCell.col.idx));
+        } else if (activeSelectedRange.first.row.idx < focusedCell.row.idx) {
             return resizeSelection(
                 activeSelectedRange.last.col.idx,
                 activeSelectedRange.first.col.idx,
@@ -53,7 +57,9 @@ export function handleResizeSelectionWithKeys(state: State, event: KeyboardEvent
             );
         }
     } else if (event.keyCode === keyCodes.LEFT_ARROW && event.shiftKey && activeSelectedRange.first.col.idx > 0) {
-        if (activeSelectedRange.last.col.idx > focusedCell.col.idx) {
+        if (state.disableRangeSelection) {
+            return focusLocation(state, state.cellMatrix.getLocation(focusedCell.row.idx, focusedCell.col.idx - 1));
+        } else if (activeSelectedRange.last.col.idx > focusedCell.col.idx) {
             return resizeSelection(
                 activeSelectedRange.first.col.idx,
                 activeSelectedRange.last.col.idx - 1,
@@ -77,7 +83,9 @@ export function handleResizeSelectionWithKeys(state: State, event: KeyboardEvent
         event.shiftKey &&
         activeSelectedRange.last.col.idx < state.cellMatrix.last.col.idx
     ) {
-        if (activeSelectedRange.first.col.idx < focusedCell.col.idx) {
+        if (state.disableRangeSelection) {
+            return focusLocation(state, state.cellMatrix.getLocation(focusedCell.row.idx, focusedCell.col.idx + 1));
+        } else if (activeSelectedRange.first.col.idx < focusedCell.col.idx) {
             return resizeSelection(
                 activeSelectedRange.last.col.idx,
                 activeSelectedRange.first.col.idx + 1,
@@ -127,7 +135,9 @@ export function handleResizeSelectionWithKeys(state: State, event: KeyboardEvent
         const rowsOnScreen = state.cellMatrix.rows.filter(
             r => r.top < state.viewportElement.clientHeight
         );
-        if (activeSelectedRange.first.row.idx >= focusedCell.row.idx) {
+        if (state.disableRangeSelection) {
+            return focusLocation(state, new Location(focusedCell.row, focusedCell.col));
+        } else if (activeSelectedRange.first.row.idx >= focusedCell.row.idx) {
             return resizeSelection(
                 activeSelectedRange.first.col.idx,
                 activeSelectedRange.last.col.idx,
@@ -154,7 +164,9 @@ export function handleResizeSelectionWithKeys(state: State, event: KeyboardEvent
         const rowsOnScreen = state.cellMatrix.rows.filter(
             r => r.top < state.viewportElement.clientHeight
         );
-        if (activeSelectedRange.first.row.idx >= focusedCell.row.idx) {
+        if (state.disableRangeSelection) {
+            return focusLocation(state, new Location(focusedCell.row, focusedCell.col));
+        } else if (activeSelectedRange.first.row.idx >= focusedCell.row.idx) {
             return resizeSelection(
                 activeSelectedRange.first.col.idx,
                 activeSelectedRange.last.col.idx,
@@ -178,7 +190,9 @@ export function handleResizeSelectionWithKeys(state: State, event: KeyboardEvent
             );
         }
     } else if (event.ctrlKey && event.shiftKey && event.keyCode === keyCodes.HOME) {
-        return resizeSelection(
+        if (state.disableRangeSelection) {
+            return focusLocation(state, new Location(focusedCell.row, focusedCell.col));
+        } else return resizeSelection(
             activeSelectedRange.first.col.idx,
             activeSelectedRange.last.col.idx,
             0,
@@ -187,7 +201,9 @@ export function handleResizeSelectionWithKeys(state: State, event: KeyboardEvent
             state
         );
     } else if (event.ctrlKey && event.shiftKey && event.keyCode === keyCodes.END) {
-        return resizeSelection(
+        if (state.disableRangeSelection) {
+            return focusLocation(state, new Location(focusedCell.row, focusedCell.col));
+        } else return resizeSelection(
             activeSelectedRange.first.col.idx,
             activeSelectedRange.last.col.idx,
             activeSelectedRange.first.row.idx,
@@ -196,7 +212,9 @@ export function handleResizeSelectionWithKeys(state: State, event: KeyboardEvent
             state
         );
     } else if (event.shiftKey && event.keyCode === keyCodes.HOME) {
-        return resizeSelection(
+        if (state.disableRangeSelection) {
+            return focusLocation(state, new Location(focusedCell.row, focusedCell.col));
+        } else return resizeSelection(
             0,
             activeSelectedRange.last.col.idx,
             activeSelectedRange.first.row.idx,
@@ -205,7 +223,9 @@ export function handleResizeSelectionWithKeys(state: State, event: KeyboardEvent
             state
         );
     } else if (event.shiftKey && event.keyCode === keyCodes.END) {
-        return resizeSelection(
+        if (state.disableRangeSelection) {
+            return focusLocation(state, new Location(focusedCell.row, focusedCell.col));
+        } else return resizeSelection(
             activeSelectedRange.first.col.idx,
             state.cellMatrix.last.col.idx,
             activeSelectedRange.first.row.idx,

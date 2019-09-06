@@ -1,6 +1,6 @@
 import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, DataChange } from ".";
 import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
-import { CellTemplates, Id } from "./PublicModel";
+import { CellTemplates, Id, Focus } from "./PublicModel";
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // INTERNAL
@@ -23,7 +23,11 @@ export class State {
     lastKeyCode: number = 0;
     readonly queuedDataChanges: DataChange[] = [];
     currentlyEditedCell?: { type: string, data: any, text?: string };
-    customFocuses: { id: Id, colId: Id, rowId: Id, color: string }[] = [];
+    customFocuses: Focus[] = [];
+    disableFillhandle?: boolean;
+    disableRangeSelection?: boolean;
+    disableColumnSelection?: boolean;
+    disableRowSelection?: boolean;
 
     // CONTEXT MENU
     contextMenuPosition: number[] = [-1, -1] // [top, left]

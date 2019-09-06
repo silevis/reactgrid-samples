@@ -30,23 +30,23 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
         } else {
             state.selectedRanges = [...state.selectedRanges].map(range => state.cellMatrix.validateRange(range))
         }
-        if (state.focusedLocation) {
-            try {
-                state.focusedLocation = state.cellMatrix.validateLocation(state.focusedLocation);
-            } catch (error) {
-                console.log(error);
-            }
+
+        if (state.cellMatrix.cols.length > 0 && state.focusedLocation) {
+            state.focusedLocation = state.cellMatrix.validateLocation(state.focusedLocation);
         }
 
         if (state.visibleRange && dataHasChanged)
             state = recalcVisibleRange(state, isBrowserIE() || isBrowserEdge() ? true : false)
-
 
         return {
             ...state,
             currentlyEditedCell: state.isFocusedCellInEditMode && state.focusedLocation ? { ...state.focusedLocation.cell } : undefined,
             cellTemplates: { ...DefaultCellTemplates.getTemplates(), ...props.cellTemplates },
             customFocuses: props.customFocuses,
+            disableFillhandle: props.disableFillHandle,
+            disableRangeSelection: props.disableRangeSelection,
+            disableColumnSelection: props.disableColumnSelection,
+            disableRowSelection: props.disableRowSelection,
         };
     }
 

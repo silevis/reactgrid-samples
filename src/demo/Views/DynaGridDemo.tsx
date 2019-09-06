@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range, CellTemplate, CellTemplates } from '../../lib/Common';
+import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range, CellTemplates, Focus } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 import { VirtualEnv, VirtualUser, DynaGridDataGenerator } from '../../lib/Common/VirtualUser';
 import styled, { ThemeConsumer } from 'styled-components';
@@ -24,15 +24,18 @@ export interface Record {
     pinned: boolean;
 }
 
+
 export interface IDynaGridDemoState {
     fields: Column[];
     records: Record[];
-    focuses: { colId: number, rowId: number, color: string }[];
+    focuses: Focus[];
     virtualUsers: boolean;
     resizing: boolean;
     columnReordering: boolean;
     rowReordering: boolean;
-    flagCell: boolean; 
+    flagCell: boolean;
+    disableFillHandle: boolean;
+    disableRangeSelection: boolean;
     frozenPanes: { top: number, bottom: number, left: number, right: number, active: boolean };
 }
 
@@ -43,6 +46,8 @@ export interface IDemoActions {
     toggleFreezePaneAction(): void;
     toggleVirtualUsersAction(): void;
     toggleFlagCellAction(): void;
+    toggleDisableFillHandleAction(): void;
+    toggleDisableRangeSelectionAction(): void;
     addNewRecordAction(): void;
     addNewFieldAction(): void;
 }
@@ -184,7 +189,9 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         resizing: false,
         columnReordering: false,
         rowReordering: false,
-        flagCell: false,
+        flagCell: true,
+        disableFillHandle: false,
+        disableRangeSelection: false,
         frozenPanes: { top: 0, bottom: 0, left: 0, right: 0, active: false },
     }
 
@@ -307,7 +314,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         if (selectedRowIds.length === 0) return menuOptions;
         menuOptions = menuOptions.concat([
             {
-                title: 'Delete row', handler: () => this.setState({ records: this.deleteRows(selectedRowIds) })
+                title: 'Delete row', handler: () => this.setState({ records: this.deleteRows(selectedRowIds), focuses: this.deleteRowsFocuses(selectedRowIds) })
             },
             {
                 title: 'Pin row to the top', handler: () => this.setState(this.pinRows(selectedRowIds, 'top'))
@@ -332,7 +339,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         if (selectedColIds.length === 0) return menuOptions;
         menuOptions = menuOptions.concat([
             {
-                title: 'Delete Column', handler: () => this.setState({ fields: this.deleteColumns(selectedColIds) })
+                title: 'Delete Column', handler: () => this.setState({ fields: this.deleteColumns(selectedColIds), focuses: this.deleteColumnsFocuses(selectedColIds) })
             },
             {
                 title: 'Pin column to the left', handler: () => this.setState(this.pinColumns(selectedColIds, 'left'))
@@ -359,6 +366,14 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
 
     private deleteColumns(selectedColIds: Id[]): Column[] {
         return [...this.state.fields].filter(f => !selectedColIds.includes(f.id));
+    }
+
+    private deleteRowsFocuses(selectedRowIds: Id[]): Focus[] {
+        return [...this.state.focuses].filter((focusRow: Focus) => !selectedRowIds.includes(focusRow.rowId));
+    }
+
+    private deleteColumnsFocuses(selectedColIds: Id[]): Focus[] {
+        return [...this.state.focuses].filter((focusRow: Focus) => !selectedColIds.includes(focusRow.colId));
     }
 
     private pinColumns(ids: Id[], direction: 'left' | 'right'): IDynaGridDemoState {
@@ -450,10 +465,10 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         let selectedColIds: Id[] = [];
         let options = menuOptions.concat([
             {
-                title: 'Delete row', handler: () => this.setState({ records: this.deleteRows(selectedRowIds) })
+                title: 'Delete row', handler: () => this.setState({ records: this.deleteRows(selectedRowIds), focuses: this.deleteRowsFocuses(selectedRowIds) })
             },
             {
-                title: 'Delete column', handler: () => this.setState({ fields: this.deleteColumns(selectedColIds) })
+                title: 'Delete column', handler: () => this.setState({ fields: this.deleteColumns(selectedColIds), focuses: this.deleteColumnsFocuses(selectedColIds) })
             },
         ]);
 
@@ -512,6 +527,12 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         },
         toggleFlagCellAction: () => {
             this.setState( { flagCell: !this.state.flagCell });
+        },
+        toggleDisableFillHandleAction: () => {
+            this.setState( { disableFillHandle: !this.state.disableFillHandle });
+        },
+        toggleDisableRangeSelectionAction: () => {
+            this.setState( { disableRangeSelection: !this.state.disableRangeSelection });
         }
     }
 
@@ -541,6 +562,8 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
                         onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
                         onRangeContextMenu={(selectedRanges: Range[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRanges, menuOptions)}
                         cellTemplates={this.getCustomCellTemplates()}
+                        disableFillHandle={this.state.disableFillHandle}
+                        disableRangeSelection={this.state.disableRangeSelection}
                     />
                 </DynaGridContainer>
             </DemoBody>
