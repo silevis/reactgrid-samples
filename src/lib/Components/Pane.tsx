@@ -45,13 +45,12 @@ class GridContent extends React.Component<RowsProps>{
     }
 } 
  
-function renderCustomFocuses(props: any) {
+function renderCustomFocuses(props: PaneProps) {
     const customFocuses = props.state.customFocuses.filter((value: any) => Object.keys(value).length !== 0);
     return (
         customFocuses && customFocuses.map((focus: any, id: number) => {
-            try {
-                return props.range.contains(props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)) && <CellFocus key={id} location={props.state.cellMatrix.getLocationById(focus.rowId, focus.colId)} color={focus.color} />
-            } catch (error) {}
+            const location = props.state.cellMatrix.getLocationById(focus.rowId, focus.colId);
+            return location && props.range.contains(location) && <CellFocus key={id} location={location} color={focus.color} />
         })
     )  
 }
@@ -66,7 +65,7 @@ export const Pane: React.FunctionComponent<PaneProps> = (props) =>{
         {props.state.focusedLocation && props.range.contains(props.state.focusedLocation) &&
             <CellFocus location={props.state.focusedLocation} />}
         {props.state.selectedRanges[props.state.activeSelectedRangeIdx] && props.range.contains(props.state.selectedRanges[props.state.activeSelectedRangeIdx].last) &&
-            <FillHandle state={props.state} location={props.state.selectedRanges[props.state.activeSelectedRangeIdx].last} />}
+            !props.state.disableFillhandle && props.state.selectedIds.length > 0 && <FillHandle state={props.state} location={props.state.selectedRanges[props.state.activeSelectedRangeIdx].last} />}
     </div>
     )
 }

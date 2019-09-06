@@ -6,14 +6,24 @@ export type Direction = 'horizontal' | 'vertical' | 'both'
 
 export type SelectionMode = 'row' | 'column' | 'range';
 
+export interface Focus {
+    colId: Id;
+    rowId: Id; 
+    color: string;
+}
+
 export interface DynaGridProps {
     readonly cellMatrixProps: CellMatrixProps;
     readonly style?: React.CSSProperties;
     readonly cellTemplates?: CellTemplates
-    readonly customFocuses?: { colId: Id, rowId: Id, color: string }[];
+    readonly customFocuses?: Focus[];
     //usersFocuses: { colIdx: number; rowIdx: number; color: string }[];
     //readonly onInitialized?: (grid: GridController) => void;
     // readonly floatingCellEditor: boolean;
+    readonly disableFillHandle?: boolean;
+    readonly disableRangeSelection?: boolean;
+    readonly disableRowSelection?: boolean;
+    readonly disableColumnSelection?: boolean;
     readonly onDataChanged?: (dataChanges: DataChange[]) => void;
     readonly onCellFocused?: (cellId: CellId) => void;
     readonly onRowContextMenu?: (selectedRowIds: Id[], menuOptions: MenuOption[]) => MenuOption[];

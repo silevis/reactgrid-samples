@@ -61,6 +61,12 @@ export const FeatureListContainer = (props: IFeatureListContainer) => {
                     <FeatureItem name="Enable flag cell" action={props.demoActions.toggleFlagCellAction} currentState={props.state.flagCell}/>
                 </FeatureListItem>
                 <FeatureListItem>
+                    <FeatureItem name="Disable fill handle" action={props.demoActions.toggleDisableFillHandleAction} currentState={props.state.disableFillHandle}/>
+                </FeatureListItem>
+                <FeatureListItem>
+                    <FeatureItem name="Disable range selection" action={props.demoActions.toggleDisableRangeSelectionAction} currentState={props.state.disableRangeSelection}/>
+                </FeatureListItem>
+                <FeatureListItem>
                     <FeatureItem name="Add new record" action={props.demoActions.addNewRecordAction}/>
                 </FeatureListItem>
                 <FeatureListItem>

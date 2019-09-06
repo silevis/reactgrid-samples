@@ -12,13 +12,17 @@ export class ColumnSelectionBehavior extends Behavior {
         } else if (event.shiftKey && state.focusedLocation) {
             state = selectMultipleColumns(state, state.focusedLocation!.col, location.col, event.ctrlKey);
         } else {
-            state = focusLocation(state, location, false);
-            state = selectOneColumn(state, location.col, event.ctrlKey);
+            state = focusLocation(state, location, state.disableColumnSelection);
+            if (!state.disableColumnSelection)
+                state = selectOneColumn(state, location.col, event.ctrlKey);
         }
         return state;
     }
 
     handlePointerEnter(event: PointerEvent, location: Location, state: State): State {
-        return selectMultipleColumns(state, state.focusedLocation!.col, location.col, event.ctrlKey);
+        if (state.disableColumnSelection) 
+            return focusLocation(state, location);
+        else
+            return selectMultipleColumns(state, state.focusedLocation!.col, location.col, event.ctrlKey);
     }
 }
