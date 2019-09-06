@@ -11,3 +11,5 @@ ReactDOM.render(
   <DynaGridDemo />,
   document.getElementById('root') as HTMLElement
 )
+
+export default DynaGridDemo;
