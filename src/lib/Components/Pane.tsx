@@ -65,7 +65,7 @@ export const Pane: React.FunctionComponent<PaneProps> = (props) =>{
         {props.state.focusedLocation && props.range.contains(props.state.focusedLocation) &&
             <CellFocus location={props.state.focusedLocation} />}
         {props.state.selectedRanges[props.state.activeSelectedRangeIdx] && props.range.contains(props.state.selectedRanges[props.state.activeSelectedRangeIdx].last) &&
-            <FillHandle state={props.state} location={props.state.selectedRanges[props.state.activeSelectedRangeIdx].last} />}
+            !props.state.disableFillhandle && props.state.selectedIds.length > 0 && <FillHandle state={props.state} location={props.state.selectedRanges[props.state.activeSelectedRangeIdx].last} />}
     </div>
     )
 }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range, CellTemplate, CellTemplates } from '../../lib/Common';
+import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range, CellTemplates, Focus } from '../../lib/Common';
 import { DynaGrid } from '../../lib/Components/DynaGrid';
 import { VirtualEnv, VirtualUser, DynaGridDataGenerator } from '../../lib/Common/VirtualUser';
 import styled, { ThemeConsumer } from 'styled-components';
@@ -24,11 +24,6 @@ export interface Record {
     pinned: boolean;
 }
 
-export interface Focus {
-    colId: number;
-    rowId: number; 
-    color: string;
-}
 
 export interface IDynaGridDemoState {
     fields: Column[];
@@ -38,7 +33,9 @@ export interface IDynaGridDemoState {
     resizing: boolean;
     columnReordering: boolean;
     rowReordering: boolean;
-    flagCell: boolean; 
+    flagCell: boolean;
+    disableFillHandle: boolean;
+    disableRangeSelection: boolean;
     frozenPanes: { top: number, bottom: number, left: number, right: number, active: boolean };
 }
 
@@ -49,6 +46,8 @@ export interface IDemoActions {
     toggleFreezePaneAction(): void;
     toggleVirtualUsersAction(): void;
     toggleFlagCellAction(): void;
+    toggleDisableFillHandleAction(): void;
+    toggleDisableRangeSelectionAction(): void;
     addNewRecordAction(): void;
     addNewFieldAction(): void;
 }
@@ -190,7 +189,9 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         resizing: false,
         columnReordering: false,
         rowReordering: false,
-        flagCell: false,
+        flagCell: true,
+        disableFillHandle: false,
+        disableRangeSelection: false,
         frozenPanes: { top: 0, bottom: 0, left: 0, right: 0, active: false },
     }
 
@@ -526,6 +527,12 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         },
         toggleFlagCellAction: () => {
             this.setState( { flagCell: !this.state.flagCell });
+        },
+        toggleDisableFillHandleAction: () => {
+            this.setState( { disableFillHandle: !this.state.disableFillHandle });
+        },
+        toggleDisableRangeSelectionAction: () => {
+            this.setState( { disableRangeSelection: !this.state.disableRangeSelection });
         }
     }
 
@@ -537,8 +544,6 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
     }
 
     render() {
-        console.log(this.state.focuses);
-        
         return <DemoContainer>
             <DemoHeader>
                 <H1>Customize your ReactGrid</H1>
@@ -557,6 +562,8 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
                         onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
                         onRangeContextMenu={(selectedRanges: Range[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRanges, menuOptions)}
                         cellTemplates={this.getCustomCellTemplates()}
+                        disableFillHandle={this.state.disableFillHandle}
+                        disableRangeSelection={this.state.disableRangeSelection}
                     />
                 </DynaGridContainer>
             </DemoBody>
