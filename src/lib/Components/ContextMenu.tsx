@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import { Id, MenuOption, Location, State, Range } from '../Common';
 import { copySelectedRangeToClipboard, pasteData } from '../Behaviors/DefaultBehavior';
 import { isBrowserIE, getDataToPasteInIE } from '../Functions';
-import './ContextMenu.css';
-
 interface ContextMenuProps {
     contextMenuPosition: number[],
     focusedLocation?: Location,
