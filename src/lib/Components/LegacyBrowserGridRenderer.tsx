@@ -35,7 +35,6 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
         const state: State = props.state;
         const cellMatrix = state.cellMatrix;
         const hiddenScrollableElement = state.hiddenScrollableElement;
-
         return (
             <div
                 className="dyna-grid-legacy-browser"
@@ -264,7 +263,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                         }
                         <input
                             style={{
-                                position: 'absolute',
+                                position: 'fixed',
                                 width: 1,
                                 height: 1,
                                 opacity: 0,
@@ -277,6 +276,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                                 }
                             }}
                             value="&nbsp;"
+                            onChange={() => { }}
                         />
                         <Line
                             linePosition={state.linePosition}

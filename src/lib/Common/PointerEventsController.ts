@@ -1,5 +1,5 @@
 import { PointerEvent, Location, State, StateUpdater } from ".";
-import { getLocationFromClient, scrollIntoView } from "../Functions";
+import { getLocationFromClient, scrollIntoView, isBrowserIE } from "../Functions";
 import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
 
 export class PointerEventsController {

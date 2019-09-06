@@ -71,9 +71,9 @@ export class DefaultBehavior extends Behavior {
             event.preventDefault();
             event.stopPropagation();
         } else if (location.equals(state.focusedLocation)) {
-            const cellTemplate = state.cellTemplates[state.focusedLocation!.cell.type] 
-                                    ? state.cellTemplates[state.focusedLocation!.cell.type] 
-                                    : new TextCellTemplate ;
+            const cellTemplate = state.cellTemplates[state.focusedLocation!.cell.type]
+                ? state.cellTemplates[state.focusedLocation!.cell.type]
+                : new TextCellTemplate;
             return {
                 ...state,
                 isFocusedCellInEditMode: cellTemplate.hasEditMode
@@ -143,8 +143,8 @@ export function pasteData(state: State, pasteContent: ClipboardData[][]): State 
             activeSelectedRange.cols.forEach(col => {
                 const cell = state.cellMatrix.getCell(row.id, col.id);
                 const cellTemplate = state.cellTemplates[cell.type]
-                                    ? state.cellTemplates[cell.type]
-                                    : new TextCellTemplate ;
+                    ? state.cellTemplates[cell.type]
+                    : new TextCellTemplate;
                 if (!cellTemplate.handleKeyDown(0, pasteContent[0][0].data).editable)
                     return
                 state = trySetDataAndAppendChange(state, new Location(row, col), pasteContent[0][0])
@@ -160,8 +160,8 @@ export function pasteData(state: State, pasteContent: ClipboardData[][]): State 
                 if (rowIdx <= cellMatrix.last.row.idx && colIdx <= cellMatrix.last.col.idx) {
                     lastLocation = cellMatrix.getLocation(rowIdx, colIdx)
                     const cellTemplate = state.cellTemplates[lastLocation.cell.type]
-                                    ? state.cellTemplates[lastLocation.cell.type]
-                                    : new TextCellTemplate ;
+                        ? state.cellTemplates[lastLocation.cell.type]
+                        : new TextCellTemplate;
                     if (!cellTemplate.handleKeyDown(0, pasteValue.data).editable)
                         return
                     state = trySetDataAndAppendChange(state, lastLocation, pasteValue)
@@ -203,8 +203,8 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
             const tableCell = tableRow.insertCell()
             const cell = state.cellMatrix.getCell(row.id, col.id)!
             const cellTemplate = state.cellTemplates[cell.type]
-                                    ? state.cellTemplates[cell.type]
-                                    : new TextCellTemplate ;
+                ? state.cellTemplates[cell.type]
+                : new TextCellTemplate;
             const data = cellTemplate.validate(cell.data)
             tableCell.textContent = data;  // for undefined values
             if (!cell.data) {
@@ -239,27 +239,40 @@ export function copySelectedRangeToClipboardInIE(state: State, removeValues = fa
         activeSelectedRange.cols.forEach((col, colIdx) => {
             const prevCol = (colIdx - 1 >= 0) ? activeSelectedRange.cols[colIdx - 1] : undefined;
             const nextCol = (colIdx + 1 < activeSelectedRange.cols.length) ? activeSelectedRange.cols[colIdx + 1] : undefined;
-            const cell = state.cellMatrix.getCell(row.id, col.id)!
+            const cell = state.cellMatrix.getCell(row.id, col.id);
             const prevCell = prevCol ? state.cellMatrix.getCell(row.id, prevCol.id) : undefined;
             const nextCell = nextCol ? state.cellMatrix.getCell(row.id, nextCol.id) : undefined;
-            let data = state.cellTemplates[cell.type].validate(cell.data);
-            text = text + data;
-            if (!cell.data) {
+            const cellData = cell.data ? cell.data.toString() : '';
+            const prevCellData = (prevCell && prevCell.data) ? prevCell.data.toString() : '';
+            const nextCellData = (nextCell && nextCell.data) ? nextCell.data.toString() : '';
+            text = text + cellData;
+            if (!cellData) {
                 text = text + '\t';
-                if (prevCell && prevCell.data && prevCell.data.length > 0 && nextCell && nextCell.data && nextCell.data.length > 0) {
+                if (prevCellData.length > 0 && nextCellData.length > 0) {
                     text = text + '\t'
                 }
             } else {
-                if (nextCell && nextCell.data && nextCell.data.length > 0) {
+                if (nextCellData.length > 0) {
                     text = text + '\t'
                 }
             }
             if (removeValues) {
-                if (state.cellTemplates[cell.type].handleKeyDown(0, cell.data).editable)
+                const cellTemplate = state.cellTemplates[cell.type]
+                    ? state.cellTemplates[cell.type]
+                    : new TextCellTemplate;
+                if (cellTemplate.handleKeyDown(0, cellData).editable)
                     state = trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' });
             }
         })
-        if (!activeSelectedRange.cols.some(el => state.cellMatrix.getCell(row.id, el.id).data)) {
+        const areAllEmptyCells = activeSelectedRange.cols.every(el => {
+            const cellData = state.cellMatrix.getCell(row.id, el.id).data;
+            if (!cellData) {
+                return true
+            } else {
+                return false;
+            }
+        });
+        if (areAllEmptyCells) {
             text = text.substring(0, text.length - 1);
         }
         text = (activeSelectedRange.rows.length > 1 && rowIdx < activeSelectedRange.rows.length - 1) ? text + '\n' : text;
