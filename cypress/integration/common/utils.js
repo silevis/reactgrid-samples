@@ -1,3 +1,5 @@
+const Constants = require('./constants');
+
 class Utils {
     visit() {
         cy.visit('http://localhost:3000/');
@@ -14,7 +16,8 @@ class Utils {
     }
 
     selectCellInEditMode(clientX, clientY) {
-        cy.get('[data-cy=dyna-grid]').trigger('dblclick', clientX, clientY);
+        this.selectCell(clientX, clientY)
+        this.keyDown(Constants.keyCodes.Enter, { force: true });
     }
 
     randomText() {
@@ -120,49 +123,13 @@ class Utils {
 
     openContextMenu(clientX, clientY, optionValue) {
         if (optionValue != undefined) {
-            cy.get('[data-cy=dyna-grid]').trigger('contextmenu', { clientX: clientX, clientY: clientY });
+            cy.get('[data-cy=dyna-grid]').trigger('contextmenu', { clientX: clientX, clientY: clientY, force: true });
             cy.wait(300);
-            cy.get('.context-menu-option')
+            cy.get('.dg-context-menu-option')
                 .contains(optionValue)
                 .click();
         } else {
-            cy.get('[data-cy=dyna-grid]').trigger('contextmenu', { clientX: clientX, clientY: clientY });
-        }
-    }
-
-    openContextMenu(clientX, clientY, optionValue) {
-        if (optionValue != undefined) {
-            cy.get('[data-cy=dyna-grid]').trigger('contextmenu', { clientX: clientX, clientY: clientY });
-            cy.wait(300);
-            cy.get('.context-menu-option')
-                .contains(optionValue)
-                .click();
-        } else {
-            cy.get('[data-cy=dyna-grid]').trigger('contextmenu', { clientX: clientX, clientY: clientY });
-        }
-    }
-
-    openContextMenu(clientX, clientY, optionValue) {
-        if (optionValue != undefined) {
-            cy.get('[data-cy=dyna-grid]').trigger('contextmenu', { clientX: clientX, clientY: clientY });
-            cy.wait(300);
-            cy.get('.context-menu-option')
-                .contains(optionValue)
-                .click();
-        } else {
-            cy.get('[data-cy=dyna-grid]').trigger('contextmenu', { clientX: clientX, clientY: clientY });
-        }
-    }
-
-    openContextMenu(clientX, clientY, optionValue) {
-        if (optionValue != undefined) {
-            cy.get('[data-cy=dyna-grid]').trigger('contextmenu', { clientX: clientX, clientY: clientY });
-            cy.wait(300);
-            cy.get('.context-menu-option')
-                .contains(optionValue)
-                .click();
-        } else {
-            cy.get('[data-cy=dyna-grid]').trigger('contextmenu', { clientX: clientX, clientY: clientY });
+            cy.get('[data-cy=dyna-grid]').trigger('contextmenu', { clientX: clientX, clientY: clientY, force: true });
         }
     }
 
