@@ -14,7 +14,10 @@ class Constants {
         End: 35,
         PageUp: 33,
         PagdeDown: 34,
-        Esc: 27
+        Esc: 27,
+        Copy: 67,
+        Cut: 88,
+        Paste: 86
     };
 }
 var constants = new Constants();

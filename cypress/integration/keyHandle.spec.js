@@ -91,10 +91,24 @@ context('Keyboard', () => {
         Utils.keyDown(Constants.keyCodes.Tab, { force: true });
     });
 
+    it('Shift + Tab key pressed should exit from cell edit mode and move to previous column ', () => {
+        Utils.selectCell(200, 100);
+        Utils.keyDown(Constants.keyCodes.Enter, { force: true });
+        cy.focused().type(Utils.randomText(), { force: true });
+        Utils.keyDown(Constants.keyCodes.Tab, { shiftKey: true, force: true });
+    });
+
     it('Enter key pressed should exit from cell edit mode and move to next row', () => {
         Utils.selectCell(200, 100);
         Utils.keyDown(Constants.keyCodes.Enter, { force: true });
         cy.focused().type(Utils.randomText(), { force: true });
         Utils.keyDown(Constants.keyCodes.Enter, { force: true });
+    });
+
+    it('Shift + Enter key pressed should exit from cell edit mode and move to previous row', () => {
+        Utils.selectCell(200, 100);
+        Utils.keyDown(Constants.keyCodes.Enter, { force: true });
+        cy.focused().type(Utils.randomText(), { force: true });
+        Utils.keyDown(Constants.keyCodes.Enter, { shiftKey: true, force: true });
     });
 });

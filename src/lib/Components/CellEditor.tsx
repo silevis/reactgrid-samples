@@ -3,8 +3,6 @@ import { State, keyCodes, Location } from "../Common";
 import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChange";
 import { isBrowserIE } from "../Functions";
 
-// import { isArrowKey } from "../Behaviors/DefaultBehavior/handleKeyDown";
-
 interface CellEditorProps {
     state: State;
 }

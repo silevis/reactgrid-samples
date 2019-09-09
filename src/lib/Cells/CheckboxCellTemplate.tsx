@@ -10,11 +10,11 @@ export class CheckboxCellTemplate implements CellTemplate<boolean> {
     }
 
     textToCellData(text: string): boolean {
-        return parseFloat(text) === 1;
+        return text === 'true';
     }
 
     cellDataToText(cellData: boolean) {
-        return cellData ? '1' : '';
+        return cellData ? 'true' : '';
     }
 
     handleKeyDown(keyCode: number, cellData: boolean) {
