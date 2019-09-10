@@ -11,3 +11,4 @@ ReactDOM.render(
 );
 
 export default DynaGridDemo;
+export * from "./lib/Components/DynaGrid";
