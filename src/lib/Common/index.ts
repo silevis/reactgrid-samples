@@ -1,7 +1,6 @@
 export * from "./Behavior";
 export * from "./CellMatrix";
 export * from "./Constants";
-export * from "./GridController";
 export * from "./PublicModel";
 export * from "./InternalModel";
 export * from "./Range";

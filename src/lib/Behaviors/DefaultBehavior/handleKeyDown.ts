@@ -153,6 +153,7 @@ function handleSpecialNavKeys(event: KeyboardEvent, state: State) {
                 : 0, state
         );
     } else if (!event.shiftKey && event.keyCode === keyCodes.PAGE_DOWN) {
+        // TODO use visibleRange.height 
         const rowsOnScreen = cellMatrix.rows
             .slice(
                 cellMatrix.frozenTopRange.rows.length,

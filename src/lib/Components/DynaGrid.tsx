@@ -6,7 +6,7 @@ import { PointerEventsController } from "../Common/PointerEventsController";
 import { updateSelectedRows, updateSelectedColumns } from "../Functions/updateState";
 import { DefaultGridRenderer } from "./DefaultGridRenderer";
 import { LegacyBrowserGridRenderer } from "./LegacyBrowserGridRenderer";
-import { DefaultCellTemplates } from '../Common/DefaultCellTemplates'
+import { defaultCellTemplates } from '../Common/defaultCellTemplates'
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
 
@@ -16,11 +16,9 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
 
     static getDerivedStateFromProps(props: DynaGridProps, state: State) {
 
-        const dataHasChanged = state.cellMatrix && props.cellMatrixProps !== state.cellMatrix.props
-
-        state = {
-            ...state,
-            cellMatrix: new CellMatrix(props.cellMatrixProps)
+        const dataHasChanged = !state.cellMatrix || props.cellMatrixProps !== state.cellMatrix.props
+        if (dataHasChanged) {
+            state = { ...state, cellMatrix: new CellMatrix(props.cellMatrixProps) }
         }
 
         if (state.selectionMode === 'row' && state.selectedIds.length > 0) {
@@ -28,20 +26,21 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
         } else if (state.selectionMode === 'column' && state.selectedIds.length > 0) {
             state = updateSelectedColumns(state);
         } else {
-            state.selectedRanges = [...state.selectedRanges].map(range => state.cellMatrix.validateRange(range))
+            state = { ...state, selectedRanges: [...state.selectedRanges].map(range => state.cellMatrix.validateRange(range)) }
         }
 
         if (state.cellMatrix.cols.length > 0 && state.focusedLocation) {
-            state.focusedLocation = state.cellMatrix.validateLocation(state.focusedLocation);
+            state = { ...state, focusedLocation: state.cellMatrix.validateLocation(state.focusedLocation) }
         }
 
-        if (state.visibleRange && dataHasChanged)
-            state = recalcVisibleRange(state, isBrowserIE() || isBrowserEdge() ? true : false)
+        if (state.visibleRange && dataHasChanged) {
+            state = recalcVisibleRange(state)
+        }
 
         return {
             ...state,
             currentlyEditedCell: state.isFocusedCellInEditMode && state.focusedLocation ? { ...state.focusedLocation.cell } : undefined,
-            cellTemplates: { ...DefaultCellTemplates.getTemplates(), ...props.cellTemplates },
+            cellTemplates: { ...defaultCellTemplates, ...props.cellTemplates },
             customFocuses: props.customFocuses,
             disableFillHandle: props.disableFillHandle,
             disableRangeSelection: props.disableRangeSelection,
@@ -52,7 +51,6 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
 
     componentDidMount() {
         window.addEventListener('resize', this.windowResizeHandler);
-        //this.props.onInitialized && this.props.onInitialized(new GridController(this));
     }
 
     componentWillUnmount() {
@@ -60,41 +58,24 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
     }
 
     render() {
-        return (
-            isBrowserIE() || isBrowserEdge()
-                ? <LegacyBrowserGridRenderer
-                    state={this.state}
-                    onKeyDown={this.keyDownHandler}
-                    onKeyUp={this.keyUpHandler}
-                    onCopy={this.copyHandler}
-                    onCut={this.cutHandler}
-                    onPaste={this.pasteHandler}
-                    onPointerDown={this.pointerDownHandler}
-                    onContextMenu={this.handleContextMenu}
-                    onRowContextMenu={(_, menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(this.state.selectedIds, menuOptions) : []}
-                    onColumnContextMenu={(_, menuOptions: MenuOption[]) => this.props.onColumnContextMenu ? this.props.onColumnContextMenu(this.state.selectedIds, menuOptions) : []}
-                    onRangeContextMenu={(_, menuOptions: MenuOption[]) => this.props.onRangeContextMenu ? this.props.onRangeContextMenu(this.state.selectedRanges, menuOptions) : []}
-                    viewportElementRefHandler={this.viewportElementRefHandler}
-                    hiddenElementRefHandler={this.hiddenElementRefHandler}
-                />
-                : <DefaultGridRenderer
-                    state={this.state}
-                    onKeyDown={this.keyDownHandler}
-                    onKeyUp={this.keyUpHandler}
-                    onScroll={this.scrollHandler}
-                    onPointerDown={this.pointerDownHandler}
-                    onCopy={this.copyHandler}
-                    onCut={this.cutHandler}
-                    onPaste={this.pasteHandler}
-                    onPasteCapture={this.pasteCaptureHandler}
-                    onContextMenu={this.handleContextMenu}
-                    onRowContextMenu={(_, menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(this.state.selectedIds, menuOptions) : []}
-                    onColumnContextMenu={(_, menuOptions: MenuOption[]) => this.props.onColumnContextMenu ? this.props.onColumnContextMenu(this.state.selectedIds, menuOptions) : []}
-                    onRangeContextMenu={(_, menuOptions: MenuOption[]) => this.props.onRangeContextMenu ? this.props.onRangeContextMenu(this.state.selectedRanges, menuOptions) : []}
-                    viewportElementRefHandler={this.viewportElementRefHandler}
-                    hiddenElementRefHandler={this.hiddenElementRefHandler}
-                />
-        );
+        const grid = (isBrowserIE() || isBrowserEdge()) ? LegacyBrowserGridRenderer : DefaultGridRenderer;
+        return React.createElement(grid as any, {
+            state: this.state,
+            onKeyDown: this.keyDownHandler,
+            onKeyUp: this.keyUpHandler,
+            onCopy: this.copyHandler,
+            onCut: this.cutHandler,
+            onPaste: this.pasteHandler,
+            onPasteCapture: this.pasteCaptureHandler,
+            onPointerDown: this.pointerDownHandler,
+            onContextMenu: this.handleContextMenu,
+            onScroll: this.scrollHandler,
+            //onRowContextMenu: (_, menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(this.state.selectedIds, menuOptions) : [],
+            //onColumnContextMenu: (_, menuOptions: MenuOption[]) => this.props.onColumnContextMenu ? this.props.onColumnContextMenu(this.state.selectedIds, menuOptions) : [],
+            //onRangeContextMenu: (_, menuOptions: MenuOption[]) => this.props.onRangeContextMenu ? this.props.onRangeContextMenu(this.state.selectedRanges, menuOptions) : [],
+            viewportElementRefHandler: this.viewportElementRefHandler,
+            hiddenElementRefHandler: this.hiddenElementRefHandler
+        })
     }
 
     private hiddenElementRefHandler = (hiddenFocusElement: HTMLInputElement) => {
@@ -111,8 +92,7 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
 
     private scrollHandler = () => {
         const { scrollTop, scrollLeft } = this.state.viewportElement;
-        if (
-            scrollTop < this.state.minScrollTop || scrollTop > this.state.maxScrollTop ||
+        if (scrollTop < this.state.minScrollTop || scrollTop > this.state.maxScrollTop ||
             scrollLeft < this.state.minScrollLeft || scrollLeft > this.state.maxScrollLeft
         ) {
             this.updateOnNewState(recalcVisibleRange(this.state));
@@ -131,10 +111,11 @@ export class DynaGrid extends React.Component<DynaGridProps, State> {
 
     private updateOnNewState(state: State) {
         if (state === this.state) return;
-        // Force state to update immediately (SetState updates async)
         const dataChanges = state.queuedDataChanges;
         this.setState({ ...state, queuedDataChanges: [] });
-        // TODO pop changes form state
-        this.props.onDataChanged && dataChanges.length > 0 && this.props.onDataChanged(dataChanges)
+        if (this.props.onDataChanged && dataChanges.length > 0) {
+            this.props.onDataChanged(dataChanges);
+        }
+
     }
 }

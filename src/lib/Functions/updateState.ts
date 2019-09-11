@@ -31,6 +31,7 @@ import { State, Column, Row, Location } from "../Common";
 export function updateSelectedRows(state: State): State {
     const firstCol = state.cellMatrix.first.col;
     const lastCol = state.cellMatrix.last.col;
+    // TODO this filter is very inefficient for big tables
     const updatedRows = state.cellMatrix.rows.filter(r => state.selectedIds.includes(r.id)).sort((a, b) => a.idx - b.idx);
     const rows = groupedRows(updatedRows);
     const ranges = rows.map(arr => state.cellMatrix.getRange(new Location(arr[0], firstCol), new Location(arr[arr.length - 1], lastCol)));
@@ -59,6 +60,7 @@ export function updateSelectedRows(state: State): State {
 export function updateSelectedColumns(state: State): State {
     const firstRow = state.cellMatrix.first.row;
     const lastRow = state.cellMatrix.last.row;
+    // TODO this filter is very inefficient for big tables
     const updatedColumns = state.cellMatrix.cols.filter(r => state.selectedIds.includes(r.id)).sort((a, b) => a.idx - b.idx);
     const columns = groupedColumns(updatedColumns)
     const ranges = columns.map(arr => state.cellMatrix.getRange(new Location(firstRow, arr[0]), new Location(lastRow, arr[arr.length - 1])));

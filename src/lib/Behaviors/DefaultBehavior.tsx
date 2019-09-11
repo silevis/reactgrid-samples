@@ -71,6 +71,7 @@ export class DefaultBehavior extends Behavior {
             event.preventDefault();
             event.stopPropagation();
         } else if (location.equals(state.focusedLocation)) {
+            // TODO cellTemplates should always be provided!
             const cellTemplate = state.cellTemplates[state.focusedLocation!.cell.type]
                 ? state.cellTemplates[state.focusedLocation!.cell.type]
                 : new TextCellTemplate;

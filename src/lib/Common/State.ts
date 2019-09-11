@@ -8,49 +8,53 @@ import { CellTemplates, Id, Focus } from "./PublicModel";
 export type StateUpdater = (modifier: (state: State) => State) => void;
 
 export class State {
-    constructor(public readonly updateState: StateUpdater) { }
+    constructor(public readonly updateState: StateUpdater) {
+        //    this.isLegacyBrowser = 
+    }
+    //readonly isLegacyBrowser: boolean;
     readonly cellMatrix!: CellMatrix;
     readonly currentBehavior: Behavior = new DefaultBehavior();
     readonly floatingCellEditor: boolean = false;
 
-    cellTemplates!: CellTemplates;
-    hiddenFocusElement!: HTMLDivElement;
+    readonly cellTemplates!: CellTemplates;
+    hiddenFocusElement!: HTMLDivElement; // updated without setState
     readonly viewportElement!: HTMLDivElement;
 
     // element for LegacyBrowserGridRenderer
+    // TODO try to eliminate
     hiddenScrollableElement!: HTMLDivElement;
 
-    lastKeyCode: number = 0;
+    lastKeyCode: number = 0; // updated without setState
     readonly queuedDataChanges: DataChange[] = [];
-    currentlyEditedCell?: { type: string, data: any, text?: string };
-    customFocuses: Focus[] = [];
-    disableFillHandle?: boolean;
-    disableRangeSelection?: boolean;
-    disableColumnSelection?: boolean;
-    disableRowSelection?: boolean;
+    readonly currentlyEditedCell?: { type: string, data: any, text?: string };
+    readonly customFocuses: Focus[] = [];
+    readonly disableFillHandle?: boolean;
+    readonly disableRangeSelection?: boolean;
+    readonly disableColumnSelection?: boolean;
+    readonly disableRowSelection?: boolean;
 
     // CONTEXT MENU
-    contextMenuPosition: number[] = [-1, -1] // [top, left]
+    readonly contextMenuPosition: number[] = [-1, -1] // [top, left]
 
     // LINE AND SHADOW
-    lineOrientation: Orientation = 'horizontal';
-    linePosition: number = -1;
-    shadowSize: number = 0;
-    shadowPosition: number = -1;
+    readonly lineOrientation: Orientation = 'horizontal';
+    readonly linePosition: number = -1;
+    readonly shadowSize: number = 0;
+    readonly shadowPosition: number = -1;
 
     // SELECTION
-    selectionMode: SelectionMode = 'range'
-    selectedRanges: Range[] = [];
-    selectedIndexes: number[] = [];
-    selectedIds: Id[] = [];
-    focusedLocation?: Location;
-    activeSelectedRangeIdx: number = 0;
-    isFocusedCellInEditMode: boolean = false;
+    readonly selectionMode: SelectionMode = 'range'
+    readonly selectedRanges: Range[] = [];
+    readonly selectedIndexes: number[] = [];
+    readonly selectedIds: Id[] = [];
+    readonly focusedLocation?: Location;
+    readonly activeSelectedRangeIdx: number = 0;
+    readonly isFocusedCellInEditMode: boolean = false;
 
     // VISIBLE RANGE
-    visibleRange!: Range;
-    minScrollTop: number = -1;
-    maxScrollTop: number = -1;
-    minScrollLeft: number = -1;
-    maxScrollLeft: number = -1;
+    readonly visibleRange!: Range;
+    readonly minScrollTop: number = -1;
+    readonly maxScrollTop: number = -1;
+    readonly minScrollLeft: number = -1;
+    readonly maxScrollLeft: number = -1;
 }

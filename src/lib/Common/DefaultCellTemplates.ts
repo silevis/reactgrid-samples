@@ -7,16 +7,12 @@ import { EmailCellTemplate } from "../Cells/EmailCellTemplate";
 import { TimeCellTemplate } from "../Cells/TimeCellTemplate";
 import { CellTemplates } from "./PublicModel";
 
-export class DefaultCellTemplates {
-    static getTemplates(): CellTemplates {
-        return {
-            'text': new TextCellTemplate(),
-            'number': new NumberCellTemplate(),
-            'header': new HeaderCellTemplate(),
-            'checkbox': new CheckboxCellTemplate(),
-            'date': new DateCellTemplate(),
-            'email': new EmailCellTemplate(),
-            'time': new TimeCellTemplate(),
-        }
-    }
+export const defaultCellTemplates: CellTemplates = {
+    'text': new TextCellTemplate(),
+    'number': new NumberCellTemplate(),
+    'header': new HeaderCellTemplate(),
+    'checkbox': new CheckboxCellTemplate(),
+    'date': new DateCellTemplate(),
+    'email': new EmailCellTemplate(),
+    'time': new TimeCellTemplate(),
 }

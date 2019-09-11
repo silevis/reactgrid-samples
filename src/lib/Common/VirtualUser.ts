@@ -1,3 +1,4 @@
+// TODO Remove this file from lib
 import { IDynaGridDemoState, Record } from '../../demo/Views/DynaGridDemo';
 
 function getRandomInt(min: number, max: number) {
@@ -132,7 +133,7 @@ export class VirtualUser {
                     break;
                 }
                 case 'text': {
-                    newFieldData = dataGen.getRandomName() + ' and ' +  dataGen.getRandomName();
+                    newFieldData = dataGen.getRandomName() + ' and ' + dataGen.getRandomName();
                     break;
                 }
                 default:
