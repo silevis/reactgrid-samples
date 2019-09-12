@@ -1,6 +1,6 @@
 import * as React from "react";
-import { DynaGridProps, CellMatrix, PointerEvent, State, StateUpdater, MenuOption } from "../Common";
-import { recalcVisibleRange, isBrowserIE, isBrowserEdge, focusLocation } from "../Functions";
+import { ReactGridProps, CellMatrix, PointerEvent, State, StateUpdater } from "../Common";
+import { recalcVisibleRange, isBrowserIE, isBrowserEdge } from "../Functions";
 import { KeyboardEvent, ClipboardEvent } from "../Common";
 import { PointerEventsController } from "../Common/PointerEventsController";
 import { updateSelectedRows, updateSelectedColumns } from "../Functions/updateState";
@@ -8,13 +8,13 @@ import { DefaultGridRenderer } from "./DefaultGridRenderer";
 import { LegacyBrowserGridRenderer } from "./LegacyBrowserGridRenderer";
 import { defaultCellTemplates } from '../Common/defaultCellTemplates'
 
-export class DynaGrid extends React.Component<DynaGridProps, State> {
+export class ReactGrid extends React.Component<ReactGridProps, State> {
 
     private updateState: StateUpdater = modifier => this.updateOnNewState(modifier(this.state));
     private pointerEventsController = new PointerEventsController(this.updateState);
     state = new State(this.updateState);
 
-    static getDerivedStateFromProps(props: DynaGridProps, state: State) {
+    static getDerivedStateFromProps(props: ReactGridProps, state: State) {
 
         const dataHasChanged = !state.cellMatrix || props.cellMatrixProps !== state.cellMatrix.props
         if (dataHasChanged) {

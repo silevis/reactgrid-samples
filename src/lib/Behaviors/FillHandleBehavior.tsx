@@ -3,7 +3,7 @@ import { State, Range, PointerEvent, CellMatrix, Behavior, Row, Column, Location
 import { PartialArea } from '../Components/PartialArea';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
 import { trySetDataAndAppendChange } from '../Functions/trySetDataAndAppendChange';
-import { TextCellTemplate } from '../Cells/TextCellTemplate';
+import { TextCellTemplate } from '../CellTemplates/TextCellTemplate';
 
 type Direction = '' | 'left' | 'right' | 'up' | 'down';
 
@@ -181,6 +181,7 @@ export class FillHandleBehavior extends Behavior {
     }
 
     private updateCellData(location: Location, state: State, cell: Cell): State {
+        // TODO expect to have the proper TextCellTemplate
         const cellTemplate = state.cellTemplates[cell.type] ? state.cellTemplates[cell.type] : new TextCellTemplate();
         const data = cellTemplate.validate(cell.data);
         const locationCellTemplate = state.cellTemplates[location.cell.type] ? state.cellTemplates[location.cell.type] : new TextCellTemplate();

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range, CellTemplates, Focus } from '../../lib/Common';
-import { DynaGrid } from '../../lib/Components/DynaGrid';
+import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range, CellTemplates, Focus } from '../../lib';
+import { ReactGrid } from '../../lib';
 import { VirtualEnv, VirtualUser, DynaGridDataGenerator } from '../../lib/Common/VirtualUser';
 import styled, { ThemeConsumer } from 'styled-components';
 import { FeatureListContainer } from '../Views/DemoComponents/FeatureListContainer'
@@ -373,7 +373,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
     }
 
     private deleteColumnsFocuses(selectedColIds: Id[]): Focus[] {
-        return [...this.state.focuses].filter((focusRow: Focus) => !selectedColIds.includes(focusRow.colId));
+        return [...this.state.focuses].filter((focusRow: Focus) => !selectedColIds.includes(focusRow.columnId));
     }
 
     private pinColumns(ids: Id[], direction: 'left' | 'right'): IDynaGridDemoState {
@@ -526,13 +526,13 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
             this.addNewField();
         },
         toggleFlagCellAction: () => {
-            this.setState( { flagCell: !this.state.flagCell });
+            this.setState({ flagCell: !this.state.flagCell });
         },
         toggleDisableFillHandleAction: () => {
-            this.setState( { disableFillHandle: !this.state.disableFillHandle });
+            this.setState({ disableFillHandle: !this.state.disableFillHandle });
         },
         toggleDisableRangeSelectionAction: () => {
-            this.setState( { disableRangeSelection: !this.state.disableRangeSelection });
+            this.setState({ disableRangeSelection: !this.state.disableRangeSelection });
         }
     }
 
@@ -554,7 +554,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
                     demoActions={this.demoActions}
                     state={this.state} />
                 <DynaGridContainer>
-                    <DynaGrid
+                    <ReactGrid
                         cellMatrixProps={this.generateMatrix()}
                         onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
                         customFocuses={this.state.focuses}

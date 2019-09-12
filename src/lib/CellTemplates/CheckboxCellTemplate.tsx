@@ -40,7 +40,7 @@ export class CheckboxCellTemplate implements CellTemplate<boolean> {
                 zIndex: 1
             }}
             checked={props.cellData}
-            onChange={() => { props.onCellDataChanged ? props.onCellDataChanged(!this.validate(props.cellData)) : null }}
+            onChange={() => { props.onCellDataChanged(!this.validate(props.cellData)) }}
         />
     }
 }

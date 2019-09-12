@@ -1,5 +1,5 @@
 import { Location, State, Cell } from "../Common";
-import { TextCellTemplate } from "../Cells/TextCellTemplate";
+import { TextCellTemplate } from "../CellTemplates/TextCellTemplate";
 
 export function trySetDataAndAppendChange(state: State, location: Location, cell: Cell): State {
     const initialData = location.cell.data;
@@ -7,6 +7,7 @@ export function trySetDataAndAppendChange(state: State, location: Location, cell
         return state;
     // TODO should not render without poper cellTemplate - remove this
     const doesCellTemplateExist = state.cellTemplates[location.cell.type] ? true : false;
+    // TODO remove new TextCellTemplate
     const cellTemplate = doesCellTemplateExist ? state.cellTemplates[location.cell.type] : new TextCellTemplate();
     const newData = (cell.type === location.cell.type)
         ? cell.data
