@@ -93,7 +93,7 @@ const fields: Column[] = [
     {
         id: 1,
         name: 'name',
-        type: 'text',
+        type: 'group',
         width: 125,
         pinned: false,
     },
@@ -137,43 +137,69 @@ const fields: Column[] = [
 const records: any[] = [
     {
         id: 'Id',
-        name: 'Name',
+        name: { name: 'Name' },
         surname: "Surname",
         age: 'age',
         country: 'Country',
         position: 'Position',
         onHoliday: 'On Holiday',
         pinned: false,
+        parentId: null
     },
     {
         id: 1,
-        name: 'Marcin',
+        name: { name: 'Marcin', isExpanded: true, level: 1 },
         surname: "Kowalski",
         age: 21,
         country: 'pol',
         position: 'CEO',
         onHoliday: false,
         pinned: false,
+        parentId: null
     },
     {
         id: 2,
-        name: 'Arkadiusz',
+        name: { name: 'Arkadiusz', level: 2 },
         surname: "Kowalewski",
         age: 19,
         country: 'can',
         position: 'Manager',
         onHoliday: true,
         pinned: false,
+        parentId: 1
     },
     {
         id: 3,
-        name: 'Marlena',
+        name: { name: 'Marlena', level: 2 },
         surname: "Zalewska",
         age: 34,
         country: 'ven',
         position: 'Director',
         onHoliday: false,
         pinned: false,
+        parentId: 1
+    },
+    {
+        id: 4,
+        name: { name: 'Piotr', isExpanded: true, level: 2 },
+        surname: 'Mikosza',
+        age: 34,
+        country: 'ven',
+        position: 'Director',
+        onHoliday: false,
+        pinned: false,
+        parentId: 1
+    },
+    {
+        id: 5,
+        name: { name: 'Adrian', level: 2 },
+        surname: 'Czerwiec',
+        age: 34,
+        country: 'ven',
+        position: 'Director',
+        onHoliday: false,
+        pinned: false,
+        parentId: 4
     },
 ]
 
@@ -255,7 +281,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
             onResize: width => { this.state.fields[idx].width = width, this.forceUpdate(); }
         }));
 
-        const rows: RowProps[] = this.state.records.map((record: any, rowIdx) => ({
+        const rows: RowProps[] = this.state.records.filter((record) => record.id === 'Id' || !record.parentId || (record.parentId && this.state.records[record.parentId].name.isExpanded)).map((record: any, rowIdx) => ({
             id: record.id,
             height: 25,
             reorderable: this.state.rowReordering,
@@ -526,13 +552,13 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
             this.addNewField();
         },
         toggleFlagCellAction: () => {
-            this.setState( { flagCell: !this.state.flagCell });
+            this.setState({ flagCell: !this.state.flagCell });
         },
         toggleDisableFillHandleAction: () => {
-            this.setState( { disableFillHandle: !this.state.disableFillHandle });
+            this.setState({ disableFillHandle: !this.state.disableFillHandle });
         },
         toggleDisableRangeSelectionAction: () => {
-            this.setState( { disableRangeSelection: !this.state.disableRangeSelection });
+            this.setState({ disableRangeSelection: !this.state.disableRangeSelection });
         }
     }
 

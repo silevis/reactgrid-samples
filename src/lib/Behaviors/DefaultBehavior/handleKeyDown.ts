@@ -276,7 +276,7 @@ function handleSpecialKeys(event: KeyboardEvent, state: State) {
                 range.cols.forEach((col: Column) => {
                     const cell = state.cellMatrix.getCell(row.id, col.id);
                     if (state.cellTemplates[cell.type].handleKeyDown(keyCodes.DELETE, cell.data).editable)
-                        trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' })
+                        trySetDataAndAppendChange(state, new Location(row, col), { data: cell.type !== 'group' ? '' : { name: '', isExpanded: cell.data.isExpanded, level: cell.data.level }, type: cell.type })
                 })
             )
         );

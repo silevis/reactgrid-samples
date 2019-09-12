@@ -6,6 +6,7 @@ import { DateCellTemplate } from "../Cells/DateCellTemplate";
 import { EmailCellTemplate } from "../Cells/EmailCellTemplate";
 import { TimeCellTemplate } from "../Cells/TimeCellTemplate";
 import { CellTemplates } from "./PublicModel";
+import { GroupHeaderCellTemplate } from "../Cells/GroupHeaderCellTemplate";
 
 export const defaultCellTemplates: CellTemplates = {
     'text': new TextCellTemplate(),
@@ -15,4 +16,5 @@ export const defaultCellTemplates: CellTemplates = {
     'date': new DateCellTemplate(),
     'email': new EmailCellTemplate(),
     'time': new TimeCellTemplate(),
+    'group': new GroupHeaderCellTemplate()
 }

@@ -6,7 +6,7 @@ import { PointerEventsController } from "../Common/PointerEventsController";
 import { updateSelectedRows, updateSelectedColumns } from "../Functions/updateState";
 import { DefaultGridRenderer } from "./DefaultGridRenderer";
 import { LegacyBrowserGridRenderer } from "./LegacyBrowserGridRenderer";
-import { defaultCellTemplates } from '../Common/defaultCellTemplates'
+import { defaultCellTemplates } from "../Common/DefaultCellTemplates";
 
 export class DynaGrid extends React.Component<DynaGridProps, State> {
 
