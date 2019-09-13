@@ -1,5 +1,5 @@
 import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, PointerLocation, Id, SelectionMode } from "../Common";
-import { handleKeyDown as handleKeyDown } from "./DefaultBehavior/handleKeyDown";
+import { handleKeyDown } from "./DefaultBehavior/handleKeyDown";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
 import { ColumnSelectionBehavior } from "./ColumnSelectionBehavior";
 import { ColumnReorderBehavior } from "./ColumnReorderBehavior";
@@ -10,7 +10,7 @@ import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChang
 import { FillHandleBehavior } from "./FillHandleBehavior";
 import { getLocationFromClient, focusLocation } from "../Functions";
 import { ResizeColumnBehavior } from "./ResizeColumnBehavior";
-import { TextCellTemplate } from "../Cells/TextCellTemplate";
+import { TextCellTemplate } from "../CellTemplates/TextCellTemplate";
 
 interface ClipboardData {
     type: string;
@@ -71,6 +71,7 @@ export class DefaultBehavior extends Behavior {
             event.preventDefault();
             event.stopPropagation();
         } else if (location.equals(state.focusedLocation)) {
+            // TODO cellTemplates should always be provided!
             const cellTemplate = state.cellTemplates[state.focusedLocation!.cell.type]
                 ? state.cellTemplates[state.focusedLocation!.cell.type]
                 : new TextCellTemplate;

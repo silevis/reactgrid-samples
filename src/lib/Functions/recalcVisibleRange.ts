@@ -1,11 +1,11 @@
 import { Column, Row, Range, State } from "../Common";
 
-export function recalcVisibleRange(state: State, hiddenScrollableElementExist?: boolean): State {
+export function recalcVisibleRange(state: State): State {
     const matrix = state.cellMatrix;
-    const { scrollTop, scrollLeft, clientWidth, clientHeight } = hiddenScrollableElementExist ? state.hiddenScrollableElement : state.viewportElement;
+    const { scrollTop, scrollLeft, clientWidth, clientHeight } = state.hiddenScrollableElement ? state.hiddenScrollableElement : state.viewportElement;
     const scrollAreaWidth = clientWidth - matrix.frozenLeftRange.width - matrix.frozenRightRange.width;
     const scrollAreaHeight = clientHeight - matrix.frozenTopRange.height - matrix.frozenBottomRange.height;
-    // TODO improve calculation of visibleCols & visibleRows
+    // TODO improve calculation of visibleCols & visibleRows - this filter is very inefficient for big tables
     const visibleCols = matrix.scrollableRange.cols.filter(
         (col: Column) => col.right >= scrollLeft && col.left <= scrollLeft + scrollAreaWidth
     );

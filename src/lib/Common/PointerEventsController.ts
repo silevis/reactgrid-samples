@@ -62,6 +62,7 @@ export class PointerEventsController {
             const currentTimestamp = new Date().valueOf();
             const secondLastTimestamp = this.eventTimestamps[1 - this.currentIndex];
             state = state.currentBehavior.handlePointerUp(event, currentLocation, state);
+            // TODO explain this case
             if (event.pointerType !== 'mouse' &&
                 currentLocation.equals(this.pointerDownLocation) &&
                 event.pointerType !== undefined && // !== undefined only for cypress tests
@@ -69,14 +70,16 @@ export class PointerEventsController {
                 (currentLocation.row.idx > 0 && currentLocation.col.idx > 0)) {
                 state = state.currentBehavior.handlePointerDown(event, currentLocation, state);
             }
+            state = { ...state, currentBehavior: new DefaultBehavior() };
             if (currentTimestamp - secondLastTimestamp < 500 && currentLocation.equals(this.eventLocations[0]) && currentLocation.equals(this.eventLocations[1])) {
                 state = state.currentBehavior.handleDoubleClick(event, currentLocation, state)
             }
             if (currentTimestamp - this.eventTimestamps[this.currentIndex] >= 500) {
+                // TODO is this correct?
                 state = state.currentBehavior.handleContextMenu(event, state);
             }
             state.hiddenFocusElement.focus();
-            return { ...state, currentBehavior: new DefaultBehavior() };
+            return state;
         });
     }
 }

@@ -2,7 +2,7 @@ import { focusLocation } from '../Functions';
 import { State, Location, Behavior } from '../Common';
 import { PointerEvent } from "../Common/domEvents";
 import { selectRange, updateActiveSelectedRange } from '../Functions/selectRange';
-import { TextCellTemplate } from '../Cells/TextCellTemplate';
+import { TextCellTemplate } from '../CellTemplates/TextCellTemplate';
 
 export class CellSelectionBehavior extends Behavior {
 
@@ -36,7 +36,7 @@ export class CellSelectionBehavior extends Behavior {
     handlePointerEnter(event: PointerEvent, location: Location, state: State): State {
         const range = state.cellMatrix.getRange(state.focusedLocation!, location);
         if (state.disableRangeSelection) {
-            return focusLocation(state, new Location(state.focusedLocation!.row, state.focusedLocation!.col) );
+            return focusLocation(state, new Location(state.focusedLocation!.row, state.focusedLocation!.col));
         } else if (state.selectionMode === 'range') {
             return updateActiveSelectedRange(state, range);
         } else {
@@ -49,9 +49,10 @@ export class CellSelectionBehavior extends Behavior {
             event.preventDefault();
             event.stopPropagation();
         } else if (location.equals(state.focusedLocation)) {
+            // TODO expect that all cell templates are available.
             const defaultType = state.cellTemplates[state.focusedLocation!.cell.type]
-                                    ? state.cellTemplates[state.focusedLocation!.cell.type] 
-                                    : new TextCellTemplate();
+                ? state.cellTemplates[state.focusedLocation!.cell.type]
+                : new TextCellTemplate();
             return { ...state, isFocusedCellInEditMode: defaultType.hasEditMode };
         }
         return state;

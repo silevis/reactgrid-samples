@@ -2,13 +2,13 @@ import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
 import { CellRenderProps, CellTemplate } from '../Common';
 
-export class DateCellTemplate implements CellTemplate<string> {
+export class TimeCellTemplate implements CellTemplate<string> {
     readonly hasEditMode = true;
 
     validate(data: any): string {
-        const date_regex = /^\d{4}\-\d{2}\-\d{2}$/;
+        const time_regex = /^\d{2}\:\d{2}$/;
         data = data ? data.toString().replace(/\s+/g, '') : data;
-        return (date_regex.test(data)) ? data : '';
+        return (time_regex.test(data)) ? data : '';
     }
 
     textToCellData(text: string): string {
@@ -30,7 +30,7 @@ export class DateCellTemplate implements CellTemplate<string> {
             return props.cellData;
         const preserveValueKeyCodes = [0, keyCodes.ENTER];
         return <input
-            type='date'
+            type='time'
             style={{
                 width: '100%',
                 height: '100%',
@@ -47,7 +47,7 @@ export class DateCellTemplate implements CellTemplate<string> {
                 }
             }}
             defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? props.cellData : ''}
-            onChange={e => props.onCellDataChanged ? props.onCellDataChanged(e.currentTarget.value) : null}
+            onChange={e => props.onCellDataChanged(e.currentTarget.value)}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}

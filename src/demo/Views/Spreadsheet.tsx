@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '../../lib/Common';
-import { DynaGrid } from '../../lib/Components/DynaGrid';
+import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range } from '../../lib';
+import { ReactGrid } from '../../lib'
 
 
 let COL_COUNT = 20;
@@ -212,15 +212,15 @@ export class Spreadsheet extends React.Component<SpreadsheetProps, SpreadsheetSt
             <div>
                 {this.props.buttons && buttons}
                 {this.state.records.length > 0 && this.state.fields.length > 0 &&
-                    <DynaGrid style={{ fontFamily: 'Sans-Serif' }}
+                    <ReactGrid style={{ fontFamily: 'Sans-Serif' }}
                         cellMatrixProps={this.generateCellMatrix()}
                         onDataChanged={changes => this.handleDataChanges(changes)}
                         onRowContextMenu={(selectedRowIds: Id[], menuOptions: MenuOption[]) => this.handleRowContextMenu(selectedRowIds, menuOptions)}
                         onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
                         onRangeContextMenu={(selectedRanges: Range[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRanges, menuOptions)}
                         cellTemplates={{}}
-                        // floatingCellEditor={false}
-                        customFocuses={this.state.focuses}
+                    // floatingCellEditor={false}
+                    // customFocuses={this.state.focuses}
                     />}
             </div>
         );

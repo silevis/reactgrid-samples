@@ -79,6 +79,7 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
 }
 
 function customContextMenuOptions(state: State): MenuOption[] {
+    // TODO use document.execCommand('copy') and paste
     return [
         {
             title: 'Copy',

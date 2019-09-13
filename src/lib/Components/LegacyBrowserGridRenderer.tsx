@@ -49,9 +49,11 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
             >
                 <div
                     ref={(hiddenScrollableElement: HTMLDivElement) => hiddenScrollableElement && this.hiddenScrollableElementRefHandler(state, hiddenScrollableElement)}
+                    // TODO this div is not hidden. 
                     className="dg-hidden-scrollable-element"
                     style={{
                         position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                        // TODO only 'auto' should be fine
                         overflowX: this.isHorizontalScrollbarVisible() ? 'scroll' : 'auto',
                         overflowY: this.isVerticalScrollbarVisible() ? 'scroll' : 'auto',
                         zIndex: 1
@@ -347,6 +349,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
             state.viewportElement.scrollLeft = scrollLeft;
         }
 
+        // TODO this is done outside of the GridRenderer
         if (scrollTop < state.minScrollTop || scrollTop > state.maxScrollTop || scrollLeft < state.minScrollLeft || scrollLeft > state.maxScrollLeft) {
             state.updateState((state: State) => recalcVisibleRange(state))
         }

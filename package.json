@@ -1,42 +1,47 @@
 {
   "name": "@silevis/reactgrid",
-  "version": "2.0.0",
-  "main": "lib/index.js",
-  "typings": "ilb/index.d.ts",
-  "dependencies": {
-    "babel-polyfill": "^6.26.0",
-    "smoothscroll-polyfill": "^0.4.4"
-  },
+  "version": "2.0.1-rc.12",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "dependencies": {},
   "devDependencies": {
     "@types/jest": "24.0.11",
     "@types/node": "11.13.6",
     "@types/react": "16.8.14",
     "@types/react-dom": "16.8.4",
-    "@types/smoothscroll-polyfill": "^0.3.1",
     "@types/styled-components": "^4.1.15",
+    "babel-polyfill": "^6.26.0",
     "cypress": "^3.3.1",
     "react-scripts": "2.1.8",
-    "styled-components": "^4.2.0",
+    "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "styled-components": "^4.2.0",
     "typescript": "3.4.4"
   },
   "peerDependencies": {
-    "react": "^16.8.6"
+    "babel-polyfill": "^6.26.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "styled-components": "^4.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "tsc -p .",
+    "build": "react-scripts build",
+    "pre-deploy": "tsc -p tsconfig.prod.json && echo 'Finished building NPM package'",
+    "deploy": "npm publish && echo 'Finished publishing NPM package'",
     "eject": "react-scripts eject",
     "test": "node_modules\\.bin\\cypress open",
     "test:automatic": "node_modules\\.bin\\cypress run --browser chrome --spec 'cypress/integration/*'"
   },
+  "keywords": [
+    "react",
+    "reactgrid"
+  ],
   "eslintConfig": {
     "extends": "react-app"
   },
   "browserslist": [
     ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
+    "not dead"
   ]
 }
