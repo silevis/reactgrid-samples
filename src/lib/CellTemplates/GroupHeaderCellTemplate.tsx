@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
-import { CellRenderProps, CellTemplate } from '../Common';
+import { CellRenderProps, CellTemplate, KeyboardEvent, State } from '../Common';
 import styled from 'styled-components';
+import { trySetDataAndAppendChange } from '../Functions/trySetDataAndAppendChange';
 
 const ChevronIcon = styled.div`
     display: inline-block;
@@ -20,19 +21,24 @@ export class GroupHeaderCellTemplate implements CellTemplate<any> {
     readonly hasEditMode = true;
 
     validate(data: any): any {
-        return { name: (typeof (data.name) === 'string') ? data.name : '', isExpanded: data.isExpanded, level: data.level };
+        return { name: (typeof (data.name) === 'string') ? data.name : '', isExpanded: data.isExpanded !== undefined ? data.isExpanded : undefined, depth: data.depth };
     }
 
-    textToCellData(text: string): any {
-        return text;
+    textToCellData(text: string, cellData: any): any {
+        return { name: text, isExpanded: cellData.isExpanded, depth: cellData.depth };
     }
 
     cellDataToText(cellData: any) {
-        return cellData.name;
+        return cellData;
     }
 
     handleKeyDown(keyCode: number, cellData: any) {
-        return { editable: true, cellData }
+        if (keyCode === keyCodes.UP_ARROW) {
+            cellData.isExpanded = false;
+        } else if (keyCode === keyCodes.RIGHT_ARROW) {
+            cellData.isExpanded = true;
+        }
+        return { editable: true, cellData: Object.assign({}, cellData) }
     }
 
     customStyle: React.CSSProperties = { background: '#fff' };
@@ -41,43 +47,48 @@ export class GroupHeaderCellTemplate implements CellTemplate<any> {
         const cellData: any = props.cellData;
         const preserveValueKeyCodes = [0, keyCodes.ENTER];
         return (
-            <>
-                {cellData.isExpanded !== undefined &&
-                    <ChevronIcon
-                        onPointerDown={e => {
-                            e.stopPropagation();
-                            cellData.isExpanded = !cellData.isExpanded;
-                            props.onCellDataChanged ? props.onCellDataChanged(cellData) : null
-                        }}
-                        style={{ marginLeft: 5 * (cellData.level ? cellData.level : 1) + ((cellData.level && cellData.level > 1) ? 14 : 0), transform: `${cellData.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}` }}>
-                        ❯
-                </ChevronIcon>}
-                {!props.isInEditMode ? <div style={{ marginLeft: 5 * (cellData.level ? cellData.level : 1) + (cellData.isExpanded === undefined ? 14 : 0) }} onPointerDown={e => e.stopPropagation()}>{cellData.name}</div> :
-                    <input
-                        style={{
-                            position: 'inherit',
-                            width: '100%',
-                            height: '100%',
-                            padding: 0,
-                            border: 0,
-                            background: 'transparent',
-                            fontSize: 14,
-                            outline: 'none',
-                        }}
-                        ref={input => {
-                            if (input) {
-                                input.focus();
-                                input.setSelectionRange(input.value.length, input.value.length);
-                            }
-                        }}
-                        defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? cellData.name : ''}
-                        onChange={e => props.onCellDataChanged ? props.onCellDataChanged([e.currentTarget.value, { isExpanded: cellData.isExpanded, level: cellData.level }]) : ['', { isExpanded: cellData.isExpanded, level: cellData.level }]}
-                        onCopy={e => e.stopPropagation()}
-                        onCut={e => e.stopPropagation()}
-                        onPaste={e => e.stopPropagation()}
-                        onPointerDown={e => e.stopPropagation()}
-                    />}
-            </>
+            !props.isInEditMode ?
+                <div style={{ width: '100%', marginLeft: 10 * (cellData.depth ? cellData.depth : 1) + (cellData.isExpanded === undefined ? 9 : 0) }}>
+                    {cellData.isExpanded !== undefined &&
+                        <ChevronIcon
+                            onPointerDown={e => {
+                                e.stopPropagation();
+                                cellData.isExpanded = !cellData.isExpanded;
+                                props.onCellDataChanged ? props.onCellDataChanged(cellData) : null
+                            }}
+                            style={{
+                                transform: `${cellData.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`,
+                                zIndex: 1,
+                                pointerEvents: 'auto'
+                            }}
+                        >❯</ChevronIcon>}
+                    <span style={{ marginLeft: cellData.isExpanded !== undefined ? 5 : 0 }}>{cellData.name}</span>
+                </div>
+                :
+                <input
+                    style={{
+                        position: 'inherit',
+                        width: '100%',
+                        height: '100%',
+                        padding: 0,
+                        border: 0,
+                        background: 'transparent',
+                        fontSize: 14,
+                        outline: 'none',
+                    }}
+                    ref={input => {
+                        if (input) {
+                            input.focus();
+                            input.setSelectionRange(input.value.length, input.value.length);
+                        }
+                    }}
+                    defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? cellData.name : ''}
+                    onChange={e => props.onCellDataChanged ? props.onCellDataChanged({ name: e.currentTarget.value, isExpanded: cellData.isExpanded, depth: cellData.depth }) : { name: '', isExpanded: cellData.isExpanded, depth: cellData.depth }}
+                    onCopy={e => e.stopPropagation()}
+                    onCut={e => e.stopPropagation()}
+                    onPaste={e => e.stopPropagation()}
+                    onPointerDown={e => e.stopPropagation()}
+                />
         );
     }
 }

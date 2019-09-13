@@ -1,9 +1,8 @@
 import { State, KeyboardEvent, keyCodes, Row, Column, DataChange, Location } from "../../Common";
-import { focusLocation, isBrowserIE, getDataToPasteInIE } from "../../Functions";
+import { focusLocation } from "../../Functions";
 import { handleResizeSelectionWithKeys } from "./handleResizeSelectionWithKeys";
 import { handleKeyNavigationInsideSelection as handleKeyNavigationInsideSelection } from "./handleKeyNavigationInsideSelection";
 import { trySetDataAndAppendChange } from "../../Functions/trySetDataAndAppendChange";
-import { copySelectedRangeToClipboard, pasteData } from "../DefaultBehavior";
 import { TextCellTemplate } from "../../CellTemplates/TextCellTemplate";
 
 export function handleKeyDown(state: State, event: KeyboardEvent): State {
@@ -14,15 +13,23 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
 
     // TODO remove new TextCellTemplate
     const cellTemplate = state.cellTemplates[focusedLocation.cell.type] ? state.cellTemplates[focusedLocation.cell.type] : new TextCellTemplate();
-    if ((focusedLocation.cell.data != cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data) &&
-        state.selectedRanges.length == 1 && state.selectedRanges[0].first.equals(state.selectedRanges[0].last))) {
 
+    // TODO special behaviors of cells to discuss
+    if (focusedLocation.cell.type === 'group' && focusedLocation.cell.data.isExpanded !== undefined && focusedLocation.cell.data.isExpanded !== cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data).cellData.isExpanded) {
         state = trySetDataAndAppendChange(state, focusedLocation, {
             type: focusedLocation.cell.type,
             data: cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data).cellData
         })
-
+        return state;
+    } else if (focusedLocation.cell.type === 'checkbox' && focusedLocation.cell.data !== cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data).cellData &&
+        state.selectedRanges.length === 1 && state.selectedRanges[0].first.equals(state.selectedRanges[0].last)) { // TODO why ? state.selectedRanges[0].first.equals(state.selectedRanges[0].last)
+        state = trySetDataAndAppendChange(state, focusedLocation, {
+            type: focusedLocation.cell.type,
+            data: cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data).cellData
+        })
+        return state;
     }
+
 
     if (event.shiftKey && !isEnterKey(key) && !isTabKey(key) && !possibleCharactersToEnter(event) && !state.isFocusedCellInEditMode) {
         return handleResizeSelectionWithKeys(state, event);
@@ -71,7 +78,6 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
     state.hiddenFocusElement.focus();
     return { ...state };
 }
-
 
 // TODO Check it
 export const isArrowKey = (key: string): boolean => key.includes('Arrow');

@@ -183,11 +183,20 @@ export class FillHandleBehavior extends Behavior {
     private updateCellData(location: Location, state: State, cell: Cell): State {
         // TODO expect to have the proper TextCellTemplate
         const cellTemplate = state.cellTemplates[cell.type] ? state.cellTemplates[cell.type] : new TextCellTemplate();
-        const data = cellTemplate.validate(cell.data);
+        let data = cellTemplate.validate(cell.data);
+        if (cell.type === 'group') {
+            if (location.cell.type === 'group') {
+                data.name = data.name;
+                data.isExpanded = location.cell.data.isExpanded;
+                data.depth = location.cell.data.depth;
+            } else {
+                data = data.name;
+            }
+        }
         const locationCellTemplate = state.cellTemplates[location.cell.type] ? state.cellTemplates[location.cell.type] : new TextCellTemplate();
         if (!locationCellTemplate.handleKeyDown(0, data).editable)
             return state;
-        state = trySetDataAndAppendChange(state, location, { type: cell.type, data, text: cellTemplate.cellDataToText(data) })
+        state = trySetDataAndAppendChange(state, location, { type: cell.type, data, text: cellTemplate.cellDataToText(data) }) // TODO type should be changed ? data/text difference ?
         return state;
     }
 

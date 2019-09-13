@@ -7,6 +7,8 @@
 
 // TODO Range is INTERNAL! Should not be public! 
 import { Range } from "./Range";
+import { KeyboardEvent } from "./domEvents";
+import { State } from "./State";
 
 export type Orientation = 'horizontal' | 'vertical';
 
@@ -78,7 +80,7 @@ export interface CellTemplate<TCellData> {
 
     validate(data: any): TCellData | null
     // Convert plain text to cell data
-    textToCellData(text: string): TCellData
+    textToCellData(text: string, cellData: any): TCellData // TODO to discuss
     // Convert cell data to plain text
     cellDataToText(cellData: TCellData): string;
     // Returns true, if the cell is able to switch into edit mode. 

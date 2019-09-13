@@ -11,7 +11,7 @@ export function trySetDataAndAppendChange(state: State, location: Location, cell
     const cellTemplate = doesCellTemplateExist ? state.cellTemplates[location.cell.type] : new TextCellTemplate();
     const newData = (cell.type === location.cell.type)
         ? cell.data
-        : doesCellTemplateExist ? cellTemplate.textToCellData(cell.text ? cell.text : '') : cell.data;
+        : doesCellTemplateExist ? cellTemplate.textToCellData(cell.text ? cell.text : '', location.cell.data) : cell.data;
     state.queuedDataChanges.push({
         initialData,
         newData,

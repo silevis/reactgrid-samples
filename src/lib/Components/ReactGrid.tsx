@@ -31,6 +31,7 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
 
         if (state.cellMatrix.cols.length > 0 && state.focusedLocation) {
             state = { ...state, focusedLocation: state.cellMatrix.validateLocation(state.focusedLocation) }
+            // setTimeout(() => state.hiddenFocusElement.focus());
         }
 
         if (state.visibleRange && dataHasChanged) {
@@ -116,6 +117,5 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
         if (this.props.onDataChanged && dataChanges.length > 0) {
             this.props.onDataChanged(dataChanges);
         }
-
     }
 }

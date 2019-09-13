@@ -92,36 +92,36 @@ const DynaGridContainer = styled.div`
 const fields: Column[] = [
     {
         id: 1,
-        name: 'name',
+        name: 'position',
         type: 'group',
-        width: 125,
+        width: 170,
         pinned: false,
     },
     {
         id: 2,
-        name: 'surname',
+        name: 'name',
         type: 'text',
         width: 125,
         pinned: false,
     },
     {
         id: 3,
+        name: 'surname',
+        type: 'text',
+        width: 125,
+        pinned: false,
+    },
+    {
+        id: 4,
         name: 'age',
         type: 'number',
         width: 125,
         pinned: false,
     },
     {
-        id: 4,
+        id: 5,
         name: 'country',
         type: 'flag',
-        width: 125,
-        pinned: false,
-    },
-    {
-        id: 5,
-        name: 'position',
-        type: 'text',
         width: 125,
         pinned: false,
     },
@@ -137,76 +137,104 @@ const fields: Column[] = [
 const records: any[] = [
     {
         id: 'Id',
-        name: { name: 'Name' },
-        surname: "Surname",
+        position: { name: 'Position' },
+        name: 'Name',
+        surname: 'Surname',
         age: 'age',
         country: 'Country',
-        position: 'Position',
         onHoliday: 'On Holiday',
-        pinned: false,
-        parentId: null
+        pinned: false
     },
     {
         id: 1,
-        name: { name: 'Marcin', isExpanded: true, level: 1 },
-        surname: "Kowalski",
+        name: 'Marcin',
+        surname: 'Kowalski',
         age: 21,
         country: 'pol',
-        position: 'CEO',
+        position: { name: '1.0', isExpanded: true, depth: 1 },
         onHoliday: false,
-        pinned: false,
-        parentId: null
+        pinned: false
     },
     {
         id: 2,
-        name: { name: 'Arkadiusz', level: 2 },
-        surname: "Kowalewski",
+        name: 'Artur',
+        surname: 'Kowalewski',
         age: 19,
         country: 'can',
-        position: 'Manager',
+        position: { name: '1.1', depth: 2 },
         onHoliday: true,
         pinned: false,
         parentId: 1
     },
     {
         id: 3,
-        name: { name: 'Marlena', level: 2 },
-        surname: "Zalewska",
+        name: 'Marlena',
+        surname: 'Zalewska',
         age: 34,
         country: 'ven',
-        position: 'Director',
+        position: { name: '1.2', depth: 2 },
         onHoliday: false,
         pinned: false,
         parentId: 1
     },
     {
         id: 4,
-        name: { name: 'Piotr', isExpanded: true, level: 2 },
+        name: 'Piotr',
         surname: 'Mikosza',
         age: 34,
         country: 'ven',
-        position: 'Director',
+        position: { name: '1.2.1', isExpanded: true, depth: 2 },
         onHoliday: false,
         pinned: false,
         parentId: 1
     },
     {
         id: 5,
-        name: { name: 'Adrian', level: 2 },
+        name: 'Adrian',
         surname: 'Czerwiec',
         age: 34,
         country: 'ven',
-        position: 'Director',
+        position: { name: '1.2.1.1', isExpanded: true, depth: 3 },
         onHoliday: false,
         pinned: false,
         parentId: 4
     },
+    {
+        id: 6,
+        name: 'Michal',
+        surname: 'Czerwiec',
+        age: 34,
+        country: 'ven',
+        position: { name: '1.2.1.1.1', isExpanded: true, depth: 4 },
+        onHoliday: false,
+        pinned: false,
+        parentId: 5
+    },
+    {
+        id: 7,
+        name: 'Maciek',
+        surname: 'Czerwiec',
+        age: 34,
+        country: 'ven',
+        position: { name: '1.2.1.1.1.1', isExpanded: true, depth: 5 },
+        onHoliday: false,
+        pinned: false,
+        parentId: 6
+    },
+    {
+        id: 8,
+        name: 'Paweł',
+        surname: 'Czerwiec',
+        age: 34,
+        country: 'ven',
+        position: { name: '1.2.1.1.1.1.1', depth: 6 },
+        onHoliday: false,
+        pinned: false,
+        parentId: 7
+    },
 ]
 
-
-
 export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState> {
-
     state = {
         fields: [...fields],
         records: [...records],
@@ -214,7 +242,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         virtualUsers: false,
         resizing: false,
         columnReordering: false,
-        rowReordering: false,
+        rowReordering: true,
         flagCell: true,
         disableFillHandle: false,
         disableRangeSelection: false,
@@ -255,7 +283,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         const newField: Column = {
             id: nextId,
             name: fieldName,
-            type: "text",
+            type: 'text',
             width: 125,
             pinned: false,
         };
@@ -271,7 +299,25 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         window.clearInterval(this.intervalId)
     }
 
+    private findParent(currentRecord: any): boolean {
+        if (!currentRecord.parentId) {
+            return true;
+        }
+        const parent = this.state.records.find(r => r.id === currentRecord.parentId);
+        if (!parent.position.isExpanded) {
+            return false;
+        }
+        return this.findParent(parent)
+    }
+
     private generateMatrix(): CellMatrixProps {
+        const records = this.state.records.reduce((prev: any, curr: any) => {
+            if (this.findParent(curr)) {
+                prev.push(curr);
+            }
+            return prev;
+        }, [])
+
         const columns: ColumnProps[] = this.state.fields.map((field, idx) => ({
             id: field.id,
             width: field.width,
@@ -281,12 +327,12 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
             onResize: width => { this.state.fields[idx].width = width, this.forceUpdate(); }
         }));
 
-        const rows: RowProps[] = this.state.records.filter((record) => record.id === 'Id' || !record.parentId || (record.parentId && this.state.records[record.parentId].name.isExpanded)).map((record: any, rowIdx) => ({
+        const rows: RowProps[] = records.map((record: any, rowIdx: number) => ({
             id: record.id,
             height: 25,
             reorderable: this.state.rowReordering,
             cells: this.state.fields.map(field => { return { data: record[field.name], type: rowIdx == 0 ? 'header' : field.type } }),
-            onDrop: (ids) => this.setState({ records: this.reorderedRows(ids as number[], rowIdx) }),
+            onDrop: (ids: number[]) => this.setState({ records: this.reorderedRows(ids as number[], rowIdx) }),
         }))
         const frozenPanes = {
             frozenBottomRows: this.state.frozenPanes.bottom,
@@ -332,7 +378,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         const clearedRecords = [...this.state.records].filter((_, idx) => !rowIdxs.includes(idx));
         if (to > rowIdxs[0])
             to = to - rowIdxs.length + 1
-        clearedRecords.splice(to, 0, ...movedRecords)
+        clearedRecords.splice(to, 0, ...movedRecords);
         return clearedRecords
     }
 

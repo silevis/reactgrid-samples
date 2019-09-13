@@ -206,7 +206,8 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
             const cellTemplate = state.cellTemplates[cell.type]
                 ? state.cellTemplates[cell.type]
                 : new TextCellTemplate;
-            const data = cellTemplate.validate(cell.data)
+            let data = cellTemplate.validate(cell.data);
+            data = cell.type === 'group' ? data.name : data;
             tableCell.textContent = data;  // for undefined values
             if (!cell.data) {
                 tableCell.innerHTML = '<img>';
@@ -226,7 +227,8 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
     div.focus()
     document.execCommand('selectAll', false, undefined)
     document.execCommand('copy')
-    document.body.removeChild(div)
+    document.body.removeChild(div);
+    state.hiddenFocusElement.focus();
 }
 
 export function copySelectedRangeToClipboardInIE(state: State, removeValues = false) {
