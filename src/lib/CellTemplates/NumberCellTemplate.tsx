@@ -57,7 +57,7 @@ export class NumberCellTemplate implements CellTemplate<number> {
                 }
             }}
             defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) && !isNaN(props.cellData) ? (this.cellDataToText(props.cellData)) : ''}
-            onChange={e => props.onCellDataChanged ? props.onCellDataChanged(this.textToCellData(e.currentTarget.value)) : null}
+            onChange={e => props.onCellDataChanged(this.textToCellData(e.currentTarget.value))}
             onKeyDown={e => !validate(e.keyCode) ? e.preventDefault() : null}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}

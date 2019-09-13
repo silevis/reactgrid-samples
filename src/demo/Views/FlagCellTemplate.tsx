@@ -28,13 +28,14 @@ export class FlagCellTemplate implements CellTemplate<string> {
             const flagISO = props.cellData.toLowerCase(); // ISO 3166-1, 2/3 letters
             const flagURL = 'https://restcountries.eu/data/' + flagISO + '.svg';
             return <div style={{
-                margin: 'auto auto', 
-                width: '35px', 
-                height: '21px', 
-                backgroundSize: 'cover', 
-                border: '1px solid #cccccc', 
-                backgroundImage: 'url("' + flagURL + '"), url("https://upload.wikimedia.org/wikipedia/commons/0/04/Nuvola_unknown_flag.svg")', 
-                backgroundPosition: 'center center' }} />
+                margin: 'auto auto',
+                width: '35px',
+                height: '21px',
+                backgroundSize: 'cover',
+                border: '1px solid #cccccc',
+                backgroundImage: 'url("' + flagURL + '"), url("https://upload.wikimedia.org/wikipedia/commons/0/04/Nuvola_unknown_flag.svg")',
+                backgroundPosition: 'center center'
+            }} />
         }
         const preserveValueKeyCodes = [0, keyCodes.ENTER];
         return <input
@@ -53,7 +54,7 @@ export class FlagCellTemplate implements CellTemplate<string> {
                 input && input.focus();
             }}
             defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? props.cellData : ''}
-            onChange={e => props.onCellDataChanged ? props.onCellDataChanged(e.currentTarget.value) : null}
+            onChange={e => props.onCellDataChanged(e.currentTarget.value)}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}

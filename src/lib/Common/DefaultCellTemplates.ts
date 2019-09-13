@@ -1,10 +1,10 @@
-import { TextCellTemplate } from "../Cells/TextCellTemplate";
-import { NumberCellTemplate } from "../Cells/NumberCellTemplate";
-import { HeaderCellTemplate } from "../Cells/HeaderCellTemplate";
-import { CheckboxCellTemplate } from "../Cells/CheckboxCellTemplate";
-import { DateCellTemplate } from "../Cells/DateCellTemplate";
-import { EmailCellTemplate } from "../Cells/EmailCellTemplate";
-import { TimeCellTemplate } from "../Cells/TimeCellTemplate";
+import { TextCellTemplate } from "../CellTemplates/TextCellTemplate";
+import { NumberCellTemplate } from "../CellTemplates/NumberCellTemplate";
+import { HeaderCellTemplate } from "../CellTemplates/HeaderCellTemplate";
+import { CheckboxCellTemplate } from "../CellTemplates/CheckboxCellTemplate";
+import { DateCellTemplate } from "../CellTemplates/DateCellTemplate";
+import { EmailCellTemplate } from "../CellTemplates/EmailCellTemplate";
+import { TimeCellTemplate } from "../CellTemplates/TimeCellTemplate";
 import { CellTemplates } from "./PublicModel";
 import { GroupHeaderCellTemplate } from "../Cells/GroupHeaderCellTemplate";
 

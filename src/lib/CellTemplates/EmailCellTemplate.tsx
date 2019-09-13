@@ -48,7 +48,7 @@ export class EmailCellTemplate implements CellTemplate<string> {
                 }
             }}
             defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? props.cellData : ''}
-            onChange={e => props.onCellDataChanged ? props.onCellDataChanged(e.currentTarget.value) : null}
+            onChange={e => props.onCellDataChanged(e.currentTarget.value)}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}

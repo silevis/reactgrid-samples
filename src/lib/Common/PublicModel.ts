@@ -1,3 +1,11 @@
+//
+//  This is the core API for ReactGrid
+//  PLEASE 
+//  ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE
+//  THANKS!
+//
+
+// TODO Range is INTERNAL! Should not be public! 
 import { Range } from "./Range";
 
 export type Orientation = 'horizontal' | 'vertical';
@@ -6,20 +14,19 @@ export type Direction = 'horizontal' | 'vertical' | 'both'
 
 export type SelectionMode = 'row' | 'column' | 'range';
 
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface Focus {
-    colId: Id;
-    rowId: Id; 
+    columnId: Id;
+    rowId: Id;
     color: string;
 }
 
-export interface DynaGridProps {
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
+export interface ReactGridProps {
     readonly cellMatrixProps: CellMatrixProps;
     readonly style?: React.CSSProperties;
     readonly cellTemplates?: CellTemplates
     readonly customFocuses?: Focus[];
-    //usersFocuses: { colIdx: number; rowIdx: number; color: string }[];
-    //readonly onInitialized?: (grid: GridController) => void;
-    // readonly floatingCellEditor: boolean;
     readonly disableFillHandle?: boolean;
     readonly disableRangeSelection?: boolean;
     readonly disableRowSelection?: boolean;
@@ -28,21 +35,23 @@ export interface DynaGridProps {
     readonly onCellFocused?: (cellId: CellId) => void;
     readonly onRowContextMenu?: (selectedRowIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
     readonly onColumnContextMenu?: (selectedColumnIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
+    // TODO Range is INTERNAL! Should not be public! 
     readonly onRangeContextMenu?: (selectedRanges: Range[], menuOptions: MenuOption[]) => MenuOption[];
     // readonly onContextMenuRequested?: (menuOptions: MenuOption[]) => void
-    // readonly onRowDeletionRequested? : (rowIds: Id[]) => void
-    // readonly onColumnDeletionRequested? : (colIds: Id[]) => void
 }
 
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface CellTemplates {
     [key: string]: CellTemplate<any>;
 }
 
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface CellId {
     readonly rowId: Id;
     readonly columnId: Id;
 }
 
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface DataChange {
     readonly rowId: Id;
     readonly columnId: Id;
@@ -51,6 +60,7 @@ export interface DataChange {
     readonly newData: any;
 }
 
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface CellMatrixProps {
     readonly columns: ColumnProps[];
     readonly rows: RowProps[];
@@ -63,7 +73,9 @@ export interface CellMatrixProps {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 // This interface is used for the communication between DynaGrid and a cell
 export interface CellTemplate<TCellData> {
+    // TODO the event handler should check the keycode
     hasEditMode: boolean;
+
     validate(data: any): TCellData | null
     // Convert plain text to cell data
     textToCellData(text: string): TCellData
@@ -73,6 +85,7 @@ export interface CellTemplate<TCellData> {
     // The keyCode represents the key pressed on the keyboard, or 1 for a pointer event.
     //shouldEnableEditMode(keyCode: number): boolean;
 
+    // TODO Explain this:
     // The keyCode represents the key pressed on the keyboard, or 1 for a pointer event.
     handleKeyDown(keyCode: number, cellData: TCellData): { editable: boolean, cellData: TCellData }
     // Custom styles applied to the cells div element
@@ -80,16 +93,6 @@ export interface CellTemplate<TCellData> {
     // Render the cell content
     renderContent(props: CellRenderProps<TCellData>): React.ReactNode;
 }
-
-// // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-// export interface CellData<TCellData> {
-//     // Data type stored in the cell
-//     readonly type: string;
-//     // Raw data 
-//     readonly data: TCellData;
-//     // Text representation of the data
-//     ///readonly text: string;
-// }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface CellRenderProps<TCellData> {
