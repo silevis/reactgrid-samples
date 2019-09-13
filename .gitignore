@@ -6,11 +6,14 @@
 .pnp.js
 /lib
 
+
 # testing
 /coverage
 
 # production
 /build
+public
+.cache
 
 # misc
 .DS_Store
