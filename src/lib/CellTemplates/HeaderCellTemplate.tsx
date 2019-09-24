@@ -8,7 +8,6 @@ export class HeaderCellTemplate implements CellTemplate<string> {
         return (typeof (data) === 'string') ? data : '';
     }
 
-
     textToCellData(text: string): string {
         return text;
     }
@@ -17,8 +16,12 @@ export class HeaderCellTemplate implements CellTemplate<string> {
         return cellData;
     }
 
+    isReadOnly() {
+        return false;
+    }
+
     handleKeyDown(keyCode: number, cellData: string) {
-        return { editable: false, cellData }
+        return cellData
     }
 
     customStyle: React.CSSProperties = { background: '#eee' };

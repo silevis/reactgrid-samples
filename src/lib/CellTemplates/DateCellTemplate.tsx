@@ -20,7 +20,11 @@ export class DateCellTemplate implements CellTemplate<string> {
     }
 
     handleKeyDown(keyCode: number, cellData: string) {
-        return { editable: true, cellData }
+        return cellData
+    }
+
+    isReadOnly() {
+        return true;
     }
 
     customStyle: React.CSSProperties = {};

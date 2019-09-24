@@ -17,8 +17,12 @@ export class NumberCellTemplate implements CellTemplate<number> {
         return cellData.toString();
     }
 
+    isReadOnly() {
+        return true;
+    }
+
     handleKeyDown(keyCode: number, cellData: number) {
-        return { editable: true, cellData }
+        return cellData
     }
 
     customStyle: React.CSSProperties = {};

@@ -20,8 +20,12 @@ export class EmailCellTemplate implements CellTemplate<string> {
         return cellData;
     }
 
+    isReadOnly() {
+        return true;
+    }
+
     handleKeyDown(keyCode: number, cellData: string) {
-        return { editable: true, cellData }
+        return cellData
     }
 
     customStyle: React.CSSProperties = {};
