@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ReactGridProps, CellMatrix, PointerEvent, State, StateUpdater } from "../Common";
+import { ReactGridProps, CellMatrix, PointerEvent, State, StateUpdater, MenuOption } from "../Common";
 import { recalcVisibleRange, isBrowserIE, isBrowserEdge } from "../Functions";
 import { KeyboardEvent, ClipboardEvent } from "../Common";
 import { PointerEventsController } from "../Common/PointerEventsController";
@@ -72,9 +72,9 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
             onPointerDown: this.pointerDownHandler,
             onContextMenu: this.handleContextMenu,
             onScroll: this.scrollHandler,
-            //onRowContextMenu: (_, menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(this.state.selectedIds, menuOptions) : [],
-            //onColumnContextMenu: (_, menuOptions: MenuOption[]) => this.props.onColumnContextMenu ? this.props.onColumnContextMenu(this.state.selectedIds, menuOptions) : [],
-            //onRangeContextMenu: (_, menuOptions: MenuOption[]) => this.props.onRangeContextMenu ? this.props.onRangeContextMenu(this.state.selectedRanges, menuOptions) : [],
+            // onRowContextMenu: (_: any, menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(this.state.selectedIds, menuOptions) : [],
+            // onColumnContextMenu: (_: any, menuOptions: MenuOption[]) => this.props.onColumnContextMenu ? this.props.onColumnContextMenu(this.state.selectedIds, menuOptions) : [],
+            // onRangeContextMenu: (_: any, menuOptions: MenuOption[]) => this.props.onRangeContextMenu ? this.props.onRangeContextMenu(this.state.selectedRanges, menuOptions) : [],
             viewportElementRefHandler: this.viewportElementRefHandler,
             hiddenElementRefHandler: this.hiddenElementRefHandler
         })
