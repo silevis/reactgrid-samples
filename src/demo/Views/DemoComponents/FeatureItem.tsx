@@ -33,19 +33,19 @@ const StyledSpan = styled.span`
     user-select: none;
 `;
 
-const StyledFeatureCheckboxActive = styled(StyledFeatureCheckbox)`
+const StyledFeatureCheckboxActive = styled(props => <StyledFeatureCheckbox {...props} />)`
     border: 1px solid #8BC34A;
     background-color: #8BC34A;
 `;
 
 export const FeatureItem = (props: IFeatureItemProps) => {
     const { currentState, action, name } = props;
-    const checkboxState = currentState ? <StyledFeatureCheckboxActive/> : <StyledFeatureCheckbox/>
-    const spanColor = currentState == undefined ? '' : currentState ? '' : '#999999' ;
+    const checkboxState = currentState ? <StyledFeatureCheckboxActive /> : <StyledFeatureCheckbox />
+    const spanColor = currentState == undefined ? '' : currentState ? '' : '#999999';
     return (
         <StyledFeatureItem onClick={action}>
             <StyledSpan color={spanColor}>{name}</StyledSpan>
-            {currentState == undefined || checkboxState }
+            {currentState == undefined || checkboxState}
         </StyledFeatureItem>
     )
 }

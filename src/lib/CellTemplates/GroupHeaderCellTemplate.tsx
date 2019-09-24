@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
-import { CellRenderProps, CellTemplate, KeyboardEvent, State } from '../Common';
+import { CellRenderProps, CellTemplate } from '../Common';
 import styled from 'styled-components';
-import { trySetDataAndAppendChange } from '../Functions/trySetDataAndAppendChange';
 
 const ChevronIcon = styled.div`
     display: inline-block;
@@ -33,10 +32,8 @@ export class GroupHeaderCellTemplate implements CellTemplate<any> {
     }
 
     handleKeyDown(keyCode: number, cellData: any) {
-        if (keyCode === keyCodes.UP_ARROW) {
-            cellData.isExpanded = false;
-        } else if (keyCode === keyCodes.RIGHT_ARROW) {
-            cellData.isExpanded = true;
+        if (keyCode === keyCodes.SPACE) {
+            cellData.isExpanded = cellData.isExpanded !== undefined ? !cellData.isExpanded : undefined;
         }
         return { editable: true, cellData: Object.assign({}, cellData) }
     }
@@ -54,7 +51,7 @@ export class GroupHeaderCellTemplate implements CellTemplate<any> {
                             onPointerDown={e => {
                                 e.stopPropagation();
                                 cellData.isExpanded = !cellData.isExpanded;
-                                props.onCellDataChanged ? props.onCellDataChanged(cellData) : null
+                                if (props.onCellDataChanged) props.onCellDataChanged(cellData);
                             }}
                             style={{
                                 transform: `${cellData.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`,
@@ -83,7 +80,12 @@ export class GroupHeaderCellTemplate implements CellTemplate<any> {
                         }
                     }}
                     defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? cellData.name : ''}
-                    onChange={e => props.onCellDataChanged ? props.onCellDataChanged({ name: e.currentTarget.value, isExpanded: cellData.isExpanded, depth: cellData.depth }) : { name: '', isExpanded: cellData.isExpanded, depth: cellData.depth }}
+                    onChange={e => {
+                        props.onCellDataChanged
+                            ? props.onCellDataChanged({ name: e.currentTarget.value, isExpanded: cellData.isExpanded, depth: cellData.depth })
+                            : { name: '', isExpanded: cellData.isExpanded, depth: cellData.depth }
+                    }
+                    }
                     onCopy={e => e.stopPropagation()}
                     onCut={e => e.stopPropagation()}
                     onPaste={e => e.stopPropagation()}

@@ -6,13 +6,14 @@ interface ShadowProps {
     orientation: Orientation;
     cellMatrix: CellMatrix;
     shadowSize: number;
+    cursor: string
 }
 
 
 export class Shadow extends React.Component<ShadowProps> {
 
     render() {
-        const { shadowSize, shadowPosition, cellMatrix } = this.props;
+        const { shadowSize, shadowPosition, cellMatrix, cursor } = this.props;
         const isVertical = this.props.orientation == 'vertical' ? true : false
         return (
             this.props.shadowPosition !== -1 &&
@@ -20,7 +21,7 @@ export class Shadow extends React.Component<ShadowProps> {
                 style={{
                     position: 'absolute',
                     background: '#000',
-                    cursor: '-webkit-grabbing',
+                    cursor: cursor,
                     opacity: 0.1,
                     top: (isVertical ? 0 : shadowPosition),
                     left: (isVertical ? shadowPosition : 0),

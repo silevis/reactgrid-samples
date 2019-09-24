@@ -13,23 +13,22 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
 
     // TODO remove new TextCellTemplate
     const cellTemplate = state.cellTemplates[focusedLocation.cell.type] ? state.cellTemplates[focusedLocation.cell.type] : new TextCellTemplate();
-
+    const cellData = cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data).cellData
     // TODO special behaviors of cells to discuss
-    if (focusedLocation.cell.type === 'group' && focusedLocation.cell.data.isExpanded !== undefined && focusedLocation.cell.data.isExpanded !== cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data).cellData.isExpanded) {
+    if (focusedLocation.cell.type === 'group' && focusedLocation.cell.data.isExpanded !== undefined && focusedLocation.cell.data.isExpanded !== cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data).cellData.isExpanded && !state.isFocusedCellInEditMode) {
         state = trySetDataAndAppendChange(state, focusedLocation, {
             type: focusedLocation.cell.type,
-            data: cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data).cellData
+            data: cellData
         })
-        return state;
+        return { ...state, isFocusedCellInEditMode: false };
     } else if (focusedLocation.cell.type === 'checkbox' && focusedLocation.cell.data !== cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data).cellData &&
         state.selectedRanges.length === 1 && state.selectedRanges[0].first.equals(state.selectedRanges[0].last)) { // TODO why ? state.selectedRanges[0].first.equals(state.selectedRanges[0].last)
         state = trySetDataAndAppendChange(state, focusedLocation, {
             type: focusedLocation.cell.type,
-            data: cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data).cellData
+            data: cellData
         })
         return state;
     }
-
 
     if (event.shiftKey && !isEnterKey(key) && !isTabKey(key) && !possibleCharactersToEnter(event) && !state.isFocusedCellInEditMode) {
         return handleResizeSelectionWithKeys(state, event);

@@ -4,7 +4,6 @@ npm i @silevis/reactgrid
 ```
 
 Before run you need to have installed:
-- "babel-polyfill": "^6.26.0" - needed to run on Internet Explorer
 - "react": "^16.8.6"
 - "react-dom": "^16.8.6"
 - "styled-components": "^4.2.0"
@@ -19,6 +18,13 @@ const App: React.FC = () => {
       <DynagridDemo />
   );
 }
+```
+### Internet Explorer
+Additional you have to install https://www.npmjs.com/package/core-js and place it like below:
+```
+import React from 'react';
+import "core-js/stable";
+import DynagridDemo from '@silevis/reactgrid';
 ```
 
 ## Features
