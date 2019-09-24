@@ -2,7 +2,6 @@ import * as React from 'react';
 import { CellTemplate, CellRenderProps } from '../Common';
 
 export class HeaderCellTemplate implements CellTemplate<string> {
-    readonly hasEditMode = false;
 
     validate(data: any): string {
         return (typeof (data) === 'string') ? data : '';
@@ -16,15 +15,9 @@ export class HeaderCellTemplate implements CellTemplate<string> {
         return cellData;
     }
 
-    isReadOnly() {
-        return false;
-    }
-
     handleKeyDown(keyCode: number, cellData: string) {
-        return cellData
+        return { cellData, enableEditMode: false }
     }
-
-    customStyle: React.CSSProperties = { background: '#eee' };
 
     renderContent: (props: CellRenderProps<string>) => React.ReactNode = (props) => props.cellData
 }

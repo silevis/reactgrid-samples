@@ -3,7 +3,6 @@ import { keyCodes } from '../../lib/Common/Constants';
 import { CellRenderProps, CellTemplate } from '../../lib/Common';
 
 export class FlagCellTemplate implements CellTemplate<string> {
-    readonly hasEditMode = true;
 
     validate(data: any): string {
         return (typeof (data) === 'string') ? data : '';
@@ -17,12 +16,8 @@ export class FlagCellTemplate implements CellTemplate<string> {
         return cellData;
     }
 
-    isReadOnly() {
-        return true;
-    }
-
     handleKeyDown(keyCode: number, cellData: string) {
-        return cellData
+        return { cellData, enableEditMode: true }
     }
 
     customStyle: React.CSSProperties = { background: '#fff' };

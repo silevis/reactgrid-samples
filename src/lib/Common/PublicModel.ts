@@ -81,11 +81,11 @@ export interface CellTemplate<TCellData> {
     textToCellData?(text: string): TCellData | null
     // Convert cell data to plain text (not encoded stuff)
     cellDataToText(cellData: TCellData): string;
-    // The keyCode represents the key pressed on the keyboard, or 1 for a pointer event.
+    // The keyCode represents the key pressed on the keyboard, or 1 for a pointer event (double click).
     // Returns the cell data either affected by the event or not.
     handleKeyDown(keyCode: number, cellData: TCellData): { cellData: TCellData, enableEditMode: boolean }
     // Custom styles based on cell data applied to the cells div element
-    getCustomStyle(cellData: TCellData): React.CSSProperties;
+    getCustomStyle?(cellData: TCellData): React.CSSProperties;
     // Render the cell content
     renderContent(props: CellRenderProps<TCellData>): React.ReactNode;
 }

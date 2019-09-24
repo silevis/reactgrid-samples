@@ -49,11 +49,9 @@ export class CellSelectionBehavior extends Behavior {
             event.preventDefault();
             event.stopPropagation();
         } else if (location.equals(state.focusedLocation)) {
-            // TODO expect that all cell templates are available.
-            const cellType = state.cellTemplates[state.focusedLocation!.cell.type]
-                ? state.cellTemplates[state.focusedLocation!.cell.type]
-                : new TextCellTemplate();
-            return { ...state, isFocusedCellInEditMode: cellType.hasEditMode };
+            const cellTemplate = state.cellTemplates[state.focusedLocation!.cell.type];
+            const { cellData, enableEditMode } = cellTemplate.handleKeyDown(1, state.focusedLocation!.cell.data);
+            return { ...state, isFocusedCellInEditMode: enableEditMode };
         }
         return state;
     }
