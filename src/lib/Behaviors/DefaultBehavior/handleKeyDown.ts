@@ -3,7 +3,6 @@ import { focusLocation, isBrowserIE, getDataToPasteInIE } from "../../Functions"
 import { handleResizeSelectionWithKeys } from "./handleResizeSelectionWithKeys";
 import { handleKeyNavigationInsideSelection as handleKeyNavigationInsideSelection } from "./handleKeyNavigationInsideSelection";
 import { trySetDataAndAppendChange } from "../../Functions/trySetDataAndAppendChange";
-import { copySelectedRangeToClipboard, pasteData } from "../DefaultBehavior";
 import { TextCellTemplate } from "../../CellTemplates/TextCellTemplate";
 
 export function handleKeyDown(state: State, event: KeyboardEvent): State {
@@ -14,12 +13,11 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
 
     // TODO remove new TextCellTemplate
     const cellTemplate = state.cellTemplates[focusedLocation.cell.type] ? state.cellTemplates[focusedLocation.cell.type] : new TextCellTemplate();
-    if ((focusedLocation.cell.data != cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data) &&
+    if ((focusedLocation.cell.data != cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data).data &&
         state.selectedRanges.length == 1 && state.selectedRanges[0].first.equals(state.selectedRanges[0].last))) {
-
         state = trySetDataAndAppendChange(state, focusedLocation, {
             type: focusedLocation.cell.type,
-            data: cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data).cellData
+            data: cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data)
         })
 
     }
@@ -275,10 +273,7 @@ function handleSpecialKeys(event: KeyboardEvent, state: State) {
         state.selectedRanges.forEach(range =>
             range.rows.forEach((row: Row) =>
                 range.cols.forEach((col: Column) => {
-                    const cell = state.cellMatrix.getCell(row.id, col.id);
-                    // TODO what happens here !?
-                    if (state.cellTemplates[cell.type].handleKeyDown(keyCodes.DELETE, cell.data).editable)
-                        trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' })
+                    state = trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' })
                 })
             )
         );

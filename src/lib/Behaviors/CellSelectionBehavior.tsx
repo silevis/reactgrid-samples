@@ -50,10 +50,10 @@ export class CellSelectionBehavior extends Behavior {
             event.stopPropagation();
         } else if (location.equals(state.focusedLocation)) {
             // TODO expect that all cell templates are available.
-            const defaultType = state.cellTemplates[state.focusedLocation!.cell.type]
+            const cellType = state.cellTemplates[state.focusedLocation!.cell.type]
                 ? state.cellTemplates[state.focusedLocation!.cell.type]
                 : new TextCellTemplate();
-            return { ...state, isFocusedCellInEditMode: defaultType.hasEditMode };
+            return { ...state, isFocusedCellInEditMode: cellType.hasEditMode };
         }
         return state;
     }
