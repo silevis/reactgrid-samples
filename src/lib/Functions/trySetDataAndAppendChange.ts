@@ -1,17 +1,21 @@
 import { Location, State, Cell } from "../Common";
-import { TextCellTemplate } from "../CellTemplates/TextCellTemplate";
 
 export function trySetDataAndAppendChange(state: State, location: Location, cell: Cell): State {
+    // 1: Unchanged => do nothing
     const initialData = location.cell.data;
     if (initialData === cell.data)
         return state;
-    // TODO should not render without poper cellTemplate - remove this
-    const doesCellTemplateExist = state.cellTemplates[location.cell.type] ? true : false;
-    // TODO remove new TextCellTemplate
-    const cellTemplate = doesCellTemplateExist ? state.cellTemplates[location.cell.type] : new TextCellTemplate();
-    const newData = (cell.type === location.cell.type)
-        ? cell.data
-        : doesCellTemplateExist ? cellTemplate.textToCellData(cell.text ? cell.text : '', location.cell.data) : cell.data;
+
+    const cellTemplate = state.cellTemplates[location.cell.type]
+    const newData =
+        // 2: Same type => validate data
+        ((cell.type === location.cell.type) && cellTemplate.validate(cell.data))
+        // 3: Different type => get data from text
+        || cellTemplate.textToCellData && cellTemplate.textToCellData(cell.text || '')
+
+    if (newData == null || newData == undefined)
+        return state;
+
     state.queuedDataChanges.push({
         initialData,
         newData,

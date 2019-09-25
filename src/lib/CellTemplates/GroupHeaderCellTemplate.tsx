@@ -23,8 +23,8 @@ export class GroupHeaderCellTemplate implements CellTemplate<any> {
         return { name: (typeof (data.name) === 'string') ? data.name : '', isExpanded: data.isExpanded !== undefined ? data.isExpanded : undefined, depth: data.depth };
     }
 
-    textToCellData(text: string, cellData: any): any {
-        return { name: text, isExpanded: cellData.isExpanded, depth: cellData.depth };
+    textToCellData(text: string): any {
+        return {};
     }
 
     cellDataToText(cellData: any) {
@@ -35,7 +35,7 @@ export class GroupHeaderCellTemplate implements CellTemplate<any> {
         if (keyCode === keyCodes.SPACE) {
             cellData.isExpanded = cellData.isExpanded !== undefined ? !cellData.isExpanded : undefined;
         }
-        return { editable: true, cellData: Object.assign({}, cellData) }
+        return { cellData: Object.assign({}, cellData), enableEditMode: true }
     }
 
     customStyle: React.CSSProperties = { background: '#fff' };
