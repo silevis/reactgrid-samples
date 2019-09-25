@@ -28,9 +28,10 @@ export class RowReorderBehavior extends Behavior {
 
     handlePointerMove(event: PointerEvent, location: PointerLocation, state: State): State {
         const shadowPosition = this.getShadowPosition(location, state);
-        let cursor = '-webkit-grabbing';
+        let shadowCursor = '-webkit-grabbing';
         let linePosition = state.linePosition;
         const pointerLocation = location.viewportY + state.viewportElement.scrollTop;
+        this.lastPossibleDropLocation = this.getLastPossibleDropLocation(location);
         if (this.lastPossibleDropLocation && this.lastPossibleDropLocation.row.idx !== this.initialRowIdx) {
             const drawDown = this.lastPossibleDropLocation.row.idx > this.initialRowIdx;
             linePosition = Math.min(this.lastPossibleDropLocation.viewportY - this.lastPossibleDropLocation.cellY + (drawDown ? this.lastPossibleDropLocation.row.height : 0) + state.viewportElement.scrollTop,
@@ -43,7 +44,7 @@ export class RowReorderBehavior extends Behavior {
                     if (drawDown) {
                         if (pointerLocation > location.row.top && pointerLocation < location.row.top + location.row.height / 2) {
                             this.position = 'on';
-                            cursor = 'move';
+                            shadowCursor = 'move';
                             linePosition = -1;
                         } else {
                             this.position = 'after';
@@ -51,7 +52,7 @@ export class RowReorderBehavior extends Behavior {
                     } else {
                         if (pointerLocation > location.row.top + location.row.height / 2 && pointerLocation < location.row.top + location.row.height) {
                             this.position = 'on';
-                            cursor = 'move';
+                            shadowCursor = 'move';
                             linePosition = -1;
                         } else {
                             this.position = 'before';
@@ -67,13 +68,8 @@ export class RowReorderBehavior extends Behavior {
             ...state,
             shadowPosition,
             linePosition,
-            cursor
+            shadowCursor
         }
-    }
-
-    handlePointerEnter(event: PointerEvent, location: PointerLocation, state: State): State {
-        this.lastPossibleDropLocation = this.getLastPossibleDropLocation(location);
-        return state;
     }
 
     getShadowPosition(location: PointerLocation, state: State): number {
@@ -102,7 +98,7 @@ export class RowReorderBehavior extends Behavior {
             ...state,
             linePosition: -1,
             shadowPosition: -1,
-            cursor: 'default'
+            shadowCursor: 'default'
         };
     }
 }

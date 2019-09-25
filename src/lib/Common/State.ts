@@ -41,7 +41,7 @@ export class State {
     readonly linePosition: number = -1;
     readonly shadowSize: number = 0;
     readonly shadowPosition: number = -1;
-    readonly cursor: string = 'default';
+    readonly shadowCursor: string = 'default';
 
     // SELECTION
     readonly selectionMode: SelectionMode = 'range'
