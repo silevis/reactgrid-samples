@@ -2,12 +2,10 @@ import * as React from 'react';
 import { CellTemplate, CellRenderProps } from '../Common';
 
 export class HeaderCellTemplate implements CellTemplate<string> {
-    readonly hasEditMode = false;
 
     validate(data: any): string {
         return (typeof (data) === 'string') ? data : '';
     }
-
 
     textToCellData(text: string): string {
         return text;
@@ -17,11 +15,13 @@ export class HeaderCellTemplate implements CellTemplate<string> {
         return cellData;
     }
 
-    handleKeyDown(keyCode: number, cellData: string) {
-        return { editable: false, cellData }
+    getCustomStyle(cellData: string): React.CSSProperties {
+        return { background: '#eee' }
     }
 
-    customStyle: React.CSSProperties = { background: '#eee' };
+    handleKeyDown(keyCode: number, cellData: string) {
+        return { cellData, enableEditMode: false }
+    }
 
     renderContent: (props: CellRenderProps<string>) => React.ReactNode = (props) => props.cellData
 }

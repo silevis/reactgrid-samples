@@ -2,9 +2,10 @@ import * as React from 'react';
 import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range, CellTemplates, Focus } from '../../lib';
 import { ReactGrid } from '../../lib';
 import { VirtualEnv, VirtualUser, DynaGridDataGenerator } from '../../lib/Common/VirtualUser';
-import styled, { ThemeConsumer } from 'styled-components';
+import styled from 'styled-components';
 import { FeatureListContainer } from '../Views/DemoComponents/FeatureListContainer'
 import { FlagCellTemplate } from './FlagCellTemplate';
+
 interface Column {
     id: number;
     name: string;

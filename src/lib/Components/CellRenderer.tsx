@@ -15,9 +15,9 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
     const cell = location.cell;
     const isFocused = (state.focusedLocation !== undefined) && (state.focusedLocation.col.idx === props.location.col.idx && state.focusedLocation.row.idx === props.location.row.idx);
     const lastKeyCode = props.state.lastKeyCode;
-    const cellType = state.cellTemplates[cell.type] ? cell.type : 'text';
+    const cellTemplate = state.cellTemplates[cell.type];
     const style: React.CSSProperties = {
-        ...state.cellTemplates[cellType].customStyle,
+        ...(cellTemplate.getCustomStyle && cellTemplate.getCustomStyle(cell.data) || {}),
         boxSizing: 'border-box',
         whiteSpace: 'nowrap',
         position: 'absolute',
@@ -41,19 +41,21 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
         // borderRight: borders.right
         //     ? 'solid 1px #ccc'
         //     : 'solid 1px #e5e5e5',
+
+        // TODO hardcoded type "header" - can we do better?
         touchAction: isFocused || props.state.cellMatrix.getCell(props.location.row.id, props.location.col.id).type === 'header' ? 'none' : 'auto' // prevent scrolling
     }
     return (
         <div className="cell" style={style}>
             {
-                state.cellTemplates[cellType].renderContent({
-                    cellData: state.cellTemplates[cellType].validate(cell.data),
+                cellTemplate.renderContent({
+                    cellData: cellTemplate.validate(cell.data),
                     isInEditMode: false,
                     lastKeyCode: lastKeyCode,
                     onCellDataChanged: (newCellData) => {
                         props.state.updateState(state => trySetDataAndAppendChange(state,
                             location,
-                            { data: newCellData, type: cellType, text: props.state.cellTemplates[cellType].cellDataToText(newCellData) }
+                            { data: newCellData, type: cell.type, text: cellTemplate.cellDataToText(newCellData) }
                         ))
                     }
                 })

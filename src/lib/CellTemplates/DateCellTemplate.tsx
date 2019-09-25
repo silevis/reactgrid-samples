@@ -3,7 +3,6 @@ import { keyCodes } from '../Common/Constants';
 import { CellRenderProps, CellTemplate } from '../Common';
 
 export class DateCellTemplate implements CellTemplate<string> {
-    readonly hasEditMode = true;
 
     validate(data: any): string {
         const date_regex = /^\d{4}\-\d{2}\-\d{2}$/;
@@ -20,10 +19,8 @@ export class DateCellTemplate implements CellTemplate<string> {
     }
 
     handleKeyDown(keyCode: number, cellData: string) {
-        return { editable: true, cellData }
+        return { cellData, enableEditMode: true }
     }
-
-    customStyle: React.CSSProperties = {};
 
     renderContent: (props: CellRenderProps<string>) => React.ReactNode = (props) => {
         if (!props.isInEditMode)
