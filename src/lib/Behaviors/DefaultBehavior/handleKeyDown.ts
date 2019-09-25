@@ -2,7 +2,7 @@ import { State, KeyboardEvent, keyCodes, Row, Column, DataChange, Location } fro
 import { focusLocation } from "../../Functions";
 import { handleResizeSelectionWithKeys } from "./handleResizeSelectionWithKeys";
 import { handleKeyNavigationInsideSelection as handleKeyNavigationInsideSelection } from "./handleKeyNavigationInsideSelection";
-import { trySetDataAndAppendChange } from "../../Functions/trySetDataAndAppendChange";
+import { trySetDataAndAppendChange } from "../../Functions";
 
 export function handleKeyDown(state: State, event: KeyboardEvent): State {
     const focusedLocation = state.focusedLocation!;
@@ -11,11 +11,18 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
     if (!focusedLocation) { return state }
 
     const cellTemplate = state.cellTemplates[focusedLocation.cell.type];
-    const { cellData, enableEditMode } = cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data);
-    if ((focusedLocation.cell.data != cellData &&
-        // TODO what is this?
-        state.selectedRanges.length == 1 && state.selectedRanges[0].first.equals(state.selectedRanges[0].last))) {
-        state = trySetDataAndAppendChange(state, focusedLocation, { type: focusedLocation.cell.type, data: cellData });
+    if (cellTemplate.handleKeyDown) {
+        const { cellData, enableEditMode } = cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data);
+        if ((focusedLocation.cell.data !== cellData &&
+            // TODO what is this?
+            state.selectedRanges.length == 1 && state.selectedRanges[0].first.equals(state.selectedRanges[0].last))) {
+            state = trySetDataAndAppendChange(state, focusedLocation, { type: focusedLocation.cell.type, data: cellData });
+            // TODO this is probably a double . check it!
+            if (!event.ctrlKey && (possibleCharactersToEnter(event) || isEnterKey(key) || isSpaceKey(key))) {
+                return { ...state, isFocusedCellInEditMode: enableEditMode }
+            }
+        }
+
     }
 
     if (event.shiftKey && !isEnterKey(key) && !isTabKey(key) && !possibleCharactersToEnter(event) && !state.isFocusedCellInEditMode) {
@@ -56,11 +63,6 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
             ),
             true
         );
-    }
-
-    // TODO this is probably a double . check it!
-    if (!event.ctrlKey && (possibleCharactersToEnter(event) || isEnterKey(key) || isSpaceKey(key))) {
-        return { ...state, isFocusedCellInEditMode: enableEditMode }
     }
 
     state.hiddenFocusElement.focus();
@@ -242,8 +244,8 @@ function handleEnterKey(event: KeyboardEvent, state: State, shiftPressed: boolea
     ) {
         // TODO check , this might be a double
         const cellTemplate = state.cellTemplates[focusedLocation.cell.type];
-        const { cellData, enableEditMode } = cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data)
-        return { ...state, isFocusedCellInEditMode: enableEditMode };
+        //const { cellData, enableEditMode } = cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data)
+        //return { ...state, isFocusedCellInEditMode: enableEditMode };
     } else if (shiftPressed && event.keyCode === keyCodes.ENTER && focusedLocation.row.idx > 0) {
         return focusCell(focusedLocation.col.idx, focusedLocation.row.idx - 1, state);
     }
@@ -270,6 +272,7 @@ function handleSpecialKeys(event: KeyboardEvent, state: State) {
             range.rows.forEach((row: Row) =>
                 range.cols.forEach((col: Column) => {
                     const cell = state.cellMatrix.getCell(row.id, col.id);
+                    // TODO remove group
                     state = trySetDataAndAppendChange(state, new Location(row, col), { data: cell.type !== 'group' ? '' : { name: '', isExpanded: cell.data.isExpanded, level: cell.data.level }, type: cell.type })
                 })
             )

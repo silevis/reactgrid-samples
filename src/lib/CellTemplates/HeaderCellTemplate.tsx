@@ -3,24 +3,16 @@ import { CellTemplate, CellRenderProps } from '../Common';
 
 export class HeaderCellTemplate implements CellTemplate<string> {
 
-    validate(data: any): string {
-        return (typeof (data) === 'string') ? data : '';
+    isReadonly(cellData: string) {
+        return true;
     }
 
-    textToCellData(text: string): string {
-        return text;
+    isValid(cellData: string): boolean {
+        return (typeof (cellData) === 'string');
     }
 
-    cellDataToText(cellData: string) {
+    cellDataToText(cellData: string): string {
         return cellData;
-    }
-
-    getCustomStyle(cellData: string): React.CSSProperties {
-        return { background: '#eee' }
-    }
-
-    handleKeyDown(keyCode: number, cellData: string) {
-        return { cellData, enableEditMode: false }
     }
 
     renderContent: (props: CellRenderProps<string>) => React.ReactNode = (props) => props.cellData

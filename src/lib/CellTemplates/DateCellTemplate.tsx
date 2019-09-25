@@ -4,10 +4,9 @@ import { CellRenderProps, CellTemplate } from '../Common';
 
 export class DateCellTemplate implements CellTemplate<string> {
 
-    validate(data: any): string {
+    isValid(cellData: string): boolean {
         const date_regex = /^\d{4}\-\d{2}\-\d{2}$/;
-        data = data ? data.toString().replace(/\s+/g, '') : data;
-        return (date_regex.test(data)) ? data : '';
+        return date_regex.test(cellData.replace(/\s+/g, ''));
     }
 
     textToCellData(text: string): string {

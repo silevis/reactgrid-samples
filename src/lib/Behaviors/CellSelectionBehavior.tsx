@@ -49,7 +49,7 @@ export class CellSelectionBehavior extends Behavior {
             event.stopPropagation();
         } else if (location.equals(state.focusedLocation)) {
             const cellTemplate = state.cellTemplates[state.focusedLocation!.cell.type];
-            const { enableEditMode } = cellTemplate.handleKeyDown(1, state.focusedLocation!.cell.data);
+            const { enableEditMode } = cellTemplate.handleKeyDown ? cellTemplate.handleKeyDown(1, state.focusedLocation!.cell.data) : { enableEditMode: true };
             return { ...state, isFocusedCellInEditMode: enableEditMode };
         }
         return state;

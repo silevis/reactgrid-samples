@@ -16,32 +16,35 @@ const ChevronIcon = styled.div`
     }
 `;
 
-export class GroupHeaderCellTemplate implements CellTemplate<any> {
-    readonly hasEditMode = true;
+interface GroupHeaderCellData {
+    title: string;
+    isExpanded: boolean;
+    depth: number;
+}
 
-    validate(data: any): any {
-        return { name: (typeof (data.name) === 'string') ? data.name : '', isExpanded: data.isExpanded !== undefined ? data.isExpanded : undefined, depth: data.depth };
+export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData> {
+
+    isValid(cellData: GroupHeaderCellData): boolean {
+        return typeof (cellData.title) === 'string' && typeof (cellData.isExpanded) === 'boolean' && typeof (cellData.depth) === 'number';
     }
 
-    textToCellData(text: string): any {
-        return {};
+    textToCellData(text: string): GroupHeaderCellData {
+        return { title: text, isExpanded: false, depth: 0 };
     }
 
-    cellDataToText(cellData: any) {
-        return cellData;
+    cellDataToText(cellData: GroupHeaderCellData) {
+        return cellData.title;
     }
 
-    handleKeyDown(keyCode: number, cellData: any) {
+    handleKeyDown(keyCode: number, cellData: GroupHeaderCellData) {
         if (keyCode === keyCodes.SPACE) {
-            cellData.isExpanded = cellData.isExpanded !== undefined ? !cellData.isExpanded : undefined;
+            cellData.isExpanded = !cellData.isExpanded;
         }
         return { cellData: Object.assign({}, cellData), enableEditMode: true }
     }
 
-    customStyle: React.CSSProperties = { background: '#fff' };
-
-    renderContent: (props: CellRenderProps<any>) => React.ReactNode = (props) => {
-        const cellData: any = props.cellData;
+    renderContent: (props: CellRenderProps<GroupHeaderCellData>) => React.ReactNode = (props) => {
+        const cellData = props.cellData;
         const preserveValueKeyCodes = [0, keyCodes.ENTER];
         return (
             !props.isInEditMode ?
@@ -59,7 +62,7 @@ export class GroupHeaderCellTemplate implements CellTemplate<any> {
                                 pointerEvents: 'auto'
                             }}
                         >❯</ChevronIcon>}
-                    <span style={{ marginLeft: cellData.isExpanded !== undefined ? 4.5 : 0 }}>{cellData.name}</span>
+                    <span style={{ marginLeft: cellData.isExpanded !== undefined ? 4.5 : 0 }}>{cellData.title}</span>
                 </div>
                 :
                 <input
@@ -79,10 +82,10 @@ export class GroupHeaderCellTemplate implements CellTemplate<any> {
                             input.setSelectionRange(input.value.length, input.value.length);
                         }
                     }}
-                    defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? cellData.name : ''}
+                    defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? cellData.title : ''}
                     onChange={e => {
                         props.onCellDataChanged
-                            ? props.onCellDataChanged({ name: e.currentTarget.value, isExpanded: cellData.isExpanded, depth: cellData.depth })
+                            ? props.onCellDataChanged({ title: e.currentTarget.value, isExpanded: cellData.isExpanded, depth: cellData.depth })
                             : { name: '', isExpanded: cellData.isExpanded, depth: cellData.depth }
                     }
                     }

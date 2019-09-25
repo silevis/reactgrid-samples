@@ -4,8 +4,8 @@ import { CellRenderProps, CellTemplate } from '../../lib/Common';
 
 export class FlagCellTemplate implements CellTemplate<string> {
 
-    validate(data: any): string {
-        return (typeof (data) === 'string') ? data : '';
+    isValid(data: string): boolean {
+        return (typeof (data) === 'string');
     }
 
     textToCellData(text: string): string {

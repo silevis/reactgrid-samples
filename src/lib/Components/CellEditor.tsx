@@ -1,6 +1,6 @@
 import * as React from "react";
 import { State, keyCodes, Location } from "../Common";
-import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChange";
+import { trySetDataAndAppendChange } from "../Functions";
 import { isBrowserIE } from "../Functions";
 
 interface CellEditorProps {
@@ -44,7 +44,7 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
             }}
         >
             {props.state.cellTemplates[cellType].renderContent({
-                cellData: props.state.cellTemplates[cellType].validate(cellData.data),
+                cellData: cellData.data,
                 isInEditMode: true,
                 lastKeyCode: lastKeyCode,
                 onCellDataChanged: (cd) => { setCellData({ data: cd, type: cellType }) }

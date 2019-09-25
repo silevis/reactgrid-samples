@@ -1,6 +1,6 @@
 import * as React from "react";
 import { State, Borders, Location } from "../Common";
-import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChange";
+import { trySetDataAndAppendChange } from "../Functions";
 import { ResizeHandle } from "./ResizeHandle";
 
 export interface CellRendererProps {
@@ -48,15 +48,13 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
     return (
         <div className="cell" style={style}>
             {
+                // TODO is cell.data valid ?
                 cellTemplate.renderContent({
-                    cellData: cellTemplate.validate(cell.data),
+                    cellData: cell.data,
                     isInEditMode: false,
                     lastKeyCode: lastKeyCode,
                     onCellDataChanged: (newCellData) => {
-                        props.state.updateState(state => trySetDataAndAppendChange(state,
-                            location,
-                            { data: newCellData, type: cell.type, text: cellTemplate.cellDataToText(newCellData) }
-                        ))
+                        props.state.updateState(state => trySetDataAndAppendChange(state, location, { data: newCellData, type: cell.type }))
                     }
                 })
             }

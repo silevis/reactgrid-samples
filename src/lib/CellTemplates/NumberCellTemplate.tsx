@@ -4,8 +4,8 @@ import { CellRenderProps, CellTemplate } from '../Common';
 
 export class NumberCellTemplate implements CellTemplate<number> {
 
-    validate(data: any): number {
-        return (typeof (data) === 'number') ? data : parseFloat(data);
+    isValid(cellData: number): boolean {
+        return typeof (cellData) === 'number';
     }
 
     textToCellData(text: string): number {

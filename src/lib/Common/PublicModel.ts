@@ -7,8 +7,6 @@
 
 // TODO Range is INTERNAL! Should not be public! 
 import { Range } from "./Range";
-import { KeyboardEvent } from "./domEvents";
-import { State } from "./State";
 
 export type Orientation = 'horizontal' | 'vertical';
 
@@ -75,9 +73,11 @@ export interface CellMatrixProps {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 // This interface is used for the communication between DynaGrid and a cell
 export interface CellTemplate<TCellData> {
-    // Tries to validate (repair) any type of data (e.g. from paste)
-    // Returns null when the data couldn't be validated
-    validate(data: any): TCellData | null
+    // Returns true if the data in the cell is not replacable
+    // Default: false
+    isReadonly?(data: TCellData): boolean
+    // Returns true if the data is valid
+    isValid(data: TCellData): boolean
     // Convert plain text (not encoded stuff) to cell data
     // Returns null when the data couldn't be converted
     textToCellData?(text: string): TCellData | null
@@ -85,7 +85,7 @@ export interface CellTemplate<TCellData> {
     cellDataToText(cellData: TCellData): string;
     // The keyCode represents the key pressed on the keyboard, or 1 for a pointer event (double click).
     // Returns the cell data either affected by the event or not.
-    handleKeyDown(keyCode: number, cellData: TCellData): { cellData: TCellData, enableEditMode: boolean }
+    handleKeyDown?(keyCode: number, cellData: TCellData): { cellData: TCellData, enableEditMode: boolean }
     // Custom styles based on cell data applied to the cells div element
     getCustomStyle?(cellData: TCellData): React.CSSProperties;
     // Render the cell content

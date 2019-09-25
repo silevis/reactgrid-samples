@@ -4,8 +4,8 @@ import { CellRenderProps as CellRenderProps, CellTemplate } from '../Common';
 
 export class CheckboxCellTemplate implements CellTemplate<boolean> {
 
-    validate(data: any): boolean {
-        return (typeof (data) === 'boolean') ? data : false;
+    isValid(cellData: boolean): boolean {
+        return (typeof (cellData) === 'boolean');
     }
 
     textToCellData(text: string): boolean {
@@ -37,7 +37,7 @@ export class CheckboxCellTemplate implements CellTemplate<boolean> {
                 zIndex: 1
             }}
             checked={props.cellData}
-            onChange={() => { props.onCellDataChanged(!this.validate(props.cellData)) }}
+            onChange={() => { props.onCellDataChanged(!props.cellData) }}
         />
     }
 }

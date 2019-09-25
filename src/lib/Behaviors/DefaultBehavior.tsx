@@ -6,11 +6,16 @@ import { ColumnReorderBehavior } from "./ColumnReorderBehavior";
 import { RowSelectionBehavior } from "./RowSelectionBehavior";
 import { RowReorderBehavior } from "./RowReorderBehavior";
 import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
-import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChange";
+import { trySetDataAndAppendChange } from "../Functions";
 import { FillHandleBehavior } from "./FillHandleBehavior";
 import { getLocationFromClient, focusLocation } from "../Functions";
 import { ResizeColumnBehavior } from "./ResizeColumnBehavior";
-import { TextCellTemplate } from "../CellTemplates/TextCellTemplate";
+
+export interface ClipboardData {
+    type?: string | null;
+    data: any;
+    text: string;
+}
 
 export class DefaultBehavior extends Behavior {
 
@@ -62,12 +67,16 @@ export class DefaultBehavior extends Behavior {
     }
 
     handleDoubleClick(event: PointerEvent, location: Location, state: State): State {
+        // TODO this is a double (cellSelectionBehavior)
         if (state.isFocusedCellInEditMode /*|| this.grid.state.isFocusedCellReadOnly*/) {
             event.preventDefault();
             event.stopPropagation();
         } else if (location.equals(state.focusedLocation)) {
             const cell = state.focusedLocation!.cell;
             const cellTemplate = state.cellTemplates[cell.type];
+            if (cellTemplate.isReadonly && cellTemplate.isReadonly(cell.data) || !cellTemplate.handleKeyDown)
+                return state;
+
             const { cellData, enableEditMode } = cellTemplate.handleKeyDown(1, cell.data);
             return {
                 ...state,
@@ -101,19 +110,21 @@ export class DefaultBehavior extends Behavior {
         if (!activeSelectedRange) {
             return state;
         }
-        let pasteContent: CellData[][] = [];
+        let pasteContent: ClipboardData[][] = [];
         const htmlData = event.clipboardData.getData('text/html');
         const parsedData = new DOMParser().parseFromString(htmlData, 'text/html')
         const selectionMode = parsedData.body.firstElementChild!.getAttribute('data-selection') as SelectionMode;
         if (htmlData && parsedData.body.firstElementChild!.getAttribute('data-key') === 'dynagrid') {
             const cells = parsedData.body.firstElementChild!.firstElementChild!.children
             for (let i = 0; i < cells.length; i++) {
-                const row: CellData[] = [];
+                const row: ClipboardData[] = [];
                 for (let j = 0; j < cells[i].children.length; j++) {
-                    const data = JSON.parse(cells[i].children[j].getAttribute('data-data')!)
+                    // TODO Use REACT-GRID in attribute 
+                    const rawData = cells[i].children[j].getAttribute('data-data');
+                    const data = rawData && JSON.parse(rawData);
                     const type = cells[i].children[j].getAttribute('data-type')
                     const textValue = data ? cells[i].children[j].innerHTML : '';
-                    row.push({ text: textValue, data: data, type: type! })
+                    row.push({ text: textValue, data: data, type: type })
                 }
                 pasteContent.push(row)
             }
@@ -132,7 +143,7 @@ export class DefaultBehavior extends Behavior {
     }
 }
 
-export function pasteData(state: State, pasteContent: CellData[][]): State {
+export function pasteData(state: State, pasteContent: ClipboardData[][]): State {
     const activeSelectedRange = getActiveSelectedRange(state)
     if (pasteContent.length === 1 && pasteContent[0].length === 1) {
         activeSelectedRange.rows.forEach(row =>
@@ -144,7 +155,7 @@ export function pasteData(state: State, pasteContent: CellData[][]): State {
         let lastLocation: Location
         const cellMatrix = state.cellMatrix
         pasteContent.forEach((row, pasteRowIdx) =>
-            row.forEach((pasteValue: CellData, pasteColIdx: number) => {
+            row.forEach((pasteValue: ClipboardData, pasteColIdx: number) => {
                 const rowIdx = activeSelectedRange.rows[0].idx + pasteRowIdx
                 const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx
                 if (rowIdx <= cellMatrix.last.row.idx && colIdx <= cellMatrix.last.col.idx) {
@@ -187,10 +198,8 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
         activeSelectedRange.cols.forEach(col => {
             const tableCell = tableRow.insertCell()
             const cell = state.cellMatrix.getCell(row.id, col.id)!
-            const cellTemplate = state.cellTemplates[cell.type]
-                ? state.cellTemplates[cell.type]
-                : new TextCellTemplate;
-            let data = cellTemplate.validate(cell.data);
+            let data = cell.data;
+            // TODO remove hardcoded stuff
             data = cell.type === 'group' ? data.name : data;
             tableCell.textContent = data;  // for undefined values
             if (!cell.data) {
@@ -200,7 +209,7 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
             tableCell.setAttribute('data-type', cell.type)
             tableCell.style.border = '1px solid #D3D3D3'
             if (removeValues) {
-                state = trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' });
+                state = trySetDataAndAppendChange(state, new Location(row, col), { text: '' });
             }
         })
     })
@@ -243,7 +252,7 @@ export function copySelectedRangeToClipboardInIE(state: State, removeValues = fa
                 }
             }
             if (removeValues) {
-                state = trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' });
+                state = trySetDataAndAppendChange(state, new Location(row, col), { text: '' });
             }
         })
         const areAllEmptyCells = activeSelectedRange.cols.every(el => {

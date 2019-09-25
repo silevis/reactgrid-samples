@@ -4,8 +4,8 @@ import { CellRenderProps, CellTemplate } from '../Common';
 
 export class TextCellTemplate implements CellTemplate<string> {
 
-    validate(data: any): string {
-        return (typeof (data) === 'string') ? data : '';
+    isValid(cellData: string): boolean {
+        return typeof (cellData) === 'string';
     }
 
     textToCellData(text: string): string {

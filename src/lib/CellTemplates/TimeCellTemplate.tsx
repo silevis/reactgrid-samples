@@ -4,10 +4,9 @@ import { CellRenderProps, CellTemplate } from '../Common';
 
 export class TimeCellTemplate implements CellTemplate<string> {
 
-    validate(data: any): string {
+    isValid(cellData: string): boolean {
         const time_regex = /^\d{2}\:\d{2}$/;
-        data = data ? data.toString().replace(/\s+/g, '') : data;
-        return (time_regex.test(data)) ? data : '';
+        return time_regex.test(cellData.replace(/\s+/g, ''));
     }
 
     textToCellData(text: string): string {
@@ -16,10 +15,6 @@ export class TimeCellTemplate implements CellTemplate<string> {
 
     cellDataToText(cellData: string) {
         return cellData;
-    }
-
-    isReadOnly() {
-        return true;
     }
 
     handleKeyDown(keyCode: number, cellData: string) {

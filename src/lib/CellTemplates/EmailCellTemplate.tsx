@@ -5,10 +5,9 @@ import { CellRenderProps, CellTemplate } from '../Common';
 
 export class EmailCellTemplate implements CellTemplate<string> {
 
-    validate(data: any): string {
+    isValid(cellData: string): boolean {
         const email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        data = data ? data.toString().replace(/\s+/g, '') : data;
-        return (email_regex.test(data)) ? data : '';
+        return email_regex.test(cellData.replace(/\s+/g, ''));
     }
 
     textToCellData(text: string): string {

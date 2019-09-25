@@ -23,13 +23,6 @@ export interface Borders {
     right?: boolean;
 }
 
-export interface CellData {
-    type: string;
-    data: any;
-    text: string;
-}
-
-
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export class Location {
     constructor(

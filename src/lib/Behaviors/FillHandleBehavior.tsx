@@ -1,12 +1,10 @@
 import * as React from 'react';
-import { State, Range, PointerEvent, CellMatrix, Behavior, Row, Column, Location, DataChange, Cell, CellData } from "../Common";
+import { State, Range, PointerEvent, CellMatrix, Behavior, Row, Column, Location, Cell } from "../Common";
 import { PartialArea } from '../Components/PartialArea';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
-import { trySetDataAndAppendChange } from '../Functions/trySetDataAndAppendChange';
+import { trySetDataAndAppendChange } from '../Functions';
 
 type Direction = '' | 'left' | 'right' | 'up' | 'down';
-
-const cellToCellData = (cell: Cell, state: State) => ({ ...cell, text: state.cellTemplates[cell.type].cellDataToText(cell.data) })
 
 export class FillHandleBehavior extends Behavior {
     private fillDirection: Direction = '';
@@ -166,7 +164,7 @@ export class FillHandleBehavior extends Behavior {
     private iterateFillRangeRows(state: State, values: Cell[]): State {
         this.fillRange && this.fillRange.rows.forEach((row: Row, i: number) =>
             this.fillRange!.cols.forEach((col: Column) => {
-                state = trySetDataAndAppendChange(state, new Location(row, col), cellToCellData(values[i], state));
+                state = trySetDataAndAppendChange(state, new Location(row, col), values[i]);
             })
         );
         return state;
@@ -175,7 +173,7 @@ export class FillHandleBehavior extends Behavior {
     private iterateFillRangeCols(state: State, values: Cell[]): State {
         this.fillRange && this.fillRange.rows.forEach((row: Row) =>
             this.fillRange!.cols.forEach((col: Column, i: number) => {
-                state = trySetDataAndAppendChange(state, new Location(row, col), cellToCellData(values[i], state));
+                state = trySetDataAndAppendChange(state, new Location(row, col), values[i]);
             })
         );
         return state;
