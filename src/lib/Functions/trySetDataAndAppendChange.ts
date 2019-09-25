@@ -13,7 +13,7 @@ export function trySetDataAndAppendChange(state: State, location: Location, cell
         // 3: Different type => get data from text
         || cellTemplate.textToCellData && cellTemplate.textToCellData(cell.text || '')
 
-    if (!newData)
+    if (newData == null || newData == undefined)
         return state;
 
     state.queuedDataChanges.push({

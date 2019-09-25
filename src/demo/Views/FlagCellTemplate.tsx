@@ -20,8 +20,6 @@ export class FlagCellTemplate implements CellTemplate<string> {
         return { cellData, enableEditMode: true }
     }
 
-    customStyle: React.CSSProperties = { background: '#fff' };
-
     renderContent: (props: CellRenderProps<string>) => React.ReactNode = (props) => {
         if (!props.isInEditMode) {
             const flagISO = props.cellData.toLowerCase(); // ISO 3166-1, 2/3 letters

@@ -60,7 +60,7 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
 
     // TODO this is probably a double . check it!
     if (!event.ctrlKey && (possibleCharactersToEnter(event) || isEnterKey(key) || isSpaceKey(key))) {
-        return { ...state, isFocusedCellInEditMode: true }
+        return { ...state, isFocusedCellInEditMode: enableEditMode }
     }
 
     state.hiddenFocusElement.focus();

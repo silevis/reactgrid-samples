@@ -15,6 +15,10 @@ export class HeaderCellTemplate implements CellTemplate<string> {
         return cellData;
     }
 
+    getCustomStyle(cellData: string): React.CSSProperties {
+        return { background: '#eee' }
+    }
+
     handleKeyDown(keyCode: number, cellData: string) {
         return { cellData, enableEditMode: false }
     }
