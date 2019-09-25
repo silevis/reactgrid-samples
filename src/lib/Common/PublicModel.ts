@@ -114,10 +114,15 @@ export interface ColumnProps {
     readonly onResize?: (newWidth: number) => void;
 }
 
+export interface Cell {
+    data: any;
+    type: string;
+}
+
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface RowProps {
     readonly id: Id;
-    cells: { type: string, data: any }[];
+    cells: Cell[];
     readonly height: number;
     readonly reorderable: boolean;
     readonly canDrop?: (rowIds: Id[], position: DropPosition) => boolean;

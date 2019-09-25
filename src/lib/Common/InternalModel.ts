@@ -1,4 +1,4 @@
-import { RowProps, ColumnProps } from ".";
+import { RowProps, ColumnProps, Cell } from ".";
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 // INTERNAL
@@ -23,11 +23,12 @@ export interface Borders {
     right?: boolean;
 }
 
-export interface Cell {
-    data: any;
+export interface CellData {
     type: string;
-    text?: string;
+    data: any;
+    text: string;
 }
+
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export class Location {

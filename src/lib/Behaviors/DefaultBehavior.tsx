@@ -12,11 +12,6 @@ import { getLocationFromClient, focusLocation } from "../Functions";
 import { ResizeColumnBehavior } from "./ResizeColumnBehavior";
 import { TextCellTemplate } from "../CellTemplates/TextCellTemplate";
 
-interface ClipboardData {
-    type: string;
-    data: any;
-    text: string;
-}
 export class DefaultBehavior extends Behavior {
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
@@ -26,7 +21,6 @@ export class DefaultBehavior extends Behavior {
 
     private getNewBehavior(event: any, location: PointerLocation, state: State): Behavior {
         // changing behavior will disable all keyboard event handlers
-        console.log(event.pointerType)
         if (event.pointerType === 'mouse' && location.row.idx == 0 && location.cellX > location.col.width - 7 && location.col.resizable) {
             return new ResizeColumnBehavior();
         } else if (location.row.idx == 0 && state.selectedIds.includes(location.col.id) && !event.ctrlKey && state.selectionMode == 'column' && location.col.reorderable) {
@@ -38,7 +32,6 @@ export class DefaultBehavior extends Behavior {
         } else if (location.col.idx == 0 && (event.target.className !== 'dg-fill-handle' && event.target.className !== 'dg-touch-fill-handle')) {
             return new RowSelectionBehavior();
         } else if ((event.pointerType === 'mouse' || event.pointerType === undefined) && event.target.className === 'dg-fill-handle' && !state.disableFillHandle) { // event.pointerType === undefined -> for cypress tests (is always undefined)
-            console.log('here')
             return new FillHandleBehavior();
         } else {
             return new CellSelectionBehavior();
@@ -108,14 +101,14 @@ export class DefaultBehavior extends Behavior {
         if (!activeSelectedRange) {
             return state;
         }
-        let pasteContent: ClipboardData[][] = [];
+        let pasteContent: CellData[][] = [];
         const htmlData = event.clipboardData.getData('text/html');
         const parsedData = new DOMParser().parseFromString(htmlData, 'text/html')
         const selectionMode = parsedData.body.firstElementChild!.getAttribute('data-selection') as SelectionMode;
         if (htmlData && parsedData.body.firstElementChild!.getAttribute('data-key') === 'dynagrid') {
             const cells = parsedData.body.firstElementChild!.firstElementChild!.children
             for (let i = 0; i < cells.length; i++) {
-                const row: ClipboardData[] = [];
+                const row: CellData[] = [];
                 for (let j = 0; j < cells[i].children.length; j++) {
                     const data = JSON.parse(cells[i].children[j].getAttribute('data-data')!)
                     const type = cells[i].children[j].getAttribute('data-type')
@@ -139,7 +132,7 @@ export class DefaultBehavior extends Behavior {
     }
 }
 
-export function pasteData(state: State, pasteContent: ClipboardData[][]): State {
+export function pasteData(state: State, pasteContent: CellData[][]): State {
     const activeSelectedRange = getActiveSelectedRange(state)
     if (pasteContent.length === 1 && pasteContent[0].length === 1) {
         activeSelectedRange.rows.forEach(row =>
@@ -151,7 +144,7 @@ export function pasteData(state: State, pasteContent: ClipboardData[][]): State 
         let lastLocation: Location
         const cellMatrix = state.cellMatrix
         pasteContent.forEach((row, pasteRowIdx) =>
-            row.forEach((pasteValue: ClipboardData, pasteColIdx: number) => {
+            row.forEach((pasteValue: CellData, pasteColIdx: number) => {
                 const rowIdx = activeSelectedRange.rows[0].idx + pasteRowIdx
                 const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx
                 if (rowIdx <= cellMatrix.last.row.idx && colIdx <= cellMatrix.last.col.idx) {

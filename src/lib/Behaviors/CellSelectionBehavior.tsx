@@ -2,7 +2,6 @@ import { focusLocation } from '../Functions';
 import { State, Location, Behavior } from '../Common';
 import { PointerEvent } from "../Common/domEvents";
 import { selectRange, updateActiveSelectedRange } from '../Functions/selectRange';
-import { TextCellTemplate } from '../CellTemplates/TextCellTemplate';
 
 export class CellSelectionBehavior extends Behavior {
 

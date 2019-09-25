@@ -1,6 +1,6 @@
 import { CellMatrix, Behavior, Range, Location, SelectionMode, Orientation, DataChange } from ".";
 import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
-import { CellTemplates, Id, Focus } from "./PublicModel";
+import { CellTemplates, Id, Focus, Cell } from "./PublicModel";
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // INTERNAL
@@ -26,7 +26,7 @@ export class State {
 
     lastKeyCode: number = 0; // updated without setState
     readonly queuedDataChanges: DataChange[] = [];
-    readonly currentlyEditedCell?: { type: string, data: any, text?: string };
+    readonly currentlyEditedCell?: Cell;
     readonly customFocuses: Focus[] = [];
     readonly disableFillHandle?: boolean;
     readonly disableRangeSelection?: boolean;
