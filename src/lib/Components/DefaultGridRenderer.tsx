@@ -95,6 +95,7 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                     orientation={props.state.lineOrientation}
                     cellMatrix={props.state.cellMatrix}
                     shadowSize={props.state.shadowSize}
+                    cursor={props.state.shadowCursor}
                 />
                 <ContextMenu
                     state={props.state}

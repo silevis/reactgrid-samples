@@ -26,17 +26,19 @@ export class DefaultBehavior extends Behavior {
 
     private getNewBehavior(event: any, location: PointerLocation, state: State): Behavior {
         // changing behavior will disable all keyboard event handlers
+        console.log(event.pointerType)
         if (event.pointerType === 'mouse' && location.row.idx == 0 && location.cellX > location.col.width - 7 && location.col.resizable) {
             return new ResizeColumnBehavior();
         } else if (location.row.idx == 0 && state.selectedIds.includes(location.col.id) && !event.ctrlKey && state.selectionMode == 'column' && location.col.reorderable) {
             return new ColumnReorderBehavior();
-        } else if (location.row.idx == 0) {
+        } else if (location.row.idx == 0 && (event.target.className !== 'dg-fill-handle' && event.target.className !== 'dg-touch-fill-handle')) {
             return new ColumnSelectionBehavior();
         } else if (location.col.idx == 0 && state.selectedIds.includes(location.row.id) && !event.ctrlKey && state.selectionMode == 'row' && location.row.reorderable) {
             return new RowReorderBehavior();
-        } else if (location.col.idx == 0) {
+        } else if (location.col.idx == 0 && (event.target.className !== 'dg-fill-handle' && event.target.className !== 'dg-touch-fill-handle')) {
             return new RowSelectionBehavior();
         } else if ((event.pointerType === 'mouse' || event.pointerType === undefined) && event.target.className === 'dg-fill-handle' && !state.disableFillHandle) { // event.pointerType === undefined -> for cypress tests (is always undefined)
+            console.log('here')
             return new FillHandleBehavior();
         } else {
             return new CellSelectionBehavior();
@@ -195,7 +197,8 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
             const cellTemplate = state.cellTemplates[cell.type]
                 ? state.cellTemplates[cell.type]
                 : new TextCellTemplate;
-            const data = cellTemplate.validate(cell.data)
+            let data = cellTemplate.validate(cell.data);
+            data = cell.type === 'group' ? data.name : data;
             tableCell.textContent = data;  // for undefined values
             if (!cell.data) {
                 tableCell.innerHTML = '<img>';
@@ -214,7 +217,8 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
     div.focus()
     document.execCommand('selectAll', false, undefined)
     document.execCommand('copy')
-    document.body.removeChild(div)
+    document.body.removeChild(div);
+    state.hiddenFocusElement.focus();
 }
 
 export function copySelectedRangeToClipboardInIE(state: State, removeValues = false) {

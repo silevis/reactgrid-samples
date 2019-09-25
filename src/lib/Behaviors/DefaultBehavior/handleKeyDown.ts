@@ -1,5 +1,5 @@
 import { State, KeyboardEvent, keyCodes, Row, Column, DataChange, Location } from "../../Common";
-import { focusLocation, isBrowserIE, getDataToPasteInIE } from "../../Functions";
+import { focusLocation } from "../../Functions";
 import { handleResizeSelectionWithKeys } from "./handleResizeSelectionWithKeys";
 import { handleKeyNavigationInsideSelection as handleKeyNavigationInsideSelection } from "./handleKeyNavigationInsideSelection";
 import { trySetDataAndAppendChange } from "../../Functions/trySetDataAndAppendChange";
@@ -66,7 +66,6 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
     state.hiddenFocusElement.focus();
     return { ...state };
 }
-
 
 // TODO Check it
 export const isArrowKey = (key: string): boolean => key.includes('Arrow');
@@ -270,7 +269,8 @@ function handleSpecialKeys(event: KeyboardEvent, state: State) {
         state.selectedRanges.forEach(range =>
             range.rows.forEach((row: Row) =>
                 range.cols.forEach((col: Column) => {
-                    state = trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' })
+                    const cell = state.cellMatrix.getCell(row.id, col.id);
+                    state = trySetDataAndAppendChange(state, new Location(row, col), { data: cell.type !== 'group' ? '' : { name: '', isExpanded: cell.data.isExpanded, level: cell.data.level }, type: cell.type })
                 })
             )
         );

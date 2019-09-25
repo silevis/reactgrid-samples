@@ -3,7 +3,6 @@ import { State, Range, PointerEvent, CellMatrix, Behavior, Row, Column, Location
 import { PartialArea } from '../Components/PartialArea';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
 import { trySetDataAndAppendChange } from '../Functions/trySetDataAndAppendChange';
-import { TextCellTemplate } from '../CellTemplates/TextCellTemplate';
 
 type Direction = '' | 'left' | 'right' | 'up' | 'down';
 

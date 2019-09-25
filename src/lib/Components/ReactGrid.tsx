@@ -6,7 +6,7 @@ import { PointerEventsController } from "../Common/PointerEventsController";
 import { updateSelectedRows, updateSelectedColumns } from "../Functions/updateState";
 import { DefaultGridRenderer } from "./DefaultGridRenderer";
 import { LegacyBrowserGridRenderer } from "./LegacyBrowserGridRenderer";
-import { defaultCellTemplates } from '../Common/DefaultCellTemplates'
+import { defaultCellTemplates } from "../Common/DefaultCellTemplates";
 
 export class ReactGrid extends React.Component<ReactGridProps, State> {
 
@@ -31,6 +31,8 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
 
         if (state.cellMatrix.cols.length > 0 && state.focusedLocation) {
             state = { ...state, focusedLocation: state.cellMatrix.validateLocation(state.focusedLocation) }
+            // TODO check it
+            setTimeout(() => state.hiddenFocusElement.focus());
         }
 
         if (state.visibleRange && dataHasChanged) {
@@ -116,6 +118,5 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
         if (this.props.onDataChanged && dataChanges.length > 0) {
             this.props.onDataChanged(dataChanges);
         }
-
     }
 }

@@ -20,9 +20,14 @@ export interface Record {
     surname: string;
     age: number;
     country: string;
-    position: string;
+    position: {
+        name: string,
+        isExpanded: boolean | undefined,
+        depth: number
+    };
     onHoliday: boolean;
     pinned: boolean;
+    parentId?: number;
 }
 
 
@@ -93,36 +98,36 @@ const DynaGridContainer = styled.div`
 const fields: Column[] = [
     {
         id: 1,
+        name: 'position',
+        type: 'group',
+        width: 170,
+        pinned: false,
+    },
+    {
+        id: 2,
         name: 'name',
         type: 'text',
         width: 125,
         pinned: false,
     },
     {
-        id: 2,
+        id: 3,
         name: 'surname',
         type: 'text',
         width: 125,
         pinned: false,
     },
     {
-        id: 3,
+        id: 4,
         name: 'age',
         type: 'number',
         width: 125,
         pinned: false,
     },
     {
-        id: 4,
+        id: 5,
         name: 'country',
         type: 'flag',
-        width: 125,
-        pinned: false,
-    },
-    {
-        id: 5,
-        name: 'position',
-        type: 'text',
         width: 125,
         pinned: false,
     },
@@ -138,50 +143,145 @@ const fields: Column[] = [
 const records: any[] = [
     {
         id: 'Id',
+        position: { name: 'Position' },
         name: 'Name',
-        surname: "Surname",
+        surname: 'Surname',
         age: 'age',
         country: 'Country',
-        position: 'Position',
         onHoliday: 'On Holiday',
-        pinned: false,
+        pinned: false
+    },
+    {
+        id: 12,
+        position: { name: '1.0', depth: 1 },
+        name: 'Marcin',
+        surname: 'Kowalski',
+        age: 21,
+        country: 'pol',
+        onHoliday: false,
+        pinned: false
     },
     {
         id: 1,
+        position: { name: '1.0', isExpanded: true, depth: 1 },
         name: 'Marcin',
-        surname: "Kowalski",
+        surname: 'Kowalski',
         age: 21,
         country: 'pol',
-        position: 'CEO',
         onHoliday: false,
-        pinned: false,
+        pinned: false
     },
     {
         id: 2,
-        name: 'Arkadiusz',
-        surname: "Kowalewski",
+        position: { name: '1.1', isExpanded: undefined, depth: 2 },
+        name: 'Artur',
+        surname: 'Kowalewski',
         age: 19,
         country: 'can',
-        position: 'Manager',
         onHoliday: true,
         pinned: false,
+        parentId: 1
     },
     {
         id: 3,
+        position: { name: '1.2', isExpanded: undefined, depth: 2 },
         name: 'Marlena',
-        surname: "Zalewska",
+        surname: 'Zalewska',
         age: 34,
         country: 'ven',
-        position: 'Director',
         onHoliday: false,
         pinned: false,
+        parentId: 1
+    },
+    {
+        id: 4,
+        position: { name: '1.3', isExpanded: true, depth: 2 },
+        name: 'Piotr',
+        surname: 'Mikosza',
+        age: 34,
+        country: 'ven',
+        onHoliday: false,
+        pinned: false,
+        parentId: 1
+    },
+    {
+        id: 5,
+        position: { name: '1.3.1', depth: 3 },
+        name: 'Paweł',
+        surname: 'Tomkowski',
+        age: 34,
+        country: 'ven',
+        onHoliday: false,
+        pinned: false,
+        parentId: 4
+    },
+    {
+        id: 6,
+        position: { name: '1.3.2', isExpanded: true, depth: 3 },
+        name: 'Michał',
+        surname: 'Matejko',
+        age: 34,
+        country: 'ven',
+        onHoliday: false,
+        pinned: false,
+        parentId: 4
+    },
+    {
+        id: 7,
+        position: { name: '1.3.2.1', isExpanded: true, depth: 4 },
+        name: 'Michal',
+        surname: 'Czerwiec',
+        age: 34,
+        country: 'ven',
+        onHoliday: false,
+        pinned: false,
+        parentId: 6
+    },
+    {
+        id: 8,
+        position: { name: '1.3.2.1.1', isExpanded: true, depth: 5 },
+        name: 'Maciek',
+        surname: 'Czerwiec',
+        age: 34,
+        country: 'ven',
+        onHoliday: false,
+        pinned: false,
+        parentId: 7
+    },
+    {
+        id: 9,
+        position: { name: '1.3.2.1.1.1', depth: 6 },
+        name: 'Paweł',
+        surname: 'Czerwiec',
+        age: 34,
+        country: 'ven',
+        onHoliday: false,
+        pinned: false,
+        parentId: 8
+    },
+    {
+        id: 10,
+        position: { name: '2.0', depth: 1 },
+        name: 'Paweł',
+        surname: 'Czerwiec',
+        age: 34,
+        country: 'ven',
+        onHoliday: false,
+        pinned: false
+    },
+    {
+        id: 11,
+        position: { name: '2.1', depth: 1 },
+        name: 'Maciek',
+        surname: 'Zaręba',
+        age: 34,
+        country: 'ven',
+        onHoliday: false,
+        pinned: false
     },
 ]
 
-
-
 export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState> {
-
     state = {
         fields: [...fields],
         records: [...records],
@@ -189,7 +289,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         virtualUsers: false,
         resizing: false,
         columnReordering: false,
-        rowReordering: false,
+        rowReordering: true,
         flagCell: true,
         disableFillHandle: false,
         disableRangeSelection: false,
@@ -230,7 +330,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         const newField: Column = {
             id: nextId,
             name: fieldName,
-            type: "text",
+            type: 'text',
             width: 125,
             pinned: false,
         };
@@ -247,6 +347,14 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
     }
 
     private generateMatrix(): CellMatrixProps {
+        const records = this.state.records.reduce((prev: any, curr: any) => {
+            if (this.findParent(curr)) {
+                prev.push(curr);
+            }
+            return prev;
+        }, [])
+
+
         const columns: ColumnProps[] = this.state.fields.map((field, idx) => ({
             id: field.id,
             width: field.width,
@@ -256,12 +364,25 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
             onResize: width => { this.state.fields[idx].width = width, this.forceUpdate(); }
         }));
 
-        const rows: RowProps[] = this.state.records.map((record: any, rowIdx) => ({
+        const rows: RowProps[] = records.map((record: any, rowIdx: number) => ({
             id: record.id,
             height: 25,
             reorderable: this.state.rowReordering,
             cells: this.state.fields.map(field => { return { data: record[field.name], type: rowIdx == 0 ? 'header' : field.type } }),
-            onDrop: (ids) => this.setState({ records: this.reorderedRows(ids as number[], rowIdx) }),
+            onDrop: (ids: any[], position: string) => {
+                this.setState({ records: this.reorderedRows(ids as any[], record.id, position) })
+            },
+            canDrop: (ids: any[]) => {
+                const records = [...this.state.records];
+                let movedRecords: Record[] = records.filter(record => ids.includes(record.id));
+                movedRecords = this.prepareMovedRecords(movedRecords).movedRecords;
+
+                if (movedRecords.some(r => r.id === record.id)) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
         }))
         const frozenPanes = {
             frozenBottomRows: this.state.frozenPanes.bottom,
@@ -302,13 +423,131 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         return this.calculateColumnReorder([...this.state.fields], colIdxs, direction, to)
     }
 
-    private reorderedRows(rowIdxs: number[], to: number) {
-        const movedRecords = [...this.state.records].filter((_, idx) => rowIdxs.includes(idx));
-        const clearedRecords = [...this.state.records].filter((_, idx) => !rowIdxs.includes(idx));
-        if (to > rowIdxs[0])
-            to = to - rowIdxs.length + 1
-        clearedRecords.splice(to, 0, ...movedRecords)
-        return clearedRecords
+    private findParent(currentRecord: Record): boolean {
+        const records = [...this.state.records];
+        if (!currentRecord.parentId) {
+            return true;
+        }
+        const parent = records.find(record => {
+            if (record.id === currentRecord.parentId) {
+                return record;
+            }
+        });
+        if (!parent.position.isExpanded) {
+            return false;
+        }
+        return this.findParent(parent);
+    }
+
+    private getChildren(records: Record[], id: number) {
+        let children: Record[] = [];
+        const findNestedChildren = (records: Record[], id: number): Record[] =>
+            records
+                .filter((item: Record) => item['parentId'] === id)
+                .reduce((_: Record[], current) => {
+                    const parent = records.find(record => record.id === id);
+                    if (parent) {
+                        current.position.depth = parent.position.depth + 1;
+                        children.push(current);
+                    }
+                    return findNestedChildren(records, current.id);
+                }, []);
+        findNestedChildren(records, id);
+        return children;
+    }
+
+    private prepareMovedRecords(movedRecords: Record[]): { movedRecords: Record[], movedChildren: Record[] } {
+        let movedChildren: Record[] = [];
+        let tempMovedRecords: Record[] = [...movedRecords];
+        for (let i = 0; i < movedRecords.length; i++) {
+            const children = this.getChildren(records, movedRecords[i].id);
+            if (children.length > 0) {
+                for (let j = 0; j < children.length; j++) {
+                    if (!movedRecords.some(record => record.id === children[j].id))
+                        tempMovedRecords.splice(i + 1 + j, 0, children[j]);
+                }
+                movedChildren = movedChildren.concat(children);
+            }
+        }
+        movedRecords = tempMovedRecords;
+        return { movedRecords, movedChildren };
+    }
+
+    private reorderedRows(rowIds: any[], targetId: Id, position?: string) {
+        const records = this.state.records;
+        const targetElementIdx: number = records.findIndex(record => record.id === targetId);
+        const targetElement: Record = position === 'before' ? records[targetElementIdx - 1] : records[targetElementIdx];
+        const targetElementChildren: Record[] = this.getChildren(records, targetElement.id);
+        let movedRecords: Record[] = records.filter(record => rowIds.includes(record.id));
+        let updatedParents: Record[] = [];
+
+        for (let i = 0; i < movedRecords.length; i++) {
+            const parent = records.find(record => record.id === movedRecords[i].parentId);
+            if (parent) {
+                updatedParents.push(parent);
+            }
+        }
+
+        if (position === 'on') {
+            if (targetElementChildren.length === 0)
+                targetElement.position.isExpanded = true;
+            for (let i = 0; i < movedRecords.length; i++) {
+                movedRecords[i].parentId = targetElement.id;
+                movedRecords[i].position.depth = targetElement.position.depth + 1;
+            }
+        } else {
+            if (targetElementChildren.length > 0 && targetElement.position.isExpanded) {
+                for (let i = 0; i < movedRecords.length; i++) {
+                    if (!movedRecords.some(record => record.id === movedRecords[i].parentId)) {
+                        movedRecords[i].parentId = targetElement.id;
+                        movedRecords[i].position.depth = targetElement.position.depth + 1;
+                    }
+                }
+            } else {
+                for (let i = 0; i < movedRecords.length; i++) {
+                    if (!targetElement.parentId) {
+                        if (!movedRecords.some(record => record.id === movedRecords[i].parentId)) {
+                            movedRecords[i].parentId = undefined;
+                            movedRecords[i].position.depth = 1;
+                        }
+                    } else {
+                        const parentTargetElement = records.find(record => record.id === targetElement.parentId);
+                        movedRecords[i].parentId = parentTargetElement.id;
+                        movedRecords[i].position.depth = parentTargetElement.position.depth + 1;
+                    }
+                }
+            }
+        }
+
+        const preparedMovedRecords = this.prepareMovedRecords(movedRecords);
+        const movedChildren: Record[] = preparedMovedRecords.movedChildren;
+        const movedChildrenIds: Id[] = movedChildren.length > 0 ? movedChildren.reduce((result: Id[], curr: Record) => { result.push(curr.id); return result }, []) : [];
+        movedRecords = preparedMovedRecords.movedRecords;
+
+        const clearedRecords = records.filter((record, idx) => !rowIds.includes(record.id) && !movedChildrenIds.includes(records[idx].id));
+
+        if (updatedParents.length > 0) {
+            updatedParents.forEach(record => {
+                if (!records.some(r => record.id === r.parentId)) {
+                    const index = clearedRecords.findIndex(r => r.id === record.id);
+                    if (index !== -1) {
+                        clearedRecords[index].position.isExpanded = undefined;
+                    }
+                }
+            });
+        }
+
+        let targetIdx = clearedRecords.findIndex(record => record.id === targetId);
+
+        if (position === 'on') {
+            clearedRecords[targetIdx] = targetElement;
+            targetIdx = targetIdx + 1;
+        } else if (position === 'after') {
+            targetIdx = targetIdx + 1 + (targetElement.position.isExpanded === false ? targetElementChildren.length : 0);
+        }
+
+        clearedRecords.splice(targetIdx, 0, ...movedRecords);
+        return clearedRecords;
     }
 
     private handleRowContextMenu(selectedRowIds: Id[], menuOptions: MenuOption[]): MenuOption[] {
@@ -424,7 +663,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         if (indexes[0] > this.state.frozenPanes.top) {
             return {
                 ...this.state,
-                records: this.reorderedRows(indexes, this.state.records.length - this.state.frozenPanes.bottom).map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
+                records: this.reorderedRows(indexes, this.state.records.length - this.state.frozenPanes.bottom).map((f: any) => ids.includes(f.id) ? { ...f, pinned: false } : f),
                 frozenPanes: {
                     ...this.state.frozenPanes,
                     bottom: this.state.frozenPanes.bottom - indexes.length
@@ -433,7 +672,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         } else {
             return {
                 ...this.state,
-                records: this.reorderedRows(indexes, this.state.frozenPanes.top - 1).map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
+                records: this.reorderedRows(indexes, this.state.frozenPanes.top - 1).map((f: any) => ids.includes(f.id) ? { ...f, pinned: false } : f),
                 frozenPanes: {
                     ...this.state.frozenPanes,
                     top: this.state.frozenPanes.top - indexes.length,
@@ -449,13 +688,13 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         if (direction == 'top') {
             return {
                 ...this.state,
-                records: this.reorderedRows(indexes, this.state.frozenPanes.top).map(r => ids.includes(r.id) ? { ...r, pinned: true } : r),
+                records: this.reorderedRows(indexes, this.state.frozenPanes.top).map((r: any) => ids.includes(r.id) ? { ...r, pinned: true } : r),
                 frozenPanes: { ...this.state.frozenPanes, top: this.state.frozenPanes.top + indexes.length }
             }
         } else {
             return {
                 ...this.state,
-                records: this.reorderedRows(indexes, this.state.records.length - this.state.frozenPanes.bottom - 1).map(r => ids.includes(r.id) ? { ...r, pinned: true } : r),
+                records: this.reorderedRows(indexes, this.state.records.length - this.state.frozenPanes.bottom - 1).map((r: any) => ids.includes(r.id) ? { ...r, pinned: true } : r),
                 frozenPanes: { ...this.state.frozenPanes, bottom: this.state.frozenPanes.bottom + indexes.length }
             }
         }
@@ -565,6 +804,8 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
                         cellTemplates={this.getCustomCellTemplates()}
                         disableFillHandle={this.state.disableFillHandle}
                         disableRangeSelection={this.state.disableRangeSelection}
+                        disableRowSelection={false}
+                        disableColumnSelection={false}
                     />
                 </DynaGridContainer>
             </DemoBody>

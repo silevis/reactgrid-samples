@@ -7,6 +7,8 @@
 
 // TODO Range is INTERNAL! Should not be public! 
 import { Range } from "./Range";
+import { KeyboardEvent } from "./domEvents";
+import { State } from "./State";
 
 export type Orientation = 'horizontal' | 'vertical';
 

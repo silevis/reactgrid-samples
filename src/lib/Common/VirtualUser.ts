@@ -9,12 +9,12 @@ function getRandomInt(min: number, max: number) {
 
 export class DynaGridDataGenerator {
 
-    static nextId: number = 3;
+    static nextId: number = 12;
     static data: any = {
         name: ['Jacob', 'Tom', 'John', 'Allie', 'Zoe', 'Ashe', 'Fred', 'Rob', 'Alison', 'Arcady', 'Tom', 'Jerry'],
         surname: ['Hudson', 'Perkins', 'Mason', 'Armstrong', 'King', 'Collins', 'Bush', 'Maddison', 'Del Rey', 'Goletz', 'Ferrer'],
         country: ['fra', 'hun', 'lbn', 'mli', 'deu', 'pol', 'prt', 'svk', 'gbr', 'alb', 'aut', 'bra'],
-        position: ['Director', 'Manager', 'Software Dev', 'QA', 'Automated Tester', 'Unemployed', 'Scrum Master', 'Project owner'],
+        position: ['Director', 'Manager', 'Software Dev', 'QA', 'Automated Tester', 'Unemployed', 'Scrum Master', 'Project owner']
     }
 
     constructor() {
@@ -46,9 +46,9 @@ export class DynaGridDataGenerator {
         return getRandomInt(min, max)
     }
 
-    getRandomPosition(): string {
+    getRandomPosition(): any {
         const positions = DynaGridDataGenerator.data.position;
-        return positions[getRandomInt(0, positions.length)];
+        return { name: positions[getRandomInt(0, positions.length)], depth: 1 };
     }
 
     getRandomBoolean(): boolean {
