@@ -8,7 +8,7 @@ const ChevronIcon = styled.div`
     margin-right: 7px;
     color: grey;
     font-weight: bold;
-    transition: transform .2s ease-in-out;
+    /* transition: transform .2s ease-in-out; */
 
     &:hover {
         color: black;
@@ -59,7 +59,7 @@ export class GroupHeaderCellTemplate implements CellTemplate<any> {
                                 pointerEvents: 'auto'
                             }}
                         >❯</ChevronIcon>}
-                    <span style={{ marginLeft: cellData.isExpanded !== undefined ? 5 : 0 }}>{cellData.name}</span>
+                    <span style={{ marginLeft: cellData.isExpanded !== undefined ? 4.5 : 0 }}>{cellData.name}</span>
                 </div>
                 :
                 <input

@@ -374,19 +374,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
             canDrop: (ids: any[]) => {
                 const records = [...this.state.records];
                 let movedRecords: Record[] = records.filter(record => ids.includes(record.id));
-                let movedChildren: Record[] = [];
-                let tempMovedRecords: Record[] = [...movedRecords];
-                for (let i = 0; i < movedRecords.length; i++) {
-                    const children = this.getChildren(records, movedRecords[i].id);
-                    if (children.length > 0) {
-                        for (let j = 0; j < children.length; j++) {
-                            tempMovedRecords.splice(i + 1 + j, 0, children[j]);
-                        }
-                        movedChildren = movedChildren.concat(children);
-                    }
-                }
-                movedRecords = tempMovedRecords;
-                movedRecords = Array.from(new Set(movedRecords));
+                movedRecords = this.prepareMovedRecords(movedRecords).movedRecords;
 
                 if (movedRecords.some(r => r.id === record.id)) {
                     return false;
@@ -451,20 +439,37 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
     }
 
     private getChildren(records: Record[], id: number) {
-        const children: Record[] = [];
+        let children: Record[] = [];
         const findNestedChildren = (records: Record[], id: number): Record[] =>
             records
-                .filter((item: any) => item['parentId'] === id)
-                .reduce((_: Record[], curr) => {
+                .filter((item: Record) => item['parentId'] === id)
+                .reduce((_: Record[], current) => {
                     const parent = records.find(record => record.id === id);
                     if (parent) {
-                        curr.position.depth = parent.position.depth + 1;
-                        children.push(curr);
+                        current.position.depth = parent.position.depth + 1;
+                        children.push(current);
                     }
-                    return findNestedChildren(records, curr.id);
+                    return findNestedChildren(records, current.id);
                 }, []);
         findNestedChildren(records, id);
         return children;
+    }
+
+    private prepareMovedRecords(movedRecords: Record[]): { movedRecords: Record[], movedChildren: Record[] } {
+        let movedChildren: Record[] = [];
+        let tempMovedRecords: Record[] = [...movedRecords];
+        for (let i = 0; i < movedRecords.length; i++) {
+            const children = this.getChildren(records, movedRecords[i].id);
+            if (children.length > 0) {
+                for (let j = 0; j < children.length; j++) {
+                    if (!movedRecords.some(record => record.id === children[j].id))
+                        tempMovedRecords.splice(i + 1 + j, 0, children[j]);
+                }
+                movedChildren = movedChildren.concat(children);
+            }
+        }
+        movedRecords = tempMovedRecords;
+        return { movedRecords, movedChildren };
     }
 
     private reorderedRows(rowIds: any[], targetId: Id, position?: string) {
@@ -472,9 +477,9 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         const targetElementIdx: number = records.findIndex(record => record.id === targetId);
         const targetElement: Record = position === 'before' ? records[targetElementIdx - 1] : records[targetElementIdx];
         const targetElementChildren: Record[] = this.getChildren(records, targetElement.id);
-
         let movedRecords: Record[] = records.filter(record => rowIds.includes(record.id));
         let updatedParents: Record[] = [];
+
         for (let i = 0; i < movedRecords.length; i++) {
             const parent = records.find(record => record.id === movedRecords[i].parentId);
             if (parent) {
@@ -513,21 +518,11 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
             }
         }
 
-        // concat moved records with children
-        let movedChildren: Record[] = [];
-        let tempMovedRecords: Record[] = [...movedRecords];
-        for (let i = 0; i < movedRecords.length; i++) {
-            const children = this.getChildren(records, movedRecords[i].id);
-            if (children.length > 0) {
-                for (let j = 0; j < children.length; j++) {
-                    tempMovedRecords.splice(i + 1 + j, 0, children[j]);
-                }
-                movedChildren = movedChildren.concat(children);
-            }
-        }
-        movedRecords = tempMovedRecords;
-
+        const preparedMovedRecords = this.prepareMovedRecords(movedRecords);
+        const movedChildren: Record[] = preparedMovedRecords.movedChildren;
         const movedChildrenIds: Id[] = movedChildren.length > 0 ? movedChildren.reduce((result: Id[], curr: Record) => { result.push(curr.id); return result }, []) : [];
+        movedRecords = preparedMovedRecords.movedRecords;
+
         const clearedRecords = records.filter((record, idx) => !rowIds.includes(record.id) && !movedChildrenIds.includes(records[idx].id));
 
         if (updatedParents.length > 0) {
@@ -549,9 +544,6 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         } else if (position === 'after') {
             targetIdx = targetIdx + 1 + (targetElement.position.isExpanded === false ? targetElementChildren.length : 0);
         }
-
-        // remove duplicates 
-        movedRecords = Array.from(new Set(movedRecords));
 
         clearedRecords.splice(targetIdx, 0, ...movedRecords);
         return clearedRecords;
