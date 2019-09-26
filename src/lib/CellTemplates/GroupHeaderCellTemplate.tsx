@@ -17,23 +17,23 @@ const ChevronIcon = styled.div`
 `;
 
 interface GroupHeaderCellData {
-    title: string;
-    isExpanded: boolean;
+    name: string;
+    isExpanded: boolean | undefined;
     depth: number;
 }
 
 export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData> {
 
     isValid(cellData: GroupHeaderCellData): boolean {
-        return typeof (cellData.title) === 'string' && typeof (cellData.isExpanded) === 'boolean' && typeof (cellData.depth) === 'number';
+        return typeof (cellData.name) === 'string' && (cellData.isExpanded === undefined || typeof (cellData.isExpanded) === 'boolean') && typeof (cellData.depth) === 'number';
     }
 
-    textToCellData(text: string): GroupHeaderCellData {
-        return { title: text, isExpanded: false, depth: 0 };
+    textToCellData(text: string): any {
+        return { name: text, isExpanded: false, depth: 1 };
     }
 
     cellDataToText(cellData: GroupHeaderCellData) {
-        return cellData.title;
+        return cellData.name;
     }
 
     handleKeyDown(keyCode: number, cellData: GroupHeaderCellData) {
@@ -44,7 +44,7 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
     }
 
     renderContent: (props: CellRenderProps<GroupHeaderCellData>) => React.ReactNode = (props) => {
-        const cellData = props.cellData;
+        const cellData = Object.assign({}, props.cellData);
         const preserveValueKeyCodes = [0, keyCodes.ENTER];
         return (
             !props.isInEditMode ?
@@ -62,7 +62,7 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
                                 pointerEvents: 'auto'
                             }}
                         >❯</ChevronIcon>}
-                    <span style={{ marginLeft: cellData.isExpanded !== undefined ? 4.5 : 0 }}>{cellData.title}</span>
+                    <span style={{ marginLeft: cellData.isExpanded !== undefined ? 4.5 : 0 }}>{cellData.name}</span>
                 </div>
                 :
                 <input
@@ -82,10 +82,10 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
                             input.setSelectionRange(input.value.length, input.value.length);
                         }
                     }}
-                    defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? cellData.title : ''}
+                    defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? cellData.name : ''}
                     onChange={e => {
                         props.onCellDataChanged
-                            ? props.onCellDataChanged({ title: e.currentTarget.value, isExpanded: cellData.isExpanded, depth: cellData.depth })
+                            ? props.onCellDataChanged({ name: e.currentTarget.value, isExpanded: cellData.isExpanded, depth: cellData.depth })
                             : { name: '', isExpanded: cellData.isExpanded, depth: cellData.depth }
                     }
                     }

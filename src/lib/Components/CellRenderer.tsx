@@ -48,9 +48,8 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
     return (
         <div className="cell" style={style}>
             {
-                // TODO is cell.data valid ?
                 cellTemplate.renderContent({
-                    cellData: cell.data,
+                    cellData: props.state.cellTemplates[cell.type].isValid(cell.data) ? cell.data : '',
                     isInEditMode: false,
                     lastKeyCode: lastKeyCode,
                     onCellDataChanged: (newCellData) => {
