@@ -20,7 +20,7 @@ export interface ClipboardData {
 export class DefaultBehavior extends Behavior {
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
-        state = { ...state, lastKeyCode: 0, currentBehavior: this.getNewBehavior(event, location, state) }
+        state = { ...state, currentBehavior: this.getNewBehavior(event, location, state) }
         return state.currentBehavior.handlePointerDown(event, location, state);
     }
 
@@ -67,23 +67,8 @@ export class DefaultBehavior extends Behavior {
     }
 
     handleDoubleClick(event: PointerEvent, location: Location, state: State): State {
-        // TODO this is a double (cellSelectionBehavior)
-        if (state.isFocusedCellInEditMode /*|| this.grid.state.isFocusedCellReadOnly*/) {
-            event.preventDefault();
-            event.stopPropagation();
-        } else if (location.equals(state.focusedLocation)) {
-            const cell = state.focusedLocation!.cell;
-            const cellTemplate = state.cellTemplates[cell.type];
-            if (cellTemplate.isReadonly && cellTemplate.isReadonly(cell.data) || !cellTemplate.handleKeyDown)
-                return state;
-
-            const { cellData, enableEditMode } = cellTemplate.handleKeyDown(1, cell.data);
-            return {
-                ...state,
-                currentlyEditedCell: { type: cell.type, data: cellData },
-                isFocusedCellInEditMode: enableEditMode
-            };
-        }
+        // TODO cleanup
+        console.log('handled in cell selection ??')
         return state;
     }
 

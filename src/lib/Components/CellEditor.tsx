@@ -8,12 +8,12 @@ interface CellEditorProps {
 }
 
 export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
-    const [cellData, setCellData] = React.useState(props.state.currentlyEditedCell!);
+    const [cell, setCell] = React.useState(props.state.currentlyEditedCell!);
     const location = props.state.focusedLocation!;
     const [position, setPosition] = React.useState(calculatedEditorPosition(location, props.state));
-    let lastKeyCode = props.state.lastKeyCode;
-    const cellType = props.state.cellTemplates[cellData.type] ? cellData.type : 'text';
+    const cellType = props.state.cellTemplates[cell.type] ? cell.type : 'text';
     React.useEffect(() => setPosition(calculatedEditorPosition(location, props.state)), []);
+    let lastKeyCode = 0;
 
     // TODO https://github.com/silevis/reactgrid/issues/33
     if (isBrowserIE()) {
@@ -35,19 +35,19 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
                 boxShadow: '1px 1px 6px rgba(0, 0, 0, 0.2)',
                 zIndex: 5
             }}
-            onBlur={() => { if (lastKeyCode !== keyCodes.ESC) props.state.updateState(state => trySetDataAndAppendChange(state, location, cellData)) }}
+            onBlur={() => { if (lastKeyCode !== keyCodes.ESC) props.state.updateState(state => trySetDataAndAppendChange(state, location, cell)) }}
             onKeyDown={e => {
                 lastKeyCode = e.keyCode;
+                // TODO descirbe reason for this
                 if (e.keyCode !== keyCodes.ENTER && e.keyCode !== keyCodes.ESC && e.keyCode !== keyCodes.TAB) {
                     e.stopPropagation();
                 }
             }}
         >
             {props.state.cellTemplates[cellType].renderContent({
-                cellData: cellData.data,
+                cellData: cell.data,
                 isInEditMode: true,
-                lastKeyCode: lastKeyCode,
-                onCellDataChanged: (cd) => { setCellData({ data: cd, type: cellType }) }
+                onCellDataChanged: (cellData) => { setCell({ data: cellData, type: cellType }) }
             })}
         </div>
     )

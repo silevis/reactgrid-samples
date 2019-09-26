@@ -25,8 +25,8 @@ class GridContent extends React.Component<RowsProps>{
 
     shouldComponentUpdate(nextProps: RowsProps) {
         if (this.props.state.focusedLocation && nextProps.state.focusedLocation) {
-            if ((this.props.state.focusedLocation.col.id !== nextProps.state.focusedLocation.col.id || this.props.state.focusedLocation.row.id !== nextProps.state.focusedLocation.row.id) && // needed when select range by touch
-                nextProps.state.lastKeyCode !== keyCodes.ENTER && nextProps.state.lastKeyCode !== keyCodes.TAB) // improved performance during moving focus inside range
+            if ((this.props.state.focusedLocation.col.id !== nextProps.state.focusedLocation.col.id || this.props.state.focusedLocation.row.id !== nextProps.state.focusedLocation.row.id))// && // needed when select range by touch
+                //nextProps.state.lastKeyCode !== keyCodes.ENTER && nextProps.state.lastKeyCode !== keyCodes.TAB) // improved performance during moving focus inside range
                 return true;
         } else {
             return true; // needed when select range by touch after first focus
@@ -43,8 +43,8 @@ class GridContent extends React.Component<RowsProps>{
             </>
         )
     }
-} 
- 
+}
+
 function renderCustomFocuses(props: PaneProps) {
     const customFocuses = props.state.customFocuses.filter((value: any) => Object.keys(value).length !== 0);
     return (
@@ -52,24 +52,24 @@ function renderCustomFocuses(props: PaneProps) {
             const location = props.state.cellMatrix.getLocationById(focus.rowId, focus.colId);
             return location && props.range.contains(location) && <CellFocus key={id} location={location} color={focus.color} />
         })
-    )  
-}
-
-export const Pane: React.FunctionComponent<PaneProps> = (props) =>{
-    return(
-        <div key={props.id} className="dg-pane" style={{ position: 'relative', width: props.range.width, height: '100%', ...props.style }}>
-        <GridContent state={props.state} range={props.range} borders={props.borders} />
-        {renderSelectedRanges(props.state, props.range)}
-        {props.state.currentBehavior.renderPanePart(props.state, props.range)}
-        {renderCustomFocuses(props)}
-        {props.state.focusedLocation && props.range.contains(props.state.focusedLocation) &&
-            <CellFocus location={props.state.focusedLocation} />}
-        {props.state.selectedRanges[props.state.activeSelectedRangeIdx] && props.range.contains(props.state.selectedRanges[props.state.activeSelectedRangeIdx].last) &&
-            !props.state.disableFillHandle && <FillHandle state={props.state} location={props.state.selectedRanges[props.state.activeSelectedRangeIdx].last} />}
-    </div>
     )
 }
-   
+
+export const Pane: React.FunctionComponent<PaneProps> = (props) => {
+    return (
+        <div key={props.id} className="dg-pane" style={{ position: 'relative', width: props.range.width, height: '100%', ...props.style }}>
+            <GridContent state={props.state} range={props.range} borders={props.borders} />
+            {renderSelectedRanges(props.state, props.range)}
+            {props.state.currentBehavior.renderPanePart(props.state, props.range)}
+            {renderCustomFocuses(props)}
+            {props.state.focusedLocation && props.range.contains(props.state.focusedLocation) &&
+                <CellFocus location={props.state.focusedLocation} />}
+            {props.state.selectedRanges[props.state.activeSelectedRangeIdx] && props.range.contains(props.state.selectedRanges[props.state.activeSelectedRangeIdx].last) &&
+                !props.state.disableFillHandle && <FillHandle state={props.state} location={props.state.selectedRanges[props.state.activeSelectedRangeIdx].last} />}
+        </div>
+    )
+}
+
 
 function renderSelectedRanges(state: State, pane: Range) {
     return state.selectedRanges.map((range, i) => !(state.focusedLocation && range.contains(state.focusedLocation) && range.cols.length === 1 && range.rows.length === 1) && pane.intersectsWith(range) && <PartialArea key={i} pane={pane} range={range} style={{

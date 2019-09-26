@@ -106,5 +106,5 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                 />
             </div>
         </div >
-        {props.state.isFocusedCellInEditMode && props.state.currentlyEditedCell && <CellEditor state={props.state} />}
+        {props.state.currentlyEditedCell && <CellEditor state={props.state} />}
     </div>

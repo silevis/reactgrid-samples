@@ -14,7 +14,7 @@ export function focusLocation(state: State, location: Location, resetSelection =
             ...state,
             contextMenuPosition: [-1, -1],
             focusedLocation: location,
-            isFocusedCellInEditMode: false,
+            currentlyEditedCell: undefined,
             activeSelectedRangeIdx: 0,
             selectedRanges: [state.cellMatrix.getRange(location, location)],
             selectedIndexes: [],
@@ -26,7 +26,7 @@ export function focusLocation(state: State, location: Location, resetSelection =
             ...state,
             contextMenuPosition: [-1, -1],
             focusedLocation: location,
-            isFocusedCellInEditMode: false
+            currentlyEditedCell: undefined
         };
     }
 }

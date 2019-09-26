@@ -41,7 +41,6 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
 
         return {
             ...state,
-            currentlyEditedCell: state.isFocusedCellInEditMode && state.focusedLocation ? { ...state.focusedLocation.cell } : undefined,
             cellTemplates: { ...defaultCellTemplates, ...props.cellTemplates },
             customFocuses: props.customFocuses,
             disableFillHandle: props.disableFillHandle,

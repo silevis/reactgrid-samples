@@ -34,7 +34,6 @@ export class FlagCellTemplate implements CellTemplate<string> {
                 backgroundPosition: 'center center'
             }} />
         }
-        const preserveValueKeyCodes = [0, keyCodes.ENTER];
         return <input
             type='text'
             style={{
@@ -50,7 +49,7 @@ export class FlagCellTemplate implements CellTemplate<string> {
             ref={input => {
                 input && input.focus();
             }}
-            defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? props.cellData : ''}
+            defaultValue={props.cellData}
             onChange={e => props.onCellDataChanged(e.currentTarget.value)}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
