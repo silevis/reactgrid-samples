@@ -15,5 +15,9 @@ export class HeaderCellTemplate implements CellTemplate<string> {
         return cellData;
     }
 
+    getCustomStyle(cellData: string): React.CSSProperties {
+        return { background: '#eee' }
+    }
+
     renderContent: (props: CellRenderProps<string>) => React.ReactNode = (props) => props.cellData
 }
