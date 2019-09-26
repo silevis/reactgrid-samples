@@ -1,4 +1,4 @@
-import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, PointerLocation, Id, SelectionMode } from "../Common";
+import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, PointerLocation, Id, SelectionMode, Cell } from "../Common";
 import { handleKeyDown } from "./DefaultBehavior/handleKeyDown";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
 import { ColumnSelectionBehavior } from "./ColumnSelectionBehavior";
@@ -128,12 +128,19 @@ export class DefaultBehavior extends Behavior {
     }
 }
 
+export function validateOuterData(state: State, clipboardData: ClipboardData): Cell {
+    const type = clipboardData.type
+    if (type && state.cellTemplates[type] && state.cellTemplates[type].isValid(clipboardData.data))
+        return { data: clipboardData.data, type }
+    return { data: clipboardData.text, type: 'text' }
+}
+
 export function pasteData(state: State, pasteContent: ClipboardData[][]): State {
     const activeSelectedRange = getActiveSelectedRange(state)
     if (pasteContent.length === 1 && pasteContent[0].length === 1) {
         activeSelectedRange.rows.forEach(row =>
             activeSelectedRange.cols.forEach(col => {
-                state = trySetDataAndAppendChange(state, new Location(row, col), pasteContent[0][0])
+                state = trySetDataAndAppendChange(state, new Location(row, col), validateOuterData(state, pasteContent[0][0]))
             })
         )
     } else {
@@ -145,7 +152,7 @@ export function pasteData(state: State, pasteContent: ClipboardData[][]): State 
                 const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx
                 if (rowIdx <= cellMatrix.last.row.idx && colIdx <= cellMatrix.last.col.idx) {
                     lastLocation = cellMatrix.getLocation(rowIdx, colIdx)
-                    state = trySetDataAndAppendChange(state, lastLocation, pasteValue)
+                    state = trySetDataAndAppendChange(state, lastLocation, validateOuterData(state, pasteValue))
                 }
             })
         )
@@ -194,7 +201,7 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
             tableCell.setAttribute('data-type', cell.type)
             tableCell.style.border = '1px solid #D3D3D3'
             if (removeValues) {
-                state = trySetDataAndAppendChange(state, new Location(row, col), { text: '' });
+                state = trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' });
             }
         })
     })
@@ -237,7 +244,7 @@ export function copySelectedRangeToClipboardInIE(state: State, removeValues = fa
                 }
             }
             if (removeValues) {
-                state = trySetDataAndAppendChange(state, new Location(row, col), { text: '' });
+                state = trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' });
             }
         })
         const areAllEmptyCells = activeSelectedRange.cols.every(el => {
