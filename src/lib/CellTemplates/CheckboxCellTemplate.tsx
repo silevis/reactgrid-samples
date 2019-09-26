@@ -5,7 +5,7 @@ import { CellRenderProps as CellRenderProps, CellTemplate } from '../Common';
 export class CheckboxCellTemplate implements CellTemplate<boolean> {
 
     isValid(cellData: boolean): boolean {
-        return (typeof (cellData) === 'boolean');
+        return typeof (cellData) === 'boolean';
     }
 
     textToCellData(text: string): boolean {
@@ -16,8 +16,8 @@ export class CheckboxCellTemplate implements CellTemplate<boolean> {
         return cellData ? 'true' : '';
     }
 
-    handleKeyDown(keyCode: number, cellData: boolean) {
-        if (keyCode == keyCodes.SPACE || keyCode == keyCodes.ENTER)
+    handleKeyDown(cellData: boolean, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
+        if (keyCode === keyCodes.SPACE || keyCode === keyCodes.ENTER)
             cellData = !cellData
         return { cellData, enableEditMode: false }
     }

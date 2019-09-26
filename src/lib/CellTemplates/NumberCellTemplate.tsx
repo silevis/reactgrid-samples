@@ -16,7 +16,7 @@ export class NumberCellTemplate implements CellTemplate<number> {
         return cellData.toString();
     }
 
-    handleKeyDown(keyCode: number, cellData: number) {
+    handleKeyDown(cellData: number, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
         return { cellData, enableEditMode: true };
     }
 

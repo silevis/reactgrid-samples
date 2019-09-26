@@ -16,7 +16,7 @@ export class FlagCellTemplate implements CellTemplate<string> {
         return cellData;
     }
 
-    handleKeyDown(keyCode: number, cellData: string) {
+    handleKeyDown(cellData: string) {
         return { cellData, enableEditMode: true }
     }
 

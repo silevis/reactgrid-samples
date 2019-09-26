@@ -17,8 +17,8 @@ export class DateCellTemplate implements CellTemplate<string> {
         return cellData;
     }
 
-    handleKeyDown(keyCode: number, cellData: string) {
-        return { cellData, enableEditMode: true }
+    handleKeyDown(cellData: string, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
+        return { cellData, enableEditMode: true };
     }
 
     renderContent: (props: CellRenderProps<string>) => React.ReactNode = (props) => {

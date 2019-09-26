@@ -56,4 +56,7 @@ export class State {
     readonly maxScrollTop: number = -1;
     readonly minScrollLeft: number = -1;
     readonly maxScrollLeft: number = -1;
+
+    // LOGGING
+    readonly log = (text: string) => { };
 }

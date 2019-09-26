@@ -17,7 +17,7 @@ export class TimeCellTemplate implements CellTemplate<string> {
         return cellData;
     }
 
-    handleKeyDown(keyCode: number, cellData: string) {
+    handleKeyDown(cellData: string, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
         return { cellData, enableEditMode: true };
     }
 

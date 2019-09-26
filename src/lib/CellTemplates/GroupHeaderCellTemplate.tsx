@@ -36,7 +36,7 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
         return cellData.name;
     }
 
-    handleKeyDown(keyCode: number, cellData: GroupHeaderCellData) {
+    handleKeyDown(cellData: GroupHeaderCellData, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
         if (keyCode === keyCodes.SPACE) {
             cellData.isExpanded = !cellData.isExpanded;
         }
