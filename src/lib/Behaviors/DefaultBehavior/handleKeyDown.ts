@@ -2,15 +2,21 @@ import { State, KeyboardEvent, keyCodes, Row, Location, Range } from "../../Comm
 import { focusLocation, trySetDataAndAppendChange, getActiveSelectedRange } from "../../Functions";
 
 export function handleKeyDown(state: State, event: KeyboardEvent): State {
+    const newState = handleKeyDownInternal(state, event);
+    if (newState !== state) { event.stopPropagation(); }
+    return newState;
+}
+
+function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
+
     const location = state.focusedLocation;
     if (!location)
         return state
 
-
     const cellTemplate = state.cellTemplates[location.cell.type];
-    if (cellTemplate.handleKeyDown) {
+    if (cellTemplate.handleKeyDown && !state.currentlyEditedCell) {
         const { cellData, enableEditMode } = cellTemplate.handleKeyDown(location.cell.data, event.keyCode, event.ctrlKey, event.shiftKey, event.altKey);
-        if (location.cell.data !== cellData) { // any change => end here
+        if (location.cell.data !== cellData || enableEditMode) {
             const newCell = { type: location.cell.type, data: cellData };
             if (enableEditMode) {
                 return { ...state, currentlyEditedCell: newCell }
@@ -34,7 +40,6 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
             case keyCodes.END:
                 return resizeSelection(state, asr.first.col.idx, asr.last.col.idx, asr.first.row.idx, state.cellMatrix.last.row.idx)
         }
-
 
     } else if (event.ctrlKey) {
 
@@ -64,12 +69,11 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
             case keyCodes.RIGHT_ARROW:
                 return resizeSelectionRight(state, asr, location);
             case keyCodes.TAB:
+                event.preventDefault(); // prevent from leaving HFE
                 return isSingleCellSelected ? moveFocusLeft(state) : moveFocusInsideSelectedRange(state, 'left', asr, location);
             case keyCodes.ENTER:
                 return isSingleCellSelected ?
-                    state.currentlyEditedCell ?
-                        moveFocusUp(state) :
-                        enableEditMode(state) :
+                    moveFocusUp(state) :
                     moveFocusInsideSelectedRange(state, 'up', asr, location);
             case keyCodes.SPACE:
                 return resizeSelection(state, 0, state.cellMatrix.last.col.idx, asr.first.row.idx, asr.last.row.idx);
@@ -101,6 +105,7 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
             case keyCodes.RIGHT_ARROW:
                 return moveFocusRight(state);
             case keyCodes.TAB:
+                event.preventDefault(); // prevent from leaving HFE
                 return isSingleCellSelected ? moveFocusRight(state) : moveFocusInsideSelectedRange(state, 'right', asr, location);
             case keyCodes.HOME:
                 return (state.focusedLocation) ? focusCell(0, state.focusedLocation.row.idx, state) : state;
@@ -112,13 +117,10 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
                 return moveFocusPageDown(state);
             case keyCodes.ENTER:
                 return isSingleCellSelected ?
-                    state.currentlyEditedCell ?
-                        moveFocusDown(state) :
-                        enableEditMode(state) :
+                    moveFocusDown(state) :
                     moveFocusInsideSelectedRange(state, 'down', asr, location);
-            case keyCodes.SPACE:
-                return enableEditMode(state);
-
+            case keyCodes.ESC:
+                return (state.currentlyEditedCell) ? { ...state, currentlyEditedCell: undefined } : state
         }
     }
 
@@ -128,14 +130,7 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
 // state.hiddenFocusElement.focus();
 
 
-// const possibleCharactersToEnter = (event: KeyboardEvent) =>
-//     (event.keyCode >= keyCodes.ZERO && event.keyCode <= keyCodes.Z) ||
-//     (event.keyCode >= keyCodes.NUM_PAD_0 && event.keyCode <= keyCodes.DIVIDE) ||
-//     (event.keyCode >= keyCodes.SEMI_COLON && event.keyCode <= keyCodes.SINGLE_QUOTE);
 
-function enableEditMode(state: State): State {
-    return state.focusedLocation ? ({ ...state, currentlyEditedCell: { ...state.focusedLocation.cell } }) : state;
-}
 
 
 function focusCell(colIdx: number, rowIdx: number, state: State): State {

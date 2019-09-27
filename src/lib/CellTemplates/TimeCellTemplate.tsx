@@ -43,7 +43,7 @@ export class TimeCellTemplate implements CellTemplate<string> {
                 }
             }}
             defaultValue={props.cellData}
-            onChange={e => props.onCellDataChanged(e.currentTarget.value)}
+            onChange={e => props.onCellDataChanged(e.currentTarget.value, false)}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}

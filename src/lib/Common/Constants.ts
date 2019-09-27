@@ -1,4 +1,5 @@
 export const keyCodes = {
+    POINTER: 1,
     BACKSPACE: 8,
     TAB: 9,
     ENTER: 13,

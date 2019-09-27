@@ -73,14 +73,14 @@ export interface CellMatrixProps {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 // This interface is used for the communication between DynaGrid and a cell
 export interface CellTemplate<TCellData> {
-    // Returns true if template can swith into edit mode
-    // Default: true
-    hasEditMode?: boolean;
     // Returns true if the data in the cell is not replacable
     // Default: _ => false
     isReadonly?(data: TCellData): boolean;
     // Returns true if the data is valid
     isValid(data: TCellData): boolean;
+    // Returns true if accepts focus
+    // Default: _ => true
+    isFocusable?(data: TCellData): boolean
     // Convert plain text (not encoded stuff) to cell data
     // Returns null when the data couldn't be converted
     // Default: _ => null
@@ -93,7 +93,7 @@ export interface CellTemplate<TCellData> {
     handleKeyDown?(cellData: TCellData, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cellData: TCellData, enableEditMode: boolean };
     // Custom styles based on cell data applied to the cells div element
     // Default: _ => {}
-    getCustomStyle?(cellData: TCellData): React.CSSProperties;
+    getCustomStyle?(cellData: TCellData, isInEditMode: boolean): React.CSSProperties;
     // Render the cell content
     renderContent(props: CellRenderProps<TCellData>): React.ReactNode;
 }
@@ -101,7 +101,7 @@ export interface CellTemplate<TCellData> {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface CellRenderProps<TCellData> {
     cellData: TCellData;
-    onCellDataChanged(cellData: TCellData): void;
+    onCellDataChanged(cellData: TCellData, commit: boolean): void;
     readonly isInEditMode: boolean;
 }
 

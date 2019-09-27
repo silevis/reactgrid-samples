@@ -54,7 +54,7 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
                             onPointerDown={e => {
                                 e.stopPropagation();
                                 cellData.isExpanded = !cellData.isExpanded;
-                                if (props.onCellDataChanged) props.onCellDataChanged(cellData);
+                                props.onCellDataChanged(cellData, true);
                             }}
                             style={{
                                 transform: `${cellData.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`,
@@ -83,11 +83,8 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
                         }
                     }}
                     defaultValue={cellData.name}
-                    onChange={e => {
-                        props.onCellDataChanged
-                            ? props.onCellDataChanged({ name: e.currentTarget.value, isExpanded: cellData.isExpanded, depth: cellData.depth })
-                            : { name: '', isExpanded: cellData.isExpanded, depth: cellData.depth }
-                    }
+                    onChange={e =>
+                        props.onCellDataChanged({ name: e.currentTarget.value, isExpanded: cellData.isExpanded, depth: cellData.depth }, false)
                     }
                     onCopy={e => e.stopPropagation()}
                     onCut={e => e.stopPropagation()}

@@ -25,7 +25,7 @@ export class State {
     hiddenScrollableElement!: HTMLDivElement;
 
     readonly queuedDataChanges: DataChange[] = [];
-    readonly currentlyEditedCell?: Cell;
+    currentlyEditedCell?: Cell;
     readonly customFocuses: Focus[] = [];
     readonly disableFillHandle?: boolean;
     readonly disableRangeSelection?: boolean;

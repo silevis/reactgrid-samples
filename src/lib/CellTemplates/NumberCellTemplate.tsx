@@ -53,7 +53,7 @@ export class NumberCellTemplate implements CellTemplate<number> {
                 }
             }}
             defaultValue={this.cellDataToText(props.cellData)}
-            onChange={e => props.onCellDataChanged(this.textToCellData(e.currentTarget.value))}
+            onChange={e => props.onCellDataChanged(this.textToCellData(e.currentTarget.value), false)}
             onKeyDown={e => !validate(e.keyCode) ? e.preventDefault() : null}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}

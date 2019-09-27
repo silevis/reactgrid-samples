@@ -16,7 +16,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
     const isFocused = (state.focusedLocation !== undefined) && (state.focusedLocation.col.idx === props.location.col.idx && state.focusedLocation.row.idx === props.location.row.idx);
     const cellTemplate = state.cellTemplates[cell.type];
     const style: React.CSSProperties = {
-        ...(cellTemplate.getCustomStyle && cellTemplate.getCustomStyle(cell.data) || {}),
+        ...(cellTemplate.getCustomStyle && cellTemplate.getCustomStyle(cell.data, false) || {}),
         boxSizing: 'border-box',
         whiteSpace: 'nowrap',
         position: 'absolute',
@@ -50,8 +50,10 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
                 cellTemplate.renderContent({
                     cellData: props.state.cellTemplates[cell.type].isValid(cell.data) ? cell.data : '',
                     isInEditMode: false,
-                    onCellDataChanged: (newCellData) => props.state.updateState(state => trySetDataAndAppendChange(state, location, { data: newCellData, type: cell.type }))
-
+                    onCellDataChanged: (cellData, commit) => {
+                        if (!commit) throw 'commit should be set to true.'
+                        props.state.updateState(state => trySetDataAndAppendChange(state, location, { data: cellData, type: cell.type }))
+                    }
                 })
             }
             {location.row.idx === 0 && location.col.resizable && <ResizeHandle />}

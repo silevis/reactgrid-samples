@@ -44,18 +44,6 @@ export class CellSelectionBehavior extends Behavior {
     }
 
     handleDoubleClick(event: PointerEvent, location: Location, state: State): State {
-        // TODO remove if it works without
-        // if (state.currentlyEditedCell) {
-        //     event.preventDefault();
-        //     event.stopPropagation();
-        // } else 
-        if (location.equals(state.focusedLocation)) {
-            const cellTemplate = state.cellTemplates[location.cell.type];
-            const { cellData, enableEditMode } = cellTemplate.handleKeyDown ? cellTemplate.handleKeyDown(1, state.focusedLocation!.cell.data, event.ctrlKey, event.shiftKey, event.altKey) : { cellData: null, enableEditMode: false };
-            if (enableEditMode)
-                return { ...state, currentlyEditedCell: { data: cellData, type: location.cell.type } };
-
-        }
         return state;
     }
 }

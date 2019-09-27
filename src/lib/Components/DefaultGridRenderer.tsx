@@ -84,7 +84,7 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                         borders={{ top: true }}
                         zIndex={3}
                     />}
-                <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={props.hiddenElementRefHandler} />
+                <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={props.hiddenElementRefHandler} onFocus={() => console.log('hfe: focus')} onBlur={() => { console.trace(); console.log('hfe: blur') }} />
                 <Line
                     linePosition={props.state.linePosition}
                     orientation={props.state.lineOrientation}
