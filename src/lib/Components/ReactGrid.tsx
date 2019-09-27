@@ -72,9 +72,9 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
             onPointerDown: this.pointerDownHandler,
             onContextMenu: this.handleContextMenu,
             onScroll: this.scrollHandler,
-            // onRowContextMenu: (_: any, menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(this.state.selectedIds, menuOptions) : [],
-            // onColumnContextMenu: (_: any, menuOptions: MenuOption[]) => this.props.onColumnContextMenu ? this.props.onColumnContextMenu(this.state.selectedIds, menuOptions) : [],
-            // onRangeContextMenu: (_: any, menuOptions: MenuOption[]) => this.props.onRangeContextMenu ? this.props.onRangeContextMenu(this.state.selectedRanges, menuOptions) : [],
+            onRowContextMenu: (_: any, menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(this.state.selectedIds, menuOptions) : [],
+            onColumnContextMenu: (_: any, menuOptions: MenuOption[]) => this.props.onColumnContextMenu ? this.props.onColumnContextMenu(this.state.selectedIds, menuOptions) : [],
+            onRangeContextMenu: (_: any, menuOptions: MenuOption[]) => this.props.onRangeContextMenu ? this.props.onRangeContextMenu(this.state.selectedRanges, menuOptions) : [],
             viewportElementRefHandler: this.viewportElementRefHandler,
             hiddenElementRefHandler: this.hiddenElementRefHandler
         })
