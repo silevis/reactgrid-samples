@@ -6,3 +6,4 @@ export { recalcVisibleRange } from './recalcVisibleRange';
 export * from './trySetDataAndAppendChange';
 export * from './internetExplorer';
 export * from './microsoftEdge';
+export * from './getActiveSelectedRange'

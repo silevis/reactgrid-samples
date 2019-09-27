@@ -16,7 +16,7 @@ export class NumberCellTemplate implements CellTemplate<number> {
         return cellData.toString();
     }
 
-    handleKeyDown(keyCode: number, cellData: number) {
+    handleKeyDown(cellData: number, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
         return { cellData, enableEditMode: true };
     }
 
@@ -24,7 +24,6 @@ export class NumberCellTemplate implements CellTemplate<number> {
         if (!props.isInEditMode) {
             return isNaN(props.cellData) ? '' : props.cellData;
         }
-        const preserveValueKeyCodes = [0, keyCodes.ENTER];
 
         const validate = (keyCode: number) => {
             if (keyCode == 8 ||
@@ -53,8 +52,8 @@ export class NumberCellTemplate implements CellTemplate<number> {
                     // input.setSelectionRange(input.value.length, input.value.length);
                 }
             }}
-            defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) && !isNaN(props.cellData) ? (this.cellDataToText(props.cellData)) : ''}
-            onChange={e => props.onCellDataChanged(this.textToCellData(e.currentTarget.value))}
+            defaultValue={this.cellDataToText(props.cellData)}
+            onChange={e => props.onCellDataChanged(this.textToCellData(e.currentTarget.value), false)}
             onKeyDown={e => !validate(e.keyCode) ? e.preventDefault() : null}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}

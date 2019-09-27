@@ -16,7 +16,7 @@ export class FlagCellTemplate implements CellTemplate<string> {
         return cellData;
     }
 
-    handleKeyDown(keyCode: number, cellData: string) {
+    handleKeyDown(cellData: string) {
         return { cellData, enableEditMode: true }
     }
 
@@ -34,7 +34,6 @@ export class FlagCellTemplate implements CellTemplate<string> {
                 backgroundPosition: 'center center'
             }} />
         }
-        const preserveValueKeyCodes = [0, keyCodes.ENTER];
         return <input
             type='text'
             style={{
@@ -50,8 +49,8 @@ export class FlagCellTemplate implements CellTemplate<string> {
             ref={input => {
                 input && input.focus();
             }}
-            defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? props.cellData : ''}
-            onChange={e => props.onCellDataChanged(e.currentTarget.value)}
+            defaultValue={props.cellData}
+            onChange={e => props.onCellDataChanged(e.currentTarget.value, false)}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}

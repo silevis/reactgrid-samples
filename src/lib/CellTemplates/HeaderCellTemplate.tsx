@@ -3,21 +3,15 @@ import { CellTemplate, CellRenderProps } from '../Common';
 
 export class HeaderCellTemplate implements CellTemplate<string> {
 
-    isReadonly(cellData: string) {
-        return true;
-    }
+    isReadonly = () => true;
 
-    isValid(cellData: string): boolean {
-        return (typeof (cellData) === 'string');
-    }
+    isValid = (cellData: string) => (typeof (cellData) === 'string');
 
-    cellDataToText(cellData: string): string {
-        return cellData;
-    }
+    isFocusable = () => false;
 
-    getCustomStyle(cellData: string): React.CSSProperties {
-        return { background: '#eee' }
-    }
+    cellDataToText = (cellData: string) => cellData;
+
+    getCustomStyle = (cellData: string) => ({ background: '#f3f3f3' })
 
     renderContent: (props: CellRenderProps<string>) => React.ReactNode = (props) => props.cellData
 }

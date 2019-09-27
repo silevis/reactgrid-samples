@@ -74,20 +74,26 @@ export interface CellMatrixProps {
 // This interface is used for the communication between DynaGrid and a cell
 export interface CellTemplate<TCellData> {
     // Returns true if the data in the cell is not replacable
-    // Default: false
-    isReadonly?(data: TCellData): boolean
+    // Default: _ => false
+    isReadonly?(data: TCellData): boolean;
     // Returns true if the data is valid
-    isValid(data: TCellData): boolean
+    isValid(data: TCellData): boolean;
+    // Returns true if accepts focus
+    // Default: _ => true
+    isFocusable?(data: TCellData): boolean
     // Convert plain text (not encoded stuff) to cell data
     // Returns null when the data couldn't be converted
-    textToCellData?(text: string): TCellData | null
+    // Default: _ => null
+    textToCellData?(text: string): TCellData | null;
     // Convert cell data to plain text (not encoded stuff)
     cellDataToText(cellData: TCellData): string;
     // The keyCode represents the key pressed on the keyboard, or 1 for a pointer event (double click).
     // Returns the cell data either affected by the event or not.
-    handleKeyDown?(keyCode: number, cellData: TCellData): { cellData: TCellData, enableEditMode: boolean }
+    // Default: _ => { cellData: null, enableEditMode: false }  
+    handleKeyDown?(cellData: TCellData, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cellData: TCellData, enableEditMode: boolean };
     // Custom styles based on cell data applied to the cells div element
-    getCustomStyle?(cellData: TCellData): React.CSSProperties;
+    // Default: _ => {}
+    getCustomStyle?(cellData: TCellData, isInEditMode: boolean): React.CSSProperties;
     // Render the cell content
     renderContent(props: CellRenderProps<TCellData>): React.ReactNode;
 }
@@ -95,9 +101,8 @@ export interface CellTemplate<TCellData> {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface CellRenderProps<TCellData> {
     cellData: TCellData;
-    onCellDataChanged(cellData: TCellData): void;
+    onCellDataChanged(cellData: TCellData, commit: boolean): void;
     readonly isInEditMode: boolean;
-    readonly lastKeyCode: number;
 }
 
 export type Id = number | string;

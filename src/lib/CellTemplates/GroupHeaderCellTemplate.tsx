@@ -36,7 +36,7 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
         return cellData.name;
     }
 
-    handleKeyDown(keyCode: number, cellData: GroupHeaderCellData) {
+    handleKeyDown(cellData: GroupHeaderCellData, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
         if (keyCode === keyCodes.SPACE) {
             cellData.isExpanded = !cellData.isExpanded;
         }
@@ -45,7 +45,7 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
 
     renderContent: (props: CellRenderProps<GroupHeaderCellData>) => React.ReactNode = (props) => {
         const cellData = Object.assign({}, props.cellData);
-        const preserveValueKeyCodes = [0, keyCodes.ENTER];
+
         return (
             !props.isInEditMode ?
                 <div style={{ width: '100%', marginLeft: 10 * (cellData.depth ? cellData.depth : 1) + (cellData.isExpanded === undefined ? 9 : 0) }}>
@@ -54,7 +54,7 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
                             onPointerDown={e => {
                                 e.stopPropagation();
                                 cellData.isExpanded = !cellData.isExpanded;
-                                if (props.onCellDataChanged) props.onCellDataChanged(cellData);
+                                props.onCellDataChanged(cellData, true);
                             }}
                             style={{
                                 transform: `${cellData.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`,
@@ -82,12 +82,9 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
                             input.setSelectionRange(input.value.length, input.value.length);
                         }
                     }}
-                    defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? cellData.name : ''}
-                    onChange={e => {
-                        props.onCellDataChanged
-                            ? props.onCellDataChanged({ name: e.currentTarget.value, isExpanded: cellData.isExpanded, depth: cellData.depth })
-                            : { name: '', isExpanded: cellData.isExpanded, depth: cellData.depth }
-                    }
+                    defaultValue={cellData.name}
+                    onChange={e =>
+                        props.onCellDataChanged({ name: e.currentTarget.value, isExpanded: cellData.isExpanded, depth: cellData.depth }, false)
                     }
                     onCopy={e => e.stopPropagation()}
                     onCut={e => e.stopPropagation()}

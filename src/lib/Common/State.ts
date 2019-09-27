@@ -24,9 +24,8 @@ export class State {
     // TODO try to eliminate
     hiddenScrollableElement!: HTMLDivElement;
 
-    lastKeyCode: number = 0; // updated without setState
     readonly queuedDataChanges: DataChange[] = [];
-    readonly currentlyEditedCell?: Cell;
+    currentlyEditedCell?: Cell;
     readonly customFocuses: Focus[] = [];
     readonly disableFillHandle?: boolean;
     readonly disableRangeSelection?: boolean;
@@ -50,7 +49,6 @@ export class State {
     readonly selectedIds: Id[] = [];
     readonly focusedLocation?: Location;
     readonly activeSelectedRangeIdx: number = 0;
-    readonly isFocusedCellInEditMode: boolean = false;
 
     // VISIBLE RANGE
     readonly visibleRange!: Range;
@@ -58,4 +56,7 @@ export class State {
     readonly maxScrollTop: number = -1;
     readonly minScrollLeft: number = -1;
     readonly maxScrollLeft: number = -1;
+
+    // LOGGING
+    readonly log = (text: string) => { };
 }

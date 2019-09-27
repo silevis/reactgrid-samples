@@ -44,14 +44,6 @@ export class CellSelectionBehavior extends Behavior {
     }
 
     handleDoubleClick(event: PointerEvent, location: Location, state: State): State {
-        if (state.isFocusedCellInEditMode /*|| this.grid.state.isFocusedCellReadOnly*/) {
-            event.preventDefault();
-            event.stopPropagation();
-        } else if (location.equals(state.focusedLocation)) {
-            const cellTemplate = state.cellTemplates[state.focusedLocation!.cell.type];
-            const { enableEditMode } = cellTemplate.handleKeyDown ? cellTemplate.handleKeyDown(1, state.focusedLocation!.cell.data) : { enableEditMode: true };
-            return { ...state, isFocusedCellInEditMode: enableEditMode };
-        }
         return state;
     }
 }

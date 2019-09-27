@@ -1,283 +1,296 @@
-import { State, KeyboardEvent, keyCodes, Row, Column, DataChange, Location } from "../../Common";
-import { focusLocation } from "../../Functions";
-import { handleResizeSelectionWithKeys } from "./handleResizeSelectionWithKeys";
-import { handleKeyNavigationInsideSelection as handleKeyNavigationInsideSelection } from "./handleKeyNavigationInsideSelection";
-import { trySetDataAndAppendChange } from "../../Functions";
+import { State, KeyboardEvent, keyCodes, Row, Location, Range } from "../../Common";
+import { focusLocation, trySetDataAndAppendChange, getActiveSelectedRange } from "../../Functions";
 
 export function handleKeyDown(state: State, event: KeyboardEvent): State {
-    const focusedLocation = state.focusedLocation!;
-    const key: string = event.key;
-    state.lastKeyCode = event.keyCode;
-    if (!focusedLocation) { return state }
+    const newState = handleKeyDownInternal(state, event);
+    if (newState !== state) { event.stopPropagation(); }
+    return newState;
+}
 
-    const cellTemplate = state.cellTemplates[focusedLocation.cell.type];
-    if (cellTemplate.handleKeyDown) {
-        const { cellData, enableEditMode } = cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data);
-        if ((focusedLocation.cell.data !== cellData &&
-            // TODO what is this?
-            state.selectedRanges.length == 1 && state.selectedRanges[0].first.equals(state.selectedRanges[0].last))) {
-            state = trySetDataAndAppendChange(state, focusedLocation, { type: focusedLocation.cell.type, data: cellData });
-            // TODO this is probably a double . check it!
-            if (!event.ctrlKey && (possibleCharactersToEnter(event) || isEnterKey(key) || isSpaceKey(key))) {
-                return { ...state, isFocusedCellInEditMode: enableEditMode }
+function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
+
+    const location = state.focusedLocation;
+    if (!location)
+        return state
+
+    const cellTemplate = state.cellTemplates[location.cell.type];
+    if (cellTemplate.handleKeyDown && !state.currentlyEditedCell) {
+        const { cellData, enableEditMode } = cellTemplate.handleKeyDown(location.cell.data, event.keyCode, event.ctrlKey, event.shiftKey, event.altKey);
+        if (location.cell.data !== cellData || enableEditMode) {
+            const newCell = { type: location.cell.type, data: cellData };
+            if (enableEditMode) {
+                return { ...state, currentlyEditedCell: newCell }
+            } else {
+                return trySetDataAndAppendChange(state, location, newCell);
             }
         }
-
     }
 
-    if (event.shiftKey && !isEnterKey(key) && !isTabKey(key) && !possibleCharactersToEnter(event) && !state.isFocusedCellInEditMode) {
-        return handleResizeSelectionWithKeys(state, event);
-    }
+    if (event.altKey)
+        return state;
 
-    if (isArrowKey(key)) {
-        return handleArrows(event, state);
-    }
+    const asr = getActiveSelectedRange(state);
+    const isSingleCellSelected = state.selectedRanges.length === 1 && asr.first.equals(asr.last);
 
-    if (isSpecialNavKeys(key)) {
-        return handleSpecialNavKeys(event, state);
-    }
+    if (event.ctrlKey && event.shiftKey) {
 
-    if (isSpecialKeys(key)) {
-        return handleSpecialKeys(event, state);
-    }
-
-    if (isSelectedOneCell(state)) {
-        if (isEnterKey(key)) {
-            return handleEnterKey(event, state, event.shiftKey);
+        switch (event.keyCode) {
+            case keyCodes.HOME:
+                return resizeSelection(state, asr.first.col.idx, asr.last.col.idx, 0, asr.last.row.idx);
+            case keyCodes.END:
+                return resizeSelection(state, asr.first.col.idx, asr.last.col.idx, asr.first.row.idx, state.cellMatrix.last.row.idx)
         }
-        if (isTabKey(key)) {
-            return handleTabKey(event, state, event.shiftKey);
+
+    } else if (event.ctrlKey) {
+
+        switch (event.keyCode) {
+
+            case keyCodes.A:
+                const cm = state.cellMatrix;
+                return { ...state, selectedRanges: [cm.getRange(cm.first, cm.last)], selectionMode: 'range', activeSelectedRangeIdx: 0 }
+            case keyCodes.HOME:
+                return focusCell(0, 0, state);
+            case keyCodes.END:
+                return focusLocation(state, state.cellMatrix.last);
+            case keyCodes.SPACE:
+                return resizeSelection(state, asr.first.col.idx, asr.last.col.idx, 0, state.cellMatrix.last.row.idx);
         }
+
+
+    } else if (event.shiftKey) {
+
+        switch (event.keyCode) {
+            case keyCodes.UP_ARROW:
+                return resizeSelectionUp(state, asr, location);
+            case keyCodes.DOWN_ARROW:
+                return resizeSelectionDown(state, asr, location);
+            case keyCodes.LEFT_ARROW:
+                return resizeSelectionLeft(state, asr, location);
+            case keyCodes.RIGHT_ARROW:
+                return resizeSelectionRight(state, asr, location);
+            case keyCodes.TAB:
+                event.preventDefault(); // prevent from leaving HFE
+                return isSingleCellSelected ? moveFocusLeft(state) : moveFocusInsideSelectedRange(state, 'left', asr, location);
+            case keyCodes.ENTER:
+                return isSingleCellSelected ?
+                    moveFocusUp(state) :
+                    moveFocusInsideSelectedRange(state, 'up', asr, location);
+            case keyCodes.SPACE:
+                return resizeSelection(state, 0, state.cellMatrix.last.col.idx, asr.first.row.idx, asr.last.row.idx);
+            case keyCodes.HOME:
+                return resizeSelection(state, 0, asr.last.col.idx, asr.first.row.idx, asr.last.row.idx);
+            case keyCodes.END:
+                return resizeSelection(state, asr.first.col.idx, state.cellMatrix.last.col.idx, asr.first.row.idx, asr.last.row.idx);
+
+            case keyCodes.PAGE_UP:
+            case keyCodes.PAGE_DOWN:
+                // TODO resizeSelection
+                return state;
+
+        }
+
     } else {
-        if ((isEnterKey(key) || isTabKey(key))) {
-            return handleKeyNavigationInsideSelection(state, event, event.shiftKey);
+        // === NO SHIFT OR CONTROL ===
+
+        switch (event.keyCode) {
+            case keyCodes.DELETE:
+            case keyCodes.BACKSPACE:
+                return wipeSelectedRanges(state);
+            case keyCodes.UP_ARROW:
+                return moveFocusUp(state);
+            case keyCodes.DOWN_ARROW:
+                return moveFocusDown(state);
+            case keyCodes.LEFT_ARROW:
+                return moveFocusLeft(state);
+            case keyCodes.RIGHT_ARROW:
+                return moveFocusRight(state);
+            case keyCodes.TAB:
+                event.preventDefault(); // prevent from leaving HFE
+                return isSingleCellSelected ? moveFocusRight(state) : moveFocusInsideSelectedRange(state, 'right', asr, location);
+            case keyCodes.HOME:
+                return (state.focusedLocation) ? focusCell(0, state.focusedLocation.row.idx, state) : state;
+            case keyCodes.END:
+                return (state.focusedLocation) ? focusCell(state.cellMatrix.cols.length - 1, state.focusedLocation.row.idx, state) : state;
+            case keyCodes.PAGE_UP:
+                return moveFocusPageUp(state);
+            case keyCodes.PAGE_DOWN:
+                return moveFocusPageDown(state);
+            case keyCodes.ENTER:
+                return isSingleCellSelected ?
+                    moveFocusDown(state) :
+                    moveFocusInsideSelectedRange(state, 'down', asr, location);
+            case keyCodes.ESC:
+                return (state.currentlyEditedCell) ? { ...state, currentlyEditedCell: undefined } : state
         }
     }
 
-    if (event.keyCode === keyCodes.ESC && state.isFocusedCellInEditMode) {
-        return focusLocation(
-            state,
-            state.cellMatrix.getLocation(
-                focusedLocation.row.idx,
-                focusedLocation.col.idx
-            ),
-            true
-        );
-    }
+    return state;
 
-    state.hiddenFocusElement.focus();
-    return { ...state };
 }
+// state.hiddenFocusElement.focus();
 
-// TODO Check it
-export const isArrowKey = (key: string): boolean => key.includes('Arrow');
-const isEnterKey = (key: string): boolean => key.includes('Enter');
-const isSpaceKey = (key: string): boolean => key.includes('');
-const isSpecialNavKeys = (key: string): boolean => {
-    const keys = ['Home', 'PageUp', 'PageDown', 'End'];
-    return keys.some(el => el == key);
-}
-const isTabKey = (key: string): boolean => key.includes('Tab');
-const isSpecialKeys = (key: string): boolean => {
-    const keys = ['Backspace', 'Delete'];
-    return keys.some(el => el == key);
-}
-const possibleCharactersToEnter = (event: KeyboardEvent) =>
-    (event.keyCode >= keyCodes.ZERO && event.keyCode <= keyCodes.Z) ||
-    (event.keyCode >= keyCodes.NUM_PAD_0 && event.keyCode <= keyCodes.DIVIDE) ||
-    (event.keyCode >= keyCodes.SEMI_COLON && event.keyCode <= keyCodes.SINGLE_QUOTE);
 
-// or replace it
-// const isKeys = (key: string, keys: Array<string>): boolean => keys.some(el => el.includes(key))
 
-const isSelectedOneCell = (state: State): boolean => {
-    const activeSelectedRange = state.selectedRanges[state.activeSelectedRangeIdx];
-    return state.selectedRanges.length <= 1 && state.selectedRanges.length > 0 && activeSelectedRange.cols.length <= 1 && activeSelectedRange.rows.length <= 1
-}
+
 
 function focusCell(colIdx: number, rowIdx: number, state: State): State {
     const location = state.cellMatrix.getLocation(rowIdx, colIdx);
     return focusLocation(state, location);
 }
 
-function handleArrows(event: KeyboardEvent, state: State): State {
-    const focusedLocation = state.focusedLocation!;
-    const cellMatrix = state.cellMatrix;
-    event.preventDefault();
-    if (!event.shiftKey) {
-        if (event.keyCode === keyCodes.LEFT_ARROW && focusedLocation.col.idx > 0) {
-            return focusCell(focusedLocation.col.idx - 1, focusedLocation.row.idx, state);
-        } else if (
-            event.keyCode === keyCodes.RIGHT_ARROW &&
-            focusedLocation.col.idx < cellMatrix.last.col.idx
-        ) {
-            return focusCell(focusedLocation.col.idx + 1, focusedLocation.row.idx, state);
-        } else if (event.keyCode === keyCodes.UP_ARROW && focusedLocation.row.idx > 0) {
-            return focusCell(focusedLocation.col.idx, focusedLocation.row.idx - 1, state);
-        } else if (
-            event.keyCode === keyCodes.DOWN_ARROW &&
-            focusedLocation.row.idx < cellMatrix.last.row.idx
-        ) {
-            return focusCell(focusedLocation.col.idx, focusedLocation.row.idx + 1, state);
-        }
-    }
-    return state
+function moveFocusLeft(state: State): State {
+    return (state.focusedLocation && state.focusedLocation.col.idx > 0) ?
+        focusCell(state.focusedLocation.col.idx - 1, state.focusedLocation.row.idx, state) : state;
 }
 
-function handleSpecialNavKeys(event: KeyboardEvent, state: State) {
-    const focusedLocation = state.focusedLocation!;
-    const cellMatrix = state.cellMatrix;
-    if (event.ctrlKey && event.keyCode === keyCodes.HOME) {
-        return focusCell(0, 0, state);
-    } else if (event.keyCode === keyCodes.HOME) {
-        return focusCell(0, focusedLocation.row.idx, state);
-    } else if (event.ctrlKey && event.keyCode === keyCodes.END) {
-        return focusLocation(state, cellMatrix.last);
-    } else if (event.keyCode === keyCodes.END) {
-        return focusCell(cellMatrix.cols.length - 1, focusedLocation.row.idx, state);
-    } else if (
-        !event.shiftKey &&
-        event.keyCode === keyCodes.PAGE_UP &&
-        !state.isFocusedCellInEditMode
-    ) {
-        const rowsOnScreen = cellMatrix.rows.filter(
-            (r: Row) => r.top < state.viewportElement.clientHeight
-        );
-        return focusCell(
-            focusedLocation.col.idx,
-            focusedLocation.row.idx - rowsOnScreen.length > 0
-                ? focusedLocation.row.idx - rowsOnScreen.length
-                : 0, state
-        );
-    } else if (!event.shiftKey && event.keyCode === keyCodes.PAGE_DOWN) {
-        // TODO use visibleRange.height 
-        const rowsOnScreen = cellMatrix.rows
-            .slice(
-                cellMatrix.frozenTopRange.rows.length,
-                cellMatrix.rows.length -
-                cellMatrix.frozenBottomRange.rows.length -
-                1
+function moveFocusRight(state: State): State {
+    return (state.focusedLocation && state.focusedLocation.col.idx < state.cellMatrix.last.col.idx) ?
+        focusCell(state.focusedLocation.col.idx + 1, state.focusedLocation.row.idx, state) : state;
+}
+
+function moveFocusUp(state: State): State {
+    return (state.focusedLocation && state.focusedLocation.row.idx > 0) ?
+        focusCell(state.focusedLocation.col.idx, state.focusedLocation.row.idx - 1, state) : state;
+}
+
+function moveFocusDown(state: State): State {
+    return (state.focusedLocation && state.focusedLocation.row.idx < state.cellMatrix.last.row.idx) ?
+        focusCell(state.focusedLocation.col.idx, state.focusedLocation.row.idx + 1, state) : state;
+}
+
+// TODO this should be rewritten
+function moveFocusPageUp(state: State): State {
+    if (!state.focusedLocation)
+        return state;
+    const rowsOnScreen = state.cellMatrix.rows.filter(
+        (r: Row) => r.top < state.viewportElement.clientHeight
+    );
+    return focusCell(
+        state.focusedLocation.col.idx,
+        state.focusedLocation.row.idx - rowsOnScreen.length > 0
+            ? state.focusedLocation.row.idx - rowsOnScreen.length
+            : 0, state
+    );
+}
+
+
+// TODO this should be rewritten
+function moveFocusPageDown(state: State): State {
+    if (!state.focusedLocation)
+        return state;
+
+    const rowsOnScreen = state.cellMatrix.rows
+        .slice(
+            state.cellMatrix.frozenTopRange.rows.length,
+            state.cellMatrix.rows.length -
+            state.cellMatrix.frozenBottomRange.rows.length -
+            1
+        )
+        .filter((r: Row) => r.top + r.height < state.viewportElement.clientHeight);
+    return focusCell(
+        state.focusedLocation.col.idx,
+        state.focusedLocation.row.idx + rowsOnScreen.length < state.cellMatrix.rows.length
+            ? state.focusedLocation.row.idx +
+            rowsOnScreen.length -
+            state.cellMatrix.frozenBottomRange.rows.length
+            : state.cellMatrix.rows.length - 1, state
+    );
+}
+
+function wipeSelectedRanges(state: State): State {
+    state.selectedRanges.forEach(range =>
+        range.rows.forEach(row =>
+            range.cols.forEach(col =>
+                state = trySetDataAndAppendChange(state, new Location(row, col), { type: 'text', data: '' })
             )
-            .filter((r: Row) => r.top + r.height < state.viewportElement.clientHeight);
-        return focusCell(
-            focusedLocation.col.idx,
-            focusedLocation.row.idx + rowsOnScreen.length < cellMatrix.rows.length
-                ? focusedLocation.row.idx +
-                rowsOnScreen.length -
-                cellMatrix.frozenBottomRange.rows.length
-                : cellMatrix.rows.length - 1, state
-        );
-    }
-    return state
+        )
+    )
+    return state;
 }
 
-function handleTabKey(event: KeyboardEvent, state: State, shiftPressed: boolean) {
-    const focusedLocation = state.focusedLocation!;
-    const cellMatrix = state.cellMatrix;
-    if (event.keyCode === keyCodes.TAB || event.keyCode === keyCodes.ENTER) {
-        event.preventDefault();
-    }
-    if (
-        event.keyCode === keyCodes.TAB &&
-        !shiftPressed &&
-        focusedLocation.col.idx < cellMatrix.last.col.idx
-    ) {
-        return focusLocation(
+function moveFocusInsideSelectedRange(state: State, direction: 'left' | 'right' | 'up' | 'down', asr: Range, location: Location): State {
+    const selectedRangeIdx = state.activeSelectedRangeIdx
+    const colCount = asr ? asr.cols.length : 0;
+    const rowCount = asr ? asr.rows.length : 0;
+    const delta = direction === 'up' || direction === 'left' ? -1 : 1;
+
+    const currentPosInRange =
+        direction === 'up' || direction === 'down'
+            ? (location.row.idx - asr.first.row.idx) +
+            (location.col.idx - asr.first.col.idx) * rowCount
+            : (location.row.idx - asr.first.row.idx) * colCount +
+            (location.col.idx - asr.first.col.idx);
+
+    const newPosInRange = (currentPosInRange + delta) % (asr.rows.length * asr.cols.length);
+
+    if ((newPosInRange < 0 && currentPosInRange === 0)) { // shift + tab/enter and first cell focused in active range
+        const nextSelectionRangeIdx = selectedRangeIdx === 0 ? state.selectedRanges.length - 1 : (selectedRangeIdx - 1) % state.selectedRanges.length;
+        const nextSelection = state.selectedRanges[nextSelectionRangeIdx];
+        state = focusLocation(state, new Location(nextSelection.last.row, nextSelection.last.col), false);
+        return { ...state, activeSelectedRangeIdx: nextSelectionRangeIdx }
+    } else if (newPosInRange === 0 && currentPosInRange === (asr.rows.length * asr.cols.length) - 1) { // tab/enter and last cell focused in active range
+        const nextSelectionRangeIdx = (selectedRangeIdx + 1) % state.selectedRanges.length;
+        const nextSelection = state.selectedRanges[nextSelectionRangeIdx];
+        state = focusLocation(state, new Location(nextSelection.first.row, nextSelection.first.col), false);
+        return { ...state, activeSelectedRangeIdx: nextSelectionRangeIdx }
+    } else { // tab/enter and all cells inside active range except last cell && shift + tab/enter and all cells inside active range except first cell
+        const focusedCellColIdxInRange = direction === 'up' || direction === 'down' ? Math.floor(newPosInRange / rowCount) : newPosInRange % colCount;
+        const focusedCellRowIdxInRange = direction === 'up' || direction === 'down' ? newPosInRange % rowCount : Math.floor(newPosInRange / colCount)
+        const focusedCellColIdx = asr.first.col.idx + focusedCellColIdxInRange;
+        const focusedCellRowIdx = asr.first.row.idx + focusedCellRowIdxInRange;
+        state = focusLocation(
             state,
-            cellMatrix.getLocation(
-                focusedLocation.row.idx,
-                focusedLocation.col.idx + 1
-            ),
-            true,
+            state.cellMatrix.getLocation(focusedCellRowIdx, focusedCellColIdx),
+            asr ? (asr.cols.length > 1 || asr.rows.length > 1 ? false : true) : true
         );
-    } else if (
-        event.keyCode === keyCodes.TAB &&
-        shiftPressed &&
-        focusedLocation.col.idx > 0
-    ) {
-        return focusLocation(
-            state,
-            cellMatrix.getLocation(
-                focusedLocation.row.idx,
-                focusedLocation.col.idx - 1
-            ),
-            true
-        );
+        return state;
     }
-    return state
 }
 
-function handleEnterKey(event: KeyboardEvent, state: State, shiftPressed: boolean) {
-    const focusedLocation = state.focusedLocation!;
-    const cellMatrix = state.cellMatrix;
-    if (
-        !shiftPressed &&
-        state.isFocusedCellInEditMode &&
-        focusedLocation.row.idx < cellMatrix.last.row.idx
-    ) {
-        return focusLocation(
-            state,
-            cellMatrix.getLocation(
-                focusedLocation.row.idx + 1,
-                focusedLocation.col.idx
-            ),
-            true
-        );
-    } else if (
-        shiftPressed &&
-        state.isFocusedCellInEditMode &&
-        focusedLocation.row.idx > 0
-    ) {
-        return focusLocation(
-            state,
-            cellMatrix.getLocation(
-                focusedLocation.row.idx - 1,
-                focusedLocation.col.idx
-            ),
-            true
-        );
-    }
-    if (
-        !shiftPressed &&
-        !state.isFocusedCellInEditMode
-        // !state.isFocusedCellReadOnly 
-    ) {
-        // TODO check , this might be a double
-        const cellTemplate = state.cellTemplates[focusedLocation.cell.type];
-        //const { cellData, enableEditMode } = cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data)
-        //return { ...state, isFocusedCellInEditMode: enableEditMode };
-    } else if (shiftPressed && event.keyCode === keyCodes.ENTER && focusedLocation.row.idx > 0) {
-        return focusCell(focusedLocation.col.idx, focusedLocation.row.idx - 1, state);
-    }
-    else {
-        return focusLocation(
-            state,
-            cellMatrix.getLocation(
-                focusedLocation.row.idx,
-                focusedLocation.col.idx
-            ),
-            true
-        );
-        // state.currentBehavior.handleKeyDown(event)
-        // TODO
-        // return this.innerBehavior.handleKeyDown(event);
-    }
-    return state
+function resizeSelectionUp(state: State, asr: Range, location: Location): State {
+    return (asr.first.row.idx > 0) ?
+        (asr.last.row.idx > location.row.idx) ?
+            resizeSelection(state, asr.first.col.idx, asr.last.col.idx, asr.first.row.idx, asr.last.row.idx - 1) :
+            resizeSelection(state, asr.last.col.idx, asr.first.col.idx, asr.last.row.idx, asr.first.row.idx - 1) :
+        state;
 }
 
-function handleSpecialKeys(event: KeyboardEvent, state: State) {
-    if (!state.isFocusedCellInEditMode && (event.keyCode === keyCodes.DELETE || event.keyCode === keyCodes.BACKSPACE)) {
-        const dataChanges: DataChange[] = []
-        state.selectedRanges.forEach(range =>
-            range.rows.forEach((row: Row) =>
-                range.cols.forEach((col: Column) => {
-                    const cell = state.cellMatrix.getCell(row.id, col.id);
-                    // TODO remove group
-                    state = trySetDataAndAppendChange(state, new Location(row, col), { data: cell.type !== 'group' ? '' : { name: '', isExpanded: cell.data.isExpanded, level: cell.data.level }, type: cell.type })
-                })
-            )
-        );
-        return { ...state, dataChanges };
-    }
-    return state
+function resizeSelectionDown(state: State, asr: Range, location: Location): State {
+    return (asr.last.row.idx < state.cellMatrix.last.row.idx) ?
+        (asr.first.row.idx < location.row.idx) ?
+            resizeSelection(state, asr.last.col.idx, asr.first.col.idx, asr.last.row.idx, asr.first.row.idx + 1) :
+            resizeSelection(state, asr.first.col.idx, asr.last.col.idx, asr.first.row.idx, asr.last.row.idx + 1) :
+        state;
 }
+
+function resizeSelectionLeft(state: State, asr: Range, location: Location): State {
+    return (asr.first.col.idx > 0) ?
+        (asr.last.col.idx > location.col.idx) ?
+            resizeSelection(state, asr.first.col.idx, asr.last.col.idx - 1, asr.first.row.idx, asr.last.row.idx) :
+            resizeSelection(state, asr.last.col.idx, asr.first.col.idx - 1, asr.last.row.idx, asr.first.row.idx) :
+        state;
+}
+
+function resizeSelectionRight(state: State, asr: Range, location: Location): State {
+    return (asr.last.col.idx < state.cellMatrix.last.col.idx) ?
+        (asr.first.col.idx < location.col.idx) ?
+            resizeSelection(state, asr.last.col.idx, asr.first.col.idx + 1, asr.last.row.idx, asr.first.row.idx) :
+            resizeSelection(state, asr.first.col.idx, asr.last.col.idx + 1, asr.first.row.idx, asr.last.row.idx) :
+        state;
+}
+
+function resizeSelection(state: State, firstColIdx: number, lastColIdx: number, firstRowIdx: number, lastRowIdx: number): State {
+    if (state.disableRangeSelection)
+        return state;
+
+    const start = state.cellMatrix.getLocation(firstRowIdx, firstColIdx);
+    const end = state.cellMatrix.getLocation(lastRowIdx, lastColIdx);
+    let selectedRanges = state.selectedRanges.slice();
+    selectedRanges[state.activeSelectedRangeIdx] = state.cellMatrix.getRange(start, end);
+    // TODO implement scrolling
+    // if (scroll)
+    //     scrollIntoView(state, end);
+
+    return { ...state, selectedRanges };
+}
+

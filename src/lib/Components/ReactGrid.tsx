@@ -29,10 +29,10 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
             state = { ...state, selectedRanges: [...state.selectedRanges].map(range => state.cellMatrix.validateRange(range)) }
         }
 
-        if (state.cellMatrix.cols.length > 0 && state.focusedLocation) {
+        if (state.cellMatrix.cols.length > 0 && state.focusedLocation && !state.currentlyEditedCell) {
             state = { ...state, focusedLocation: state.cellMatrix.validateLocation(state.focusedLocation) }
             // TODO check it
-            setTimeout(() => state.hiddenFocusElement.focus());
+            setTimeout(() => { if (document.activeElement !== state.hiddenFocusElement) state.hiddenFocusElement.focus(); });
         }
 
         if (state.visibleRange && dataHasChanged) {
@@ -41,7 +41,6 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
 
         return {
             ...state,
-            currentlyEditedCell: state.isFocusedCellInEditMode && state.focusedLocation ? { ...state.focusedLocation.cell } : undefined,
             cellTemplates: { ...defaultCellTemplates, ...props.cellTemplates },
             customFocuses: props.customFocuses,
             disableFillHandle: props.disableFillHandle,
@@ -112,8 +111,8 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
     private handleContextMenu = (event: PointerEvent) => this.updateOnNewState(this.state.currentBehavior.handleContextMenu(event, this.state));
 
     private updateOnNewState(state: State) {
-        if (state === this.state) return;
         const dataChanges = state.queuedDataChanges;
+        if (state === this.state && dataChanges.length === 0) return;
         this.setState({ ...state, queuedDataChanges: [] });
         if (this.props.onDataChanged && dataChanges.length > 0) {
             this.props.onDataChanged(dataChanges);

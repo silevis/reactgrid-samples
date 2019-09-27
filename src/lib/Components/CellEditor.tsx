@@ -8,12 +8,12 @@ interface CellEditorProps {
 }
 
 export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
-    const [cellData, setCellData] = React.useState(props.state.currentlyEditedCell!);
+    const cell = props.state.currentlyEditedCell!;
     const location = props.state.focusedLocation!;
     const [position, setPosition] = React.useState(calculatedEditorPosition(location, props.state));
-    let lastKeyCode = props.state.lastKeyCode;
-    const cellType = props.state.cellTemplates[cellData.type] ? cellData.type : 'text';
     React.useEffect(() => setPosition(calculatedEditorPosition(location, props.state)), []);
+    const cellTemplate = props.state.cellTemplates[cell.type];
+    const customStyle = cellTemplate.getCustomStyle ? cellTemplate.getCustomStyle(cell.data, true) : {};
 
     // TODO https://github.com/silevis/reactgrid/issues/33
     if (isBrowserIE()) {
@@ -23,6 +23,7 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
     return (
         <div
             style={{
+                ...customStyle,
                 boxSizing: 'border-box',
                 position: 'absolute',
                 top: position.top - 1,
@@ -35,19 +36,16 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
                 boxShadow: '1px 1px 6px rgba(0, 0, 0, 0.2)',
                 zIndex: 5
             }}
-            onBlur={() => { if (lastKeyCode !== keyCodes.ESC) props.state.updateState(state => trySetDataAndAppendChange(state, location, cellData)) }}
-            onKeyDown={e => {
-                lastKeyCode = e.keyCode;
-                if (e.keyCode !== keyCodes.ENTER && e.keyCode !== keyCodes.ESC && e.keyCode !== keyCodes.TAB) {
-                    e.stopPropagation();
-                }
-            }}
         >
-            {props.state.cellTemplates[cellType].renderContent({
-                cellData: cellData.data,
+            {cellTemplate.renderContent({
+                cellData: cell.data,
                 isInEditMode: true,
-                lastKeyCode: lastKeyCode,
-                onCellDataChanged: (cd) => { setCellData({ data: cd, type: cellType }) }
+                onCellDataChanged: (cellData, commit) => {
+                    const newCell = { data: cellData, type: cell.type };
+                    props.state.currentlyEditedCell = commit ? undefined : newCell;
+                    if (commit)
+                        props.state.updateState(state => trySetDataAndAppendChange(state, location, newCell))
+                }
             })}
         </div>
     )

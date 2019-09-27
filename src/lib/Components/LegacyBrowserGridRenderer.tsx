@@ -301,7 +301,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                         />
                     </div>
                 </div >
-                {state.isFocusedCellInEditMode && state.currentlyEditedCell && <CellEditor state={state} />}
+                {state.currentlyEditedCell && <CellEditor state={state} />}
             </div >
         )
     }

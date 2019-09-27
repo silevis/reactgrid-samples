@@ -20,7 +20,7 @@ export interface ClipboardData {
 export class DefaultBehavior extends Behavior {
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
-        state = { ...state, lastKeyCode: 0, currentBehavior: this.getNewBehavior(event, location, state) }
+        state = { ...state, currentBehavior: this.getNewBehavior(event, location, state) }
         return state.currentBehavior.handlePointerDown(event, location, state);
     }
 
@@ -67,22 +67,21 @@ export class DefaultBehavior extends Behavior {
     }
 
     handleDoubleClick(event: PointerEvent, location: Location, state: State): State {
-        // TODO this is a double (cellSelectionBehavior)
-        if (state.isFocusedCellInEditMode /*|| this.grid.state.isFocusedCellReadOnly*/) {
-            event.preventDefault();
-            event.stopPropagation();
-        } else if (location.equals(state.focusedLocation)) {
-            const cell = state.focusedLocation!.cell;
-            const cellTemplate = state.cellTemplates[cell.type];
-            if (cellTemplate.isReadonly && cellTemplate.isReadonly(cell.data) || !cellTemplate.handleKeyDown)
-                return state;
+        // TODO remove if it works without
+        // if (state.currentlyEditedCell) {
+        //     event.preventDefault();
+        //     event.stopPropagation();
+        // } else 
+        if (state.focusedLocation && location.equals(state.focusedLocation)) {
+            const cellTemplate = state.cellTemplates[location.cell.type];
+            if (cellTemplate.handleKeyDown) {
+                const { cellData, enableEditMode } = cellTemplate.handleKeyDown(state.focusedLocation.cell.data, 1, event.ctrlKey, event.shiftKey, event.altKey);
+                console.log(location.cell.type)
+                if (enableEditMode) {
 
-            const { cellData, enableEditMode } = cellTemplate.handleKeyDown(1, cell.data);
-            return {
-                ...state,
-                currentlyEditedCell: { type: cell.type, data: cellData },
-                isFocusedCellInEditMode: enableEditMode
-            };
+                    return { ...state, currentlyEditedCell: { data: cellData, type: location.cell.type } };
+                }
+            }
         }
         return state;
     }
