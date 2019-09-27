@@ -1,19 +1,8 @@
 import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
 import { CellRenderProps, CellTemplate } from '../Common';
-
-// TODO move to own file
-const isTextInput = (keyCode: number) =>
-    (keyCode >= keyCodes.ZERO && keyCode <= keyCodes.Z) ||
-    (keyCode >= keyCodes.NUM_PAD_0 && keyCode <= keyCodes.DIVIDE) ||
-    (keyCode >= keyCodes.SEMI_COLON && keyCode <= keyCodes.SINGLE_QUOTE) ||
-    (keyCode == keyCodes.SPACE);
-
-const isNavigationKey = (keyCode: number) =>
-    keyCode == keyCodes.LEFT_ARROW || keyCode == keyCodes.RIGHT_ARROW ||
-    keyCode == keyCodes.END || keyCode == keyCodes.HOME || keyCode == keyCodes.BACKSPACE
-
-export class TextCellTemplate implements CellTemplate<string> {
+import { isTextInput, isNavigationKey } from './keyCodeCheckings'
+export class TextCellTemplate implements CellTemplate<string, any> {
 
     isValid(cellData: string): boolean {
         return typeof (cellData) === 'string';
@@ -27,13 +16,13 @@ export class TextCellTemplate implements CellTemplate<string> {
         return cellData;
     }
 
-    handleKeyDown(cellData: string, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
+    handleKeyDown(cellData: string, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
         if (!ctrl && !alt && isTextInput(keyCode))
             return { cellData: '', enableEditMode: true }
         return { cellData, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 
-    renderContent: (props: CellRenderProps<string>) => React.ReactNode = (props) => {
+    renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = (props) => {
         if (!props.isInEditMode)
             return props.cellData;
 

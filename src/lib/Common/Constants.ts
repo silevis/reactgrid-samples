@@ -16,6 +16,7 @@ export const keyCodes = {
     A: 65,
     Z: 90,
     ZERO: 48,
+    NINE: 57,
     NUM_PAD_0: 96,
     NUM_PAD_9: 105,
     PAGE_UP: 33,

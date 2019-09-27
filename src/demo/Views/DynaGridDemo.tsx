@@ -368,7 +368,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
             id: record.id,
             height: 25,
             reorderable: this.state.rowReordering,
-            cells: this.state.fields.map(field => { return { data: record[field.name], type: rowIdx == 0 ? 'header' : field.type } }),
+            cells: this.state.fields.map(field => { return { data: record[field.name], type: rowIdx == 0 ? 'header' : field.type, props: 'xDD' } }),
             onDrop: (ids: any[], position: string) => {
                 this.setState({ records: this.reorderedRows(ids as any[], record.id, position) })
             },

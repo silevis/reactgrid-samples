@@ -2,7 +2,7 @@ import * as React from 'react';
 import { keyCodes } from '../../lib/Common/Constants';
 import { CellRenderProps, CellTemplate } from '../../lib/Common';
 
-export class FlagCellTemplate implements CellTemplate<string> {
+export class FlagCellTemplate implements CellTemplate<string, any> {
 
     isValid(data: string): boolean {
         return (typeof (data) === 'string');
@@ -16,11 +16,11 @@ export class FlagCellTemplate implements CellTemplate<string> {
         return cellData;
     }
 
-    handleKeyDown(cellData: string) {
+    handleKeyDown(cellData: string, props: any) {
         return { cellData, enableEditMode: true }
     }
 
-    renderContent: (props: CellRenderProps<string>) => React.ReactNode = (props) => {
+    renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = (props) => {
         if (!props.isInEditMode) {
             const flagISO = props.cellData.toLowerCase(); // ISO 3166-1, 2/3 letters
             const flagURL = 'https://restcountries.eu/data/' + flagISO + '.svg';

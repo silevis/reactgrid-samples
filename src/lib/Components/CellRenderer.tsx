@@ -50,6 +50,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
                 cellTemplate.renderContent({
                     cellData: props.state.cellTemplates[cell.type].isValid(cell.data) ? cell.data : '',
                     isInEditMode: false,
+                    props: cell.props,
                     onCellDataChanged: (cellData, commit) => {
                         if (!commit) throw 'commit should be set to true.'
                         props.state.updateState(state => trySetDataAndAppendChange(state, location, { data: cellData, type: cell.type }))

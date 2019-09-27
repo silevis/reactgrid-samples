@@ -22,7 +22,7 @@ interface GroupHeaderCellData {
     depth: number;
 }
 
-export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData> {
+export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData, any> {
 
     isValid(cellData: GroupHeaderCellData): boolean {
         return typeof (cellData.name) === 'string' && (cellData.isExpanded === undefined || typeof (cellData.isExpanded) === 'boolean') && typeof (cellData.depth) === 'number';
@@ -36,14 +36,14 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
         return cellData.name;
     }
 
-    handleKeyDown(cellData: GroupHeaderCellData, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
+    handleKeyDown(cellData: GroupHeaderCellData, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
         if (keyCode === keyCodes.SPACE) {
             cellData.isExpanded = !cellData.isExpanded;
         }
         return { cellData: Object.assign({}, cellData), enableEditMode: true }
     }
 
-    renderContent: (props: CellRenderProps<GroupHeaderCellData>) => React.ReactNode = (props) => {
+    renderContent: (props: CellRenderProps<GroupHeaderCellData, any>) => React.ReactNode = (props) => {
         const cellData = Object.assign({}, props.cellData);
 
         return (

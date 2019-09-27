@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
 import { CellRenderProps, CellTemplate } from '../Common';
+import { isNumberInput, isNavigationKey } from './keyCodeCheckings'
 
-export class NumberCellTemplate implements CellTemplate<number> {
+export class NumberCellTemplate implements CellTemplate<number, any> {
 
     isValid(cellData: number): boolean {
         return typeof (cellData) === 'number';
@@ -16,24 +17,15 @@ export class NumberCellTemplate implements CellTemplate<number> {
         return cellData.toString();
     }
 
-    handleKeyDown(cellData: number, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
-        return { cellData, enableEditMode: true };
+    handleKeyDown(cellData: number, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
+        if (!ctrl && !alt && !shift && isNumberInput(keyCode))
+            return { cellData: NaN, enableEditMode: true }
+        return { cellData, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 
-    renderContent: (props: CellRenderProps<number>) => React.ReactNode = (props) => {
+    renderContent: (props: CellRenderProps<number, any>) => React.ReactNode = (props) => {
         if (!props.isInEditMode) {
             return isNaN(props.cellData) ? '' : props.cellData;
-        }
-
-        const validate = (keyCode: number) => {
-            if (keyCode == 8 ||
-                (keyCode >= 37 && keyCode <= 40) ||
-                (keyCode >= 46 && keyCode <= 57) ||
-                (keyCode >= 96 && keyCode <= 105) ||
-                keyCode === 190) {
-                return true;
-            }
-            return false;
         }
 
         return <input
@@ -49,12 +41,15 @@ export class NumberCellTemplate implements CellTemplate<number> {
             ref={input => {
                 if (input) {
                     input.focus();
-                    // input.setSelectionRange(input.value.length, input.value.length);
+                    // input.setSelectionRange(input.value.length, input.value.length);s
                 }
             }}
             defaultValue={this.cellDataToText(props.cellData)}
             onChange={e => props.onCellDataChanged(this.textToCellData(e.currentTarget.value), false)}
-            onKeyDown={e => !validate(e.keyCode) ? e.preventDefault() : null}
+            onKeyDown={e => {
+                if (isNumberInput(e.keyCode) || isNavigationKey(e.keyCode)) e.stopPropagation();
+                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cellData.toString(); // reset
+            }}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}

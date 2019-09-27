@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { CellTemplate, CellRenderProps } from '../Common';
 
-export class HeaderCellTemplate implements CellTemplate<string> {
+export class HeaderCellTemplate implements CellTemplate<string, any> {
 
     isReadonly = () => true;
 
@@ -13,5 +13,5 @@ export class HeaderCellTemplate implements CellTemplate<string> {
 
     getCustomStyle = (cellData: string) => ({ background: '#f3f3f3' })
 
-    renderContent: (props: CellRenderProps<string>) => React.ReactNode = (props) => props.cellData
+    renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = (props) => props.cellData
 }
