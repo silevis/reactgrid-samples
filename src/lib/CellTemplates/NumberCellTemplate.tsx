@@ -3,7 +3,6 @@ import { keyCodes } from '../Common/Constants';
 import { CellRenderProps, CellTemplate } from '../Common';
 
 export class NumberCellTemplate implements CellTemplate<number> {
-    readonly hasEditMode = true;
 
     validate(data: any): number {
         return (typeof (data) === 'number') ? data : parseFloat(data);
@@ -18,10 +17,8 @@ export class NumberCellTemplate implements CellTemplate<number> {
     }
 
     handleKeyDown(keyCode: number, cellData: number) {
-        return { editable: true, cellData }
+        return { cellData, enableEditMode: true };
     }
-
-    customStyle: React.CSSProperties = {};
 
     renderContent: (props: CellRenderProps<number>) => React.ReactNode = (props) => {
         if (!props.isInEditMode) {

@@ -3,7 +3,6 @@ import { State, Range, PointerEvent, CellMatrix, Behavior, Row, Column, Location
 import { PartialArea } from '../Components/PartialArea';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
 import { trySetDataAndAppendChange } from '../Functions/trySetDataAndAppendChange';
-import { TextCellTemplate } from '../CellTemplates/TextCellTemplate';
 
 type Direction = '' | 'left' | 'right' | 'up' | 'down';
 
@@ -165,7 +164,7 @@ export class FillHandleBehavior extends Behavior {
     private iterateFillRangeRows(state: State, values: Cell[]): State {
         this.fillRange && this.fillRange.rows.forEach((row: Row, i: number) =>
             this.fillRange!.cols.forEach((col: Column) => {
-                state = this.updateCellData(new Location(row, col), state, values[i]);
+                state = trySetDataAndAppendChange(state, new Location(row, col), values[i]);
             })
         );
         return state;
@@ -174,20 +173,9 @@ export class FillHandleBehavior extends Behavior {
     private iterateFillRangeCols(state: State, values: Cell[]): State {
         this.fillRange && this.fillRange.rows.forEach((row: Row) =>
             this.fillRange!.cols.forEach((col: Column, i: number) => {
-                this.updateCellData(new Location(row, col), state, values[i]);
+                state = trySetDataAndAppendChange(state, new Location(row, col), values[i]);
             })
         );
-        return state;
-    }
-
-    private updateCellData(location: Location, state: State, cell: Cell): State {
-        // TODO expect to have the proper TextCellTemplate
-        const cellTemplate = state.cellTemplates[cell.type] ? state.cellTemplates[cell.type] : new TextCellTemplate();
-        const data = cellTemplate.validate(cell.data);
-        const locationCellTemplate = state.cellTemplates[location.cell.type] ? state.cellTemplates[location.cell.type] : new TextCellTemplate();
-        if (!locationCellTemplate.handleKeyDown(0, data).editable)
-            return state;
-        state = trySetDataAndAppendChange(state, location, { type: cell.type, data, text: cellTemplate.cellDataToText(data) })
         return state;
     }
 

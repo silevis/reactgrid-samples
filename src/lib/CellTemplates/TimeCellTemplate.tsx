@@ -3,7 +3,6 @@ import { keyCodes } from '../Common/Constants';
 import { CellRenderProps, CellTemplate } from '../Common';
 
 export class TimeCellTemplate implements CellTemplate<string> {
-    readonly hasEditMode = true;
 
     validate(data: any): string {
         const time_regex = /^\d{2}\:\d{2}$/;
@@ -19,11 +18,13 @@ export class TimeCellTemplate implements CellTemplate<string> {
         return cellData;
     }
 
-    handleKeyDown(keyCode: number, cellData: string) {
-        return { editable: true, cellData }
+    isReadOnly() {
+        return true;
     }
 
-    customStyle: React.CSSProperties = {};
+    handleKeyDown(keyCode: number, cellData: string) {
+        return { cellData, enableEditMode: true };
+    }
 
     renderContent: (props: CellRenderProps<string>) => React.ReactNode = (props) => {
         if (!props.isInEditMode)

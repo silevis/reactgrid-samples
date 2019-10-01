@@ -1,10 +1,8 @@
 import { State, KeyboardEvent, keyCodes, Row, Column, DataChange, Location } from "../../Common";
-import { focusLocation, isBrowserIE, getDataToPasteInIE } from "../../Functions";
+import { focusLocation } from "../../Functions";
 import { handleResizeSelectionWithKeys } from "./handleResizeSelectionWithKeys";
 import { handleKeyNavigationInsideSelection as handleKeyNavigationInsideSelection } from "./handleKeyNavigationInsideSelection";
 import { trySetDataAndAppendChange } from "../../Functions/trySetDataAndAppendChange";
-import { copySelectedRangeToClipboard, pasteData } from "../DefaultBehavior";
-import { TextCellTemplate } from "../../CellTemplates/TextCellTemplate";
 
 export function handleKeyDown(state: State, event: KeyboardEvent): State {
     const focusedLocation = state.focusedLocation!;
@@ -12,16 +10,12 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
     state.lastKeyCode = event.keyCode;
     if (!focusedLocation) { return state }
 
-    // TODO remove new TextCellTemplate
-    const cellTemplate = state.cellTemplates[focusedLocation.cell.type] ? state.cellTemplates[focusedLocation.cell.type] : new TextCellTemplate();
-    if ((focusedLocation.cell.data != cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data) &&
+    const cellTemplate = state.cellTemplates[focusedLocation.cell.type];
+    const { cellData, enableEditMode } = cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data);
+    if ((focusedLocation.cell.data != cellData &&
+        // TODO what is this?
         state.selectedRanges.length == 1 && state.selectedRanges[0].first.equals(state.selectedRanges[0].last))) {
-
-        state = trySetDataAndAppendChange(state, focusedLocation, {
-            type: focusedLocation.cell.type,
-            data: cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data).cellData
-        })
-
+        state = trySetDataAndAppendChange(state, focusedLocation, { type: focusedLocation.cell.type, data: cellData });
     }
 
     if (event.shiftKey && !isEnterKey(key) && !isTabKey(key) && !possibleCharactersToEnter(event) && !state.isFocusedCellInEditMode) {
@@ -64,14 +58,14 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
         );
     }
 
+    // TODO this is probably a double . check it!
     if (!event.ctrlKey && (possibleCharactersToEnter(event) || isEnterKey(key) || isSpaceKey(key))) {
-        return { ...state, isFocusedCellInEditMode: cellTemplate.hasEditMode }
+        return { ...state, isFocusedCellInEditMode: enableEditMode }
     }
 
     state.hiddenFocusElement.focus();
     return { ...state };
 }
-
 
 // TODO Check it
 export const isArrowKey = (key: string): boolean => key.includes('Arrow');
@@ -246,10 +240,10 @@ function handleEnterKey(event: KeyboardEvent, state: State, shiftPressed: boolea
         !state.isFocusedCellInEditMode
         // !state.isFocusedCellReadOnly 
     ) {
-        const cellTemplate = state.cellTemplates[focusedLocation.cell.type]
-            ? state.cellTemplates[focusedLocation.cell.type]
-            : new TextCellTemplate;
-        return { ...state, isFocusedCellInEditMode: cellTemplate.hasEditMode };
+        // TODO check , this might be a double
+        const cellTemplate = state.cellTemplates[focusedLocation.cell.type];
+        const { cellData, enableEditMode } = cellTemplate.handleKeyDown(event.keyCode, focusedLocation.cell.data)
+        return { ...state, isFocusedCellInEditMode: enableEditMode };
     } else if (shiftPressed && event.keyCode === keyCodes.ENTER && focusedLocation.row.idx > 0) {
         return focusCell(focusedLocation.col.idx, focusedLocation.row.idx - 1, state);
     }
@@ -276,9 +270,7 @@ function handleSpecialKeys(event: KeyboardEvent, state: State) {
             range.rows.forEach((row: Row) =>
                 range.cols.forEach((col: Column) => {
                     const cell = state.cellMatrix.getCell(row.id, col.id);
-                    // TODO what happens here !?
-                    if (state.cellTemplates[cell.type].handleKeyDown(keyCodes.DELETE, cell.data).editable)
-                        trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' })
+                    state = trySetDataAndAppendChange(state, new Location(row, col), { data: cell.type !== 'group' ? '' : { name: '', isExpanded: cell.data.isExpanded, level: cell.data.level }, type: cell.type })
                 })
             )
         );

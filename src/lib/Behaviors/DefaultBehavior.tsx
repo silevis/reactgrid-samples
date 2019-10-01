@@ -26,17 +26,19 @@ export class DefaultBehavior extends Behavior {
 
     private getNewBehavior(event: any, location: PointerLocation, state: State): Behavior {
         // changing behavior will disable all keyboard event handlers
+        console.log(event.pointerType)
         if (event.pointerType === 'mouse' && location.row.idx == 0 && location.cellX > location.col.width - 7 && location.col.resizable) {
             return new ResizeColumnBehavior();
         } else if (location.row.idx == 0 && state.selectedIds.includes(location.col.id) && !event.ctrlKey && state.selectionMode == 'column' && location.col.reorderable) {
             return new ColumnReorderBehavior();
-        } else if (location.row.idx == 0) {
+        } else if (location.row.idx == 0 && (event.target.className !== 'dg-fill-handle' && event.target.className !== 'dg-touch-fill-handle')) {
             return new ColumnSelectionBehavior();
         } else if (location.col.idx == 0 && state.selectedIds.includes(location.row.id) && !event.ctrlKey && state.selectionMode == 'row' && location.row.reorderable) {
             return new RowReorderBehavior();
-        } else if (location.col.idx == 0) {
+        } else if (location.col.idx == 0 && (event.target.className !== 'dg-fill-handle' && event.target.className !== 'dg-touch-fill-handle')) {
             return new RowSelectionBehavior();
         } else if ((event.pointerType === 'mouse' || event.pointerType === undefined) && event.target.className === 'dg-fill-handle' && !state.disableFillHandle) { // event.pointerType === undefined -> for cypress tests (is always undefined)
+            console.log('here')
             return new FillHandleBehavior();
         } else {
             return new CellSelectionBehavior();
@@ -71,13 +73,13 @@ export class DefaultBehavior extends Behavior {
             event.preventDefault();
             event.stopPropagation();
         } else if (location.equals(state.focusedLocation)) {
-            // TODO cellTemplates should always be provided!
-            const cellTemplate = state.cellTemplates[state.focusedLocation!.cell.type]
-                ? state.cellTemplates[state.focusedLocation!.cell.type]
-                : new TextCellTemplate;
+            const cell = state.focusedLocation!.cell;
+            const cellTemplate = state.cellTemplates[cell.type];
+            const { cellData, enableEditMode } = cellTemplate.handleKeyDown(1, cell.data);
             return {
                 ...state,
-                isFocusedCellInEditMode: cellTemplate.hasEditMode
+                currentlyEditedCell: { type: cell.type, data: cellData },
+                isFocusedCellInEditMode: enableEditMode
             };
         }
         return state;
@@ -142,12 +144,6 @@ export function pasteData(state: State, pasteContent: ClipboardData[][]): State 
     if (pasteContent.length === 1 && pasteContent[0].length === 1) {
         activeSelectedRange.rows.forEach(row =>
             activeSelectedRange.cols.forEach(col => {
-                const cell = state.cellMatrix.getCell(row.id, col.id);
-                const cellTemplate = state.cellTemplates[cell.type]
-                    ? state.cellTemplates[cell.type]
-                    : new TextCellTemplate;
-                if (!cellTemplate.handleKeyDown(0, pasteContent[0][0].data).editable)
-                    return
                 state = trySetDataAndAppendChange(state, new Location(row, col), pasteContent[0][0])
             })
         )
@@ -160,11 +156,6 @@ export function pasteData(state: State, pasteContent: ClipboardData[][]): State 
                 const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx
                 if (rowIdx <= cellMatrix.last.row.idx && colIdx <= cellMatrix.last.col.idx) {
                     lastLocation = cellMatrix.getLocation(rowIdx, colIdx)
-                    const cellTemplate = state.cellTemplates[lastLocation.cell.type]
-                        ? state.cellTemplates[lastLocation.cell.type]
-                        : new TextCellTemplate;
-                    if (!cellTemplate.handleKeyDown(0, pasteValue.data).editable)
-                        return
                     state = trySetDataAndAppendChange(state, lastLocation, pasteValue)
                 }
             })
@@ -206,7 +197,8 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
             const cellTemplate = state.cellTemplates[cell.type]
                 ? state.cellTemplates[cell.type]
                 : new TextCellTemplate;
-            const data = cellTemplate.validate(cell.data)
+            let data = cellTemplate.validate(cell.data);
+            data = cell.type === 'group' ? data.name : data;
             tableCell.textContent = data;  // for undefined values
             if (!cell.data) {
                 tableCell.innerHTML = '<img>';
@@ -215,8 +207,7 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
             tableCell.setAttribute('data-type', cell.type)
             tableCell.style.border = '1px solid #D3D3D3'
             if (removeValues) {
-                if (cellTemplate.handleKeyDown(0, cell.data).editable)
-                    state = trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' });
+                state = trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' });
             }
         })
     })
@@ -226,7 +217,8 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
     div.focus()
     document.execCommand('selectAll', false, undefined)
     document.execCommand('copy')
-    document.body.removeChild(div)
+    document.body.removeChild(div);
+    state.hiddenFocusElement.focus();
 }
 
 export function copySelectedRangeToClipboardInIE(state: State, removeValues = false) {
@@ -258,11 +250,7 @@ export function copySelectedRangeToClipboardInIE(state: State, removeValues = fa
                 }
             }
             if (removeValues) {
-                const cellTemplate = state.cellTemplates[cell.type]
-                    ? state.cellTemplates[cell.type]
-                    : new TextCellTemplate;
-                if (cellTemplate.handleKeyDown(0, cellData).editable)
-                    state = trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' });
+                state = trySetDataAndAppendChange(state, new Location(row, col), { data: '', type: 'text' });
             }
         })
         const areAllEmptyCells = activeSelectedRange.cols.every(el => {

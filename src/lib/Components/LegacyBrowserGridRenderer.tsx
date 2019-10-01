@@ -290,6 +290,7 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                             orientation={state.lineOrientation}
                             cellMatrix={state.cellMatrix}
                             shadowSize={state.shadowSize}
+                            cursor={state.shadowCursor}
                         />
                         <ContextMenu
                             state={state}
