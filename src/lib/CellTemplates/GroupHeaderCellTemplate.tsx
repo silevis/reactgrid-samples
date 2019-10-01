@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
+import { isTextInput, isNavigationKey } from './keyCodeCheckings'
 import { CellRenderProps, CellTemplate } from '../Common';
 import styled from 'styled-components';
 
@@ -37,10 +38,14 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
     }
 
     handleKeyDown(cellData: GroupHeaderCellData, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
-        if (keyCode === keyCodes.SPACE) {
+        let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER
+        if (keyCode === keyCodes.SPACE && cellData.isExpanded !== undefined) {
             cellData.isExpanded = !cellData.isExpanded;
+        } else if (!ctrl && !alt && isTextInput(keyCode)) {
+            cellData.name = ''
+            enableEditMode = true
         }
-        return { cellData: Object.assign({}, cellData), enableEditMode: true }
+        return { cellData, enableEditMode }
     }
 
     renderContent: (props: CellRenderProps<GroupHeaderCellData, any>) => React.ReactNode = (props) => {
@@ -48,7 +53,8 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
 
         return (
             !props.isInEditMode ?
-                <div style={{ width: '100%', marginLeft: 10 * (cellData.depth ? cellData.depth : 1) + (cellData.isExpanded === undefined ? 9 : 0) }}>
+                <div
+                    style={{ width: '100%', marginLeft: 10 * (cellData.depth ? cellData.depth : 1) + (cellData.isExpanded === undefined ? 9 : 0) }}>
                     {cellData.isExpanded !== undefined &&
                         <ChevronIcon
                             onPointerDown={e => {
