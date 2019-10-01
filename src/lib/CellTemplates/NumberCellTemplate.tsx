@@ -14,7 +14,7 @@ export class NumberCellTemplate implements CellTemplate<number, any> {
     }
 
     cellDataToText(cellData: number): string {
-        return cellData.toString();
+        return isNaN(cellData) ? '' : cellData.toString();
     }
 
     handleKeyDown(cellData: number, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
@@ -25,7 +25,7 @@ export class NumberCellTemplate implements CellTemplate<number, any> {
 
     renderContent: (props: CellRenderProps<number, any>) => React.ReactNode = (props) => {
         if (!props.isInEditMode) {
-            return isNaN(props.cellData) ? '' : props.cellData;
+            return this.cellDataToText(props.cellData);
         }
 
         return <input
