@@ -59,7 +59,7 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
     }
 
     render() {
-        const grid = (isBrowserIE() || isBrowserEdge()) ? LegacyBrowserGridRenderer : DefaultGridRenderer;
+        const grid = (typeof window !== 'undefined' && (isBrowserIE() || isBrowserEdge())) ? LegacyBrowserGridRenderer : DefaultGridRenderer;
         return React.createElement(grid as any, {
             state: this.state,
             onKeyDown: this.keyDownHandler,
