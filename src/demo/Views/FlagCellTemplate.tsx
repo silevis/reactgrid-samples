@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { keyCodes } from '../../lib/Common/Constants';
+import { isTextInput, isNavigationKey } from '../../lib/CellTemplates/keyCodeCheckings'
 import { CellRenderProps, CellTemplate } from '../../lib/Common';
 
-export class FlagCellTemplate implements CellTemplate<string> {
+export class FlagCellTemplate implements CellTemplate<string, any> {
 
-    validate(data: any): string {
-        return (typeof (data) === 'string') ? data : '';
+    isValid(data: string): boolean {
+        return (typeof (data) === 'string');
     }
 
     textToCellData(text: string): string {
@@ -16,11 +17,13 @@ export class FlagCellTemplate implements CellTemplate<string> {
         return cellData;
     }
 
-    handleKeyDown(keyCode: number, cellData: string) {
-        return { cellData, enableEditMode: true }
+    handleKeyDown(cellData: string, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
+        if (!ctrl && !alt && isTextInput(keyCode))
+            return { cellData: '', enableEditMode: true }
+        return { cellData, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 
-    renderContent: (props: CellRenderProps<string>) => React.ReactNode = (props) => {
+    renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = (props) => {
         if (!props.isInEditMode) {
             const flagISO = props.cellData.toLowerCase(); // ISO 3166-1, 2/3 letters
             const flagURL = 'https://restcountries.eu/data/' + flagISO + '.svg';
@@ -34,7 +37,6 @@ export class FlagCellTemplate implements CellTemplate<string> {
                 backgroundPosition: 'center center'
             }} />
         }
-        const preserveValueKeyCodes = [0, keyCodes.ENTER];
         return <input
             type='text'
             style={{
@@ -50,12 +52,16 @@ export class FlagCellTemplate implements CellTemplate<string> {
             ref={input => {
                 input && input.focus();
             }}
-            defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? props.cellData : ''}
-            onChange={e => props.onCellDataChanged(e.currentTarget.value)}
+            defaultValue={props.cellData}
+            onChange={e => props.onCellDataChanged(e.currentTarget.value, false)}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}
             onPointerDown={e => e.stopPropagation()}
+            onKeyDown={e => {
+                if (isTextInput(e.keyCode) || isNavigationKey(e.keyCode)) e.stopPropagation();
+                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cellData; // reset
+            }}
         />
     }
 }

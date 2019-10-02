@@ -1,4 +1,4 @@
-import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, PointerLocation, Id, SelectionMode } from "../Common";
+import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, keyCodes, PointerLocation, Id, SelectionMode, Cell } from "../Common";
 import { handleKeyDown } from "./DefaultBehavior/handleKeyDown";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
 import { ColumnSelectionBehavior } from "./ColumnSelectionBehavior";
@@ -6,27 +6,26 @@ import { ColumnReorderBehavior } from "./ColumnReorderBehavior";
 import { RowSelectionBehavior } from "./RowSelectionBehavior";
 import { RowReorderBehavior } from "./RowReorderBehavior";
 import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
-import { trySetDataAndAppendChange } from "../Functions/trySetDataAndAppendChange";
+import { trySetDataAndAppendChange } from "../Functions";
 import { FillHandleBehavior } from "./FillHandleBehavior";
 import { getLocationFromClient, focusLocation } from "../Functions";
 import { ResizeColumnBehavior } from "./ResizeColumnBehavior";
-import { TextCellTemplate } from "../CellTemplates/TextCellTemplate";
 
-interface ClipboardData {
-    type: string;
+export interface ClipboardData {
+    type?: string | null;
     data: any;
     text: string;
 }
+
 export class DefaultBehavior extends Behavior {
 
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State {
-        state = { ...state, lastKeyCode: 0, currentBehavior: this.getNewBehavior(event, location, state) }
+        state = { ...state, currentBehavior: this.getNewBehavior(event, location, state) }
         return state.currentBehavior.handlePointerDown(event, location, state);
     }
 
     private getNewBehavior(event: any, location: PointerLocation, state: State): Behavior {
         // changing behavior will disable all keyboard event handlers
-        console.log(event.pointerType)
         if (event.pointerType === 'mouse' && location.row.idx == 0 && location.cellX > location.col.width - 7 && location.col.resizable) {
             return new ResizeColumnBehavior();
         } else if (location.row.idx == 0 && state.selectedIds.includes(location.col.id) && !event.ctrlKey && state.selectionMode == 'column' && location.col.reorderable) {
@@ -38,7 +37,6 @@ export class DefaultBehavior extends Behavior {
         } else if (location.col.idx == 0 && (event.target.className !== 'dg-fill-handle' && event.target.className !== 'dg-touch-fill-handle')) {
             return new RowSelectionBehavior();
         } else if ((event.pointerType === 'mouse' || event.pointerType === undefined) && event.target.className === 'dg-fill-handle' && !state.disableFillHandle) { // event.pointerType === undefined -> for cypress tests (is always undefined)
-            console.log('here')
             return new FillHandleBehavior();
         } else {
             return new CellSelectionBehavior();
@@ -69,18 +67,20 @@ export class DefaultBehavior extends Behavior {
     }
 
     handleDoubleClick(event: PointerEvent, location: Location, state: State): State {
-        if (state.isFocusedCellInEditMode /*|| this.grid.state.isFocusedCellReadOnly*/) {
-            event.preventDefault();
-            event.stopPropagation();
-        } else if (location.equals(state.focusedLocation)) {
-            const cell = state.focusedLocation!.cell;
-            const cellTemplate = state.cellTemplates[cell.type];
-            const { cellData, enableEditMode } = cellTemplate.handleKeyDown(1, cell.data);
-            return {
-                ...state,
-                currentlyEditedCell: { type: cell.type, data: cellData },
-                isFocusedCellInEditMode: enableEditMode
-            };
+        // TODO remove if it works without
+        // if (state.currentlyEditedCell) {
+        //     event.preventDefault();
+        //     event.stopPropagation();
+        // } else 
+        if (state.focusedLocation && location.equals(state.focusedLocation)) {
+            const cellTemplate = state.cellTemplates[location.cell.type];
+            if (cellTemplate.handleKeyDown) {
+                const { cellData, enableEditMode } = cellTemplate.handleKeyDown(state.focusedLocation.cell.data, 1, event.ctrlKey, event.shiftKey, event.altKey);
+                if (enableEditMode) {
+
+                    return { ...state, currentlyEditedCell: { data: cellData, type: location.cell.type } };
+                }
+            }
         }
         return state;
     }
@@ -117,10 +117,12 @@ export class DefaultBehavior extends Behavior {
             for (let i = 0; i < cells.length; i++) {
                 const row: ClipboardData[] = [];
                 for (let j = 0; j < cells[i].children.length; j++) {
-                    const data = JSON.parse(cells[i].children[j].getAttribute('data-data')!)
+                    // TODO Use REACT-GRID in attribute 
+                    const rawData = cells[i].children[j].getAttribute('data-data');
+                    const data = rawData && JSON.parse(rawData);
                     const type = cells[i].children[j].getAttribute('data-type')
                     const textValue = data ? cells[i].children[j].innerHTML : '';
-                    row.push({ text: textValue, data: data, type: type! })
+                    row.push({ text: textValue, data: data, type: type })
                 }
                 pasteContent.push(row)
             }
@@ -139,12 +141,19 @@ export class DefaultBehavior extends Behavior {
     }
 }
 
+export function validateOuterData(state: State, clipboardData: ClipboardData): Cell {
+    const type = clipboardData.type
+    if (type && state.cellTemplates[type] && state.cellTemplates[type].isValid(clipboardData.data))
+        return { data: clipboardData.data, type }
+    return { data: clipboardData.text, type: 'text' }
+}
+
 export function pasteData(state: State, pasteContent: ClipboardData[][]): State {
     const activeSelectedRange = getActiveSelectedRange(state)
     if (pasteContent.length === 1 && pasteContent[0].length === 1) {
         activeSelectedRange.rows.forEach(row =>
             activeSelectedRange.cols.forEach(col => {
-                state = trySetDataAndAppendChange(state, new Location(row, col), pasteContent[0][0])
+                state = trySetDataAndAppendChange(state, new Location(row, col), validateOuterData(state, pasteContent[0][0]))
             })
         )
     } else {
@@ -156,7 +165,7 @@ export function pasteData(state: State, pasteContent: ClipboardData[][]): State 
                 const colIdx = activeSelectedRange.cols[0].idx + pasteColIdx
                 if (rowIdx <= cellMatrix.last.row.idx && colIdx <= cellMatrix.last.col.idx) {
                     lastLocation = cellMatrix.getLocation(rowIdx, colIdx)
-                    state = trySetDataAndAppendChange(state, lastLocation, pasteValue)
+                    state = trySetDataAndAppendChange(state, lastLocation, validateOuterData(state, pasteValue))
                 }
             })
         )
@@ -194,10 +203,8 @@ export function copySelectedRangeToClipboard(state: State, removeValues = false)
         activeSelectedRange.cols.forEach(col => {
             const tableCell = tableRow.insertCell()
             const cell = state.cellMatrix.getCell(row.id, col.id)!
-            const cellTemplate = state.cellTemplates[cell.type]
-                ? state.cellTemplates[cell.type]
-                : new TextCellTemplate;
-            let data = cellTemplate.validate(cell.data);
+            let data = cell.data;
+            // TODO remove hardcoded stuff
             data = cell.type === 'group' ? data.name : data;
             tableCell.textContent = data;  // for undefined values
             if (!cell.data) {

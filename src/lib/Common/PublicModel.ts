@@ -7,8 +7,6 @@
 
 // TODO Range is INTERNAL! Should not be public! 
 import { Range } from "./Range";
-import { KeyboardEvent } from "./domEvents";
-import { State } from "./State";
 
 export type Orientation = 'horizontal' | 'vertical';
 
@@ -44,7 +42,7 @@ export interface ReactGridProps {
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface CellTemplates {
-    [key: string]: CellTemplate<any>;
+    [key: string]: CellTemplate<any, any>;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
@@ -72,32 +70,55 @@ export interface CellMatrixProps {
     readonly frozenRightColumns?: number;
 }
 
+
+// TODO Proposal
+// type CellFactory<TCellData, TCellProps> = (cellData: TCellData, cellProps: TCellProps) => ICell<TCellData> | null;
+
+// interface ICell<TCellData> {
+//     isReadonly: boolean,
+//     isFocusable: boolean,
+//     text: string,
+//     parseText: (text: string) => void,
+//     handleKeyDown: (keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) => { cellData: TCellData, enableEditMode: boolean };
+//     getCustomStyle?(isInEditMode: boolean): React.CSSProperties;
+//     renderContent(isInEditMode: boolean, onCellDataChanged: (cellData: TCellData, commit: boolean) => void): React.ReactNode;
+// }
+
+
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 // This interface is used for the communication between DynaGrid and a cell
-export interface CellTemplate<TCellData> {
-    // Tries to validate (repair) any type of data (e.g. from paste)
-    // Returns null when the data couldn't be validated
-    validate(data: any): TCellData | null
+export interface CellTemplate<TCellData, TCellProps> {
+    // Returns true if the data in the cell is not replacable
+    // Default: _ => false
+    isReadonly?(data: TCellData, props?: TCellProps): boolean;
+    // Returns true if the data is valid
+    isValid(data: TCellData, props?: TCellProps): boolean;
+    // Returns true if accepts focus
+    // Default: _ => true
+    isFocusable?(data: TCellData, props?: TCellProps): boolean
     // Convert plain text (not encoded stuff) to cell data
     // Returns null when the data couldn't be converted
-    textToCellData?(text: string): TCellData | null
+    // Default: _ => null
+    textToCellData?(text: string): TCellData | null;
     // Convert cell data to plain text (not encoded stuff)
-    cellDataToText(cellData: TCellData): string;
+    cellDataToText(cellData: TCellData, props?: TCellProps): string;
     // The keyCode represents the key pressed on the keyboard, or 1 for a pointer event (double click).
     // Returns the cell data either affected by the event or not.
-    handleKeyDown(keyCode: number, cellData: TCellData): { cellData: TCellData, enableEditMode: boolean }
+    // Default: _ => { cellData: null, enableEditMode: false }  
+    handleKeyDown?(cellData: TCellData, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cellData: TCellData, enableEditMode: boolean, props?: any };
     // Custom styles based on cell data applied to the cells div element
-    getCustomStyle?(cellData: TCellData): React.CSSProperties;
+    // Default: _ => {}
+    getCustomStyle?(cellData: TCellData, isInEditMode: boolean, props?: any): React.CSSProperties;
     // Render the cell content
-    renderContent(props: CellRenderProps<TCellData>): React.ReactNode;
+    renderContent(props: CellRenderProps<TCellData, TCellProps>): React.ReactNode;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
-export interface CellRenderProps<TCellData> {
+export interface CellRenderProps<TCellData, TCellProps> {
     cellData: TCellData;
-    onCellDataChanged(cellData: TCellData): void;
+    props?: TCellProps,
+    onCellDataChanged(cellData: TCellData, commit: boolean): void;
     readonly isInEditMode: boolean;
-    readonly lastKeyCode: number;
 }
 
 export type Id = number | string;
@@ -114,10 +135,16 @@ export interface ColumnProps {
     readonly onResize?: (newWidth: number) => void;
 }
 
+export interface Cell {
+    data: any;
+    type: string;
+    props?: any;
+}
+
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface RowProps {
     readonly id: Id;
-    cells: { type: string, data: any }[];
+    cells: Cell[];
     readonly height: number;
     readonly reorderable: boolean;
     readonly canDrop?: (rowIds: Id[], position: DropPosition) => boolean;
@@ -129,5 +156,3 @@ export interface MenuOption {
     title: string;
     handler: () => void;
 }
-
-

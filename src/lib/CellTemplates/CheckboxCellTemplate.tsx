@@ -2,10 +2,10 @@ import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
 import { CellRenderProps as CellRenderProps, CellTemplate } from '../Common';
 
-export class CheckboxCellTemplate implements CellTemplate<boolean> {
+export class CheckboxCellTemplate implements CellTemplate<boolean, any> {
 
-    validate(data: any): boolean {
-        return (typeof (data) === 'boolean') ? data : false;
+    isValid(cellData: boolean): boolean {
+        return typeof (cellData) === 'boolean';
     }
 
     textToCellData(text: string): boolean {
@@ -16,13 +16,13 @@ export class CheckboxCellTemplate implements CellTemplate<boolean> {
         return cellData ? 'true' : '';
     }
 
-    handleKeyDown(keyCode: number, cellData: boolean) {
-        if (keyCode == keyCodes.SPACE || keyCode == keyCodes.ENTER)
+    handleKeyDown(cellData: boolean, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
+        if (keyCode === keyCodes.SPACE || keyCode === keyCodes.ENTER)
             cellData = !cellData
         return { cellData, enableEditMode: false }
     }
 
-    renderContent: (props: CellRenderProps<boolean>) => React.ReactNode = (props) => {
+    renderContent: (props: CellRenderProps<boolean, any>) => React.ReactNode = (props) => {
         return <input
             type="checkbox"
             style={{
@@ -37,7 +37,7 @@ export class CheckboxCellTemplate implements CellTemplate<boolean> {
                 zIndex: 1
             }}
             checked={props.cellData}
-            onChange={() => { props.onCellDataChanged(!this.validate(props.cellData)) }}
+            onChange={() => props.onCellDataChanged(!props.cellData, true)}
         />
     }
 }

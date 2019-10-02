@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
+import { isTextInput, isNavigationKey } from './keyCodeCheckings'
 import { CellRenderProps, CellTemplate } from '../Common';
 import styled from 'styled-components';
 
@@ -16,42 +17,50 @@ const ChevronIcon = styled.div`
     }
 `;
 
-export class GroupHeaderCellTemplate implements CellTemplate<any> {
-    readonly hasEditMode = true;
+interface GroupHeaderCellData {
+    name: string;
+    isExpanded: boolean | undefined;
+    depth: number;
+}
 
-    validate(data: any): any {
-        return { name: (typeof (data.name) === 'string') ? data.name : '', isExpanded: data.isExpanded !== undefined ? data.isExpanded : undefined, depth: data.depth };
+export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData, any> {
+
+    isValid(cellData: GroupHeaderCellData): boolean {
+        return typeof (cellData.name) === 'string' && (cellData.isExpanded === undefined || typeof (cellData.isExpanded) === 'boolean') && typeof (cellData.depth) === 'number';
     }
 
     textToCellData(text: string): any {
-        return {};
+        return { name: text, isExpanded: false, depth: 1 };
     }
 
-    cellDataToText(cellData: any) {
-        return cellData;
+    cellDataToText(cellData: GroupHeaderCellData) {
+        return cellData.name;
     }
 
-    handleKeyDown(keyCode: number, cellData: any) {
-        if (keyCode === keyCodes.SPACE) {
-            cellData.isExpanded = cellData.isExpanded !== undefined ? !cellData.isExpanded : undefined;
+    handleKeyDown(cellData: GroupHeaderCellData, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
+        let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER
+        if (keyCode === keyCodes.SPACE && cellData.isExpanded !== undefined) {
+            cellData.isExpanded = !cellData.isExpanded;
+        } else if (!ctrl && !alt && isTextInput(keyCode)) {
+            cellData.name = ''
+            enableEditMode = true
         }
-        return { cellData: Object.assign({}, cellData), enableEditMode: true }
+        return { cellData, enableEditMode }
     }
 
-    customStyle: React.CSSProperties = { background: '#fff' };
+    renderContent: (props: CellRenderProps<GroupHeaderCellData, any>) => React.ReactNode = (props) => {
+        const cellData = Object.assign({}, props.cellData);
 
-    renderContent: (props: CellRenderProps<any>) => React.ReactNode = (props) => {
-        const cellData: any = props.cellData;
-        const preserveValueKeyCodes = [0, keyCodes.ENTER];
         return (
             !props.isInEditMode ?
-                <div style={{ width: '100%', marginLeft: 10 * (cellData.depth ? cellData.depth : 1) + (cellData.isExpanded === undefined ? 9 : 0) }}>
+                <div
+                    style={{ width: '100%', marginLeft: 10 * (cellData.depth ? cellData.depth : 1) + (cellData.isExpanded === undefined ? 9 : 0) }}>
                     {cellData.isExpanded !== undefined &&
                         <ChevronIcon
                             onPointerDown={e => {
                                 e.stopPropagation();
                                 cellData.isExpanded = !cellData.isExpanded;
-                                if (props.onCellDataChanged) props.onCellDataChanged(cellData);
+                                props.onCellDataChanged(cellData, true);
                             }}
                             style={{
                                 transform: `${cellData.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`,
@@ -79,12 +88,9 @@ export class GroupHeaderCellTemplate implements CellTemplate<any> {
                             input.setSelectionRange(input.value.length, input.value.length);
                         }
                     }}
-                    defaultValue={preserveValueKeyCodes.includes(props.lastKeyCode) ? cellData.name : ''}
-                    onChange={e => {
-                        props.onCellDataChanged
-                            ? props.onCellDataChanged({ name: e.currentTarget.value, isExpanded: cellData.isExpanded, depth: cellData.depth })
-                            : { name: '', isExpanded: cellData.isExpanded, depth: cellData.depth }
-                    }
+                    defaultValue={cellData.name}
+                    onChange={e =>
+                        props.onCellDataChanged({ name: e.currentTarget.value, isExpanded: cellData.isExpanded, depth: cellData.depth }, false)
                     }
                     onCopy={e => e.stopPropagation()}
                     onCut={e => e.stopPropagation()}

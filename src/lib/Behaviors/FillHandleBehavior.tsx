@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { State, Range, PointerEvent, CellMatrix, Behavior, Row, Column, Location, DataChange, Cell } from "../Common";
+import { State, Range, PointerEvent, CellMatrix, Behavior, Row, Column, Location, Cell } from "../Common";
 import { PartialArea } from '../Components/PartialArea';
 import { getActiveSelectedRange } from '../Functions/getActiveSelectedRange';
-import { trySetDataAndAppendChange } from '../Functions/trySetDataAndAppendChange';
+import { trySetDataAndAppendChange } from '../Functions';
 
 type Direction = '' | 'left' | 'right' | 'up' | 'down';
 

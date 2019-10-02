@@ -1,23 +1,28 @@
-import { Location, State, Cell } from "../Common";
+import { Location, State } from "../Common";
 
-export function trySetDataAndAppendChange(state: State, location: Location, cell: Cell): State {
-    // 1: Unchanged => do nothing
-    const initialData = location.cell.data;
-    if (initialData === cell.data)
+export function trySetDataAndAppendChange(state: State, location: Location, cell: { data?: any, type?: string | null, text?: string }): State {
+    const initialCellData = location.cell.data;
+    if (cell.data && cell.data === initialCellData)
         return state;
 
-    const cellTemplate = state.cellTemplates[location.cell.type]
-    const newData =
-        // 2: Same type => validate data
-        ((cell.type === location.cell.type) && cellTemplate.validate(cell.data))
-        // 3: Different type => get data from text
-        || cellTemplate.textToCellData && cellTemplate.textToCellData(cell.text || '')
+    const targetCellTemplate = state.cellTemplates[location.cell.type];
+    if (targetCellTemplate.isReadonly && targetCellTemplate.isReadonly(initialCellData))
+        return state;
 
-    if (newData == null || newData == undefined)
+    let newData = null;
+    if (cell.type && cell.type === location.cell.type)
+        newData = cell.data;
+    else if (cell.type && state.cellTemplates[cell.type] && targetCellTemplate.textToCellData)
+        newData = targetCellTemplate.textToCellData(state.cellTemplates[cell.type].cellDataToText(cell.data))
+
+    if (newData === null && cell.text && targetCellTemplate.textToCellData)
+        newData = targetCellTemplate.textToCellData(cell.text);
+
+    if (newData === null)
         return state;
 
     state.queuedDataChanges.push({
-        initialData,
+        initialData: initialCellData,
         newData,
         type: location.cell.type,
         rowId: location.row.id,
