@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { keyCodes } from '../Common/Constants';
-import { CellRenderProps, CellTemplate } from '../Common';
+import { isTextInput, isNavigationKey } from './keyCodeCheckings'
+import { CellRenderProps, CellTemplate, keyCodes } from '../Common';
 
 export class TimeCellTemplate implements CellTemplate<string, any> {
 
@@ -18,7 +18,9 @@ export class TimeCellTemplate implements CellTemplate<string, any> {
     }
 
     handleKeyDown(cellData: string, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
-        return { cellData, enableEditMode: true };
+        if (!ctrl && !alt && isTextInput(keyCode))
+            return { cellData: '', enableEditMode: true }
+        return { cellData, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 
     renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = (props) => {
@@ -48,6 +50,10 @@ export class TimeCellTemplate implements CellTemplate<string, any> {
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}
             onPointerDown={e => e.stopPropagation()}
+            onKeyDown={e => {
+                if (isTextInput(e.keyCode) || isNavigationKey(e.keyCode)) e.stopPropagation();
+                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cellData; // reset
+            }}
         />
     }
 }
