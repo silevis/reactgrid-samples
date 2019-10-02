@@ -37,14 +37,14 @@ jobs:
           name: Install Dependencies
           command: npm install
 
+      - run:
+          name: Remove suffix from package version
+          command: npm run remove-suffix
+
       - save_cache:
           paths:
             - node_modules
           key: v1-npm-deps-{{ checksum "package.json" }}
-
-      - run:
-          name: Remove suffix from package version
-          command: npm run remove-suffix
 
       - run:
           name: Set configuration
