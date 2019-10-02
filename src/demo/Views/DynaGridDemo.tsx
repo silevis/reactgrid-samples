@@ -106,21 +106,21 @@ const fields: Column[] = [
     {
         id: 2,
         name: 'name',
-        type: 'time',
+        type: 'text',
         width: 125,
         pinned: false,
     },
     {
         id: 3,
         name: 'surname',
-        type: 'email',
+        type: 'text',
         width: 125,
         pinned: false,
     },
     {
         id: 4,
         name: 'age',
-        type: 'date',
+        type: 'number',
         width: 125,
         pinned: false,
     },
@@ -700,9 +700,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         }
     }
 
-    private handleRangeContextMenu(selectedRanges: Range[], menuOptions: MenuOption[]): MenuOption[] {
-        let selectedRowIds: Id[] = [];
-        let selectedColIds: Id[] = [];
+    private handleRangeContextMenu(selectedRowIds: Id[], selectedColIds: Id[], menuOptions: MenuOption[]): MenuOption[] {
         let options = menuOptions.concat([
             {
                 title: 'Delete row', handler: () => this.setState({ records: this.deleteRows(selectedRowIds), focuses: this.deleteRowsFocuses(selectedRowIds) })
@@ -712,30 +710,30 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
             },
         ]);
 
-        selectedRanges.forEach((range, idx) => {
-            range.cols.forEach((col, colIdx) => {
-                selectedColIds.push(col.id);
-                range.rows.forEach((row, rowIdx) => {
-                    selectedRowIds.push(row.id);
-                    if (range.cols[colIdx].idx === 0) {
-                        options = options.filter(option =>
-                            option.title !== 'Delete column' &&
-                            option.title !== 'Pin column to the right' &&
-                            option.title !== 'Pin column to the left')
-                    }
-                    if (range.rows[rowIdx].idx === 0) {
-                        options = options.filter(option =>
-                            option.title !== 'Delete row' &&
-                            option.title !== 'Pin row to the top' &&
-                            option.title !== 'Pin row to the bottom')
-                    }
-                })
-            })
-        });
+        // selectedRanges.forEach((range, idx) => {
+        //     range.cols.forEach((col, colIdx) => {
+        //         selectedColIds.push(col.id);
+        //         range.rows.forEach((row, rowIdx) => {
+        //             selectedRowIds.push(row.id);
+        //             if (range.cols[colIdx].idx === 0) {
+        //                 options = options.filter(option =>
+        //                     option.title !== 'Delete column' &&
+        //                     option.title !== 'Pin column to the right' &&
+        //                     option.title !== 'Pin column to the left')
+        //             }
+        //             if (range.rows[rowIdx].idx === 0) {
+        //                 options = options.filter(option =>
+        //                     option.title !== 'Delete row' &&
+        //                     option.title !== 'Pin row to the top' &&
+        //                     option.title !== 'Pin row to the bottom')
+        //             }
+        //         })
+        //     })
+        // });
 
-        // delete duplicated ids
-        selectedRowIds = Array.from(new Set(selectedRowIds));
-        selectedColIds = Array.from(new Set(selectedColIds));
+        // // delete duplicated ids
+        // selectedRowIds = Array.from(new Set(selectedRowIds));
+        // selectedColIds = Array.from(new Set(selectedColIds));
 
         return options;
     }
@@ -800,7 +798,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
                         customFocuses={this.state.focuses}
                         onRowContextMenu={(selectedRowIds: Id[], menuOptions: MenuOption[]) => this.handleRowContextMenu(selectedRowIds, menuOptions)}
                         onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
-                        onRangeContextMenu={(selectedRanges: Range[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRanges, menuOptions)}
+                        onRangeContextMenu={(selectedRowIds: Id[], selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRowIds, selectedColIds, menuOptions)}
                         cellTemplates={this.getCustomCellTemplates()}
                         disableFillHandle={this.state.disableFillHandle}
                         disableRangeSelection={this.state.disableRangeSelection}

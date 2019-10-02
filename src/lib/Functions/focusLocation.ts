@@ -21,7 +21,8 @@ export function focusLocation(state: State, location: Location, resetSelection =
             activeSelectedRangeIdx: 0,
             selectedRanges: [state.cellMatrix.getRange(location, location)],
             selectedIndexes: [],
-            selectedIds: [],
+            selectedRowIds: [location.row.id],
+            selectedColIds: [location.col.id],
             selectionMode: 'range'
         };
 

@@ -21,9 +21,9 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
             state = { ...state, cellMatrix: new CellMatrix(props.cellMatrixProps) }
         }
 
-        if (state.selectionMode === 'row' && state.selectedIds.length > 0) {
+        if (state.selectionMode === 'row' && state.selectedRowIds.length > 0) {
             state = updateSelectedRows(state);
-        } else if (state.selectionMode === 'column' && state.selectedIds.length > 0) {
+        } else if (state.selectionMode === 'column' && state.selectedColIds.length > 0) {
             state = updateSelectedColumns(state);
         } else {
             state = { ...state, selectedRanges: [...state.selectedRanges].map(range => state.cellMatrix.validateRange(range)) }
@@ -71,9 +71,9 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
             onPointerDown: this.pointerDownHandler,
             onContextMenu: this.handleContextMenu,
             onScroll: this.scrollHandler,
-            onRowContextMenu: (_: any, menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(this.state.selectedIds, menuOptions) : [],
-            onColumnContextMenu: (_: any, menuOptions: MenuOption[]) => this.props.onColumnContextMenu ? this.props.onColumnContextMenu(this.state.selectedIds, menuOptions) : [],
-            onRangeContextMenu: (_: any, menuOptions: MenuOption[]) => this.props.onRangeContextMenu ? this.props.onRangeContextMenu(this.state.selectedRanges, menuOptions) : [],
+            onRowContextMenu: (_: any, menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(this.state.selectedRowIds, menuOptions) : [],
+            onColumnContextMenu: (_: any, menuOptions: MenuOption[]) => this.props.onColumnContextMenu ? this.props.onColumnContextMenu(this.state.selectedColIds, menuOptions) : [],
+            onRangeContextMenu: (_: any, menuOptions: MenuOption[]) => this.props.onRangeContextMenu ? this.props.onRangeContextMenu(this.state.selectedRowIds, this.state.selectedColIds, menuOptions) : [],
             viewportElementRefHandler: this.viewportElementRefHandler,
             hiddenElementRefHandler: this.hiddenElementRefHandler
         })

@@ -121,7 +121,7 @@ export class FillHandleBehavior extends Behavior {
                 state = {
                     ...state,
                     selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, new Location(activeSelectedRange.last.row, location.col))],
-                    selectedIds: [...activeSelectedRange.cols.map(col => col.id), ...this.fillRange.cols.map(col => col.id)]
+                    selectedColIds: [...activeSelectedRange.cols.map(col => col.id), ...this.fillRange.cols.map(col => col.id)]
                 };
                 break;
             case 'left':
@@ -132,7 +132,7 @@ export class FillHandleBehavior extends Behavior {
                 state = {
                     ...state,
                     selectedRanges: [cellMatrix.getRange(activeSelectedRange.last, new Location(activeSelectedRange.first.row, location.col))],
-                    selectedIds: [...activeSelectedRange.cols.map(col => col.id), ...this.fillRange.cols.map(col => col.id)]
+                    selectedColIds: [...activeSelectedRange.cols.map(col => col.id), ...this.fillRange.cols.map(col => col.id)]
                 };
                 break;
             case 'up':
@@ -143,7 +143,7 @@ export class FillHandleBehavior extends Behavior {
                 state = {
                     ...state,
                     selectedRanges: [cellMatrix.getRange(activeSelectedRange.last, new Location(location.row, activeSelectedRange.first.col))],
-                    selectedIds: [...activeSelectedRange.rows.map(row => row.id), ...this.fillRange.rows.map(row => row.id)]
+                    selectedRowIds: [...activeSelectedRange.rows.map(row => row.id), ...this.fillRange.rows.map(row => row.id)]
                 };
                 break;
             case 'down':
@@ -154,7 +154,7 @@ export class FillHandleBehavior extends Behavior {
                 state = {
                     ...state,
                     selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, new Location(location.row, activeSelectedRange.last.col))],
-                    selectedIds: [...activeSelectedRange.rows.map(row => row.id), ...this.fillRange.rows.map(row => row.id)]
+                    selectedRowIds: [...activeSelectedRange.rows.map(row => row.id), ...this.fillRange.rows.map(row => row.id)]
                 };
                 break;
         }

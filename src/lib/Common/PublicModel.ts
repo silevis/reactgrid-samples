@@ -36,7 +36,7 @@ export interface ReactGridProps {
     readonly onRowContextMenu?: (selectedRowIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
     readonly onColumnContextMenu?: (selectedColumnIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
     // TODO Range is INTERNAL! Should not be public! 
-    readonly onRangeContextMenu?: (selectedRanges: Range[], menuOptions: MenuOption[]) => MenuOption[];
+    onRangeContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
     // readonly onContextMenuRequested?: (menuOptions: MenuOption[]) => void
 }
 

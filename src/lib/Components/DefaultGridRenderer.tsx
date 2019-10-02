@@ -21,7 +21,7 @@ interface DefaultGridRendererProps {
     onContextMenu: (event: PointerEvent) => void,
     onRowContextMenu?: (selectedRowIds: Id[], menuOptions: MenuOption[]) => MenuOption[],
     onColumnContextMenu?: (selectedColIds: Id[], menuOptions: MenuOption[]) => MenuOption[],
-    onRangeContextMenu?: (selectedRanges: Range[], menuOptions: MenuOption[]) => MenuOption[];
+    onRangeContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
 }
 
 export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererProps> = props =>
@@ -99,9 +99,9 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                 />
                 <ContextMenu
                     state={props.state}
-                    onRowContextMenu={(_, menuOptions: MenuOption[]) => props.onRowContextMenu ? props.onRowContextMenu(props.state.selectedIds, menuOptions) : []}
-                    onColumnContextMenu={(_, menuOptions: MenuOption[]) => props.onColumnContextMenu ? props.onColumnContextMenu(props.state.selectedIds, menuOptions) : []}
-                    onRangeContextMenu={(_, menuOptions: MenuOption[]) => props.onRangeContextMenu ? props.onRangeContextMenu(props.state.selectedRanges, menuOptions) : []}
+                    onRowContextMenu={(_, menuOptions: MenuOption[]) => props.onRowContextMenu ? props.onRowContextMenu(props.state.selectedRowIds, menuOptions) : []}
+                    onColumnContextMenu={(_, menuOptions: MenuOption[]) => props.onColumnContextMenu ? props.onColumnContextMenu(props.state.selectedColIds, menuOptions) : []}
+                    onRangeContextMenu={(_, __, menuOptions: MenuOption[]) => props.onRangeContextMenu ? props.onRangeContextMenu(props.state.selectedRowIds, props.state.selectedColIds, menuOptions) : []}
                     contextMenuPosition={props.state.contextMenuPosition}
                 />
             </div>
