@@ -11,10 +11,12 @@
     "@types/react-dom": "16.8.4",
     "@types/styled-components": "^4.1.15",
     "core-js": "^3.2.1",
+    "cross-env": "^6.0.2",
     "cypress": "^3.3.1",
-    "react-scripts": "2.1.8",
+    "npm-version-suffix": "^0.2.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-scripts": "2.1.8",
     "styled-components": "^4.2.0",
     "typescript": "3.4.4"
   },
@@ -29,7 +31,8 @@
     "deploy": "npm publish && echo 'Finished publishing NPM package'",
     "eject": "react-scripts eject",
     "test": "node_modules\\.bin\\cypress open",
-    "test:automatic": "node_modules\\.bin\\cypress run --browser chrome --spec 'cypress/integration/*'"
+    "test:automatic": "node_modules\\.bin\\cypress run --browser chrome --spec 'cypress/integration/*'",
+    "remove-suffix": "cross-env SUFFIX=rc node ./node_modules/npm-version-suffix/run-remove-suffix.js"
   },
   "keywords": [
     "react",
