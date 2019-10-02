@@ -96,7 +96,7 @@ workflows:
       - upgrade-version-master:
           filters:
             branches:
-              only: CI
+              only: master
       - build-package:
           requires:
             - upgrade-version-master
