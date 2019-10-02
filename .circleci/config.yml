@@ -33,13 +33,13 @@ jobs:
             - v1-npm-deps-{{ checksum "package.json" }}
             - v1-npm-deps-
 
-      - run: 
-          name: Install Dependencies
-          command: npm install
-
       - run:
           name: Remove suffix from package version
           command: npm run remove-suffix
+
+      - run: 
+          name: Install Dependencies
+          command: npm install
 
       - save_cache:
           paths:
