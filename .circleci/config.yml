@@ -62,15 +62,6 @@ jobs:
           name: Push upgraded version
           command: git push https://$GITHUB_TOKEN@github.com/silevis/reactgrid.git master
 
-  build-package:
-    <<: *defaults
-
-    steps:
-      - restore_cache:
-          keys:
-            - v1-npm-deps-{{ checksum "package.json" }}
-            - v1-npm-deps-
-
       - run:
           name: Build TypeScript code
           command: npm run pre-deploy
@@ -92,17 +83,13 @@ workflows:
   main:
     jobs:
       - deploy
-      - build-package
       - upgrade-version-master:
           filters:
             branches:
               only: master
-      - build-package:
-          requires:
-            - upgrade-version-master
       - deploy:
           requires:
-            - build-package
+            - upgrade-version-master
       - upgrade-version-develop:
           filters:
             branches:
