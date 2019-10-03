@@ -49,7 +49,7 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
     }
 
     renderContent: (props: CellRenderProps<GroupHeaderCellData, any>) => React.ReactNode = (props) => {
-        const cellData = Object.assign({}, props.cellData);
+        const cellData = { ...props.cellData };
 
         return (
             !props.isInEditMode ?
