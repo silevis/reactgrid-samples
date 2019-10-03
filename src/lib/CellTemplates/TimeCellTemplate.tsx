@@ -51,7 +51,7 @@ export class TimeCellTemplate implements CellTemplate<string, any> {
             onPaste={e => e.stopPropagation()}
             onPointerDown={e => e.stopPropagation()}
             onKeyDown={e => {
-                if (isTextInput(e.keyCode) || isNavigationKey(e.keyCode)) e.stopPropagation();
+                if (isTextInput(e.keyCode) || isNavigationKey(e)) e.stopPropagation();
                 if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cellData; // reset
             }}
         />

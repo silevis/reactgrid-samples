@@ -41,13 +41,13 @@ export class NumberCellTemplate implements CellTemplate<number, any> {
             ref={input => {
                 if (input) {
                     input.focus();
-                    // input.setSelectionRange(input.value.length, input.value.length);s
+                    input.setSelectionRange(input.value.length, input.value.length);
                 }
             }}
             defaultValue={this.cellDataToText(props.cellData)}
             onChange={e => props.onCellDataChanged(this.textToCellData(e.currentTarget.value), false)}
             onKeyDown={e => {
-                if (isNumberInput(e.keyCode) || isNavigationKey(e.keyCode)) e.stopPropagation();
+                if (isNumberInput(e.keyCode) || isNavigationKey(e)) e.stopPropagation();
                 if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cellData.toString(); // reset
             }}
             onCopy={e => e.stopPropagation()}
