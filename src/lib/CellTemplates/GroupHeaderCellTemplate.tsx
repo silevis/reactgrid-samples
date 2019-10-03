@@ -38,14 +38,15 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
     }
 
     handleKeyDown(cellData: GroupHeaderCellData, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
-        let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER
-        if (keyCode === keyCodes.SPACE && cellData.isExpanded !== undefined) {
-            cellData.isExpanded = !cellData.isExpanded;
+        let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
+        const cellDataCopy = { ...cellData };
+        if (keyCode === keyCodes.SPACE && cellDataCopy.isExpanded !== undefined) {
+            cellDataCopy.isExpanded = !cellDataCopy.isExpanded;
         } else if (!ctrl && !alt && isTextInput(keyCode)) {
-            cellData.name = ''
-            enableEditMode = true
+            cellDataCopy.name = '';
+            enableEditMode = true;
         }
-        return { cellData, enableEditMode }
+        return { cellData: cellDataCopy, enableEditMode };
     }
 
     renderContent: (props: CellRenderProps<GroupHeaderCellData, any>) => React.ReactNode = (props) => {
