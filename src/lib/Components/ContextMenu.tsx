@@ -7,9 +7,9 @@ interface ContextMenuProps {
     contextMenuPosition: number[],
     focusedLocation?: Location,
     state: State,
-    onRowContextMenu?: (selectedRowIds: Id[], menuOptions: MenuOption[]) => MenuOption[],
-    onColumnContextMenu?: (selectedColIds: Id[], menuOptions: MenuOption[]) => MenuOption[],
-    onRangeContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
+    onRowContextMenu?: (menuOptions: MenuOption[]) => MenuOption[],
+    onColumnContextMenu?: (menuOptions: MenuOption[]) => MenuOption[],
+    onRangeContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
 }
 
 
@@ -24,7 +24,7 @@ const ContextMenuContainer = styled.div`
         cursor: pointer; 
     }
     .dg-context-menu-option:hover {
-            background: #f2f2f2;
+        background: #f2f2f2;
     };
     `
 
@@ -34,9 +34,9 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
         const { contextMenuPosition, onRowContextMenu, onColumnContextMenu, onRangeContextMenu, state } = this.props;
         const focusedLocation = state.focusedLocation;
         let contextMenuOptions: MenuOption[] = customContextMenuOptions(state);
-        const rowOptions = onRowContextMenu && onRowContextMenu(state.selectedRowIds, customContextMenuOptions(state));
-        const colOptions = onColumnContextMenu && onColumnContextMenu(state.selectedColIds, customContextMenuOptions(state));
-        const rangeOptions = onRangeContextMenu && onRangeContextMenu(state.selectedRowIds, state.selectedColIds, customContextMenuOptions(state));
+        const rowOptions = onRowContextMenu && onRowContextMenu(customContextMenuOptions(state));
+        const colOptions = onColumnContextMenu && onColumnContextMenu(customContextMenuOptions(state));
+        const rangeOptions = onRangeContextMenu && onRangeContextMenu(customContextMenuOptions(state));
 
         if (focusedLocation) {
             if (state.selectionMode == 'row' && state.selectedRowIds.includes(focusedLocation.row.id) && rowOptions) {

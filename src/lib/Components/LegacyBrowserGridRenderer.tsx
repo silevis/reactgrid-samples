@@ -19,9 +19,9 @@ interface LegacyBrowserGridRendererProps {
     onPaste: (event: ClipboardEvent) => void,
     onPointerDown: (event: PointerEvent) => void,
     onContextMenu: (event: PointerEvent) => void,
-    onRowContextMenu?: (selectedRowIds: Id[], menuOptions: MenuOption[]) => MenuOption[],
-    onColumnContextMenu?: (selectedColIds: Id[], menuOptions: MenuOption[]) => MenuOption[],
-    onRangeContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
+    onRowContextMenu?: (menuOptions: MenuOption[]) => MenuOption[],
+    onColumnContextMenu?: (menuOptions: MenuOption[]) => MenuOption[],
+    onRangeContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
 }
 
 export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGridRendererProps> {
@@ -294,9 +294,9 @@ export class LegacyBrowserGridRenderer extends React.Component<LegacyBrowserGrid
                         />
                         <ContextMenu
                             state={state}
-                            onRowContextMenu={(_, menuOptions: MenuOption[]) => props.onRowContextMenu ? props.onRowContextMenu(props.state.selectedRowIds, menuOptions) : []}
-                            onColumnContextMenu={(_, menuOptions: MenuOption[]) => props.onColumnContextMenu ? props.onColumnContextMenu(props.state.selectedColIds, menuOptions) : []}
-                            onRangeContextMenu={(_, __, menuOptions: MenuOption[]) => props.onRangeContextMenu ? props.onRangeContextMenu(props.state.selectedRowIds, props.state.selectedColIds, menuOptions) : []}
+                            onRowContextMenu={(menuOptions: MenuOption[]) => props.onRowContextMenu ? props.onRowContextMenu(menuOptions) : []}
+                            onColumnContextMenu={(menuOptions: MenuOption[]) => props.onColumnContextMenu ? props.onColumnContextMenu(menuOptions) : []}
+                            onRangeContextMenu={(menuOptions: MenuOption[]) => props.onRangeContextMenu ? props.onRangeContextMenu(menuOptions) : []}
                             contextMenuPosition={state.contextMenuPosition}
                         />
                     </div>

@@ -19,9 +19,9 @@ interface DefaultGridRendererProps {
     onPaste: (event: ClipboardEvent) => void,
     onPasteCapture: (event: ClipboardEvent) => void,
     onContextMenu: (event: PointerEvent) => void,
-    onRowContextMenu?: (selectedRowIds: Id[], menuOptions: MenuOption[]) => MenuOption[],
-    onColumnContextMenu?: (selectedColIds: Id[], menuOptions: MenuOption[]) => MenuOption[],
-    onRangeContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
+    onRowContextMenu?: (menuOptions: MenuOption[]) => MenuOption[],
+    onColumnContextMenu?: (menuOptions: MenuOption[]) => MenuOption[],
+    onRangeContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
 }
 
 export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererProps> = props =>
@@ -84,7 +84,7 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                         borders={{ top: true }}
                         zIndex={3}
                     />}
-                <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={props.hiddenElementRefHandler} onFocus={() => console.log('hfe: focus')} onBlur={() => { console.trace(); console.log('hfe: blur') }} />
+                <input className="dg-hidden-element" readOnly={true} style={{ position: 'fixed', width: 1, height: 1, opacity: 0 }} ref={props.hiddenElementRefHandler} />
                 <Line
                     linePosition={props.state.linePosition}
                     orientation={props.state.lineOrientation}
@@ -99,9 +99,9 @@ export const DefaultGridRenderer: React.FunctionComponent<DefaultGridRendererPro
                 />
                 <ContextMenu
                     state={props.state}
-                    onRowContextMenu={(_, menuOptions: MenuOption[]) => props.onRowContextMenu ? props.onRowContextMenu(props.state.selectedRowIds, menuOptions) : []}
-                    onColumnContextMenu={(_, menuOptions: MenuOption[]) => props.onColumnContextMenu ? props.onColumnContextMenu(props.state.selectedColIds, menuOptions) : []}
-                    onRangeContextMenu={(_, __, menuOptions: MenuOption[]) => props.onRangeContextMenu ? props.onRangeContextMenu(props.state.selectedRowIds, props.state.selectedColIds, menuOptions) : []}
+                    onRowContextMenu={(menuOptions: MenuOption[]) => props.onRowContextMenu ? props.onRowContextMenu(menuOptions) : []}
+                    onColumnContextMenu={(menuOptions: MenuOption[]) => props.onColumnContextMenu ? props.onColumnContextMenu(menuOptions) : []}
+                    onRangeContextMenu={(menuOptions: MenuOption[]) => props.onRangeContextMenu ? props.onRangeContextMenu(menuOptions) : []}
                     contextMenuPosition={props.state.contextMenuPosition}
                 />
             </div>

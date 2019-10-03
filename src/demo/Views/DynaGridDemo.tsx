@@ -701,7 +701,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
     }
 
     private handleRangeContextMenu(selectedRowIds: Id[], selectedColIds: Id[], menuOptions: MenuOption[]): MenuOption[] {
-        let options = menuOptions.concat([
+        return menuOptions.concat([
             {
                 title: 'Delete row', handler: () => this.setState({ records: this.deleteRows(selectedRowIds), focuses: this.deleteRowsFocuses(selectedRowIds) })
             },
@@ -709,33 +709,6 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
                 title: 'Delete column', handler: () => this.setState({ fields: this.deleteColumns(selectedColIds), focuses: this.deleteColumnsFocuses(selectedColIds) })
             },
         ]);
-
-        // selectedRanges.forEach((range, idx) => {
-        //     range.cols.forEach((col, colIdx) => {
-        //         selectedColIds.push(col.id);
-        //         range.rows.forEach((row, rowIdx) => {
-        //             selectedRowIds.push(row.id);
-        //             if (range.cols[colIdx].idx === 0) {
-        //                 options = options.filter(option =>
-        //                     option.title !== 'Delete column' &&
-        //                     option.title !== 'Pin column to the right' &&
-        //                     option.title !== 'Pin column to the left')
-        //             }
-        //             if (range.rows[rowIdx].idx === 0) {
-        //                 options = options.filter(option =>
-        //                     option.title !== 'Delete row' &&
-        //                     option.title !== 'Pin row to the top' &&
-        //                     option.title !== 'Pin row to the bottom')
-        //             }
-        //         })
-        //     })
-        // });
-
-        // // delete duplicated ids
-        // selectedRowIds = Array.from(new Set(selectedRowIds));
-        // selectedColIds = Array.from(new Set(selectedColIds));
-
-        return options;
     }
 
     demoActions: IDemoActions = {
