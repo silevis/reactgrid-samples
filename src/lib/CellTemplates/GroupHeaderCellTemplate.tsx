@@ -96,6 +96,10 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
                     onCut={e => e.stopPropagation()}
                     onPaste={e => e.stopPropagation()}
                     onPointerDown={e => e.stopPropagation()}
+                    onKeyDown={e => {
+                        if (isTextInput(e.keyCode) || (isNavigationKey(e))) e.stopPropagation();
+                        if (e.keyCode == keyCodes.ESC) (e as any).currentTarget.value = props.cellData.name; // reset
+                    }}
                 />
         );
     }

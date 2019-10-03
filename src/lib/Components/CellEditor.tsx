@@ -15,11 +15,6 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
     const cellTemplate = props.state.cellTemplates[cell.type];
     const customStyle = cellTemplate.getCustomStyle ? cellTemplate.getCustomStyle(cell.data, true) : {};
 
-    // TODO https://github.com/silevis/reactgrid/issues/33
-    if (isBrowserIE()) {
-        props.state.hiddenFocusElement.focus();
-    }
-
     return (
         <div
             style={{

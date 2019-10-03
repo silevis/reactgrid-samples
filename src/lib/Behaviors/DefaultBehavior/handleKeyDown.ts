@@ -8,13 +8,12 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
 }
 
 function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
-
     const location = state.focusedLocation;
     if (!location)
         return state
 
     const cellTemplate = state.cellTemplates[location.cell.type];
-    if (cellTemplate.handleKeyDown && !state.currentlyEditedCell) {
+    if (cellTemplate.handleKeyDown && !state.currentlyEditedCell) { // TODO need add !(event.shiftKey && event.keyCode === keyCodes.SPACE) to working keycodes (shift + space) in a lower condition
         const { cellData, enableEditMode } = cellTemplate.handleKeyDown(location.cell.data, event.keyCode, event.ctrlKey, event.shiftKey, event.altKey);
         if (location.cell.data !== cellData || enableEditMode) {
             const newCell = { type: location.cell.type, data: cellData };
@@ -91,7 +90,6 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
 
     } else {
         // === NO SHIFT OR CONTROL ===
-
         switch (event.keyCode) {
             case keyCodes.DELETE:
             case keyCodes.BACKSPACE:

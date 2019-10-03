@@ -13,7 +13,7 @@ export interface PaneRowProps {
 
 export const PaneRow: React.FunctionComponent<PaneRowProps> = (props) => {
     const matrix = props.state.cellMatrix;
-    const state = props.state
+    const state = props.state;
     return (
         <div
             className="dg-pane-row"

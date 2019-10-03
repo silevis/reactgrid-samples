@@ -106,21 +106,21 @@ const fields: Column[] = [
     {
         id: 2,
         name: 'name',
-        type: 'time',
+        type: 'text',
         width: 125,
         pinned: false,
     },
     {
         id: 3,
         name: 'surname',
-        type: 'email',
+        type: 'text',
         width: 125,
         pinned: false,
     },
     {
         id: 4,
         name: 'age',
-        type: 'date',
+        type: 'number',
         width: 125,
         pinned: false,
     },
@@ -360,7 +360,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
             width: field.width,
             reorderable: this.state.columnReordering,
             resizable: this.state.resizing,
-            onDrop: (ids) => this.setState({ fields: this.reorderedColumns(ids as number[], idx) }),
+            onDrop: (ids) => this.setState({ fields: this.reorderColumns(ids as number[], idx) }),
             onResize: width => { this.state.fields[idx].width = width, this.forceUpdate(); }
         }));
 
@@ -368,7 +368,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
             id: record.id,
             height: 25,
             reorderable: this.state.rowReordering,
-            cells: this.state.fields.map(field => { return { data: record[field.name], type: rowIdx == 0 ? 'header' : field.type } }),
+            cells: this.state.fields.map(field => { return { data: record[field.name], type: (rowIdx == 0 || rowIdx == 1) ? 'header' : field.type } }),
             onDrop: (ids: any[], position: string) => {
                 this.setState({ records: this.reorderedRows(ids as any[], record.id, position) })
             },
@@ -390,7 +390,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
             frozenRightColumns: this.state.frozenPanes.right,
             frozenTopRows: this.state.frozenPanes.top
         }
-        return Object.assign({ columns, rows }, frozenPanes)
+        return { columns, rows, ...frozenPanes }
     }
 
     private prepareDataChanges = (dataChanges: DataChange[]): IDynaGridDemoState => {
@@ -408,19 +408,15 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         return state
     }
 
-    private calculateColumnReorder(fields: Column[], colIdxs: number[], direction: string, destination: number): Column[] {
+    private reorderColumns(colIdxs: number[], targetIdx: number): Column[] {
+        const fields = [...this.state.fields];
         const movedColumns: Column[] = fields.filter((_, idx) => colIdxs.includes(idx));
-        const clearedFields: Column[] = fields.filter((_, idx) => !colIdxs.includes(idx));
-        if (direction === 'right') {
-            destination = destination - colIdxs.length + 1
-        }
-        clearedFields.splice(destination, 0, ...movedColumns)
-        return clearedFields
-    }
-
-    private reorderedColumns(colIdxs: number[], to: number) {
-        const direction = to > colIdxs[0] ? 'right' : 'left'
-        return this.calculateColumnReorder([...this.state.fields], colIdxs, direction, to)
+        const otherColumns: Column[] = fields.filter((_, idx) => !colIdxs.includes(idx));
+        const direction = targetIdx > colIdxs[0] ? 'right' : 'left';
+        if (direction === 'right')
+            targetIdx = targetIdx - colIdxs.length + 1;
+        otherColumns.splice(targetIdx, 0, ...movedColumns);
+        return otherColumns;
     }
 
     private findParent(currentRecord: Record): boolean {
@@ -621,14 +617,14 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         if (direction == 'left') {
             return {
                 ...this.state,
-                fields: this.reorderedColumns(indexes, this.state.frozenPanes.left).map(f => ids.includes(f.id) ? { ...f, pinned: true } : f),
+                fields: this.reorderColumns(indexes, this.state.frozenPanes.left).map(f => ids.includes(f.id) ? { ...f, pinned: true } : f),
                 frozenPanes: { ...this.state.frozenPanes, left: this.state.frozenPanes.left + indexes.length }
             }
 
         } else {
             return {
                 ...this.state,
-                fields: this.reorderedColumns(indexes, this.state.fields.length - this.state.frozenPanes.right - 1).map(f => ids.includes(f.id) ? { ...f, pinned: true } : f),
+                fields: this.reorderColumns(indexes, this.state.fields.length - this.state.frozenPanes.right - 1).map(f => ids.includes(f.id) ? { ...f, pinned: true } : f),
                 frozenPanes: { ...this.state.frozenPanes, right: this.state.frozenPanes.right + indexes.length },
             }
         }
@@ -639,7 +635,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         if (indexes[0] > this.state.frozenPanes.left) {
             return {
                 ...this.state,
-                fields: this.calculateColumnReorder([...this.state.fields], indexes, 'right', this.state.fields.length - this.state.frozenPanes.right).map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
+                fields: this.reorderColumns(indexes, this.state.fields.length - this.state.frozenPanes.right).map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
                 frozenPanes: {
                     ...this.state.frozenPanes,
                     right: this.state.frozenPanes.right - indexes.length
@@ -649,7 +645,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         } else {
             return {
                 ...this.state,
-                fields: this.calculateColumnReorder([...this.state.fields], indexes, 'left', this.state.frozenPanes.left - indexes.length).map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
+                fields: this.reorderColumns(indexes, this.state.frozenPanes.left - indexes.length).map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
                 frozenPanes: {
                     ...this.state.frozenPanes,
                     left: this.state.frozenPanes.left - indexes.length,
