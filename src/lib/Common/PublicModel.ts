@@ -33,7 +33,7 @@ export interface ReactGridProps {
     readonly disableColumnSelection?: boolean;
     readonly onDataChanged?: (dataChanges: DataChange[]) => void;
     readonly onCellFocused?: (cellId: CellId) => void;
-    readonly onRowContextMenu?: (selectedRowIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
+    readonly onRowContextMenu?: (selectedIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
     readonly onColumnContextMenu?: (selectedColumnIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
     // TODO Range is INTERNAL! Should not be public! 
     onRangeContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], menuOptions: MenuOption[]) => MenuOption[];

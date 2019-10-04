@@ -28,11 +28,11 @@ export class DefaultBehavior extends Behavior {
         // changing behavior will disable all keyboard event handlers
         if (event.pointerType === 'mouse' && location.row.idx == 0 && location.cellX > location.col.width - 7 && location.col.resizable) {
             return new ResizeColumnBehavior();
-        } else if (location.row.idx == 0 && state.selectedColIds.includes(location.col.id) && !event.ctrlKey && state.selectionMode == 'column' && location.col.reorderable) {
+        } else if (location.row.idx == 0 && state.selectedIds.includes(location.col.id) && !event.ctrlKey && state.selectionMode == 'column' && location.col.reorderable) {
             return new ColumnReorderBehavior();
         } else if (location.row.idx == 0 && (event.target.className !== 'dg-fill-handle' && event.target.className !== 'dg-touch-fill-handle')) {
             return new ColumnSelectionBehavior();
-        } else if (location.col.idx == 0 && state.selectedRowIds.includes(location.row.id) && !event.ctrlKey && state.selectionMode == 'row' && location.row.reorderable) {
+        } else if (location.col.idx == 0 && state.selectedIds.includes(location.row.id) && !event.ctrlKey && state.selectionMode == 'row' && location.row.reorderable) {
             return new RowReorderBehavior();
         } else if (location.col.idx == 0 && (event.target.className !== 'dg-fill-handle' && event.target.className !== 'dg-touch-fill-handle')) {
             return new RowSelectionBehavior();
@@ -182,8 +182,6 @@ export function pasteData(state: State, pasteContent: ClipboardData[][]): State 
             ...state,
             selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, lastLocation!)],
             activeSelectedRangeIdx: 0,
-            selectedColIds: range.cols.map(c => c.id),
-            selectedRowIds: range.rows.map(r => r.id)
         }
     }
     return state

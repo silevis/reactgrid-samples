@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ReactGridProps, CellMatrix, PointerEvent, State, StateUpdater, MenuOption } from "../Common";
-import { recalcVisibleRange, isBrowserIE, isBrowserEdge } from "../Functions";
+import { recalcVisibleRange, isBrowserIE, isBrowserEdge, getActiveSelectedRange } from "../Functions";
 import { KeyboardEvent, ClipboardEvent } from "../Common";
 import { PointerEventsController } from "../Common/PointerEventsController";
 import { updateSelectedRows, updateSelectedColumns } from "../Functions/updateState";
@@ -21,9 +21,9 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
             state = { ...state, cellMatrix: new CellMatrix(props.cellMatrixProps) }
         }
 
-        if (state.selectionMode === 'row' && state.selectedRowIds.length > 0) {
+        if (state.selectionMode === 'row' && state.selectedIds.length > 0) {
             state = updateSelectedRows(state);
-        } else if (state.selectionMode === 'column' && state.selectedColIds.length > 0) {
+        } else if (state.selectionMode === 'column' && state.selectedIds.length > 0) {
             state = updateSelectedColumns(state);
         } else {
             state = { ...state, selectedRanges: [...state.selectedRanges].map(range => state.cellMatrix.validateRange(range)) }
@@ -60,6 +60,9 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
 
     render() {
         const grid = (typeof window !== 'undefined' && (isBrowserIE() || isBrowserEdge())) ? LegacyBrowserGridRenderer : DefaultGridRenderer;
+        const range = getActiveSelectedRange(this.state);
+        const rowIds = range ? range.rows.map(r => r.id) : []
+        const colIds = range ? range.cols.map(c => c.id) : []
         return React.createElement(grid as any, {
             state: this.state,
             onKeyDown: this.keyDownHandler,
@@ -71,9 +74,9 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
             onPointerDown: this.pointerDownHandler,
             onContextMenu: this.handleContextMenu,
             onScroll: this.scrollHandler,
-            onRowContextMenu: (menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(this.state.selectedRowIds, menuOptions) : [],
-            onColumnContextMenu: (menuOptions: MenuOption[]) => this.props.onColumnContextMenu ? this.props.onColumnContextMenu(this.state.selectedColIds, menuOptions) : [],
-            onRangeContextMenu: (menuOptions: MenuOption[]) => this.props.onRangeContextMenu ? this.props.onRangeContextMenu(this.state.selectedRowIds, this.state.selectedColIds, menuOptions) : [],
+            onRowContextMenu: (menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(rowIds, menuOptions) : [],
+            onColumnContextMenu: (menuOptions: MenuOption[]) => this.props.onColumnContextMenu ? this.props.onColumnContextMenu(colIds, menuOptions) : [],
+            onRangeContextMenu: (menuOptions: MenuOption[]) => this.props.onRangeContextMenu ? this.props.onRangeContextMenu(rowIds, colIds, menuOptions) : [],
             viewportElementRefHandler: this.viewportElementRefHandler,
             hiddenElementRefHandler: this.hiddenElementRefHandler
         })

@@ -46,8 +46,7 @@ export class State {
     readonly selectionMode: SelectionMode = 'range'
     readonly selectedRanges: Range[] = [];
     readonly selectedIndexes: number[] = [];
-    readonly selectedColIds: Id[] = [];
-    readonly selectedRowIds: Id[] = [];
+    readonly selectedIds: Id[] = [];
     readonly focusedLocation?: Location;
     readonly activeSelectedRangeIdx: number = 0;
 
