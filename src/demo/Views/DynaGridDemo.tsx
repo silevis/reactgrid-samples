@@ -360,7 +360,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
             width: field.width,
             reorderable: this.state.columnReordering,
             resizable: this.state.resizing,
-            onDrop: (ids) => this.setState({ fields: this.reorderColumns(ids as number[], idx) }),
+            onDrop: (ids) => this.setState({ fields: this.reorderedColumns(ids as number[], idx) }),
             onResize: width => { this.state.fields[idx].width = width, this.forceUpdate(); }
         }));
 
@@ -368,7 +368,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
             id: record.id,
             height: 25,
             reorderable: this.state.rowReordering,
-            cells: this.state.fields.map(field => { return { data: record[field.name], type: (rowIdx == 0 || rowIdx == 1) ? 'header' : field.type } }),
+            cells: this.state.fields.map(field => { return { data: record[field.name], type: (rowIdx == 0) ? 'header' : field.type } }),
             onDrop: (ids: any[], position: string) => {
                 this.setState({ records: this.reorderedRows(ids as any[], record.id, position) })
             },
@@ -390,7 +390,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
             frozenRightColumns: this.state.frozenPanes.right,
             frozenTopRows: this.state.frozenPanes.top
         }
-        return { columns, rows, ...frozenPanes }
+        return Object.assign({ columns, rows }, frozenPanes)
     }
 
     private prepareDataChanges = (dataChanges: DataChange[]): IDynaGridDemoState => {
@@ -408,15 +408,19 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         return state
     }
 
-    private reorderColumns(colIdxs: number[], targetIdx: number): Column[] {
-        const fields = [...this.state.fields];
+    private calculateColumnReorder(fields: Column[], colIdxs: number[], direction: string, destination: number): Column[] {
         const movedColumns: Column[] = fields.filter((_, idx) => colIdxs.includes(idx));
-        const otherColumns: Column[] = fields.filter((_, idx) => !colIdxs.includes(idx));
-        const direction = targetIdx > colIdxs[0] ? 'right' : 'left';
-        if (direction === 'right')
-            targetIdx = targetIdx - colIdxs.length + 1;
-        otherColumns.splice(targetIdx, 0, ...movedColumns);
-        return otherColumns;
+        const clearedFields: Column[] = fields.filter((_, idx) => !colIdxs.includes(idx));
+        if (direction === 'right') {
+            destination = destination - colIdxs.length + 1
+        }
+        clearedFields.splice(destination, 0, ...movedColumns)
+        return clearedFields
+    }
+
+    private reorderedColumns(colIdxs: number[], to: number) {
+        const direction = to > colIdxs[0] ? 'right' : 'left'
+        return this.calculateColumnReorder([...this.state.fields], colIdxs, direction, to)
     }
 
     private findParent(currentRecord: Record): boolean {
@@ -435,9 +439,9 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         return this.findParent(parent);
     }
 
-    private getChildren(records: Record[], id: number) {
+    private getChildren(records: Record[], id: Id) {
         let children: Record[] = [];
-        const findNestedChildren = (records: Record[], id: number): Record[] =>
+        const findNestedChildren = (records: Record[], id: Id): Record[] =>
             records
                 .filter((item: Record) => item['parentId'] === id)
                 .reduce((_: Record[], current) => {
@@ -597,7 +601,18 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
     }
 
     private deleteRows(selectedRowIds: Id[]): Record[] {
-        return [...this.state.records].filter(r => !selectedRowIds.includes(r.id));
+        const records = [...this.state.records]
+        selectedRowIds.forEach(id => {
+            const childrenIds = this.getChildren(records, id).map(c => c.id)
+            records.forEach(r => {
+                if (childrenIds.includes(r.id) && r.position) {
+                    r.parentId = undefined;
+                    r.position.isExpanded = undefined;
+                    r.position.depth = 1;
+                }
+            })
+        })
+        return records.filter(r => !selectedRowIds.includes(r.id));
     }
 
     private deleteColumns(selectedColIds: Id[]): Column[] {
@@ -617,14 +632,14 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         if (direction == 'left') {
             return {
                 ...this.state,
-                fields: this.reorderColumns(indexes, this.state.frozenPanes.left).map(f => ids.includes(f.id) ? { ...f, pinned: true } : f),
+                fields: this.reorderedColumns(indexes, this.state.frozenPanes.left).map(f => ids.includes(f.id) ? { ...f, pinned: true } : f),
                 frozenPanes: { ...this.state.frozenPanes, left: this.state.frozenPanes.left + indexes.length }
             }
 
         } else {
             return {
                 ...this.state,
-                fields: this.reorderColumns(indexes, this.state.fields.length - this.state.frozenPanes.right - 1).map(f => ids.includes(f.id) ? { ...f, pinned: true } : f),
+                fields: this.reorderedColumns(indexes, this.state.fields.length - this.state.frozenPanes.right - 1).map(f => ids.includes(f.id) ? { ...f, pinned: true } : f),
                 frozenPanes: { ...this.state.frozenPanes, right: this.state.frozenPanes.right + indexes.length },
             }
         }
@@ -635,17 +650,16 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         if (indexes[0] > this.state.frozenPanes.left) {
             return {
                 ...this.state,
-                fields: this.reorderColumns(indexes, this.state.fields.length - this.state.frozenPanes.right).map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
+                fields: this.calculateColumnReorder([...this.state.fields], indexes, 'right', this.state.fields.length - this.state.frozenPanes.right).map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
                 frozenPanes: {
                     ...this.state.frozenPanes,
                     right: this.state.frozenPanes.right - indexes.length
                 }
             }
-
         } else {
             return {
                 ...this.state,
-                fields: this.reorderColumns(indexes, this.state.frozenPanes.left - indexes.length).map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
+                fields: this.calculateColumnReorder([...this.state.fields], indexes, 'left', this.state.frozenPanes.left - indexes.length).map(f => ids.includes(f.id) ? { ...f, pinned: false } : f),
                 frozenPanes: {
                     ...this.state.frozenPanes,
                     left: this.state.frozenPanes.left - indexes.length,
