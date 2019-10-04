@@ -8,7 +8,7 @@ export default class RateCellDemo extends React.Component<{}, {}> {
     columns: [
       { id: 'player', reorderable: true, resizable: true, width: 200 },
       { id: 'age',    reorderable: true, resizable: true, width: 50 },
-      { id: 'rate',   reorderable: true, resizable: true, width: 100 },  // added
+      { id: 'rate',   reorderable: true, resizable: true, width: 130 },  // added
       { id: 'club',   reorderable: true, resizable: true, width: 200 },
     ],
     rows: [

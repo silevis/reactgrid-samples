@@ -26,15 +26,20 @@ export class RateCellTemplate implements CellTemplate<number, any> {
 
   renderContent: (props: CellRenderProps<number, any>) => React.ReactNode = (props) => {
     let stars: any[] = [];
-    for(let i = this.MIN_VAL ; i <= this.STARS; i++) {
+    for(let i = 1; i <= this.STARS; i++) {
       stars.push(
-        <span key={i} onClick={() => { props.onCellDataChanged(i, true)}}>
-          {this.textToCellData(props.cellData.toString()) < i ? '☆' : '★' }
-        </span>
+        <React.Fragment key={`${i}_input`}>
+          <input type="radio" id={i.toString()} name="rate" value={i} 
+            checked={this.textToCellData(props.cellData.toString()) == i} onChange={()=>{}}
+          />
+          <label htmlFor={`${i}_input`} title="text" onClick={() => { props.onCellDataChanged(i, true)}}>
+            {i} stars
+          </label>
+        </React.Fragment>
       )
     }
     return (
-      <div className="rating">
+      <div className="rate">
         {stars.reverse()}
       </div>
     )
