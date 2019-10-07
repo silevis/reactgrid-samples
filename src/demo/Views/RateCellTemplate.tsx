@@ -13,7 +13,12 @@ export class RateCellTemplate implements CellTemplate<number, any> {
 
   textToCellData(text: string): number {
     let result = parseFloat(text)
-    return isNaN(result) ? this.MIN_VAL : result;
+    if (isNaN(result) || result < this.MIN_VAL)
+      return this.MIN_VAL
+    else if (result > this.STARS)
+      return this.STARS
+    else 
+      return result
   }
 
   cellDataToText(cellData: number) {
