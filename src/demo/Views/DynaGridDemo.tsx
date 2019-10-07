@@ -802,6 +802,8 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
                         disableRangeSelection={this.state.disableRangeSelection}
                         disableRowSelection={false}
                         disableColumnSelection={false}
+                        // license="non-commercial"
+                        license="1 developers until 20300-10-07 issued for Silevis Software // 414127822"
                     />
                 </DynaGridContainer>
             </DemoBody>

@@ -14,7 +14,7 @@
     "cross-env": "^6.0.2",
     "cypress": "^3.3.1",
     "npm-version-suffix": "^0.2.0",
-    "react": "^16.8.6",
+    "react": "^16.10.2",
     "react-dom": "^16.8.6",
     "react-scripts": "2.1.8",
     "styled-components": "^4.2.0",

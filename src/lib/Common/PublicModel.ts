@@ -24,6 +24,7 @@ export interface Focus {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface ReactGridProps {
     readonly cellMatrixProps: CellMatrixProps;
+    readonly license: string;
     readonly style?: React.CSSProperties;
     readonly cellTemplates?: CellTemplates
     readonly customFocuses?: Focus[];
