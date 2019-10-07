@@ -28,11 +28,11 @@ export class RateCellTemplate implements CellTemplate<number, any> {
     let stars: any[] = [];
     for(let i = 1; i <= this.STARS; i++) {
       stars.push(
-        <React.Fragment key={`${i}_input`}>
-          <input type="radio" id={i.toString()} name="rate" value={i} 
+        <React.Fragment key={i}>
+          <input type="radio" id={`star_${i}_input`} name="rate" value={i} 
             checked={this.textToCellData(props.cellData.toString()) == i} onChange={()=>{}}
           />
-          <label htmlFor={`${i}_input`} title="text" onClick={() => { props.onCellDataChanged(i, true)}}>
+          <label htmlFor={`star_${i}_input`} title="text" onClick={() => { props.onCellDataChanged(i, true)}}>
             {i} stars
           </label>
         </React.Fragment>
