@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ReactGridProps, CellMatrix, PointerEvent, State, StateUpdater, MenuOption } from "../Common";
-import { recalcVisibleRange, isBrowserIE, isBrowserEdge } from "../Functions";
+import { recalcVisibleRange, isBrowserIE, isBrowserEdge, getActiveSelectedRange } from "../Functions";
 import { KeyboardEvent, ClipboardEvent } from "../Common";
 import { PointerEventsController } from "../Common/PointerEventsController";
 import { updateSelectedRows, updateSelectedColumns } from "../Functions/updateState";
@@ -60,6 +60,9 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
 
     render() {
         const grid = (typeof window !== 'undefined' && (isBrowserIE() || isBrowserEdge())) ? LegacyBrowserGridRenderer : DefaultGridRenderer;
+        const range = getActiveSelectedRange(this.state);
+        const rowIds = range ? range.rows.map(r => r.id) : []
+        const colIds = range ? range.cols.map(c => c.id) : []
         return React.createElement(grid as any, {
             state: this.state,
             onKeyDown: this.keyDownHandler,
@@ -71,9 +74,9 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
             onPointerDown: this.pointerDownHandler,
             onContextMenu: this.handleContextMenu,
             onScroll: this.scrollHandler,
-            onRowContextMenu: (_: any, menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(this.state.selectedIds, menuOptions) : [],
-            onColumnContextMenu: (_: any, menuOptions: MenuOption[]) => this.props.onColumnContextMenu ? this.props.onColumnContextMenu(this.state.selectedIds, menuOptions) : [],
-            onRangeContextMenu: (_: any, menuOptions: MenuOption[]) => this.props.onRangeContextMenu ? this.props.onRangeContextMenu(this.state.selectedRanges, menuOptions) : [],
+            onRowContextMenu: (menuOptions: MenuOption[]) => this.props.onRowContextMenu ? this.props.onRowContextMenu(rowIds, menuOptions) : [],
+            onColumnContextMenu: (menuOptions: MenuOption[]) => this.props.onColumnContextMenu ? this.props.onColumnContextMenu(colIds, menuOptions) : [],
+            onRangeContextMenu: (menuOptions: MenuOption[]) => this.props.onRangeContextMenu ? this.props.onRangeContextMenu(rowIds, colIds, menuOptions) : [],
             viewportElementRefHandler: this.viewportElementRefHandler,
             hiddenElementRefHandler: this.hiddenElementRefHandler
         })

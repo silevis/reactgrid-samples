@@ -7,9 +7,9 @@ interface ContextMenuProps {
     contextMenuPosition: number[],
     focusedLocation?: Location,
     state: State,
-    onRowContextMenu?: (selectedRowIds: Id[], menuOptions: MenuOption[]) => MenuOption[],
-    onColumnContextMenu?: (selectedColIds: Id[], menuOptions: MenuOption[]) => MenuOption[],
-    onRangeContextMenu?: (selectedRanges: Range[], menuOptions: MenuOption[]) => MenuOption[];
+    onRowContextMenu?: (menuOptions: MenuOption[]) => MenuOption[],
+    onColumnContextMenu?: (menuOptions: MenuOption[]) => MenuOption[],
+    onRangeContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
 }
 
 
@@ -24,7 +24,7 @@ const ContextMenuContainer = styled.div`
         cursor: pointer; 
     }
     .dg-context-menu-option:hover {
-            background: #f2f2f2;
+        background: #f2f2f2;
     };
     `
 
@@ -34,20 +34,19 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
         const { contextMenuPosition, onRowContextMenu, onColumnContextMenu, onRangeContextMenu, state } = this.props;
         const focusedLocation = state.focusedLocation;
         let contextMenuOptions: MenuOption[] = customContextMenuOptions(state);
-        const rowOptions = onRowContextMenu && onRowContextMenu(state.selectedIds, customContextMenuOptions(state));
-        const colOptions = onColumnContextMenu && onColumnContextMenu(state.selectedIds, customContextMenuOptions(state));
-        const rangeOptions = onRangeContextMenu && onRangeContextMenu(state.selectedRanges, customContextMenuOptions(state));
+        const rowOptions = onRowContextMenu && onRowContextMenu(customContextMenuOptions(state));
+        const colOptions = onColumnContextMenu && onColumnContextMenu(customContextMenuOptions(state));
+        const rangeOptions = onRangeContextMenu && onRangeContextMenu(customContextMenuOptions(state));
 
         if (focusedLocation) {
-            if (state.selectedIds.includes(focusedLocation.row.id) && rowOptions) {
+            if (state.selectionMode == 'row' && state.selectedIds.includes(focusedLocation.row.id) && rowOptions) {
                 contextMenuOptions = rowOptions;
-            } else if (state.selectedIds.includes(focusedLocation.col.id) && colOptions) {
+            } else if (state.selectionMode == 'column' && state.selectedIds.includes(focusedLocation.col.id) && colOptions) {
                 contextMenuOptions = colOptions;
-            } else if (rangeOptions) {
+            } else if (state.selectionMode == 'range' && rangeOptions) {
                 contextMenuOptions = rangeOptions;
             }
         }
-
         return (
             (contextMenuPosition[0] !== -1 && contextMenuPosition[1] !== -1 && contextMenuOptions.length > 0 &&
                 <ContextMenuContainer
@@ -65,7 +64,7 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
                                 onPointerDown={e => e.stopPropagation()}
                                 onClick={() => {
                                     el.handler();
-                                    state.updateState((state: State) => ({ ...state, selectedIds: state.selectedIds, contextMenuPosition: [-1, -1] }))
+                                    state.updateState((state: State) => ({ ...state, contextMenuPosition: [-1, -1] }))
                                 }}
                             >
                                 {el.title}

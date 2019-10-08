@@ -20,7 +20,7 @@ export class RowSelectionBehavior extends Behavior {
     }
 
     handlePointerEnter(event: PointerEvent, location: Location, state: State): State {
-        if (state.disableRowSelection) 
+        if (state.disableRowSelection)
             return focusLocation(state, location);
         else
             return selectMultipleRows(state, state.focusedLocation!.row, location.row, event.ctrlKey);

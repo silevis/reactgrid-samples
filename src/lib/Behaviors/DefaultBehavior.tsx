@@ -169,20 +169,19 @@ export function pasteData(state: State, pasteContent: ClipboardData[][]): State 
                 }
             })
         )
-
-        const selectedIds = (): Id[] => {
-            const range = cellMatrix.getRange(activeSelectedRange.first, lastLocation!);
-            if (state.selectionMode == 'column' && activeSelectedRange.first.row == state.cellMatrix.first.row)
-                return range.cols.map(c => c.id)
-            if (state.selectionMode == 'row' && activeSelectedRange.first.col == state.cellMatrix.first.col)
-                return range.rows.map(r => r.id)
-            return []
-        }
+        const range = cellMatrix.getRange(activeSelectedRange.first, lastLocation!);
+        // const selectedIds = (): Id[] => {
+        //     const range = cellMatrix.getRange(activeSelectedRange.first, lastLocation!);
+        //     if (state.selectionMode == 'column' && activeSelectedRange.first.row == state.cellMatrix.first.row)
+        //         return range.cols.map(c => c.id)
+        //     if (state.selectionMode == 'row' && activeSelectedRange.first.col == state.cellMatrix.first.col)
+        //         return range.rows.map(r => r.id)
+        //     return []
+        // }
         return {
             ...state,
             selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, lastLocation!)],
             activeSelectedRangeIdx: 0,
-            selectedIds: selectedIds()
         }
     }
     return state
