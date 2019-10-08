@@ -803,7 +803,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
                         disableRowSelection={false}
                         disableColumnSelection={false}
                         // license="non-commercial"
-                        license="1 developers until 20300-10-07 issued for Silevis Software // 414127822"
+                        license="1 developers until 2030-10-07 issued for Silevis Software // 1914789361"
                     />
                 </DynaGridContainer>
             </DemoBody>

@@ -6,21 +6,11 @@ export function checkLicense(license: string) {
     } else {  
         const separator: string = '//';
         const licenseHash = getHashFromLicense(license, separator);
+        
         if (!licenseHash) {
             console.warn("Your ReactGrid license is invalid! Please contact your manager.");
             return;
         } 
-        
-        const licenseExpirationDate = getLicenceExpirationDate(license);
-        if (!licenseExpirationDate) {
-            console.warn("ReactGrid expiration date is invalid! Please contact your manager.");
-            return;
-        }
-
-        if (isLicenseExpired(licenseExpirationDate)) {
-            console.warn("ReactGrid license has expired! Please contact your manager.");
-            return;
-        }
 
         const licenseWithoutHash = getLicenseWithoutHash(license, separator);
         if (!licenseWithoutHash) {
@@ -32,6 +22,18 @@ export function checkLicense(license: string) {
             console.warn("ReactGrid licence isn't correct! Please contact your manager.");
             return;
         }
+
+        const licenseExpirationDate = getLicenceExpirationDate(license);
+        if (!licenseExpirationDate) {
+            console.warn("ReactGrid expiration date is invalid! Please contact your manager.");
+            return;
+        }
+
+        if (isLicenseExpired(licenseExpirationDate)) {
+            console.warn("ReactGrid license has expired! Please contact your manager.");
+            return;
+        }
+
         console.log(`ReactGrid license is active. Happy coding :)`);
     }
 }
@@ -50,7 +52,6 @@ function getHashFromLicense(license: string, separator: string): string | null {
     if (licenseHashStart === -1)
         return null;
     const hash = license.slice(licenseHashStart + separator.length , license.length).trim()// 2 chars offset for separator and space char
-    // TODO check exact lenght of hash
     if (hash.length === 0)
         return null
     return hash
@@ -86,4 +87,4 @@ function hashCode(str: string): number {
         hash |= 0;
     }
     return Math.abs(hash);
-  }
+}
