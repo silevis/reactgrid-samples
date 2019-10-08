@@ -604,13 +604,7 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         const records = [...this.state.records]
         selectedRowIds.forEach(id => {
             const childrenIds = this.getChildren(records, id).map(c => c.id)
-            records.forEach(r => {
-                if (childrenIds.includes(r.id) && r.position) {
-                    r.parentId = undefined;
-                    r.position.isExpanded = undefined;
-                    r.position.depth = 1;
-                }
-            })
+            selectedRowIds = selectedRowIds.concat(childrenIds)
         })
         return records.filter(r => !selectedRowIds.includes(r.id));
     }
