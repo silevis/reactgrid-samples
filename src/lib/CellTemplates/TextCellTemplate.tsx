@@ -45,13 +45,13 @@ export class TextCellTemplate implements CellTemplate<string, any> {
             }}
             defaultValue={props.cellData}
             onChange={e => props.onCellDataChanged(e.currentTarget.value, false)}
-            onBlur={e => props.onCellDataChanged(e.currentTarget.value, true)}
+            onBlur={e => props.onCellDataChanged(e.currentTarget.value, true)} // TODO should it be added to each cell? // additional question, because everything works without that
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}
             onPointerDown={e => e.stopPropagation()}
             onKeyDown={e => {
-                if (isTextInput(e.keyCode) || isNavigationKey(e.keyCode)) e.stopPropagation();
+                if (isTextInput(e.keyCode) || (isNavigationKey(e))) e.stopPropagation();
                 if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cellData; // reset
             }}
         />

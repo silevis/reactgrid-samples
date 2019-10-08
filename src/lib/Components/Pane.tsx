@@ -1,10 +1,9 @@
 import * as React from "react";
-import { Range, Borders, State, keyCodes } from "../Common";
+import { Range, Borders, State } from "../Common";
 import { CellFocus } from "./CellFocus";
 import { FillHandle } from "./FillHandle";
 import { RowRenderer } from "./RowRenderer";
 import { PartialArea } from "./PartialArea";
-import { func } from "prop-types";
 
 export interface PaneProps {
     id: string
@@ -39,7 +38,7 @@ class GridContent extends React.Component<RowsProps>{
             <>
                 {this.props.range.rows.map((row) => <RowRenderer key={row.idx} state={this.props.state} row={row} columns={this.props.range.cols} forceUpdate={true} borders={{ ...this.props.borders, top: this.props.borders.top && row.top === 0, bottom: this.props.borders.bottom && row.idx === this.props.range.last.row.idx }} />)}
                 {this.props.range.rows.map((row) => <div key={row.idx} style={{ position: 'absolute', boxSizing: 'border-box', top: row.top, height: row.height, width: '100%', borderBottom: '1px #e5e5e5 solid', pointerEvents: 'none' }} />)}
-                {this.props.range.cols.map((col) => <div key={col.idx} style={{ position: 'absolute', boxSizing: 'border-box', left: col.left, width: col.width, height: '100%', borderRight: '1px #e5e5e5 solid', pointerEvents: 'none' }} />)}
+                {this.props.range.cols.map((col) => <div key={col.idx} style={{ position: 'absolute', boxSizing: 'border-box', top: 0, left: col.left, width: col.width, height: '100%', borderRight: '1px #e5e5e5 solid', pointerEvents: 'none' }} />)}
             </>
         )
     }
@@ -48,7 +47,7 @@ class GridContent extends React.Component<RowsProps>{
 function renderCustomFocuses(props: PaneProps) {
     const customFocuses = props.state.customFocuses.filter((value: any) => Object.keys(value).length !== 0);
     return (
-        customFocuses && customFocuses.map((focus: any, id: number) => {
+        customFocuses.map((focus: any, id: number) => {
             const location = props.state.cellMatrix.getLocationById(focus.rowId, focus.colId);
             return location && props.range.contains(location) && <CellFocus key={id} location={location} color={focus.color} />
         })
@@ -61,7 +60,7 @@ export const Pane: React.FunctionComponent<PaneProps> = (props) => {
             <GridContent state={props.state} range={props.range} borders={props.borders} />
             {renderSelectedRanges(props.state, props.range)}
             {props.state.currentBehavior.renderPanePart(props.state, props.range)}
-            {renderCustomFocuses(props)}
+            {props.state.customFocuses && renderCustomFocuses(props)}
             {props.state.focusedLocation && props.range.contains(props.state.focusedLocation) &&
                 <CellFocus location={props.state.focusedLocation} />}
             {props.state.selectedRanges[props.state.activeSelectedRangeIdx] && props.range.contains(props.state.selectedRanges[props.state.activeSelectedRangeIdx].last) &&
