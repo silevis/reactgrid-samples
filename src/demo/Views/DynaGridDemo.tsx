@@ -597,7 +597,12 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
     }
 
     private deleteRows(selectedRowIds: Id[]): Record[] {
-        return [...this.state.records].filter(r => !selectedRowIds.includes(r.id));
+        const records = [...this.state.records]
+        selectedRowIds.forEach(id => {
+            const childrenIds = this.getChildren(records, id).map(c => c.id)
+            selectedRowIds = selectedRowIds.concat(childrenIds)
+        })
+        return records.filter(r => !selectedRowIds.includes(r.id));
     }
 
     private deleteColumns(selectedColIds: Id[]): Column[] {
