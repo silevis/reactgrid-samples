@@ -16,7 +16,6 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
     const isFocused = (state.focusedLocation !== undefined) && (state.focusedLocation.col.idx === props.location.col.idx && state.focusedLocation.row.idx === props.location.row.idx);
     const cellTemplate = state.cellTemplates[cell.type];
     const style: React.CSSProperties = {
-        ...(cellTemplate.getCustomStyle && cellTemplate.getCustomStyle(cell.data, false) || {}),
         boxSizing: 'border-box',
         whiteSpace: 'nowrap',
         position: 'absolute',
@@ -30,6 +29,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = (props) 
         height: location.row.height,
         padding: '0 1px',
         fontSize: 14,
+        ...(cellTemplate.getCustomStyle && cellTemplate.getCustomStyle(cell.data, false) || {}),
         // paddingLeft: 2,
         // paddingRight: 2,
         //borderTop: borders.top ? 'solid 1px #ccc' : '',
