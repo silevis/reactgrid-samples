@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import DynaGridDemo from "./demo/Views/DynaGridDemo"
-import RateCellDemo from "./demo/Views/RateCellDemo"
+import DropdownNumberCellDemo from "./demo/Views/DropdownNumberCellDemo"
 // TODO how to remove this?
 import "core-js/stable";
 
@@ -10,6 +10,6 @@ import "core-js/stable";
 
 ReactDOM.render(
   // <DynaGridDemo />,
-  <RateCellDemo />,
+  <DropdownNumberCellDemo />,
   document.getElementById('root') as HTMLElement
 );
