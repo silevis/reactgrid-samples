@@ -1,6 +1,5 @@
 import * as React from 'react';
-import styled from 'styled-components';
-import { Id, MenuOption, Location, State, Range } from '../Common';
+import { MenuOption, Location, State } from '../Common';
 import { copySelectedRangeToClipboard, pasteData } from '../Behaviors/DefaultBehavior';
 import { isBrowserIE, getDataToPasteInIE } from '../Functions';
 interface ContextMenuProps {
@@ -13,23 +12,8 @@ interface ContextMenuProps {
 }
 
 
-const ContextMenuContainer = styled.div`
-    position: fixed;
-    background: white;
-    font-size: 12;
-    box-shadow: 0 4px 5px 3px rgba(0, 0, 0, .2);
-    z-index: 1000;
-    .dg-context-menu-option {
-        padding: 8px 20px 8px 15px;
-        cursor: pointer; 
-    }
-    .dg-context-menu-option:hover {
-        background: #f2f2f2;
-    };
-    `
-
-
 export class ContextMenu extends React.Component<ContextMenuProps> {
+    state = { isHovered: false }
     render() {
         const { contextMenuPosition, onRowContextMenu, onColumnContextMenu, onRangeContextMenu, state } = this.props;
         const focusedLocation = state.focusedLocation;
@@ -49,11 +33,16 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
         }
         return (
             (contextMenuPosition[0] !== -1 && contextMenuPosition[1] !== -1 && contextMenuOptions.length > 0 &&
-                <ContextMenuContainer
+                <div
                     className="dg-context-menu"
                     style={{
                         top: contextMenuPosition[0] + 'px',
-                        left: contextMenuPosition[1] + 'px'
+                        left: contextMenuPosition[1] + 'px',
+                        position: 'fixed',
+                        background: 'white',
+                        fontSize: '1em',
+                        boxShadow: '0 4px 5px 3px rgba(0, 0, 0, .2)',
+                        zIndex: 1000
                     }}
                 >
                     {contextMenuOptions.map((el, idx) => {
@@ -61,6 +50,10 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
                             <div
                                 key={idx}
                                 className="dg-context-menu-option"
+                                style={{
+                                    padding: '8px 20px 8px 15px',
+                                    cursor: 'pointer',
+                                }}
                                 onPointerDown={e => e.stopPropagation()}
                                 onClick={() => {
                                     el.handler();
@@ -71,7 +64,7 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
                             </div>
                         );
                     })}
-                </ContextMenuContainer>
+                </div>
             )
         );
     }

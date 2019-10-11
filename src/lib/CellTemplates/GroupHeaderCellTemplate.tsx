@@ -2,20 +2,6 @@ import * as React from 'react';
 import { keyCodes } from '../Common/Constants';
 import { isTextInput, isNavigationKey } from './keyCodeCheckings'
 import { CellRenderProps, CellTemplate } from '../Common';
-import styled from 'styled-components';
-
-const ChevronIcon = styled.div`
-    display: inline-block;
-    margin-right: 7px;
-    color: grey;
-    font-weight: bold;
-    /* transition: transform .2s ease-in-out; */
-
-    &:hover {
-        color: black;
-        cursor: pointer;
-    }
-`;
 
 interface GroupHeaderCellData {
     name: string;
@@ -55,19 +41,7 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
             !props.isInEditMode ?
                 <div
                     style={{ width: '100%', marginLeft: 10 * (cellData.depth ? cellData.depth : 1) + (cellData.isExpanded === undefined ? 9 : 0) }}>
-                    {cellData.isExpanded !== undefined &&
-                        <ChevronIcon
-                            onPointerDown={e => {
-                                e.stopPropagation();
-                                cellData.isExpanded = !cellData.isExpanded;
-                                props.onCellDataChanged(cellData, true);
-                            }}
-                            style={{
-                                transform: `${cellData.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`,
-                                zIndex: 1,
-                                pointerEvents: 'auto'
-                            }}
-                        >❯</ChevronIcon>}
+                    {cellData.isExpanded !== undefined &&<Chevron cellData={cellData} cellProps={props}/>}
                     <span style={{ marginLeft: cellData.isExpanded !== undefined ? 4.5 : 0 }}>{cellData.name}</span>
                 </div>
                 :
@@ -104,3 +78,38 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
         );
     }
 }
+
+interface IChevronProps {
+    cellData: GroupHeaderCellData;
+    cellProps: any;
+}
+
+class Chevron extends React.Component<IChevronProps> {
+    render() {
+        const { cellData, cellProps } = this.props;
+        return (
+            <div
+                onPointerDown={e => {
+                    e.stopPropagation();
+                    cellData.isExpanded = !cellData.isExpanded;
+                    cellProps.onCellDataChanged(cellData, true);
+                }}
+                style={{
+                    zIndex: 1,
+                    pointerEvents: 'auto',
+                    display: 'inline-block',
+                    marginRight: '7px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                }}
+            >
+                <div 
+                    style={{
+                        transform: `${cellData.isExpanded ? 'rotate(90deg)' : 'rotate(0)'}`,
+                        transition: '200ms all',
+                    }}>❯</div>
+            </div>
+        )
+    }
+}
+
