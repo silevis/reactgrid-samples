@@ -115,7 +115,7 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
                 return moveFocusPageDown(state);
             case keyCodes.ENTER:
                 return isSingleCellSelected ?
-                    moveFocusDown(state) :
+                    {...moveFocusDown(state), currentlyEditedCell: undefined } :
                     moveFocusInsideSelectedRange(state, 'down', asr, location);
             case keyCodes.ESC:
                 return (state.currentlyEditedCell) ? { ...state, currentlyEditedCell: undefined } : state
