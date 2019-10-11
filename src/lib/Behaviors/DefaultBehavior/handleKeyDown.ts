@@ -125,11 +125,6 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
     return state;
 
 }
-// state.hiddenFocusElement.focus();
-
-
-
-
 
 function focusCell(colIdx: number, rowIdx: number, state: State): State {
     const location = state.cellMatrix.getLocation(rowIdx, colIdx);
@@ -199,7 +194,11 @@ function wipeSelectedRanges(state: State): State {
     state.selectedRanges.forEach(range =>
         range.rows.forEach(row =>
             range.cols.forEach(col =>
-                state = trySetDataAndAppendChange(state, new Location(row, col), { type: 'text', data: '' })
+                {   
+                    const location = new Location(row, col);
+                    if(location.cell.data)
+                        state = trySetDataAndAppendChange(state, location, { type: 'text', data: '' })
+                }
             )
         )
     )
