@@ -37,12 +37,15 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
     renderContent: (props: CellRenderProps<GroupHeaderCellData, any>) => React.ReactNode = (props) => {
         const cellData = { ...props.cellData };
 
+        const isHeaderTreeRoot = cellData.depth !== 1;
+        const canBeExpanded = cellData.isExpanded !== undefined;
+        const elementMarginMultiplier = canBeExpanded && isHeaderTreeRoot ? cellData.depth - 2 : cellData.depth - 1;
         return (
             !props.isInEditMode ?
                 <div
-                    style={{ width: '100%', marginLeft: 10 * (cellData.depth ? cellData.depth : 1) + (cellData.isExpanded === undefined ? 9 : 0) }}>
+                    style={{ display: 'flex', alignItems: 'center', width: '100%', marginLeft: `calc( 1.4em * ${(cellData.depth ? elementMarginMultiplier : 1)} )` }}>
                     {cellData.isExpanded !== undefined &&<Chevron cellData={cellData} cellProps={props}/>}
-                    <span style={{ marginLeft: cellData.isExpanded !== undefined ? 4.5 : 0 }}>{cellData.name}</span>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>{cellData.name}</div>
                 </div>
                 :
                 <input
@@ -53,7 +56,7 @@ export class GroupHeaderCellTemplate implements CellTemplate<GroupHeaderCellData
                         padding: 0,
                         border: 0,
                         background: 'transparent',
-                        fontSize: 14,
+                        fontSize: '1em',
                         outline: 'none',
                     }}
                     ref={input => {
@@ -97,8 +100,10 @@ class Chevron extends React.Component<IChevronProps> {
                 style={{
                     zIndex: 1,
                     pointerEvents: 'auto',
-                    display: 'inline-block',
-                    marginRight: '7px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    height: '1.4em',
+                    width: '1.4em',
                     fontWeight: 'bold',
                     cursor: 'pointer',
                 }}
