@@ -111,7 +111,7 @@ export class DefaultBehavior extends Behavior {
         let pasteContent: ClipboardData[][] = [];
         const htmlData = event.clipboardData.getData('text/html');
         const parsedData = new DOMParser().parseFromString(htmlData, 'text/html')
-        const selectionMode = parsedData.body.firstElementChild!.getAttribute('data-selection') as SelectionMode;
+        const selectionMode = parsedData.body.firstElementChild && parsedData.body.firstElementChild.getAttribute('data-selection') as SelectionMode;
         if (htmlData && parsedData.body.firstElementChild!.getAttribute('data-key') === 'dynagrid') {
             const cells = parsedData.body.firstElementChild!.firstElementChild!.children
             for (let i = 0; i < cells.length; i++) {
@@ -130,8 +130,7 @@ export class DefaultBehavior extends Behavior {
             pasteContent = event.clipboardData.getData('text/plain').split('\n').map(line => line.split('\t').map(t => ({ text: t, data: t, type: 'text' })))
         }
         event.preventDefault()
-        return { ...pasteData(state, pasteContent), selectionMode: selectionMode ? selectionMode : 'range' };
-
+        return { ...pasteData(state, pasteContent), selectionMode: selectionMode || 'range' };
     }
 
     handleCut(event: ClipboardEvent, state: State): State {
@@ -169,15 +168,6 @@ export function pasteData(state: State, pasteContent: ClipboardData[][]): State 
                 }
             })
         )
-        const range = cellMatrix.getRange(activeSelectedRange.first, lastLocation!);
-        // const selectedIds = (): Id[] => {
-        //     const range = cellMatrix.getRange(activeSelectedRange.first, lastLocation!);
-        //     if (state.selectionMode == 'column' && activeSelectedRange.first.row == state.cellMatrix.first.row)
-        //         return range.cols.map(c => c.id)
-        //     if (state.selectionMode == 'row' && activeSelectedRange.first.col == state.cellMatrix.first.col)
-        //         return range.rows.map(r => r.id)
-        //     return []
-        // }
         return {
             ...state,
             selectedRanges: [cellMatrix.getRange(activeSelectedRange.first, lastLocation!)],
