@@ -1,60 +1,48 @@
 import * as React from 'react';
-import styled from 'styled-components';
-import { Id, MenuOption, Location, State, Range } from '../Common';
+import { MenuOption, Location, State } from '../Common';
 import { copySelectedRangeToClipboard, pasteData } from '../Behaviors/DefaultBehavior';
 import { isBrowserIE, getDataToPasteInIE } from '../Functions';
 interface ContextMenuProps {
     contextMenuPosition: number[],
     focusedLocation?: Location,
     state: State,
-    onRowContextMenu?: (selectedRowIds: Id[], menuOptions: MenuOption[]) => MenuOption[],
-    onColumnContextMenu?: (selectedColIds: Id[], menuOptions: MenuOption[]) => MenuOption[],
-    onRangeContextMenu?: (selectedRanges: Range[], menuOptions: MenuOption[]) => MenuOption[];
+    onRowContextMenu?: (menuOptions: MenuOption[]) => MenuOption[],
+    onColumnContextMenu?: (menuOptions: MenuOption[]) => MenuOption[],
+    onRangeContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
 }
 
 
-const ContextMenuContainer = styled.div`
-    position: fixed;
-    background: white;
-    font-size: 12;
-    box-shadow: 0 4px 5px 3px rgba(0, 0, 0, .2);
-    z-index: 1000;
-    .dg-context-menu-option {
-        padding: 8px 20px 8px 15px;
-        cursor: pointer; 
-    }
-    .dg-context-menu-option:hover {
-            background: #f2f2f2;
-    };
-    `
-
-
 export class ContextMenu extends React.Component<ContextMenuProps> {
+    state = { isHovered: false }
     render() {
         const { contextMenuPosition, onRowContextMenu, onColumnContextMenu, onRangeContextMenu, state } = this.props;
         const focusedLocation = state.focusedLocation;
         let contextMenuOptions: MenuOption[] = customContextMenuOptions(state);
-        const rowOptions = onRowContextMenu && onRowContextMenu(state.selectedIds, customContextMenuOptions(state));
-        const colOptions = onColumnContextMenu && onColumnContextMenu(state.selectedIds, customContextMenuOptions(state));
-        const rangeOptions = onRangeContextMenu && onRangeContextMenu(state.selectedRanges, customContextMenuOptions(state));
+        const rowOptions = onRowContextMenu && onRowContextMenu(customContextMenuOptions(state));
+        const colOptions = onColumnContextMenu && onColumnContextMenu(customContextMenuOptions(state));
+        const rangeOptions = onRangeContextMenu && onRangeContextMenu(customContextMenuOptions(state));
 
         if (focusedLocation) {
-            if (state.selectedIds.includes(focusedLocation.row.id) && rowOptions) {
+            if (state.selectionMode == 'row' && state.selectedIds.includes(focusedLocation.row.id) && rowOptions) {
                 contextMenuOptions = rowOptions;
-            } else if (state.selectedIds.includes(focusedLocation.col.id) && colOptions) {
+            } else if (state.selectionMode == 'column' && state.selectedIds.includes(focusedLocation.col.id) && colOptions) {
                 contextMenuOptions = colOptions;
-            } else if (rangeOptions) {
+            } else if (state.selectionMode == 'range' && rangeOptions) {
                 contextMenuOptions = rangeOptions;
             }
         }
-
         return (
             (contextMenuPosition[0] !== -1 && contextMenuPosition[1] !== -1 && contextMenuOptions.length > 0 &&
-                <ContextMenuContainer
+                <div
                     className="dg-context-menu"
                     style={{
                         top: contextMenuPosition[0] + 'px',
-                        left: contextMenuPosition[1] + 'px'
+                        left: contextMenuPosition[1] + 'px',
+                        position: 'fixed',
+                        background: 'white',
+                        fontSize: '1em',
+                        boxShadow: '0 4px 5px 3px rgba(0, 0, 0, .2)',
+                        zIndex: 1000
                     }}
                 >
                     {contextMenuOptions.map((el, idx) => {
@@ -62,17 +50,21 @@ export class ContextMenu extends React.Component<ContextMenuProps> {
                             <div
                                 key={idx}
                                 className="dg-context-menu-option"
+                                style={{
+                                    padding: '8px 20px 8px 15px',
+                                    cursor: 'pointer',
+                                }}
                                 onPointerDown={e => e.stopPropagation()}
                                 onClick={() => {
                                     el.handler();
-                                    state.updateState((state: State) => ({ ...state, selectedIds: state.selectedIds, contextMenuPosition: [-1, -1] }))
+                                    state.updateState((state: State) => ({ ...state, contextMenuPosition: [-1, -1] }))
                                 }}
                             >
                                 {el.title}
                             </div>
                         );
                     })}
-                </ContextMenuContainer>
+                </div>
             )
         );
     }

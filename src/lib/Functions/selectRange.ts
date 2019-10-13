@@ -18,7 +18,7 @@ export function updateActiveSelectedRange(state: State, range: Range): State {
         // replace active selected range in selectedRanges
         selectedRanges: Object.assign([], state.selectedRanges, { [state.activeSelectedRangeIdx]: range }),
         selectedIndexes: [],
-        selectedIds: []
+        selectedIds: [],
     }
 }
 
@@ -27,7 +27,7 @@ export function selectOneColumn(state: State, col: Column, incremental: boolean)
         ...state,
         selectionMode: 'column',
         selectedIndexes: (incremental && state.selectionMode === 'column' ? state.selectedIndexes : []).concat(col.idx),
-        selectedIds: (incremental && state.selectionMode === 'column' ? state.selectedIds : []).concat(col.id)
+        selectedIds: (incremental && state.selectionMode === 'column' ? state.selectedIds : []).concat(col.id),
     };
 }
 
@@ -39,7 +39,7 @@ export function unSelectOneColumn(state: State, col: Column): State {
         ...state,
         selectionMode: 'column',
         selectedIndexes: updatedIndexes,
-        selectedIds: updatedIds
+        selectedIds: updatedIds,
     };
 }
 
@@ -52,7 +52,7 @@ export function selectMultipleColumns(state: State, firstCol: Column, lastCol: C
         ...state,
         selectionMode: 'column',
         selectedIndexes: incremental ? state.selectedIndexes.concat(range.cols.map(col => col.idx)) : range.cols.map(col => col.idx),
-        selectedIds: incremental ? state.selectedIds.concat(range.cols.map(col => col.id)) : range.cols.map(col => col.id)
+        selectedIds: incremental ? state.selectedIds.concat(range.cols.map(col => col.id)) : range.cols.map(col => col.id),
     }
 }
 
@@ -61,7 +61,7 @@ export function selectOneRow(state: State, row: Row, incremental: boolean): Stat
         ...state,
         selectionMode: 'row',
         selectedIndexes: (incremental && state.selectionMode === 'row' ? state.selectedIndexes : []).concat(row.idx),
-        selectedIds: (incremental && state.selectionMode === 'row' ? state.selectedIds : []).concat(row.id)
+        selectedIds: (incremental && state.selectionMode === 'row' ? state.selectedIds : []).concat(row.id),
     };
 }
 
@@ -73,7 +73,7 @@ export function unSelectOneRow(state: State, row: Row): State {
         ...state,
         selectionMode: 'row',
         selectedIndexes: updatedIndexes,
-        selectedIds: updatedIds
+        selectedIds: updatedIds,
     };
 }
 
@@ -86,6 +86,6 @@ export function selectMultipleRows(state: State, firstRow: Row, lastRow: Row, in
         ...state,
         selectionMode: 'row',
         selectedIndexes: incremental ? state.selectedIndexes.concat(range.rows.map(row => row.idx)) : range.rows.map(row => row.idx),
-        selectedIds: incremental ? state.selectedIds.concat(range.rows.map(row => row.id)) : range.rows.map(row => row.id)
+        selectedIds: incremental ? state.selectedIds.concat(range.rows.map(row => row.id)) : range.rows.map(row => row.id),
     }
 }

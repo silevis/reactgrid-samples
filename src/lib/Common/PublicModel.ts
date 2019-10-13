@@ -24,6 +24,7 @@ export interface Focus {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE! 
 export interface ReactGridProps {
     readonly cellMatrixProps: CellMatrixProps;
+    readonly license: string;
     readonly style?: React.CSSProperties;
     readonly cellTemplates?: CellTemplates
     readonly customFocuses?: Focus[];
@@ -33,10 +34,10 @@ export interface ReactGridProps {
     readonly disableColumnSelection?: boolean;
     readonly onDataChanged?: (dataChanges: DataChange[]) => void;
     readonly onCellFocused?: (cellId: CellId) => void;
-    readonly onRowContextMenu?: (selectedRowIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
+    readonly onRowContextMenu?: (selectedIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
     readonly onColumnContextMenu?: (selectedColumnIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
     // TODO Range is INTERNAL! Should not be public! 
-    readonly onRangeContextMenu?: (selectedRanges: Range[], menuOptions: MenuOption[]) => MenuOption[];
+    onRangeContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], menuOptions: MenuOption[]) => MenuOption[];
     // readonly onContextMenuRequested?: (menuOptions: MenuOption[]) => void
 }
 

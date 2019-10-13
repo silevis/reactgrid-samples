@@ -44,7 +44,7 @@ export class NumberCellTemplate implements CellTemplate<number, any> {
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
             }}
-            defaultValue={this.cellDataToText(props.cellData)}
+            value={this.cellDataToText(props.cellData)}
             onChange={e => props.onCellDataChanged(this.textToCellData(e.currentTarget.value), false)}
             onKeyDown={e => {
                 if (isNumberInput(e.keyCode) || isNavigationKey(e)) e.stopPropagation();

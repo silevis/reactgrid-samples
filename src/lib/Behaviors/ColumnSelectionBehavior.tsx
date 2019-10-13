@@ -20,7 +20,7 @@ export class ColumnSelectionBehavior extends Behavior {
     }
 
     handlePointerEnter(event: PointerEvent, location: Location, state: State): State {
-        if (state.disableColumnSelection) 
+        if (state.disableColumnSelection)
             return focusLocation(state, location);
         else
             return selectMultipleColumns(state, state.focusedLocation!.col, location.col, event.ctrlKey);
