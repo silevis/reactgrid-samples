@@ -7,6 +7,7 @@ import { updateSelectedRows, updateSelectedColumns } from "../Functions/updateSt
 import { DefaultGridRenderer } from "./DefaultGridRenderer";
 import { LegacyBrowserGridRenderer } from "./LegacyBrowserGridRenderer";
 import { defaultCellTemplates } from "../Common/DefaultCellTemplates";
+import { checkLicense } from "../Functions/licencing";
 
 export class ReactGrid extends React.Component<ReactGridProps, State> {
 
@@ -48,6 +49,11 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
             disableColumnSelection: props.disableColumnSelection,
             disableRowSelection: props.disableRowSelection,
         };
+    }
+
+    constructor(props: ReactGridProps) {
+        super(props);
+        checkLicense(props.license);
     }
 
     componentDidMount() {
