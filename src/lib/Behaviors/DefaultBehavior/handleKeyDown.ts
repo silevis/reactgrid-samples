@@ -15,7 +15,7 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
     const cellTemplate = state.cellTemplates[location.cell.type];
     if (cellTemplate.handleKeyDown && !state.currentlyEditedCell) { // TODO need add !(event.shiftKey && event.keyCode === keyCodes.SPACE) to working keycodes (shift + space) in a lower condition
         const { cellData, enableEditMode } = cellTemplate.handleKeyDown(location.cell.data, event.keyCode, event.ctrlKey, event.shiftKey, event.altKey);
-        if (location.cell.data !== cellData || enableEditMode) {
+        if (JSON.stringify(location.cell.data) !== JSON.stringify(cellData) || enableEditMode) {
             const newCell = { type: location.cell.type, data: cellData };
             if (enableEditMode) {
                 return { ...state, currentlyEditedCell: newCell }
