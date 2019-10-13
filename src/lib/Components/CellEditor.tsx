@@ -8,13 +8,12 @@ interface CellEditorProps {
 }
 
 export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
-    const cell = props.state.currentlyEditedCell!;
+    const [cell, setCell] = React.useState(props.state.currentlyEditedCell!);
     const location = props.state.focusedLocation!;
     const [position, setPosition] = React.useState(calculatedEditorPosition(location, props.state));
     React.useEffect(() => setPosition(calculatedEditorPosition(location, props.state)), []);
     const cellTemplate = props.state.cellTemplates[cell.type];
     const customStyle = cellTemplate.getCustomStyle ? cellTemplate.getCustomStyle(cell.data, true) : {};
-
     return (
         <div
             style={{
@@ -39,7 +38,9 @@ export const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
                     const newCell = { data: cellData, type: cell.type };
                     props.state.currentlyEditedCell = commit ? undefined : newCell;
                     if (commit)
-                        props.state.updateState(state => trySetDataAndAppendChange(state, location, newCell))
+                        props.state.updateState(state => trySetDataAndAppendChange(state, location, newCell));
+                    else
+                        setCell(newCell);
                 }
             })}
         </div>
