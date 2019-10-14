@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, Range, CellTemplates, Focus } from '../../lib';
-import { ReactGrid } from '../../lib';
-import { VirtualEnv, VirtualUser, DynaGridDataGenerator } from '../../lib/Common/VirtualUser';
+import { ReactGrid, ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, CellTemplates, Focus } from '@silevis/reactgrid';
+import { VirtualEnv, VirtualUser, DynaGridDataGenerator } from './VirtualUser';
 import styled from 'styled-components';
-import { FeatureListContainer } from '../Views/DemoComponents/FeatureListContainer'
-import { FlagCellTemplate } from './FlagCellTemplate';
+import { FeatureListContainer } from './DemoComponents/FeatureListContainer'
+// import { FlagCellTemplate } from './FlagCellTemplate';
 
 interface Column {
     id: number;
@@ -63,22 +62,6 @@ const DemoContainer = styled.div`
     padding: 0;
 `;
 
-const H1 = styled.h1`
-    text-align: center;
-    margin: 10px 0;
-`;
-
-const H3 = styled.h3`
-    text-align: center;
-    margin: 6px 0;
-`;
-
-const DemoHeader = styled.div`
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 30px 0;
-    padding: 0;
-`;
-
 const DemoBody = styled.div`
     display: flex;
     flex-direction: row;
@@ -99,7 +82,7 @@ const fields: Column[] = [
     {
         id: 1,
         name: 'position',
-        type: 'group',
+        type: 'text',
         width: 170,
         pinned: false,
     },
@@ -127,7 +110,7 @@ const fields: Column[] = [
     {
         id: 5,
         name: 'country',
-        type: 'flag',
+        type: 'text',
         width: 125,
         pinned: false,
     },
@@ -751,19 +734,15 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         }
     }
 
-    getCustomCellTemplates(): any {
-        const cellTemplates: CellTemplates = {
-            'flag': new FlagCellTemplate,
-        };
-        return this.state.flagCell ? cellTemplates : {};
-    }
+    // getCustomCellTemplates(): any {
+    //     const cellTemplates: CellTemplates = {
+    //         'flag': new FlagCellTemplate,
+    //     };
+    //     return this.state.flagCell ? cellTemplates : {};
+    // }
 
     render() {
         return <DemoContainer>
-            <DemoHeader>
-                <H1>Customize your ReactGrid</H1>
-                <H3>Choose from the most popular features</H3>
-            </DemoHeader>
             <DemoBody>
                 <FeatureListContainer
                     demoActions={this.demoActions}
@@ -772,17 +751,18 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
                     <ReactGrid
                         cellMatrixProps={this.generateMatrix()}
                         onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
-                        customFocuses={this.state.focuses}
+                        customFocuses={[]} // REMOVE after FIX 
+                        // customFocuses={this.state.focuses} // UNCOMMENT after FIX
                         onRowContextMenu={(selectedRowIds: Id[], menuOptions: MenuOption[]) => this.handleRowContextMenu(selectedRowIds, menuOptions)}
                         onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
-                        onRangeContextMenu={(selectedRowIds: Id[], selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRowIds, selectedColIds, menuOptions)}
-                        cellTemplates={this.getCustomCellTemplates()}
+                        // onRangeContextMenu={(selectedRowIds: Id[], selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRowIds, selectedColIds, menuOptions)} 
+                        // cellTemplates={this.getCustomCellTemplates()}
                         disableFillHandle={this.state.disableFillHandle}
                         disableRangeSelection={this.state.disableRangeSelection}
                         disableRowSelection={false}
                         disableColumnSelection={false}
                         // license="non-commercial"
-                        license="1 developers until 2030-10-07 issued for Silevis Software // 1914789361"
+                        // license="1 developers until 2030-10-07 issued for Silevis Software // 1914789361"
                     />
                 </DynaGridContainer>
             </DemoBody>

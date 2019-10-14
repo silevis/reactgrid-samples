@@ -9,7 +9,9 @@ import "core-js/stable";
 // this index.tsx is required by react-scripts-ts
 
 ReactDOM.render(
-  // <DynaGridDemo />,
-  <RateCellDemo />,
+  <>
+    <DynaGridDemo/>, 
+    {/* <RateCellDemo/> */}
+  </>,
   document.getElementById('root') as HTMLElement
 );
