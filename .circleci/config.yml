@@ -20,7 +20,7 @@ jobs:
 
       - run:
           name: Push upgraded version
-          command: git push https://$GITHUB_TOKEN@github.com/silevis/reactgrid-samples.git develop
+          command: git push https://git@github.com/silevis/reactgrid-samples.git develop
 
   upgrade-version-master-and-publish:
     <<: *defaults
