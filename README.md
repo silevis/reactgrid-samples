@@ -1,6 +1,6 @@
-## ReactGrid
+## ReactGrid Samples
 ```sh
-npm i @silevis/reactgrid
+npm i @silevis/reactgrid-samples
 ```
 
 Before run you need to have installed:

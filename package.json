@@ -1,6 +1,6 @@
 {
   "name": "@silevis/reactgrid-samples",
-  "version": "2.0.3",
+  "version": "2.0.3-rc.1",
   "main": "dist/reactgrid.js",
   "typings": "dist/reactgrid.d.ts",
   "dependencies": {},
@@ -18,7 +18,8 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "2.1.8",
-    "typescript": "3.4.4"
+    "typescript": "3.4.4",
+    "styled-components": "^4.2.0"
   },
   "peerDependencies": {
     "react": "^16.8.6",
