@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { IDemoActions, IDynaGridDemoState } from '../DynaGridDemo'
-import { FeatureItem } from '../DemoComponents/FeatureItem'
+import { FeatureItem } from './FeatureItem'
 
 interface IFeatureListContainer {
     demoActions: IDemoActions;

@@ -1,67 +1,67 @@
-import * as React from 'react';
-import { keyCodes } from '../../lib/Common/Constants';
-import { isTextInput, isNavigationKey } from '../../lib/CellTemplates/keyCodeCheckings'
-import { CellRenderProps, CellTemplate } from '../../lib/Common';
+export const x = 1;
 
-export class FlagCellTemplate implements CellTemplate<string, any> {
+// import * as React from 'react';
+// import { keyCodes, isTextInput, isNavigationKey, CellRenderProps, CellTemplate } from '@silevis/reactgrid';
 
-    isValid(data: string): boolean {
-        return (typeof (data) === 'string');
-    }
+// export class FlagCellTemplate implements CellTemplate<string, any> {
 
-    textToCellData(text: string): string {
-        return text;
-    }
+//     isValid(data: string): boolean {
+//         return (typeof (data) === 'string');
+//     }
 
-    cellDataToText(cellData: string) {
-        return cellData;
-    }
+//     textToCellData(text: string): string {
+//         return text;
+//     }
 
-    handleKeyDown(cellData: string, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
-        if (!ctrl && !alt && isTextInput(keyCode))
-            return { cellData: '', enableEditMode: true }
-        return { cellData, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
-    }
+//     cellDataToText(cellData: string) {
+//         return cellData;
+//     }
 
-    renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = (props) => {
-        if (!props.isInEditMode) {
-            const flagISO = props.cellData.toLowerCase(); // ISO 3166-1, 2/3 letters
-            const flagURL = 'https://restcountries.eu/data/' + flagISO + '.svg';
-            return <div style={{
-                margin: 'auto auto',
-                width: '35px',
-                height: '21px',
-                backgroundSize: 'cover',
-                border: '1px solid #cccccc',
-                backgroundImage: 'url("' + flagURL + '"), url("https://upload.wikimedia.org/wikipedia/commons/0/04/Nuvola_unknown_flag.svg")',
-                backgroundPosition: 'center center'
-            }} />
-        }
-        return <input
-            type='text'
-            style={{
-                position: 'inherit',
-                width: '100%',
-                height: '100%',
-                padding: 0,
-                border: 0,
-                background: 'transparent',
-                fontSize: 14,
-                outline: 'none',
-            }}
-            ref={input => {
-                input && input.focus();
-            }}
-            defaultValue={props.cellData}
-            onChange={e => props.onCellDataChanged(e.currentTarget.value, false)}
-            onCopy={e => e.stopPropagation()}
-            onCut={e => e.stopPropagation()}
-            onPaste={e => e.stopPropagation()}
-            onPointerDown={e => e.stopPropagation()}
-            onKeyDown={e => {
-                if (isTextInput(e.keyCode) || isNavigationKey(e)) e.stopPropagation();
-                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cellData; // reset
-            }}
-        />
-    }
-}
+//     handleKeyDown(cellData: string, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
+//         if (!ctrl && !alt && isTextInput(keyCode))
+//             return { cellData: '', enableEditMode: true }
+//         return { cellData, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
+//     }
+
+//     renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = (props) => {
+//         if (!props.isInEditMode) {
+//             const flagISO = props.cellData.toLowerCase(); // ISO 3166-1, 2/3 letters
+//             const flagURL = 'https://restcountries.eu/data/' + flagISO + '.svg';
+//             return <div style={{
+//                 margin: 'auto auto',
+//                 width: '35px',
+//                 height: '21px',
+//                 backgroundSize: 'cover',
+//                 border: '1px solid #cccccc',
+//                 backgroundImage: 'url("' + flagURL + '"), url("https://upload.wikimedia.org/wikipedia/commons/0/04/Nuvola_unknown_flag.svg")',
+//                 backgroundPosition: 'center center'
+//             }} />
+//         }
+//         return <input
+//             type='text'
+//             style={{
+//                 position: 'inherit',
+//                 width: '100%',
+//                 height: '100%',
+//                 padding: 0,
+//                 border: 0,
+//                 background: 'transparent',
+//                 fontSize: 14,
+//                 outline: 'none',
+//             }}
+//             ref={input => {
+//                 input && input.focus();
+//             }}
+//             defaultValue={props.cellData}
+//             onChange={e => props.onCellDataChanged(e.currentTarget.value, false)}
+//             onCopy={e => e.stopPropagation()}
+//             onCut={e => e.stopPropagation()}
+//             onPaste={e => e.stopPropagation()}
+//             onPointerDown={e => e.stopPropagation()}
+//             onKeyDown={e => {
+//                 if (isTextInput(e.keyCode) || isNavigationKey(e)) e.stopPropagation();
+//                 if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cellData; // reset
+//             }}
+//         />
+//     }
+// }

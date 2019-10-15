@@ -1,10 +1,11 @@
 {
-  "name": "@silevis/reactgrid",
-  "version": "2.0.3-rc.2",
+  "name": "@silevis/reactgrid-samples",
+  "version": "2.0.3-rc.1",
   "main": "dist/reactgrid.js",
   "typings": "dist/reactgrid.d.ts",
   "dependencies": {},
   "devDependencies": {
+    "@silevis/reactgrid": "^2.0.3",
     "@types/jest": "24.0.11",
     "@types/node": "11.13.6",
     "@types/react": "16.8.14",
@@ -17,8 +18,8 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "2.1.8",
-    "styled-components": "^4.2.0",
-    "typescript": "3.4.4"
+    "typescript": "3.4.4",
+    "styled-components": "^4.2.0"
   },
   "peerDependencies": {
     "react": "^16.8.6",
@@ -27,9 +28,6 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "pre-deploy": "rm -rf ./dist && tsc -p tsconfig.prod.json && echo 'Finished building NPM package'",
-    "deploy": "npm publish && echo 'Finished publishing NPM package'",
-    "eject": "react-scripts eject",
     "test": "node_modules\\.bin\\cypress open",
     "test:automatic": "node_modules\\.bin\\cypress run --browser chrome --spec 'cypress/integration/*'",
     "remove-suffix": "cross-env SUFFIX=rc node ./node_modules/npm-version-suffix/run-remove-suffix.js"
