@@ -5,6 +5,9 @@
   "typings": "dist/reactgrid.d.ts",
   "dependencies": {},
   "devDependencies": {
+    "@types/react-router-dom": "^5.1.0",
+    "office-ui-fabric-react": "^7.53.1",
+    "react-router-dom": "^5.1.2",
     "@silevis/reactgrid": "^2.0.4",
     "@types/jest": "24.0.11",
     "@types/node": "11.13.6",
