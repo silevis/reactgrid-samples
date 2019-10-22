@@ -1,39 +1,13 @@
 import * as React from 'react';
 import { ReactGrid, DataChange } from '@silevis/reactgrid'
 import { RateCellTemplate } from './RateCellTemplate';
+import { columns } from '../data/columns';
+import { rows } from '../data/rows';
 
 export default class RateCellDemo extends React.Component<{}, {}> {
   state = {
-    columns: [
-      { id: 'player', reorderable: true, resizable: true, width: 200 },
-      { id: 'age', reorderable: true, resizable: true, width: 50 },
-      { id: 'rate', reorderable: true, resizable: true, width: 130 },  // added
-      { id: 'club', reorderable: true, resizable: true, width: 200 },
-    ],
-    rows: [
-      {
-        id: 'header',
-        height: 25,
-        reorderable: true,
-        cells: [
-          { type: 'header', data: 'Player' },
-          { type: 'header', data: 'Age' },
-          { type: 'header', data: 'Rate' },           // added
-          { type: 'header', data: 'Club' },
-        ]
-      },
-      {
-        id: '1',
-        height: 25,
-        reorderable: true,
-        cells: [
-          { type: 'text', data: 'Lionel Messi' },
-          { type: 'number', data: 32 },
-          { type: 'rating', data: 2 },                // added and updated
-          { type: 'text', data: 'Barcelona' },
-        ]
-      },
-    ]
+    columns,
+    rows
   }
 
   private prepareDataChanges = (dataChanges: DataChange[]): {} => {
