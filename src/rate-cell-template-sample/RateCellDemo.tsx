@@ -56,9 +56,8 @@ export default class RateCellDemo extends React.Component<{}, {}> {
       <ReactGrid
         cellMatrixProps={this.state}
         cellTemplates={{ 'rating': new RateCellTemplate }}
-        customFocuses={[]} // REMOVE AFTER FIX
         onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
-        // license={'non-commercial'}
+        license={'non-commercial'}
       />
     )
   }
