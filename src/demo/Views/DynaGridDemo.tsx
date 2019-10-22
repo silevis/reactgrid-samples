@@ -3,7 +3,7 @@ import { ReactGrid, ColumnProps, RowProps, CellMatrixProps, DataChange, Id, Menu
 import { VirtualEnv, VirtualUser, DynaGridDataGenerator } from './VirtualUser';
 import styled from 'styled-components';
 import { FeatureListContainer } from './DemoComponents/FeatureListContainer'
-// import { FlagCellTemplate } from './FlagCellTemplate';
+import { FlagCellTemplate } from './FlagCellTemplate';
 
 interface Column {
     id: number;
@@ -734,12 +734,12 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
         }
     }
 
-    // getCustomCellTemplates(): any {
-    //     const cellTemplates: CellTemplates = {
-    //         'flag': new FlagCellTemplate,
-    //     };
-    //     return this.state.flagCell ? cellTemplates : {};
-    // }
+    getCustomCellTemplates(): any {
+        const cellTemplates: CellTemplates = {
+            'flag': new FlagCellTemplate,
+        };
+        return this.state.flagCell ? cellTemplates : {};
+    }
 
     render() {
         return <DemoContainer>
@@ -756,12 +756,12 @@ export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState
                         onRowContextMenu={(selectedRowIds: Id[], menuOptions: MenuOption[]) => this.handleRowContextMenu(selectedRowIds, menuOptions)}
                         onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
                         // onRangeContextMenu={(selectedRowIds: Id[], selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRowIds, selectedColIds, menuOptions)} 
-                        // cellTemplates={this.getCustomCellTemplates()}
+                        cellTemplates={this.getCustomCellTemplates()}
                         disableFillHandle={this.state.disableFillHandle}
                         disableRangeSelection={this.state.disableRangeSelection}
                         disableRowSelection={false}
                         disableColumnSelection={false}
-                        // license="non-commercial"
+                        license="non-commercial"
                         // license="1 developers until 2030-10-07 issued for Silevis Software // 1914789361"
                     />
                 </DynaGridContainer>
