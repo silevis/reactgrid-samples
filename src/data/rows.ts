@@ -1,5 +1,5 @@
 // TODO reordable property
-export const rows: any = (reorderable: boolean) => [
+export const rows = (reorderable: boolean) => [
   {
     id: 'header',
     height: 25,
