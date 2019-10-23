@@ -2,8 +2,8 @@ import * as React from 'react';
 import { ReactGrid, ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, CellTemplates, Focus } from '@silevis/reactgrid';
 import { VirtualEnv, VirtualUser, DynaGridDataGenerator } from './VirtualUser';
 import styled from 'styled-components';
-import { FeatureListContainer } from './DemoComponents/FeatureListContainer'
-import { FlagCellTemplate } from './FlagCellTemplate';
+import { FeatureListContainer } from './styled-components/FeatureListContainer'
+import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 
 interface Column {
     id: number;
@@ -264,7 +264,7 @@ const records: any[] = [
     },
 ]
 
-export default class DynaGridDemo extends React.Component<{}, IDynaGridDemoState> {
+export default class AllInOneSample extends React.Component<{}, IDynaGridDemoState> {
     state = {
         fields: [...fields],
         records: [...records],

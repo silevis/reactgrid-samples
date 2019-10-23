@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { ReactGrid, DataChange } from '@silevis/reactgrid'
-import { RateCellTemplate } from './RateCellTemplate';
-import { columns } from '../data/columns';
-import { rows } from '../data/rows';
+import { ReactGrid, DataChange } from '@silevis/reactgrid';
+import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
+import { columns } from '../../data/columns';
+import { rows } from '../../data/rows';
 
 export default class RateCellDemo extends React.Component<{}, {}> {
   state = {
@@ -25,7 +25,6 @@ export default class RateCellDemo extends React.Component<{}, {}> {
   }
 
   render() {
-
     return (
       <ReactGrid
         cellMatrixProps={this.state}
