@@ -1,7 +1,6 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import DynaGridDemo from "./demo/Views/DynaGridDemo"
-import RateCellDemo from "./demo/Views/RateCellDemo"
+import NavigationSample from './samples/navigationSample/NavigationSample'
 // TODO how to remove this?
 import "core-js/stable";
 
@@ -9,9 +8,6 @@ import "core-js/stable";
 // this index.tsx is required by react-scripts-ts
 
 ReactDOM.render(
-  <>
-    <DynaGridDemo/>, 
-    {/* <RateCellDemo/> */}
-  </>,
+  <NavigationSample/>,
   document.getElementById('root') as HTMLElement
 );

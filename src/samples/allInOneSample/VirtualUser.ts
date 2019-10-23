@@ -1,5 +1,5 @@
 // TODO Remove this file from lib
-import { IDynaGridDemoState, Record } from './DynaGridDemo';
+import { IDynaGridDemoState, Record } from './AllInOneSample';
 
 function getRandomInt(min: number, max: number) {
     min = Math.ceil(min);

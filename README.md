@@ -1,32 +1,22 @@
 ## ReactGrid Samples
-```sh
-npm i @silevis/reactgrid-samples
-```
 
-Before run you need to have installed:
-- "react": "^16.8.6"
-- "react-dom": "^16.8.6"
-- "styled-components": "^4.2.0"
+## Source code naming convention
 
-## Getting Started
-```
-import React from 'react';
-import DynagridDemo from '@silevis/reactgrid';
+All about cases: [I'm an inline-style link](https://medium.com/better-programming/string-case-styles-camel-pascal-snake-and-kebab-case-981407998841)
 
-const App: React.FC = () => {
-  return (
-      <DynagridDemo />
-  );
-}
-```
-### Internet Explorer
-Additional you have to install https://www.npmjs.com/package/core-js and place it like below:
-```
-import React from 'react';
-import "core-js/stable";
-import DynagridDemo from '@silevis/reactgrid';
-```
+1. in ```src/``` dir: kabab-case
 
-## Features
+2. in ```src/samples/``` dir: camelCase
+
+2. in ```src/data/``` dir: kebab-case
+
+3. in ```src/cell-templates/``` dir: camelCase
+
+4. ```scss``` and ```css``` filenames in kabab-case
+
 ## Documentation
+
+
 ## License
+
+MIT
