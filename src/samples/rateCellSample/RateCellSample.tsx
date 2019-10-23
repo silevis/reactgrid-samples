@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { ReactGrid, DataChange } from '@silevis/reactgrid';
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
+import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns } from '../../data/columns';
 import { rows } from '../../data/rows';
 
