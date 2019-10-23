@@ -31,15 +31,14 @@ export class RateCellTemplate implements CellTemplate<number, any> {
 
   renderContent: (props: CellRenderProps<number, any>) => React.ReactNode = (props) => {
     let stars: any[] = [];
+    const randNumber = Math.floor(Math.random() * 100000); // TODO get unique ID in grid
     for(let i = 1; i <= this.STARS; i++) {
       stars.push(
         <React.Fragment key={i}>
-          <input type="radio" id={`star_${i}_input`} name="rate" value={i} 
-            checked={this.textToCellData(props.cellData.toString()) == i} onChange={()=>{}}
+          <input type="radio" id={`star_${i}_input_${randNumber}`} name={`rate_${randNumber}`} value={i} 
+            checked={this.textToCellData(props.cellData.toString()) === i} onChange={()=>{}}
           />
-          <label htmlFor={`star_${i}_input`} title="text" onClick={() => { props.onCellDataChanged(i, true)}}>
-            {i} stars
-          </label>
+          <label htmlFor={`star_${i}_input_${randNumber}`} title="text" onClick={(e) => { props.onCellDataChanged(i, true)}}/>
         </React.Fragment>
       )
     }

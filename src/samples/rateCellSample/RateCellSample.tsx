@@ -1,10 +1,17 @@
 import * as React from 'react';
+import styled from 'styled-components';
 import { ReactGrid, DataChange } from '@silevis/reactgrid';
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns } from '../../data/columns';
 import { rows } from '../../data/rows';
 
+const DynaGridContainer = styled.div`
+  position: relative;
+  margin-left: 10px;
+  width: 100%;
+  min-height: 400px;
+`;
 
 export default class RateCellDemo extends React.Component<{}, {}> {
   state = {
@@ -28,12 +35,17 @@ export default class RateCellDemo extends React.Component<{}, {}> {
 
   render() {
     return (
-      <ReactGrid
-        cellMatrixProps={this.state}
-        cellTemplates={{ 'rating': new RateCellTemplate, 'flag': new FlagCellTemplate }}
-        onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
-        license={'non-commercial'}
-      />
+      <DynaGridContainer>
+        <ReactGrid
+          cellMatrixProps={this.state}
+          cellTemplates={{ 
+            'rating': new RateCellTemplate, 
+            'flag': new FlagCellTemplate 
+          }}
+          onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
+          license={'non-commercial'}
+        />
+      </DynaGridContainer>
     )
   }
 }
