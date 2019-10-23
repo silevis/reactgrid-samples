@@ -4,20 +4,21 @@ import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate
 import { columns } from '../../data/columns';
 import { rows } from '../../data/rows';
 
+
 export default class RateCellDemo extends React.Component<{}, {}> {
   state = {
-    columns,
-    rows
+    columns: columns(true, true),
+    rows: rows(true)
   }
 
   private prepareDataChanges = (dataChanges: DataChange[]): {} => {
     const state = { ...this.state }
     dataChanges.forEach(change => {
-      state.rows.forEach(r => {
-        if (r.id == change.rowId) {
-          const field = this.state.columns.findIndex(c => c.id == change.columnId)
+      state.rows.forEach((row: any) => {
+        if (row.id == change.rowId) {
+          const field = this.state.columns.findIndex((column: any) => column.id == change.columnId)
           if (field !== undefined)
-            r.cells[field].data = change.newData;
+            row.cells[field].data = change.newData;
         }
       })
     })
@@ -28,7 +29,7 @@ export default class RateCellDemo extends React.Component<{}, {}> {
     return (
       <ReactGrid
         cellMatrixProps={this.state}
-        cellTemplates={{ 'rating': new RateCellTemplate }}
+        cellTemplates={{ 'rating': new RateCellTemplate, 'flag': new FlagCellTemplate }}
         onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
         license={'non-commercial'}
       />

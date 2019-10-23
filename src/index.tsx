@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import NavigationSample from './samples/navigationSample/NavigationSample'
+
 // TODO how to remove this?
 import "core-js/stable";
 
