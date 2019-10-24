@@ -5,6 +5,7 @@ import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns } from '../../data/columns';
 import { rows } from '../../data/rows';
+import '@silevis/reactgrid/dist/lib/assets/core.css';
 
 const DynaGridContainer = styled.div`
   position: relative;
@@ -13,9 +14,10 @@ const DynaGridContainer = styled.div`
   min-height: 400px;
 `;
 
+
 export default class ColumnReorderSample extends React.Component {
 
-  reorderableColumns = columns(true, false).map((column: ColumnProps, idx: number): ColumnProps => {
+  reorderableColumns =  () => columns(true, false).map((column: ColumnProps, idx: number): ColumnProps => {
     const reorderableColumn: ColumnProps = {
       ...column,
       onDrop: (columnIds: Id[], position: DropPosition) => {
@@ -26,14 +28,12 @@ export default class ColumnReorderSample extends React.Component {
   });
 
   state = {
-    columns:  this.reorderableColumns,
+    columns:  this.reorderableColumns(),
     rows:     rows(false)
   }
 
   private reorderedColumns(colIdxs: Id[], to: number) {
     const columnIndex = this.state.columns.findIndex((column: ColumnProps) => column.id === colIdxs[0]);
-    console.log(to);
-    
     const direction = to > columnIndex ? 'right' : 'left';
     return this.calculateColumnReorder([...this.state.columns], colIdxs, direction, to);
   }
@@ -43,11 +43,7 @@ export default class ColumnReorderSample extends React.Component {
     const clearedColumns: ColumnProps[] = columns.filter((column: ColumnProps) => !colIdxs.includes(column.id));
     if (direction === 'right') {
       destination = destination - colIdxs.length + 1
-    } else {
-      destination = destination - colIdxs.length + 1
     }
-    console.log(destination);
-    
     clearedColumns.splice(destination, 0, ...movedColumns)
     return clearedColumns
   }
