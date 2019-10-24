@@ -1,4 +1,3 @@
-// TODO Remove this file from lib
 import { IDynaGridDemoState, Record } from './AllInOneSample';
 
 function getRandomInt(min: number, max: number) {
@@ -15,9 +14,6 @@ export class DynaGridDataGenerator {
         surname: ['Hudson', 'Perkins', 'Mason', 'Armstrong', 'King', 'Collins', 'Bush', 'Maddison', 'Del Rey', 'Goletz', 'Ferrer'],
         country: ['fra', 'hun', 'lbn', 'mli', 'deu', 'pol', 'prt', 'svk', 'gbr', 'alb', 'aut', 'bra'],
         position: ['Director', 'Manager', 'Software Dev', 'QA', 'Automated Tester', 'Unemployed', 'Scrum Master', 'Project owner']
-    }
-
-    constructor() {
     }
 
     getDataAttrByKey(key: string): any {

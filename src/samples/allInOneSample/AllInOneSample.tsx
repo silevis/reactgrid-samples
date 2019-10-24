@@ -4,6 +4,7 @@ import { VirtualEnv, VirtualUser, DynaGridDataGenerator } from './VirtualUser';
 import styled from 'styled-components';
 import { FeatureListContainer } from './styled-components/FeatureListContainer'
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
+import './styling.scss';
 
 interface Column {
     id: number;
@@ -70,12 +71,11 @@ const DemoBody = styled.div`
     padding: 0;
 `;
 
-const DynaGridContainer = styled.div`
+const ReactGridContainer = styled.div`
     position: relative;
     margin-left: 10px;
     width: 100%;
     min-height: 400px;
-    font-family: Arial  , Helvetica, sans-serif;
 `
 
 const fields: Column[] = [
@@ -749,7 +749,7 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
                 <FeatureListContainer
                     demoActions={this.demoActions}
                     state={this.state} />
-                <DynaGridContainer>
+                <ReactGridContainer className="all-in-one">
                     <ReactGrid
                         cellMatrixProps={this.generateMatrix()}
                         onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
@@ -766,7 +766,7 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
                         license="non-commercial"
                     // license="1 developers until 2030-10-07 issued for Silevis Software // 1914789361"
                     />
-                </DynaGridContainer>
+                </ReactGridContainer>
             </DemoBody>
         </DemoContainer>
     }

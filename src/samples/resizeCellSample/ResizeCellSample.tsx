@@ -5,14 +5,22 @@ import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate
 import { columns } from '../../data/columns';
 import { rows } from '../../data/rows';
 import styled from 'styled-components';
+import './styling.scss';
+
+const ReactGridContainer = styled.div`
+  position: relative;
+  margin-left: 10px;
+  width: 100%;
+  min-height: 400px;
+`
 
 export default class ResizeCellDemo extends React.Component<ColumnProps, {}> {
 
-  resizeRow = columns(false, true).map((column: ColumnProps, idr: number): ColumnProps => {
+  resizeRow = (): ColumnProps[] => columns(false, true).map((column: ColumnProps, idr: number): ColumnProps => {
     const resizeRow: ColumnProps = {
       ...column,
       onResize: width => {
-        const updatedColumns = this.state.columns.map((column: ColumnProps, idc: number) => {
+        const updatedColumns = this.state.columns.map((column: ColumnProps, idc: number): ColumnProps => {
           return {
             ...column,
             width: idr == idc ? width : column.width
@@ -26,8 +34,8 @@ export default class ResizeCellDemo extends React.Component<ColumnProps, {}> {
   });
 
   state = {
-    columns: this.resizeRow,
-    rows: rows(true),
+    columns:  this.resizeRow(),
+    rows:     rows(true),
   }
 
   private prepareDataChanges = (dataChanges: DataChange[]): {} => {
@@ -43,23 +51,17 @@ export default class ResizeCellDemo extends React.Component<ColumnProps, {}> {
     })
     return state
   }
+
   render() {
-    const RateContainer = styled.div`
-      position: relative;
-      margin-left: 10px;
-      width: 100%;
-      min-height: 400px;
-      font-family: Arial  , Helvetica, sans-serif;
-    `
     return (
-      <RateContainer>
+      <ReactGridContainer className="resize-cell-sample">
         <ReactGrid
           cellMatrixProps={{ columns: this.state.columns, rows: this.state.rows }}
           cellTemplates={{ 'rating': new RateCellTemplate, 'flag': new FlagCellTemplate }}
           onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
           license={'non-commercial'}
         />
-      </RateContainer>
+      </ReactGridContainer>
     )
   }
 }
