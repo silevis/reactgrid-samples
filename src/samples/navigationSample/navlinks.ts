@@ -3,10 +3,11 @@ import AllInOneSample from '../allInOneSample/AllInOneSample';
 import RateCellDemo from '../rateCellSample/RateCellSample';
 import DropdownNumberCellSample from '../dropdownNumberCellSample/DropdownNumberCellSample';
 import BudgetPlannerSample from '../budgetPlannerSample/BudgetPlannerSample';
+import ResizeCellSample from '../resizeSample/ResizeCellSample';
 
 export interface ISampleNavLink extends INavLink {
   component?: any;
-} 
+}
 
 export const navLinks: ISampleNavLink[] = [
   {
@@ -32,5 +33,11 @@ export const navLinks: ISampleNavLink[] = [
     key: '/BudgetPlannerSample',
     url: '/BudgetPlannerSample',
     component: BudgetPlannerSample
+  },
+  {
+    name: 'Resize Cell Sample',
+    key: '/ResizeCellSample',
+    url: '/ResizeCellSample',
+    component: ResizeCellSample
   },
 ];
