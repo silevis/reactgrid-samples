@@ -1,5 +1,6 @@
+import { ColumnProps } from '@silevis/reactgrid';
 // TODO reordable/resizable properties
-export const columns: any = (reorderable: boolean, resizable: boolean) => [
+export const columns = (reorderable: boolean, resizable: boolean): ColumnProps[] => [
   { id: 'company', reorderable, resizable, width: 120 }, // text
   { id: 'country', reorderable, resizable, width: 70 }, // flag
   { id: 'creation-date', reorderable, resizable, width: 90 }, // date
