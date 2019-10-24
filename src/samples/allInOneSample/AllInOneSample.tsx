@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ReactGrid, ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, CellTemplates, Focus } from '@silevis/reactgrid';
-import { VirtualEnv, VirtualUser, DynaGridDataGenerator } from './VirtualUser';
+import { VirtualEnv, VirtualUser, ReactGridDataGenerator } from './VirtualUser';
 import styled from 'styled-components';
 import { FeatureListContainer } from './styled-components/FeatureListContainer'
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
@@ -31,7 +31,7 @@ export interface Record {
 }
 
 
-export interface IDynaGridDemoState {
+export interface IReactgridAllInOneState {
     fields: Column[];
     records: Record[];
     focuses: Focus[];
@@ -45,7 +45,7 @@ export interface IDynaGridDemoState {
     frozenPanes: { top: number, bottom: number, left: number, right: number, active: boolean };
 }
 
-export interface IDemoActions {
+export interface IReactgridAllInOneActions {
     toggleResizeAction(): void;
     toggleColumnReorderAction(): void;
     toggleRowReorderAction(): void;
@@ -264,7 +264,7 @@ const records: any[] = [
     },
 ]
 
-export default class AllInOneSample extends React.Component<{}, IDynaGridDemoState> {
+export default class AllInOneSample extends React.Component<{}, IReactgridAllInOneState> {
     state = {
         fields: [...fields],
         records: [...records],
@@ -298,7 +298,7 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
     }
 
     private addNewRecord() {
-        const dataGen: DynaGridDataGenerator = new DynaGridDataGenerator();
+        const dataGen: ReactGridDataGenerator = new ReactGridDataGenerator();
         const records = [...this.state.records];
         for (let x = 0; x < 10; x++) {
             records.push(dataGen.createNewUser());
@@ -378,7 +378,7 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
         return Object.assign({ columns, rows }, frozenPanes)
     }
 
-    private prepareDataChanges = (dataChanges: DataChange[]): IDynaGridDemoState => {
+    private prepareDataChanges = (dataChanges: DataChange[]): IReactgridAllInOneState => {
         const state = { ...this.state }
         dataChanges.forEach(change => {
             state.records.forEach(r => {
@@ -606,7 +606,7 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
         return [...this.state.focuses].filter((focusRow: Focus) => !selectedColIds.includes(focusRow.columnId));
     }
 
-    private pinColumns(ids: Id[], direction: 'left' | 'right'): IDynaGridDemoState {
+    private pinColumns(ids: Id[], direction: 'left' | 'right'): IReactgridAllInOneState {
         const indexes: number[] = ids.map(id => this.state.fields.findIndex(f => f.id == id));
         if (direction == 'left') {
             return {
@@ -671,7 +671,7 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
 
     }
 
-    private pinRows(ids: Id[], direction: 'top' | 'bottom'): IDynaGridDemoState {
+    private pinRows(ids: Id[], direction: 'top' | 'bottom'): IReactgridAllInOneState {
         const indexes: number[] = [];
         ids.forEach(id => indexes.push(this.state.records.findIndex(r => r.id == id)))
         if (direction == 'top') {
@@ -700,7 +700,7 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
         ]);
     }
 
-    demoActions: IDemoActions = {
+    demoActions: IReactgridAllInOneActions = {
         toggleResizeAction: () => {
             this.setState({ resizing: !this.state.resizing })
         },

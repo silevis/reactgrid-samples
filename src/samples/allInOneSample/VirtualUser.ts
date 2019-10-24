@@ -1,4 +1,4 @@
-import { IDynaGridDemoState, Record } from './AllInOneSample';
+import { IReactgridAllInOneState, Record } from './AllInOneSample';
 
 function getRandomInt(min: number, max: number) {
     min = Math.ceil(min);
@@ -6,7 +6,7 @@ function getRandomInt(min: number, max: number) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
-export class DynaGridDataGenerator {
+export class ReactGridDataGenerator {
 
     static nextId: number = 12;
     static data: any = {
@@ -17,24 +17,24 @@ export class DynaGridDataGenerator {
     }
 
     getDataAttrByKey(key: string): any {
-        const randomArray = DynaGridDataGenerator.data[key];
+        const randomArray = ReactGridDataGenerator.data[key];
         if (randomArray !== undefined)
             return randomArray[getRandomInt(0, randomArray.length)];
         return null
     }
 
     getRandomName(): string {
-        const names = DynaGridDataGenerator.data.name;
+        const names = ReactGridDataGenerator.data.name;
         return names[getRandomInt(0, names.length)];
     }
 
     getRandomSurname(): string {
-        const surnames = DynaGridDataGenerator.data.surname;
+        const surnames = ReactGridDataGenerator.data.surname;
         return surnames[getRandomInt(0, surnames.length)];
     }
 
     getRandomCountry(): string {
-        const countries = DynaGridDataGenerator.data.country;
+        const countries = ReactGridDataGenerator.data.country;
         return countries[getRandomInt(0, countries.length)];
     }
 
@@ -43,7 +43,7 @@ export class DynaGridDataGenerator {
     }
 
     getRandomPosition(): any {
-        const positions = DynaGridDataGenerator.data.position;
+        const positions = ReactGridDataGenerator.data.position;
         return { name: positions[getRandomInt(0, positions.length)], depth: 1 };
     }
 
@@ -52,8 +52,8 @@ export class DynaGridDataGenerator {
     }
 
     createNewUser(): Record {
-        ++DynaGridDataGenerator.nextId;
-        const id = DynaGridDataGenerator.nextId;
+        ++ReactGridDataGenerator.nextId;
+        const id = ReactGridDataGenerator.nextId;
         const name = this.getRandomName();
         const surname = this.getRandomSurname();
         const age = this.getRandomAge();
@@ -67,11 +67,11 @@ export class DynaGridDataGenerator {
 
 export class VirtualEnv {
 
-    handleData: (data: any) => IDynaGridDemoState;
+    handleData: (data: any) => IReactgridAllInOneState;
     private virtualUsers: VirtualUser[] = [];
-    state: IDynaGridDemoState;
+    state: IReactgridAllInOneState;
 
-    constructor(state: IDynaGridDemoState, handleData: (data: any) => IDynaGridDemoState) {
+    constructor(state: IReactgridAllInOneState, handleData: (data: any) => IReactgridAllInOneState) {
         this.state = state;
         this.handleData = handleData;
     }
@@ -81,8 +81,8 @@ export class VirtualEnv {
         return this;
     }
 
-    updateView = (state: IDynaGridDemoState) => {
-        let modifiedState: IDynaGridDemoState = state;
+    updateView = (state: IReactgridAllInOneState) => {
+        let modifiedState: IReactgridAllInOneState = state;
         this.virtualUsers.forEach(virtualUser => {
             modifiedState = virtualUser.makeChanges(modifiedState, this.handleData);
         });
@@ -101,7 +101,7 @@ export class VirtualUser {
     private focusX = 0;
     private focusY = 0;
 
-    updateFocusesState(state: IDynaGridDemoState): IDynaGridDemoState {
+    updateFocusesState(state: IReactgridAllInOneState): IReactgridAllInOneState {
         this.focusX = getRandomInt(1, state.fields.length)
         this.focusY = getRandomInt(1, state.records.length)
         var focuses = [...state.focuses].filter(f => f.color !== this.color)
@@ -109,12 +109,12 @@ export class VirtualUser {
         return { ...state, focuses: [...focuses, newFocus] }
     }
 
-    getUpdatedFieldState(state: IDynaGridDemoState, handleData: (data: any) => IDynaGridDemoState): any {
+    getUpdatedFieldState(state: IReactgridAllInOneState, handleData: (data: any) => IReactgridAllInOneState): any {
         if (state == null || state.fields[this.focusX] == undefined || state.records[this.focusY] == undefined)
             return null;
 
         const { name, type } = state.fields[this.focusX];
-        const dataGen: DynaGridDataGenerator = new DynaGridDataGenerator();
+        const dataGen: ReactGridDataGenerator = new ReactGridDataGenerator();
 
         let newFieldData: any = dataGen.getDataAttrByKey(name);
         if (newFieldData == null) {
@@ -139,7 +139,7 @@ export class VirtualUser {
         return { ...handleData([{ columnId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, type: type, initialData: '', newData: newFieldData }]), focuses: state.focuses }
     }
 
-    makeChanges(state: IDynaGridDemoState, handleData: (data: any) => IDynaGridDemoState) {
+    makeChanges(state: IReactgridAllInOneState, handleData: (data: any) => IReactgridAllInOneState) {
         switch (this.count++) {
             case 0:
                 state = this.updateFocusesState(state);
