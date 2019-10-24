@@ -1,8 +1,9 @@
 import { INavLink } from 'office-ui-fabric-react/lib/Nav';
 import AllInOneSample from '../allInOneSample/AllInOneSample';
 import RateCellDemo from '../rateCellSample/RateCellSample';
-import ReorderCellDemo from '../reorderSample/ReorderCellSample';
-import NavigationSample from '../navigationSample/NavigationSample';
+import DropdownNumberCellSample from '../dropdownNumberCellSample/DropdownNumberCellSample';
+import BudgetPlannerSample from '../budgetPlannerSample/BudgetPlannerSample';
+import ResizeCellSample from '../resizeSample/ResizeCellSample';
 
 export interface ISampleNavLink extends INavLink {
   component?: any;
@@ -10,21 +11,33 @@ export interface ISampleNavLink extends INavLink {
 
 export const navLinks: ISampleNavLink[] = [
   {
-    name: 'AllInOneSample',
+    name: 'All In One Sample',
     key: '/AllInOneSample',
     url: '/AllInOneSample',
     component: AllInOneSample
   },
   {
-    name: 'RateCellDemo',
+    name: 'Rate Cell Sample',
     key: '/RateCellDemo',
     url: '/RateCellDemo',
     component: RateCellDemo
   },
   {
-    name: 'ReorderCellDemo',
-    key: '/ReorderCellDemo',
-    url: '/ReorderCellDemo',
-    component: ReorderCellDemo
+    name: 'Dropdown Number Cell Sample',
+    key: '/DropdownNumberCellSample',
+    url: '/DropdownNumberCellSample',
+    component: DropdownNumberCellSample
+  },
+  {
+    name: 'Budget Planner',
+    key: '/BudgetPlannerSample',
+    url: '/BudgetPlannerSample',
+    component: BudgetPlannerSample
+  },
+  {
+    name: 'Resize Cell Sample',
+    key: '/ResizeCellSample',
+    url: '/ResizeCellSample',
+    component: ResizeCellSample
   },
 ];
