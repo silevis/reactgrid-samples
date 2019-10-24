@@ -4,6 +4,7 @@ import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns } from '../../data/columns';
 import { rows } from '../../data/rows';
+import styled from 'styled-components';
 
 
 export default class RateCellDemo extends React.Component<{}, {}> {
@@ -26,14 +27,27 @@ export default class RateCellDemo extends React.Component<{}, {}> {
     return state
   }
 
+
+
   render() {
+
+    const RateContainer = styled.div`
+    position: relative;
+    margin-left: 10px;
+    width: 100%;
+    min-height: 400px;
+    font-family: Arial  , Helvetica, sans-serif;
+  `
+
     return (
-      <ReactGrid
-        cellMatrixProps={this.state}
-        cellTemplates={{ 'rating': new RateCellTemplate, 'flag': new FlagCellTemplate }}
-        onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
-        license={'non-commercial'}
-      />
+      <RateContainer>
+        <ReactGrid
+          cellMatrixProps={this.state}
+          cellTemplates={{ 'rating': new RateCellTemplate, 'flag': new FlagCellTemplate }}
+          onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
+          license={'non-commercial'}
+        />
+      </RateContainer>
     )
   }
 }

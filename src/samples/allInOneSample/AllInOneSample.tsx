@@ -347,6 +347,7 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
             onResize: width => { this.state.fields[idx].width = width, this.forceUpdate(); }
         }));
 
+
         const rows: RowProps[] = records.map((record: any, rowIdx: number) => ({
             id: record.id,
             height: 25,
@@ -367,6 +368,7 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
                 }
             }
         }))
+
         const frozenPanes = {
             frozenBottomRows: this.state.frozenPanes.bottom,
             frozenLeftColumns: this.state.frozenPanes.left,
@@ -762,7 +764,7 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
                         disableRowSelection={false}
                         disableColumnSelection={false}
                         license="non-commercial"
-                        // license="1 developers until 2030-10-07 issued for Silevis Software // 1914789361"
+                    // license="1 developers until 2030-10-07 issued for Silevis Software // 1914789361"
                     />
                 </DynaGridContainer>
             </DemoBody>
