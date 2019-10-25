@@ -1,0 +1,1 @@
+cd ../src && for f in $(find * -name *.css); do cp $f --parent ../dist; done

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import NavigationSample from './samples/navigationSample/NavigationSample'
+import NavigationSample from './samples/navigationSample/NavigationSample';
+import '@silevis/reactgrid/dist/lib/assets/core.css'
 
 // TODO how to remove this?
 import "core-js/stable";
@@ -9,6 +10,6 @@ import "core-js/stable";
 // this index.tsx is required by react-scripts-ts
 
 ReactDOM.render(
-  <NavigationSample/>,
+  <NavigationSample />,
   document.getElementById('root') as HTMLElement
 );

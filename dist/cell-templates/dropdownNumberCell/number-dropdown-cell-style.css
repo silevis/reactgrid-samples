@@ -1,0 +1,137 @@
+/* https://github.com/darlanrod/input-range-scss/blob/master/example/inputrange.css */
+
+
+.rg-dropdown-number-cell {
+    width: 100%
+  }
+  
+  .rg-dropdown-number-cell .rg-dropdown-number-cell-wrapper{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .rg-dropdown-number-cell .rg-dropdown-number-cell-wrapper .rg-dropdown-number-cell-value{
+    display: flex;
+    align-items: center;
+  }
+  
+  .rg-dropdown-number-cell .rg-dropdown-number-cell-wrapper .rg-dropdown-number-cell-chevron{
+    padding: 0 5px;
+    margin: 0 10px 0 0;
+    cursor: pointer;
+  }
+  
+  .rg-dropdown-number-cell .rg-dropdown-number-cell-dropdown {
+    position: absolute;
+    top: calc(100% + 3px);
+    padding: 3px;
+    border: 1px solid #bbb;
+  }
+  
+  .rg-dropdown-number-cell [type=range] {
+    -webkit-appearance: none;
+    background: transparent;
+    margin: 12px 0;
+    width: 100%;
+  }
+  .rg-dropdown-number-cell [type=range]::-moz-focus-outer {
+    border: 0;
+  }
+  .rg-dropdown-number-cell [type=range]:focus {
+    outline: 0;
+  }
+  .rg-dropdown-number-cell [type=range]:focus::-webkit-slider-runnable-track {
+    background: #fbfbfc;
+  }
+  .rg-dropdown-number-cell [type=range]:focus::-ms-fill-lower {
+    background: #eceff1;
+  }
+  .rg-dropdown-number-cell [type=range]:focus::-ms-fill-upper {
+    background: #fbfbfc;
+  }
+  .rg-dropdown-number-cell [type=range]::-webkit-slider-runnable-track {
+    cursor: default;
+    height: 8px;
+    transition: all 0.2s ease;
+    width: 100%;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2), 0 0 1px rgba(13, 13, 13, 0.2);
+    background: #eceff1;
+    border: 2px solid #cfd8dc;
+    border-radius: 5px;
+  }
+  .rg-dropdown-number-cell [type=range]::-webkit-slider-thumb {
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2), 0 0 4px rgba(13, 13, 13, 0.2);
+    background: #ecd60f;
+    border: 2px solid #eceff1;
+    border-radius: 12px;
+    box-sizing: border-box;
+    cursor: default;
+    height: 24px;
+    width: 24px;
+    -webkit-appearance: none;
+    margin-top: -10px;
+  }
+  .rg-dropdown-number-cell [type=range]::-moz-range-track {
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2), 0 0 1px rgba(13, 13, 13, 0.2);
+    cursor: default;
+    height: 8px;
+    transition: all 0.2s ease;
+    width: 100%;
+    background: #eceff1;
+    border: 2px solid #cfd8dc;
+    border-radius: 5px;
+    height: 4px;
+  }
+  .rg-dropdown-number-cell [type=range]::-moz-range-thumb {
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2), 0 0 4px rgba(13, 13, 13, 0.2);
+    background: #ecd60f;
+    border: 2px solid #eceff1;
+    border-radius: 12px;
+    box-sizing: border-box;
+    cursor: default;
+    height: 24px;
+    width: 24px;
+  }
+  .rg-dropdown-number-cell [type=range]::-ms-track {
+    cursor: default;
+    height: 8px;
+    transition: all 0.2s ease;
+    width: 100%;
+    background: transparent;
+    border-color: transparent;
+    border-width: 12px 0;
+    color: transparent;
+  }
+  .rg-dropdown-number-cell [type=range]::-ms-fill-lower {
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2), 0 0 1px rgba(13, 13, 13, 0.2);
+    background: #dde3e6;
+    border: 2px solid #cfd8dc;
+    border-radius: 10px;
+  }
+  .rg-dropdown-number-cell [type=range]::-ms-fill-upper {
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2), 0 0 1px rgba(13, 13, 13, 0.2);
+    background: #eceff1;
+    border: 2px solid #cfd8dc;
+    border-radius: 10px;
+  }
+  .rg-dropdown-number-cell [type=range]::-ms-thumb {
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2), 0 0 4px rgba(13, 13, 13, 0.2);
+    background: #ecd60f;
+    border: 2px solid #eceff1;
+    border-radius: 12px;
+    box-sizing: border-box;
+    cursor: default;
+    height: 24px;
+    width: 24px;
+    margin-top: 2px;
+  }
+  .rg-dropdown-number-cell [type=range]:disabled::-webkit-slider-thumb, 
+  .rg-dropdown-number-cell [type=range]:disabled::-moz-range-thumb, 
+  .rg-dropdown-number-cell [type=range]:disabled::-ms-thumb, 
+  .rg-dropdown-number-cell [type=range]:disabled::-webkit-slider-runnable-track, 
+  .rg-dropdown-number-cell [type=range]:disabled::-ms-fill-lower, 
+  .rg-dropdown-number-cell [type=range]:disabled::-ms-fill-upper {
+    cursor: not-allowed;
+  }
