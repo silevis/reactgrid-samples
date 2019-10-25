@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { ReactGrid, DataChange, ColumnProps, Id, DropPosition } from '@silevis/reactgrid';
+import { ReactGrid, DataChange, ColumnProps, Id, DropPosition, CellMatrixProps, RowProps } from '@silevis/reactgrid';
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns } from '../../data/columns';
@@ -17,56 +17,58 @@ const DynaGridContainer = styled.div`
 
 export default class ColumnReorderSample extends React.Component {
 
-  reorderableColumns =  () => columns(true, false).map((column: ColumnProps, idx: number): ColumnProps => {
-    const reorderableColumn: ColumnProps = {
-      ...column,
-      onDrop: (columnIds: Id[], position: DropPosition) => {
-        this.setState({ columns: this.reorderedColumns(columnIds, idx) }) 
-      },
-    }
-    return reorderableColumn
-  });
-
   state = {
-    columns:  this.reorderableColumns(),
-    rows:     rows(false)
+    columns:  columns(true, false),
+    rows:     (rows(false))
   }
 
-  private reorderedColumns(colIdxs: Id[], to: number) {
-    const columnIndex = this.state.columns.findIndex((column: ColumnProps) => column.id === colIdxs[0]);
-    const direction = to > columnIndex ? 'right' : 'left';
-    return this.calculateColumnReorder([...this.state.columns], colIdxs, direction, to);
-  }
+  private getMatrix() {
+    const columns: ColumnProps[] = [...this.state.columns].map((c, cIdx) => ({
+        ...c,
+        onDrop: idxs => this.setState({ columns: this.getReorderedColumns(idxs as string[], cIdx) }),
+    }))
+    const rows: RowProps[] = [...this.state.rows].map((r: RowProps, rIdx) => ({
+        ...r,
+        cells: [...this.state.columns].map((c: ColumnProps, idxx) => {
+          // PROBLEM HERE -> jak zmapowac wiersze nie wiedzac jak byly ulozone przed reorderem
+          return { data: r.cells[idxx].data, type: 'text' }
+        }),
+        onDrop: idxs => this.setState({ rows: this.getReorderedRows(idxs as string[], rIdx) }),
+    }))
+    return { rows, columns }
+}
 
-  private calculateColumnReorder(columns: ColumnProps[], colIdxs: Id[], direction: string, destination: number): ColumnProps[] {
-    const movedColumns: ColumnProps[] = columns.filter((column: ColumnProps) => colIdxs.includes(column.id));
-    const clearedColumns: ColumnProps[] = columns.filter((column: ColumnProps) => !colIdxs.includes(column.id));
-    if (direction === 'right') {
-      destination = destination - colIdxs.length + 1
-    }
-    clearedColumns.splice(destination, 0, ...movedColumns)
+private prepareDataChanges(dataChanges: DataChange[]) {
+  const state = { ...this.state }
+  dataChanges.forEach((change: DataChange, a) => {
+      state.rows.map((r: RowProps, i) => r.id == change.rowId ? r.cells[i].data = change.newData : r)
+  })
+  return state
+}
+
+private getReorderedColumns(colIds: Id[], to: number) {
+    const movedColumns: ColumnProps[] = [...this.state.columns].filter(c => colIds.includes(c.id));
+    const clearedColumns: ColumnProps[] = [...this.state.columns].filter(c => !colIds.includes(c.id));
+    if (to > [...this.state.columns].findIndex(c => c.id == colIds[0]))
+        to -= colIds.length - 1
+    clearedColumns.splice(to, 0, ...movedColumns)
     return clearedColumns
-  }
+}
 
-  private prepareDataChanges = (dataChanges: DataChange[]): {} => {
-    const state = { ...this.state }
-    dataChanges.forEach(change => {
-      state.rows.forEach((row: any) => {
-        if (row.id == change.rowId) {
-          const field = this.state.columns.findIndex((column: any) => column.id == change.columnId)
-          if (field !== undefined)
-            row.cells[field].data = change.newData;
-        }
-      })
-    })
-    return state
-  }
+private getReorderedRows(rowIds: Id[], to: number) {
+    const movedRows = [...this.state.rows].filter(r => rowIds.includes(r.id));
+    const clearedRows = [...this.state.rows].filter(r => !rowIds.includes(r.id));
+    if (to > [...this.state.rows].findIndex(r => r.id == rowIds[0]))
+        to -= rowIds.length - 1
+    clearedRows.splice(to, 0, ...movedRows)
+    return clearedRows
+}
 
   render() {
     return (
       <DynaGridContainer>
         <ReactGrid
-          cellMatrixProps={this.state}
+          cellMatrixProps={this.getMatrix()}
           cellTemplates={{ 
             'rating': new RateCellTemplate, 
             'flag': new FlagCellTemplate 
