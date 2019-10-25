@@ -15,11 +15,7 @@ export default class ResizeCellDemo extends React.Component<ColumnProps, {}> {
     const columns: ColumnProps[] = [...this.state.columns].map((column, idx) => ({
       ...column,
       onResize: width => {
-        const updatedColumn = {
-          ...column,
-          width
-        }
-        columns[idx] = updatedColumn;
+        columns[idx] = { ...column, width };
         this.setState({ columns })
       }
     }));

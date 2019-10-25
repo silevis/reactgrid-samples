@@ -3,7 +3,6 @@
   "version": "2.0.3-rc.2",
   "main": "dist/mainExports.js",
   "typings": "dist/mainExports.d.ts",
-  "dependencies": {},
   "devDependencies": {
     "@types/react-router-dom": "^5.1.0",
     "office-ui-fabric-react": "^7.53.1",
@@ -31,6 +30,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:tsc": "rm -rf ./dist && tsc -p tsconfig.prod.json",
+    "copy:styles": "cd scripts && copyStyles.sh",
     "test": "node_modules\\.bin\\cypress open",
     "test:automatic": "node_modules\\.bin\\cypress run --browser chrome --spec 'cypress/integration/*'",
     "remove-suffix": "cross-env SUFFIX=rc node ./node_modules/npm-version-suffix/run-remove-suffix.js"
