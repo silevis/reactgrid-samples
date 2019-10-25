@@ -5,6 +5,7 @@ import DropdownNumberCellSample from '../dropdownNumberCellSample/DropdownNumber
 import BudgetPlannerSample from '../budgetPlannerSample/BudgetPlannerSample';
 import ResizeCellSample from '../resizeCellSample/ResizeCellSample';
 import MultiUserSample from '../multiUserSample/MultiUserSample';
+import StockMarketDataSample from '../stockMarketDataSample/StockMarketDataSample';
 
 export interface ISampleNavLink extends INavLink {
   component?: any;
@@ -46,5 +47,11 @@ export const navLinks: ISampleNavLink[] = [
     key: '/MultiUserSample',
     url: '/MultiUserSample',
     component: MultiUserSample
+  },
+  {
+    name: 'Stock Market Data Sample',
+    key: '/StockMarketDataSample',
+    url: '/StockMarketDataSample',
+    component: StockMarketDataSample
   },
 ];
