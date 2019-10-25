@@ -1,11 +1,11 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { IDemoActions, IDynaGridDemoState } from '../AllInOneSample'
+import { IReactgridAllInOneActions, IReactgridAllInOneState } from '../AllInOneSample'
 import { FeatureItem } from './FeatureItem'
 
 interface IFeatureListContainer {
-    demoActions: IDemoActions;
-    state: IDynaGridDemoState;
+    demoActions: IReactgridAllInOneActions;
+    state: IReactgridAllInOneState;
     children?: any;
 }
 

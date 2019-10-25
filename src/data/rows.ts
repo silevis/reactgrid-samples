@@ -1,5 +1,6 @@
+import { RowProps } from '@silevis/reactgrid';
 // TODO reordable property
-export const rows = (reorderable: boolean) => [
+export const rows = (reorderable: boolean): RowProps[] => [
   {
     id: 'header',
     height: 25,
