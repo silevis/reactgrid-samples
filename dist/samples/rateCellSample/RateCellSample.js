@@ -65,5 +65,5 @@ var RateCellSample = (function (_super) {
     };
     return RateCellSample;
 }(React.Component));
-export default RateCellSample;
+export { RateCellSample };
 var templateObject_1;

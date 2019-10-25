@@ -95,5 +95,5 @@ var MultiUserSample = (function (_super) {
     };
     return MultiUserSample;
 }(React.Component));
-export default MultiUserSample;
+export { MultiUserSample };
 var templateObject_1;

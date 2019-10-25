@@ -4,7 +4,7 @@ import './styling.scss';
 export interface IMultiUserSampleState extends CellMatrixProps {
     focuses: Focus[];
 }
-export default class MultiUserSample extends React.Component<{}, IMultiUserSampleState> {
+export declare class MultiUserSample extends React.Component<{}, IMultiUserSampleState> {
     state: {
         columns: import("@silevis/reactgrid").ColumnProps[];
         rows: import("@silevis/reactgrid").RowProps[];

@@ -37,5 +37,5 @@ var NavigationSample = (function (_super) {
     ;
     return NavigationSample;
 }(React.Component));
-export default NavigationSample;
+export { NavigationSample };
 ;

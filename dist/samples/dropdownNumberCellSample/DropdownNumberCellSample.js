@@ -36,9 +36,9 @@ import { columns } from '../../data/columns';
 import { rows } from '../../data/rows';
 import './styling.scss';
 var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"], ["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"])));
-var DropdownNumberCell = (function (_super) {
-    __extends(DropdownNumberCell, _super);
-    function DropdownNumberCell() {
+var DropdownNumberCellSample = (function (_super) {
+    __extends(DropdownNumberCellSample, _super);
+    function DropdownNumberCellSample() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
             columns: columns(true, true),
@@ -59,7 +59,7 @@ var DropdownNumberCell = (function (_super) {
         };
         return _this;
     }
-    DropdownNumberCell.prototype.render = function () {
+    DropdownNumberCellSample.prototype.render = function () {
         var _this = this;
         return (React.createElement(ReactGridContainer, { className: "dropdown-number-cell-sample" },
             React.createElement(ReactGrid, { cellMatrixProps: this.state, cellTemplates: {
@@ -68,7 +68,7 @@ var DropdownNumberCell = (function (_super) {
                     'dropdownNumber': new DropdownNumberCellTemplate,
                 }, onDataChanged: function (changes) { return _this.setState(_this.prepareDataChanges(changes)); }, license: 'non-commercial' })));
     };
-    return DropdownNumberCell;
+    return DropdownNumberCellSample;
 }(React.Component));
-export default DropdownNumberCell;
+export { DropdownNumberCellSample };
 var templateObject_1;

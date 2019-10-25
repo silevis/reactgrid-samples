@@ -23,7 +23,7 @@ var MonthNameByIdx = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
 ];
 var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    position: relative;\n    margin-left: 10px;\n    width: 100%;\n    min-height: 400px;\n"], ["\n    position: relative;\n    margin-left: 10px;\n    width: 100%;\n    min-height: 400px;\n"])));
-export var BudgetPlanner = function (props) {
+var BudgetPlanner = function (props) {
     var _a = React.useState(props.budgetData), budgetData = _a[0], setBudgetData = _a[1];
     var _b = React.useState({ columns: {}, rows: {} }), collapsedLabels = _b[0], setCollapsedLabels = _b[1];
     var getMonthsInRange = function (dateRange) {
@@ -276,9 +276,8 @@ export var BudgetPlanner = function (props) {
             position: 'relative'
         }, license: 'non-commercial', cellMatrixProps: generateCellMatrixProps(), disableRowSelection: true, cellTemplates: myCellTemplates, onDataChanged: dataChangeHandler }));
 };
-var BudgetPlannerSample = function () {
+export var BudgetPlannerSample = function () {
     return (React.createElement(ReactGridContainer, { className: "budget-planner" },
         React.createElement(BudgetPlanner, { budgetData: BudgetPlannerDemoData.budgetData, dateRange: BudgetPlannerDemoData.dateRange })));
 };
-export default BudgetPlannerSample;
 var templateObject_1;

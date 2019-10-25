@@ -54,7 +54,7 @@ export interface IReactgridAllInOneActions {
     addNewRecordAction(): void;
     addNewFieldAction(): void;
 }
-export default class AllInOneSample extends React.Component<{}, IReactgridAllInOneState> {
+export declare class AllInOneSample extends React.Component<{}, IReactgridAllInOneState> {
     state: {
         fields: Column[];
         records: any[];

@@ -1,9 +1,4 @@
-import AllInOneSample from '../allInOneSample/AllInOneSample';
-import RateCellSample from '../rateCellSample/RateCellSample';
-import DropdownNumberCellSample from '../dropdownNumberCellSample/DropdownNumberCellSample';
-import BudgetPlannerSample from '../budgetPlannerSample/BudgetPlannerSample';
-import ResizeCellSample from '../resizeCellSample/ResizeCellSample';
-import MultiUserSample from '../multiUserSample/MultiUserSample';
+import { AllInOneSample, RateCellSample, DropdownNumberCellSample, BudgetPlannerSample, ResizeCellSample, MultiUserSample } from '../../samples';
 export var navLinks = [
     {
         name: 'All In One Sample',

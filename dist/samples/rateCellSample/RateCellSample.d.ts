@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './styling.scss';
-export default class RateCellSample extends React.Component<{}, {}> {
+export declare class RateCellSample extends React.Component<{}, {}> {
     state: {
         columns: import("@silevis/reactgrid").ColumnProps[];
         rows: import("@silevis/reactgrid").RowProps[];

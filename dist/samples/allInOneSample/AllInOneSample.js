@@ -657,5 +657,5 @@ var AllInOneSample = (function (_super) {
     };
     return AllInOneSample;
 }(React.Component));
-export default AllInOneSample;
+export { AllInOneSample };
 var templateObject_1, templateObject_2, templateObject_3;
