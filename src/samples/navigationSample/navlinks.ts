@@ -4,6 +4,7 @@ import RateCellSample from '../rateCellSample/RateCellSample';
 import DropdownNumberCellSample from '../dropdownNumberCellSample/DropdownNumberCellSample';
 import BudgetPlannerSample from '../budgetPlannerSample/BudgetPlannerSample';
 import ResizeCellSample from '../resizeCellSample/ResizeCellSample';
+import MultiUserSample from '../multiUserSample/MultiUserSample';
 
 export interface ISampleNavLink extends INavLink {
   component?: any;
@@ -39,5 +40,11 @@ export const navLinks: ISampleNavLink[] = [
     key: '/ResizeCellSample',
     url: '/ResizeCellSample',
     component: ResizeCellSample
+  },
+  {
+    name: 'Multi User Sample',
+    key: '/MultiUserSample',
+    url: '/MultiUserSample',
+    component: MultiUserSample
   },
 ];
