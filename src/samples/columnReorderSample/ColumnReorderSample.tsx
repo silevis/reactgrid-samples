@@ -18,60 +18,92 @@ const DynaGridContainer = styled.div`
 export default class ColumnReorderSample extends React.Component {
 
   state = {
-    columns:  columns(true, false),
-    rows:     (rows(false))
+    columns: columns(true, false),
+    rows: (rows(false))
   }
 
   private getMatrix() {
-    const columns: ColumnProps[] = [...this.state.columns].map((c, cIdx) => ({
-        ...c,
-        onDrop: idxs => this.setState({ columns: this.getReorderedColumns(idxs as string[], cIdx) }),
+    const columns: ColumnProps[] = [...this.state.columns].map((c: ColumnProps, cIdx) => ({
+      ...c,
+      onDrop: (idxs, where) => {
+        [...idxs].reverse().forEach(idx => {
+          const from = this.state.columns.findIndex(c => c.id === idx);
+          console.log(`column ${idx} (${from}) was dropped ${where} column ${c.id} (${cIdx})`);
+        })
+        const from = this.state.columns.findIndex(c => c.id === idxs[0]);
+        const rearrangedColumns = this.getReorderedColumns(idxs as string[], cIdx);
+        const updatedRows = this.getUpdatedRows([...idxs].reverse().map(idx => this.state.columns.findIndex(c => c.id === idx)), cIdx);
+        this.setState({ columns: rearrangedColumns, rows: updatedRows });
+      }
     }))
-    const rows: RowProps[] = [...this.state.rows].map((r: RowProps, rIdx) => ({
-        ...r,
-        cells: [...this.state.columns].map((c: ColumnProps, idxx) => {
-          // PROBLEM HERE -> jak zmapowac wiersze nie wiedzac jak byly ulozone przed reorderem
-          return { data: r.cells[idxx].data, type: 'text' }
-        }),
-        onDrop: idxs => this.setState({ rows: this.getReorderedRows(idxs as string[], rIdx) }),
-    }))
-    return { rows, columns }
-}
+    // const rows: RowProps[] = [...this.state.rows].map((r: RowProps, rIdx) => ({
+    //     ...r,
+    //     cells: [...this.state.columns].map((c: ColumnProps, idxx) => {
+    //       // PROBLEM HERE -> jak zmapowac wiersze nie wiedzac jak byly ulozone przed reorderem
+    //       return { data: r.cells[idxx].data, type: 'text' }
+    //     }),
+    //     onDrop: idxs => this.setState({ rows: this.getReorderedRows(idxs as string[], rIdx) }),
+    // }))
+    return { rows: this.state.rows, columns }
+  }
 
-private prepareDataChanges(dataChanges: DataChange[]) {
-  const state = { ...this.state }
-  dataChanges.forEach((change: DataChange, a) => {
+  private prepareDataChanges(dataChanges: DataChange[]) {
+    const state = { ...this.state }
+    dataChanges.forEach((change: DataChange, a) => {
       state.rows.map((r: RowProps, i) => r.id == change.rowId ? r.cells[i].data = change.newData : r)
-  })
-  return state
-}
+    })
+    return state
+  }
 
-private getReorderedColumns(colIds: Id[], to: number) {
+  private getReorderedColumns(colIds: Id[], to: number) {
     const movedColumns: ColumnProps[] = [...this.state.columns].filter(c => colIds.includes(c.id));
     const clearedColumns: ColumnProps[] = [...this.state.columns].filter(c => !colIds.includes(c.id));
     if (to > [...this.state.columns].findIndex(c => c.id == colIds[0]))
-        to -= colIds.length - 1
+      to -= colIds.length - 1
     clearedColumns.splice(to, 0, ...movedColumns)
     return clearedColumns
-}
+  }
 
-private getReorderedRows(rowIds: Id[], to: number) {
+  private getUpdatedRows(from: number[], to: number) {
+    const newRows: RowProps[] = [];
+    this.state.rows.forEach(row => {
+      const newRow = { ...row };
+      const newCells = [...row.cells]
+      let i = 0;
+      from.forEach(fromIdx => {
+        if (to > fromIdx) {
+          newCells.splice(to - i, 0, newCells.splice(fromIdx, 1)[0]);
+          console.log('to the right');
+          i++;
+        } else {
+          newCells.splice(to, 0, newCells.splice(fromIdx - i, 1)[0]);
+          console.log('to the left');
+          i--;
+        }
+      })
+      newRow.cells = newCells;
+      newRows.push(newRow);
+    })
+    return newRows;
+  }
+
+  private getReorderedRows(rowIds: Id[], to: number) {
     const movedRows = [...this.state.rows].filter(r => rowIds.includes(r.id));
     const clearedRows = [...this.state.rows].filter(r => !rowIds.includes(r.id));
     if (to > [...this.state.rows].findIndex(r => r.id == rowIds[0]))
-        to -= rowIds.length - 1
+      to -= rowIds.length - 1
     clearedRows.splice(to, 0, ...movedRows)
     return clearedRows
-}
+  }
 
   render() {
     return (
       <DynaGridContainer>
         <ReactGrid
           cellMatrixProps={this.getMatrix()}
-          cellTemplates={{ 
-            'rating': new RateCellTemplate, 
-            'flag': new FlagCellTemplate 
+          cellTemplates={{
+            'rating': new RateCellTemplate,
+            'flag': new FlagCellTemplate
           }}
           onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
           license={'non-commercial'}
