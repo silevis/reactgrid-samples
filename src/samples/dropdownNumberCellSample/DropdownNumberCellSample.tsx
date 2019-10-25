@@ -15,10 +15,10 @@ const ReactGridContainer = styled.div`
   min-height: 400px;
 `;
 
-export default class DropdownNumberCell extends React.Component<{}, CellMatrixProps> {
+export class DropdownNumberCellSample extends React.Component<{}, CellMatrixProps> {
   state = {
-    columns:  columns(true, true),
-    rows:     rows(true)
+    columns: columns(true, true),
+    rows: rows(true)
   }
 
   private prepareDataChanges = (dataChanges: DataChange[]): {} => {
@@ -40,10 +40,10 @@ export default class DropdownNumberCell extends React.Component<{}, CellMatrixPr
       <ReactGridContainer className="dropdown-number-cell-sample">
         <ReactGrid
           cellMatrixProps={this.state}
-          cellTemplates={{ 
-            'rating': new RateCellTemplate, 
+          cellTemplates={{
+            'rating': new RateCellTemplate,
             'flag': new FlagCellTemplate,
-            'dropdownNumber' : new DropdownNumberCellTemplate, // TODO - add this cell template to data - currently unused
+            'dropdownNumber': new DropdownNumberCellTemplate, // TODO - add this cell template to data - currently unused
           }}
           onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
           license={'non-commercial'}

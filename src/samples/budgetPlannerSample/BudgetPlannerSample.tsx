@@ -17,7 +17,7 @@ const ReactGridContainer = styled.div`
     min-height: 400px;
 `
 
-export const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
+const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
     const [budgetData, setBudgetData] = React.useState(props.budgetData);
     const [collapsedLabels, setCollapsedLabels] = React.useState({ columns: {} as any, rows: {} as any });
 
@@ -309,7 +309,7 @@ export const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
     )
 }
 
-const BudgetPlannerSample: React.FC = () => {
+export const BudgetPlannerSample: React.FC = () => {
     return (
         <ReactGridContainer className="budget-planner">
             <BudgetPlanner
@@ -319,5 +319,3 @@ const BudgetPlannerSample: React.FC = () => {
         </ReactGridContainer>
     );
 }
-
-export default BudgetPlannerSample;
