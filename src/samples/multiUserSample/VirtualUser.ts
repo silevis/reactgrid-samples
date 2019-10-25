@@ -1,4 +1,6 @@
-import { IReactgridAllInOneState, Record } from './AllInOneSample';
+import { 
+    IMultiUserSampleState, 
+} from './MultiUserSample';
 
 function getRandomInt(min: number, max: number) {
     min = Math.ceil(min);
@@ -8,7 +10,7 @@ function getRandomInt(min: number, max: number) {
 
 export class ReactGridDataGenerator {
 
-    static nextId: number = 12;
+    static nextId: number = 0;
     static data: any = {
         name: ['Jacob', 'Tom', 'John', 'Allie', 'Zoe', 'Ashe', 'Fred', 'Rob', 'Alison', 'Arcady', 'Tom', 'Jerry'],
         surname: ['Hudson', 'Perkins', 'Mason', 'Armstrong', 'King', 'Collins', 'Bush', 'Maddison', 'Del Rey', 'Goletz', 'Ferrer'],
@@ -42,6 +44,16 @@ export class ReactGridDataGenerator {
         return getRandomInt(min, max)
     }
 
+    getRandomDate(start = new Date(1955, 0, 1), end = new Date(1990, 0, 1)): string {
+        let d = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+        return [year, month, day].join('-');
+    }
+
     getRandomPosition(): any {
         const positions = ReactGridDataGenerator.data.position;
         return { name: positions[getRandomInt(0, positions.length)], depth: 1 };
@@ -51,27 +63,27 @@ export class ReactGridDataGenerator {
         return Math.random() < .5;
     }
 
-    createNewUser(): Record {
-        ++ReactGridDataGenerator.nextId;
-        const id = ReactGridDataGenerator.nextId;
-        const name = this.getRandomName();
-        const surname = this.getRandomSurname();
-        const age = this.getRandomAge();
-        const country = this.getRandomCountry();
-        const position = this.getRandomPosition();
-        const onHoliday = this.getRandomBoolean();
-        return { id, name, surname, age, country, position, onHoliday, pinned: false }
-    }
+    // createNewUser(): any {
+    //     ++ReactGridDataGenerator.nextId;
+    //     const id = ReactGridDataGenerator.nextId;
+    //     const name = this.getRandomName();
+    //     const surname = this.getRandomSurname();
+    //     const age = this.getRandomAge();
+    //     const country = this.getRandomCountry();
+    //     const position = this.getRandomPosition();
+    //     const onHoliday = this.getRandomBoolean();
+    //     return { id, name, surname, age, country, position, onHoliday, pinned: false }
+    // }
 
 }
 
 export class VirtualEnv {
 
-    handleData: (data: any) => IReactgridAllInOneState;
+    handleData: (data: any) => IMultiUserSampleState;
     private virtualUsers: VirtualUser[] = [];
-    state: IReactgridAllInOneState;
+    state: IMultiUserSampleState;
 
-    constructor(state: IReactgridAllInOneState, handleData: (data: any) => IReactgridAllInOneState) {
+    constructor(state: IMultiUserSampleState, handleData: (data: any) => IMultiUserSampleState) {
         this.state = state;
         this.handleData = handleData;
     }
@@ -81,8 +93,8 @@ export class VirtualEnv {
         return this;
     }
 
-    updateView = (state: IReactgridAllInOneState) => {
-        let modifiedState: IReactgridAllInOneState = state;
+    updateView = (state: IMultiUserSampleState) => {
+        let modifiedState: IMultiUserSampleState = state;
         this.virtualUsers.forEach(virtualUser => {
             modifiedState = virtualUser.makeChanges(modifiedState, this.handleData);
         });
@@ -92,54 +104,63 @@ export class VirtualEnv {
 
 export class VirtualUser {
 
-    color: string;
+    // color: string;
 
-    constructor(color: string) {
+    constructor(public color: string) {
         this.color = color;
     }
+
     private count = 0;
     private focusX = 0;
     private focusY = 0;
 
-    updateFocusesState(state: IReactgridAllInOneState): IReactgridAllInOneState {
-        this.focusX = getRandomInt(1, state.fields.length)
-        this.focusY = getRandomInt(1, state.records.length)
-        var focuses = [...state.focuses].filter(f => f.color !== this.color)
-        const newFocus: any = state.records.length !== 1 && state.fields[this.focusX] ? { colId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, color: this.color } : {};
+    updateFocusesState(state: IMultiUserSampleState): IMultiUserSampleState {
+        this.focusX = getRandomInt(0, state.columns.length);
+        this.focusY = getRandomInt(1, state.rows.length);
+        const focuses = [...state.focuses].filter(focus => focus.color !== this.color);
+        let newFocus: any = 
+                    state.rows.length !== 1 && state.columns[this.focusX] 
+                    ? { colId: state.columns[this.focusX].id, rowId: state.rows[this.focusY].id, color: this.color } 
+                    : {};
         return { ...state, focuses: [...focuses, newFocus] }
     }
 
-    getUpdatedFieldState(state: IReactgridAllInOneState, handleData: (data: any) => IReactgridAllInOneState): any {
-        if (state == null || state.fields[this.focusX] == undefined || state.records[this.focusY] == undefined)
+    getUpdatedFieldState(state: IMultiUserSampleState, handleData: (data: any) => IMultiUserSampleState): any {
+        if (state == null || state.columns[this.focusX] == undefined || state.rows[this.focusY] == undefined || state.rows[this.focusY].cells[this.focusX] == undefined)
             return null;
-
-        const { name, type } = state.fields[this.focusX];
+        const { data, type } = state.rows[this.focusY].cells[this.focusX];
         const dataGen: ReactGridDataGenerator = new ReactGridDataGenerator();
-
-        let newFieldData: any = dataGen.getDataAttrByKey(name);
+        let newFieldData: any = dataGen.getDataAttrByKey(state.columns[this.focusX].id as string);
         if (newFieldData == null) {
             switch (type) {
                 case 'checkbox': {
-                    // newFieldData = state.records[this.focusY].onHoliday // ... TODO odwracanie stanu checkboxa
-                    newFieldData = dataGen.getRandomBoolean();
+                    newFieldData = !data;
                     break;
                 }
                 case 'number': {
                     newFieldData = dataGen.getRandomAge(10, 70);
                     break;
                 }
-                case 'text': {
-                    newFieldData = dataGen.getRandomName() + ' and ' + dataGen.getRandomName();
+                case 'date': {
+                    newFieldData = dataGen.getRandomDate();
+                    break;
+                }
+                case 'flag': {
+                    newFieldData = dataGen.getRandomCountry();
+                    break;
+                }
+                case 'dropdownNumber': {
+                    newFieldData = { value: getRandomInt(0, 100), isOpened: false };
                     break;
                 }
                 default:
                     break;
             }
         }
-        return { ...handleData([{ columnId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, type: type, initialData: '', newData: newFieldData }]), focuses: state.focuses }
+        return { ...handleData([{ columnId: state.columns[this.focusX].id, rowId: state.rows[this.focusY].id, type: type, initialData: '', newData: newFieldData }]), focuses: state.focuses }
     }
 
-    makeChanges(state: IReactgridAllInOneState, handleData: (data: any) => IReactgridAllInOneState) {
+    makeChanges(state: IMultiUserSampleState, handleData: (data: any) => IMultiUserSampleState) {
         switch (this.count++) {
             case 0:
                 state = this.updateFocusesState(state);

@@ -5,16 +5,16 @@ import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns } from '../../data/columns';
 import { rows } from '../../data/rows';
+import './styling.scss';
 
-
-const DynaGridContainer = styled.div`
+const ReactGridContainer = styled.div`
   position: relative;
   margin-left: 10px;
   width: 100%;
   min-height: 400px;
 `;
 
-export default class RateCellDemo extends React.Component<{}, {}> {
+export default class RateCellSample extends React.Component<{}, {}> {
   state = {
     columns: columns(true, true),
     rows: rows(true)
@@ -36,24 +36,15 @@ export default class RateCellDemo extends React.Component<{}, {}> {
 
 
   render() {
-
-    const RateContainer = styled.div`
-    position: relative;
-    margin-left: 10px;
-    width: 100%;
-    min-height: 400px;
-    font-family: Arial  , Helvetica, sans-serif;
-  `
-
     return (
-      <RateContainer>
+      <ReactGridContainer className="rate-cell-sample">
         <ReactGrid
           cellMatrixProps={this.state}
           cellTemplates={{ 'rating': new RateCellTemplate, 'flag': new FlagCellTemplate }}
           onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
           license={'non-commercial'}
         />
-      </RateContainer>
+      </ReactGridContainer>
     )
   }
 }

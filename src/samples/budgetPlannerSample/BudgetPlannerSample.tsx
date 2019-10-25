@@ -4,17 +4,17 @@ import { ReactGrid, DataChange, CellMatrixProps, ColumnProps, RowProps, Cell, Ce
 import { MonthOfYear, DateRange, BudgetPlannerProps, DataRow, Entry, MonthIdx, BudgetPlannerNumberCellData } from './BudgetPlannerSampleTypes';
 import BudgetPlannerDemoData from './BudgetPlannerSampleData';
 import { BudgetPlannerTextCellTemplate, BudgetPlannerNumberCellTemplate, BudgetPlannerColumnHeaderCellTemplate } from './../../cell-templates/budgetPlannerCells/BudgetPlannerCellTemplates';
+import './styling.scss';
 
 const MonthNameByIdx = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
 ]
 
-const DynaGridContainer = styled.div`
+const ReactGridContainer = styled.div`
     position: relative;
     margin-left: 10px;
     width: 100%;
     min-height: 400px;
-    font-family: Arial  , Helvetica, sans-serif;
 `
 
 export const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
@@ -311,12 +311,12 @@ export const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
 
 const BudgetPlannerSample: React.FC = () => {
     return (
-        <DynaGridContainer>
+        <ReactGridContainer className="budget-planner">
             <BudgetPlanner
                 budgetData={BudgetPlannerDemoData.budgetData}
                 dateRange={BudgetPlannerDemoData.dateRange}
             />
-        </DynaGridContainer>
+        </ReactGridContainer>
     );
 }
 
