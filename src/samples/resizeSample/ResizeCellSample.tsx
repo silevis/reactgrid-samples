@@ -1,33 +1,30 @@
 import * as React from 'react';
-import { ReactGrid, DataChange, DropPosition, Id, ColumnProps } from '@silevis/reactgrid';
+import { ReactGrid, DataChange, ColumnProps } from '@silevis/reactgrid';
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns } from '../../data/columns';
 import { rows } from '../../data/rows';
-import styled from 'styled-components';
 
 export default class ResizeCellDemo extends React.Component<ColumnProps, {}> {
+  state = {
+    columns: columns(false, true),
+    rows: rows(false),
+  }
 
-  resizeRow = columns(false, true).map((column: ColumnProps, idr: number): ColumnProps => {
-    const resizeRow: ColumnProps = {
+  private getMatrix() {
+    const columns: ColumnProps[] = [...this.state.columns].map((column, idx) => ({
       ...column,
       onResize: width => {
-        const updatedColumns = this.state.columns.map((column: ColumnProps, idc: number) => {
-          return {
-            ...column,
-            width: idr == idc ? width : column.width
-          }
-        })
-        this.setState({ columns: updatedColumns });
-        this.forceUpdate();
+        const updatedColumn = {
+          ...column,
+          width
+        }
+        columns[idx] = updatedColumn;
+        this.setState({ columns })
       }
-    }
-    return resizeRow
-  });
+    }));
 
-  state = {
-    columns: this.resizeRow,
-    rows: rows(true),
+    return { columns, rows: this.state.rows }
   }
 
   private prepareDataChanges = (dataChanges: DataChange[]): {} => {
@@ -43,23 +40,15 @@ export default class ResizeCellDemo extends React.Component<ColumnProps, {}> {
     })
     return state
   }
+
   render() {
-    const RateContainer = styled.div`
-      position: relative;
-      margin-left: 10px;
-      width: 100%;
-      min-height: 400px;
-      font-family: Arial  , Helvetica, sans-serif;
-    `
     return (
-      <RateContainer>
-        <ReactGrid
-          cellMatrixProps={{ columns: this.state.columns, rows: this.state.rows }}
-          cellTemplates={{ 'rating': new RateCellTemplate, 'flag': new FlagCellTemplate }}
-          onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
-          license={'non-commercial'}
-        />
-      </RateContainer>
+      <ReactGrid
+        cellMatrixProps={this.getMatrix()}
+        cellTemplates={{ 'rating': new RateCellTemplate, 'flag': new FlagCellTemplate }}
+        onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
+        license={'non-commercial'}
+      />
     )
   }
 }
