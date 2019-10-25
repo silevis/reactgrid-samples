@@ -1,8 +1,7 @@
-import { IDynaGridDemoState, Record } from './AllInOneSample';
-export declare class DynaGridDataGenerator {
+import { IReactgridAllInOneState, Record } from './AllInOneSample';
+export declare class ReactGridDataGenerator {
     static nextId: number;
     static data: any;
-    constructor();
     getDataAttrByKey(key: string): any;
     getRandomName(): string;
     getRandomSurname(): string;
@@ -13,12 +12,12 @@ export declare class DynaGridDataGenerator {
     createNewUser(): Record;
 }
 export declare class VirtualEnv {
-    handleData: (data: any) => IDynaGridDemoState;
+    handleData: (data: any) => IReactgridAllInOneState;
     private virtualUsers;
-    state: IDynaGridDemoState;
-    constructor(state: IDynaGridDemoState, handleData: (data: any) => IDynaGridDemoState);
+    state: IReactgridAllInOneState;
+    constructor(state: IReactgridAllInOneState, handleData: (data: any) => IReactgridAllInOneState);
     addUser(virtualUser: VirtualUser): VirtualEnv;
-    updateView: (state: IDynaGridDemoState) => IDynaGridDemoState;
+    updateView: (state: IReactgridAllInOneState) => IReactgridAllInOneState;
 }
 export declare class VirtualUser {
     color: string;
@@ -26,7 +25,7 @@ export declare class VirtualUser {
     private count;
     private focusX;
     private focusY;
-    updateFocusesState(state: IDynaGridDemoState): IDynaGridDemoState;
-    getUpdatedFieldState(state: IDynaGridDemoState, handleData: (data: any) => IDynaGridDemoState): any;
-    makeChanges(state: IDynaGridDemoState, handleData: (data: any) => IDynaGridDemoState): IDynaGridDemoState;
+    updateFocusesState(state: IReactgridAllInOneState): IReactgridAllInOneState;
+    getUpdatedFieldState(state: IReactgridAllInOneState, handleData: (data: any) => IReactgridAllInOneState): any;
+    makeChanges(state: IReactgridAllInOneState, handleData: (data: any) => IReactgridAllInOneState): IReactgridAllInOneState;
 }

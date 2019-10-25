@@ -33,10 +33,11 @@ import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns } from '../../data/columns';
 import { rows } from '../../data/rows';
-var DynaGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"], ["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"])));
-var RateCellDemo = (function (_super) {
-    __extends(RateCellDemo, _super);
-    function RateCellDemo() {
+import './styling.scss';
+var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"], ["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"])));
+var RateCellSample = (function (_super) {
+    __extends(RateCellSample, _super);
+    function RateCellSample() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
             columns: columns(true, true),
@@ -57,13 +58,12 @@ var RateCellDemo = (function (_super) {
         };
         return _this;
     }
-    RateCellDemo.prototype.render = function () {
+    RateCellSample.prototype.render = function () {
         var _this = this;
-        var RateContainer = styled.div(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    position: relative;\n    margin-left: 10px;\n    width: 100%;\n    min-height: 400px;\n    font-family: Arial  , Helvetica, sans-serif;\n  "], ["\n    position: relative;\n    margin-left: 10px;\n    width: 100%;\n    min-height: 400px;\n    font-family: Arial  , Helvetica, sans-serif;\n  "])));
-        return (React.createElement(RateContainer, null,
+        return (React.createElement(ReactGridContainer, { className: "rate-cell-sample" },
             React.createElement(ReactGrid, { cellMatrixProps: this.state, cellTemplates: { 'rating': new RateCellTemplate, 'flag': new FlagCellTemplate }, onDataChanged: function (changes) { return _this.setState(_this.prepareDataChanges(changes)); }, license: 'non-commercial' })));
     };
-    return RateCellDemo;
+    return RateCellSample;
 }(React.Component));
-export default RateCellDemo;
-var templateObject_1, templateObject_2;
+export default RateCellSample;
+var templateObject_1;

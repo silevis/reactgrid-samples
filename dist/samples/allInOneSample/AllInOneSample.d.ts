@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Focus } from '@silevis/reactgrid';
+import './styling.scss';
 interface Column {
     id: number;
     name: string;
@@ -22,7 +23,7 @@ export interface Record {
     pinned: boolean;
     parentId?: number;
 }
-export interface IDynaGridDemoState {
+export interface IReactgridAllInOneState {
     fields: Column[];
     records: Record[];
     focuses: Focus[];
@@ -41,7 +42,7 @@ export interface IDynaGridDemoState {
         active: boolean;
     };
 }
-export interface IDemoActions {
+export interface IReactgridAllInOneActions {
     toggleResizeAction(): void;
     toggleColumnReorderAction(): void;
     toggleRowReorderAction(): void;
@@ -53,7 +54,7 @@ export interface IDemoActions {
     addNewRecordAction(): void;
     addNewFieldAction(): void;
 }
-export default class AllInOneSample extends React.Component<{}, IDynaGridDemoState> {
+export default class AllInOneSample extends React.Component<{}, IReactgridAllInOneState> {
     state: {
         fields: Column[];
         records: any[];
@@ -97,7 +98,7 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
     private unpinRows;
     private pinRows;
     private handleRangeContextMenu;
-    demoActions: IDemoActions;
+    demoActions: IReactgridAllInOneActions;
     getCustomCellTemplates(): any;
     render(): JSX.Element;
 }

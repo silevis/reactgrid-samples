@@ -28,13 +28,14 @@ var __assign = (this && this.__assign) || function () {
 };
 import * as React from 'react';
 import { ReactGrid } from '@silevis/reactgrid';
-import { VirtualEnv, VirtualUser, DynaGridDataGenerator } from './VirtualUser';
+import { VirtualEnv, VirtualUser, ReactGridDataGenerator } from './VirtualUser';
 import styled from 'styled-components';
 import { FeatureListContainer } from './styled-components/FeatureListContainer';
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
+import './styling.scss';
 var DemoContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    margin: 0;\n    padding: 0;\n"], ["\n    margin: 0;\n    padding: 0;\n"])));
 var DemoBody = styled.div(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start;\n    margin: 0;\n    padding: 0;\n"], ["\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start;\n    margin: 0;\n    padding: 0;\n"])));
-var DynaGridContainer = styled.div(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n    position: relative;\n    margin-left: 10px;\n    width: 100%;\n    min-height: 400px;\n    font-family: Arial  , Helvetica, sans-serif;\n"], ["\n    position: relative;\n    margin-left: 10px;\n    width: 100%;\n    min-height: 400px;\n    font-family: Arial  , Helvetica, sans-serif;\n"])));
+var ReactGridContainer = styled.div(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n    position: relative;\n    margin-left: 10px;\n    width: 100%;\n    min-height: 400px;\n"], ["\n    position: relative;\n    margin-left: 10px;\n    width: 100%;\n    min-height: 400px;\n"])));
 var fields = [
     {
         id: 1,
@@ -302,7 +303,7 @@ var AllInOneSample = (function (_super) {
         }, 1000);
     };
     AllInOneSample.prototype.addNewRecord = function () {
-        var dataGen = new DynaGridDataGenerator();
+        var dataGen = new ReactGridDataGenerator();
         var records = this.state.records.slice();
         for (var x = 0; x < 10; x++) {
             records.push(dataGen.createNewUser());
@@ -651,8 +652,8 @@ var AllInOneSample = (function (_super) {
         return React.createElement(DemoContainer, null,
             React.createElement(DemoBody, null,
                 React.createElement(FeatureListContainer, { demoActions: this.demoActions, state: this.state }),
-                React.createElement(DynaGridContainer, null,
-                    React.createElement(ReactGrid, { cellMatrixProps: this.generateMatrix(), onDataChanged: function (changes) { return _this.setState(_this.prepareDataChanges(changes)); }, customFocuses: [], onRowContextMenu: function (selectedRowIds, menuOptions) { return _this.handleRowContextMenu(selectedRowIds, menuOptions); }, onColumnContextMenu: function (selectedColIds, menuOptions) { return _this.handleColContextMenu(selectedColIds, menuOptions); }, cellTemplates: this.getCustomCellTemplates(), disableFillHandle: this.state.disableFillHandle, disableRangeSelection: this.state.disableRangeSelection, disableRowSelection: false, disableColumnSelection: false, license: "non-commercial" }))));
+                React.createElement(ReactGridContainer, { className: "all-in-one" },
+                    React.createElement(ReactGrid, { cellMatrixProps: this.generateMatrix(), onDataChanged: function (changes) { return _this.setState(_this.prepareDataChanges(changes)); }, customFocuses: this.state.focuses, onRowContextMenu: function (selectedRowIds, menuOptions) { return _this.handleRowContextMenu(selectedRowIds, menuOptions); }, onColumnContextMenu: function (selectedColIds, menuOptions) { return _this.handleColContextMenu(selectedColIds, menuOptions); }, cellTemplates: this.getCustomCellTemplates(), disableFillHandle: this.state.disableFillHandle, disableRangeSelection: this.state.disableRangeSelection, disableRowSelection: false, disableColumnSelection: false, license: "non-commercial" }))));
     };
     return AllInOneSample;
 }(React.Component));

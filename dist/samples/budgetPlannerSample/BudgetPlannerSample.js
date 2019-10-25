@@ -18,10 +18,11 @@ import styled from 'styled-components';
 import { ReactGrid } from '@silevis/reactgrid';
 import BudgetPlannerDemoData from './BudgetPlannerSampleData';
 import { BudgetPlannerTextCellTemplate, BudgetPlannerNumberCellTemplate, BudgetPlannerColumnHeaderCellTemplate } from './../../cell-templates/budgetPlannerCells/BudgetPlannerCellTemplates';
+import './styling.scss';
 var MonthNameByIdx = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
 ];
-var DynaGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    position: relative;\n    margin-left: 10px;\n    width: 100%;\n    min-height: 400px;\n    font-family: Arial  , Helvetica, sans-serif;\n"], ["\n    position: relative;\n    margin-left: 10px;\n    width: 100%;\n    min-height: 400px;\n    font-family: Arial  , Helvetica, sans-serif;\n"])));
+var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    position: relative;\n    margin-left: 10px;\n    width: 100%;\n    min-height: 400px;\n"], ["\n    position: relative;\n    margin-left: 10px;\n    width: 100%;\n    min-height: 400px;\n"])));
 export var BudgetPlanner = function (props) {
     var _a = React.useState(props.budgetData), budgetData = _a[0], setBudgetData = _a[1];
     var _b = React.useState({ columns: {}, rows: {} }), collapsedLabels = _b[0], setCollapsedLabels = _b[1];
@@ -276,7 +277,7 @@ export var BudgetPlanner = function (props) {
         }, license: 'non-commercial', cellMatrixProps: generateCellMatrixProps(), disableRowSelection: true, cellTemplates: myCellTemplates, onDataChanged: dataChangeHandler }));
 };
 var BudgetPlannerSample = function () {
-    return (React.createElement(DynaGridContainer, null,
+    return (React.createElement(ReactGridContainer, { className: "budget-planner" },
         React.createElement(BudgetPlanner, { budgetData: BudgetPlannerDemoData.budgetData, dateRange: BudgetPlannerDemoData.dateRange })));
 };
 export default BudgetPlannerSample;

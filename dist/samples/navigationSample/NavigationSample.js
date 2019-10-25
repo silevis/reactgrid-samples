@@ -12,10 +12,10 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import React from 'react';
-import 'office-ui-fabric-react/dist/css/fabric.min.css';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { navLinks } from './navlinks';
 import { SideNav } from './SideNav';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import 'office-ui-fabric-react/dist/css/fabric.min.css';
 var NavigationSample = (function (_super) {
     __extends(NavigationSample, _super);
     function NavigationSample() {
@@ -27,7 +27,7 @@ var NavigationSample = (function (_super) {
         });
         routes = routes.concat([React.createElement(Route, { key: -1, render: function () { return React.createElement("h1", null, "Select sample from nav"); } })]);
         return (React.createElement(BrowserRouter, null,
-            React.createElement("div", { className: "ms-Grid", dir: "ltr" },
+            React.createElement("div", { className: "ms-Grid navigation-sample", dir: "ltr" },
                 React.createElement("div", { className: "ms-Grid-row" },
                     React.createElement("div", { className: "ms-Grid-col ms-sm6 ms-md4 ms-lg3 ms-xl2", style: { padding: 20 } },
                         React.createElement(SideNav, { navLinks: navLinks })),
