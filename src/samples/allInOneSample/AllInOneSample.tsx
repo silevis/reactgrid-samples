@@ -753,8 +753,7 @@ export default class AllInOneSample extends React.Component<{}, IReactgridAllInO
                     <ReactGrid
                         cellMatrixProps={this.generateMatrix()}
                         onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
-                        customFocuses={[]} // REMOVE after FIX 
-                        // customFocuses={this.state.focuses} // UNCOMMENT after FIX
+                        customFocuses={this.state.focuses} // UNCOMMENT after FIX
                         onRowContextMenu={(selectedRowIds: Id[], menuOptions: MenuOption[]) => this.handleRowContextMenu(selectedRowIds, menuOptions)}
                         onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
                         // onRangeContextMenu={(selectedRowIds: Id[], selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRowIds, selectedColIds, menuOptions)} 

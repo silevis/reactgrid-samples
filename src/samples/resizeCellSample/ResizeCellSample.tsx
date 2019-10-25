@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReactGrid, DataChange, DropPosition, Id, ColumnProps } from '@silevis/reactgrid';
+import { ReactGrid, DataChange, DropPosition, Id, ColumnProps, CellMatrixProps } from '@silevis/reactgrid';
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns } from '../../data/columns';
@@ -14,7 +14,7 @@ const ReactGridContainer = styled.div`
   min-height: 400px;
 `
 
-export default class ResizeCellDemo extends React.Component<ColumnProps, {}> {
+export default class ResizeCellSample extends React.Component<{}, CellMatrixProps> {
 
   resizeRow = (): ColumnProps[] => columns(false, true).map((column: ColumnProps, idr: number): ColumnProps => {
     const resizeRow: ColumnProps = {
