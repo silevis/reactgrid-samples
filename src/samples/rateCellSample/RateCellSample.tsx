@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { ReactGrid, DataChange } from '@silevis/reactgrid';
+import { ReactGrid, DataChange, CellMatrixProps } from '@silevis/reactgrid';
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns } from '../../data/columns';
@@ -14,10 +14,10 @@ const ReactGridContainer = styled.div`
   min-height: 400px;
 `;
 
-export default class RateCellSample extends React.Component<{}, {}> {
+export default class RateCellSample extends React.Component<{}, CellMatrixProps> {
   state = {
-    columns: columns(true, true),
-    rows: rows(true)
+    columns:  columns(true, true),
+    rows:     rows(true)
   }
 
   private prepareDataChanges = (dataChanges: DataChange[]): {} => {
@@ -37,10 +37,13 @@ export default class RateCellSample extends React.Component<{}, {}> {
 
   render() {
     return (
-      <ReactGridContainer className="rate-cell-sample">
+      <ReactGridContainer className="rg-style-override rate-cell-sample">
         <ReactGrid
           cellMatrixProps={this.state}
-          cellTemplates={{ 'rating': new RateCellTemplate, 'flag': new FlagCellTemplate }}
+          cellTemplates={{ 
+            'rating': new RateCellTemplate, 
+            'flag': new FlagCellTemplate 
+          }}
           onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
           license={'non-commercial'}
         />

@@ -37,7 +37,7 @@ export default class DropdownNumberCell extends React.Component<{}, CellMatrixPr
 
   render() {
     return (
-      <ReactGridContainer className="dropdown-number-cell-sample">
+      <ReactGridContainer className="rg-style-override dropdown-number-cell-sample">
         <ReactGrid
           cellMatrixProps={this.state}
           cellTemplates={{ 

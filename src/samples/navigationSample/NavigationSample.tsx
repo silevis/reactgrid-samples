@@ -1,9 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import {navLinks} from './navlinks';
-import {ISampleNavLink} from '../navigationSample/navlinks';
+import { navLinks } from './navlinks';
+import { ISampleNavLink } from '../navigationSample/navlinks';
 import { SideNav } from './SideNav';
 import 'office-ui-fabric-react/dist/css/fabric.min.css';
+import './styling.scss';
 
 export default class NavigationSample extends React.Component {
   render() {
