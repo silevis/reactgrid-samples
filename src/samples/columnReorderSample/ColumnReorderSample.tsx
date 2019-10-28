@@ -25,25 +25,13 @@ export default class ColumnReorderSample extends React.Component {
   private getMatrix() {
     const columns: ColumnProps[] = [...this.state.columns].map((c: ColumnProps, cIdx) => ({
       ...c,
-      onDrop: (idxs, where) => {
-        [...idxs].reverse().forEach(idx => {
-          const from = this.state.columns.findIndex(c => c.id === idx);
-          console.log(`column ${idx} (${from}) was dropped ${where} column ${c.id} (${cIdx})`);
-        })
-        const from = this.state.columns.findIndex(c => c.id === idxs[0]);
-        const rearrangedColumns = this.getReorderedColumns(idxs as string[], cIdx);
-        const updatedRows = this.getUpdatedRows([...idxs].reverse().map(idx => this.state.columns.findIndex(c => c.id === idx)), cIdx);
-        this.setState({ columns: rearrangedColumns, rows: updatedRows });
+      onDrop: (idxs) => {
+        this.setState({ 
+          columns: this.getReorderedColumns(idxs as string[], cIdx),
+          rows: this.getUpdatedRows([...idxs].reverse().map(idx => this.state.columns.findIndex(c => c.id === idx)), cIdx) 
+        });
       }
     }))
-    // const rows: RowProps[] = [...this.state.rows].map((r: RowProps, rIdx) => ({
-    //     ...r,
-    //     cells: [...this.state.columns].map((c: ColumnProps, idxx) => {
-    //       // PROBLEM HERE -> jak zmapowac wiersze nie wiedzac jak byly ulozone przed reorderem
-    //       return { data: r.cells[idxx].data, type: 'text' }
-    //     }),
-    //     onDrop: idxs => this.setState({ rows: this.getReorderedRows(idxs as string[], rIdx) }),
-    // }))
     return { rows: this.state.rows, columns }
   }
 
@@ -65,7 +53,7 @@ export default class ColumnReorderSample extends React.Component {
   }
 
   private getUpdatedRows(from: number[], to: number) {
-    const newRows: RowProps[] = [];
+    let newRows: RowProps[] = [];
     this.state.rows.forEach(row => {
       const newRow = { ...row };
       const newCells = [...row.cells]
@@ -73,16 +61,14 @@ export default class ColumnReorderSample extends React.Component {
       from.forEach(fromIdx => {
         if (to > fromIdx) {
           newCells.splice(to - i, 0, newCells.splice(fromIdx, 1)[0]);
-          console.log('to the right');
           i++;
         } else {
           newCells.splice(to, 0, newCells.splice(fromIdx - i, 1)[0]);
-          console.log('to the left');
           i--;
         }
       })
       newRow.cells = newCells;
-      newRows.push(newRow);
+      newRows = [...newRows, newRow];
     })
     return newRows;
   }
