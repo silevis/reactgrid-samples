@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { ReactGrid, ColumnProps, RowProps, CellMatrixProps, DataChange, Id, MenuOption, CellTemplates, Focus } from '@silevis/reactgrid';
-import { VirtualEnv, VirtualUser, DynaGridDataGenerator } from './VirtualUser';
+import { VirtualEnv, VirtualUser, ReactGridDataGenerator } from './VirtualUser';
 import styled from 'styled-components';
 import { FeatureListContainer } from './styled-components/FeatureListContainer'
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
+import './styling.scss';
 
 interface Column {
     id: number;
@@ -30,7 +31,7 @@ export interface Record {
 }
 
 
-export interface IDynaGridDemoState {
+export interface IReactgridAllInOneState {
     fields: Column[];
     records: Record[];
     focuses: Focus[];
@@ -44,7 +45,7 @@ export interface IDynaGridDemoState {
     frozenPanes: { top: number, bottom: number, left: number, right: number, active: boolean };
 }
 
-export interface IDemoActions {
+export interface IReactgridAllInOneActions {
     toggleResizeAction(): void;
     toggleColumnReorderAction(): void;
     toggleRowReorderAction(): void;
@@ -70,12 +71,11 @@ const DemoBody = styled.div`
     padding: 0;
 `;
 
-const DynaGridContainer = styled.div`
+const ReactGridContainer = styled.div`
     position: relative;
     margin-left: 10px;
     width: 100%;
     min-height: 400px;
-    font-family: Arial  , Helvetica, sans-serif;
 `
 
 const fields: Column[] = [
@@ -264,7 +264,7 @@ const records: any[] = [
     },
 ]
 
-export default class AllInOneSample extends React.Component<{}, IDynaGridDemoState> {
+export default class AllInOneSample extends React.Component<{}, IReactgridAllInOneState> {
     state = {
         fields: [...fields],
         records: [...records],
@@ -298,7 +298,7 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
     }
 
     private addNewRecord() {
-        const dataGen: DynaGridDataGenerator = new DynaGridDataGenerator();
+        const dataGen: ReactGridDataGenerator = new ReactGridDataGenerator();
         const records = [...this.state.records];
         for (let x = 0; x < 10; x++) {
             records.push(dataGen.createNewUser());
@@ -347,6 +347,7 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
             onResize: width => { this.state.fields[idx].width = width, this.forceUpdate(); }
         }));
 
+
         const rows: RowProps[] = records.map((record: any, rowIdx: number) => ({
             id: record.id,
             height: 25,
@@ -367,6 +368,7 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
                 }
             }
         }))
+
         const frozenPanes = {
             frozenBottomRows: this.state.frozenPanes.bottom,
             frozenLeftColumns: this.state.frozenPanes.left,
@@ -376,7 +378,7 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
         return Object.assign({ columns, rows }, frozenPanes)
     }
 
-    private prepareDataChanges = (dataChanges: DataChange[]): IDynaGridDemoState => {
+    private prepareDataChanges = (dataChanges: DataChange[]): IReactgridAllInOneState => {
         const state = { ...this.state }
         dataChanges.forEach(change => {
             state.records.forEach(r => {
@@ -604,7 +606,7 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
         return [...this.state.focuses].filter((focusRow: Focus) => !selectedColIds.includes(focusRow.columnId));
     }
 
-    private pinColumns(ids: Id[], direction: 'left' | 'right'): IDynaGridDemoState {
+    private pinColumns(ids: Id[], direction: 'left' | 'right'): IReactgridAllInOneState {
         const indexes: number[] = ids.map(id => this.state.fields.findIndex(f => f.id == id));
         if (direction == 'left') {
             return {
@@ -669,7 +671,7 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
 
     }
 
-    private pinRows(ids: Id[], direction: 'top' | 'bottom'): IDynaGridDemoState {
+    private pinRows(ids: Id[], direction: 'top' | 'bottom'): IReactgridAllInOneState {
         const indexes: number[] = [];
         ids.forEach(id => indexes.push(this.state.records.findIndex(r => r.id == id)))
         if (direction == 'top') {
@@ -698,7 +700,7 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
         ]);
     }
 
-    demoActions: IDemoActions = {
+    demoActions: IReactgridAllInOneActions = {
         toggleResizeAction: () => {
             this.setState({ resizing: !this.state.resizing })
         },
@@ -747,12 +749,11 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
                 <FeatureListContainer
                     demoActions={this.demoActions}
                     state={this.state} />
-                <DynaGridContainer>
+                <ReactGridContainer id="all-in-one">
                     <ReactGrid
                         cellMatrixProps={this.generateMatrix()}
                         onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
-                        customFocuses={[]} // REMOVE after FIX 
-                        // customFocuses={this.state.focuses} // UNCOMMENT after FIX
+                        customFocuses={this.state.focuses}
                         onRowContextMenu={(selectedRowIds: Id[], menuOptions: MenuOption[]) => this.handleRowContextMenu(selectedRowIds, menuOptions)}
                         onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
                         // onRangeContextMenu={(selectedRowIds: Id[], selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRowIds, selectedColIds, menuOptions)} 
@@ -762,9 +763,9 @@ export default class AllInOneSample extends React.Component<{}, IDynaGridDemoSta
                         disableRowSelection={false}
                         disableColumnSelection={false}
                         license="non-commercial"
-                        // license="1 developers until 2030-10-07 issued for Silevis Software // 1914789361"
+                    // license="1 developers until 2030-10-07 issued for Silevis Software // 1914789361"
                     />
-                </DynaGridContainer>
+                </ReactGridContainer>
             </DemoBody>
         </DemoContainer>
     }

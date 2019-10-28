@@ -1,22 +1,23 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { ReactGrid, DataChange } from '@silevis/reactgrid';
+import { ReactGrid, DataChange, CellMatrixProps } from '@silevis/reactgrid';
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns } from '../../data/columns';
 import { rows } from '../../data/rows';
+import './styling.scss';
 
-const DynaGridContainer = styled.div`
+const ReactGridContainer = styled.div`
   position: relative;
   margin-left: 10px;
   width: 100%;
   min-height: 400px;
 `;
 
-export default class RateCellDemo extends React.Component<{}, {}> {
+export default class RateCellSample extends React.Component<{}, CellMatrixProps> {
   state = {
-    columns: columns(true, true),
-    rows: rows(true)
+    columns:  columns(true, true),
+    rows:     rows(true)
   }
 
   private prepareDataChanges = (dataChanges: DataChange[]): {} => {
@@ -33,9 +34,10 @@ export default class RateCellDemo extends React.Component<{}, {}> {
     return state
   }
 
+
   render() {
     return (
-      <DynaGridContainer>
+      <ReactGridContainer id="rate-cell-sample">
         <ReactGrid
           cellMatrixProps={this.state}
           cellTemplates={{ 
@@ -45,7 +47,7 @@ export default class RateCellDemo extends React.Component<{}, {}> {
           onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
           license={'non-commercial'}
         />
-      </DynaGridContainer>
+      </ReactGridContainer>
     )
   }
 }
