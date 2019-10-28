@@ -14,7 +14,7 @@ export default class NavigationSample extends React.Component {
     routes = [...routes, <Route key={-1} render={() => { return <h1>Select sample from nav</h1>}} />];
     return (
       <BrowserRouter>
-        <div className="ms-Grid navigation-sample" dir="ltr">
+        <div className="ms-Grid" id="navigation-sample" dir="ltr">
           <div className="ms-Grid-row">
             <div className="ms-Grid-col ms-sm6 ms-md4 ms-lg3 ms-xl2" style={{ padding: 20 }}>
               <SideNav navLinks={navLinks} />

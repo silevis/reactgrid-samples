@@ -749,7 +749,7 @@ export default class AllInOneSample extends React.Component<{}, IReactgridAllInO
                 <FeatureListContainer
                     demoActions={this.demoActions}
                     state={this.state} />
-                <ReactGridContainer className="rg-style-override all-in-one">
+                <ReactGridContainer id="all-in-one">
                     <ReactGrid
                         cellMatrixProps={this.generateMatrix()}
                         onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}

@@ -4,8 +4,8 @@ import { ReactGrid, DataChange, CellMatrixProps } from '@silevis/reactgrid';
 import { DropdownNumberCellTemplate } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
-import { columns } from '../../data/columns';
-import { rows } from '../../data/rows';
+import { columns } from '../../data/crm/columns';
+import { rows } from '../../data/crm/rows';
 import './styling.scss';
 
 const ReactGridContainer = styled.div`
@@ -17,7 +17,7 @@ const ReactGridContainer = styled.div`
 
 export default class DropdownNumberCell extends React.Component<{}, CellMatrixProps> {
   state = {
-    columns:  columns(true, true),
+    columns:  columns(true, false),
     rows:     rows(true)
   }
 
@@ -37,13 +37,13 @@ export default class DropdownNumberCell extends React.Component<{}, CellMatrixPr
 
   render() {
     return (
-      <ReactGridContainer className="rg-style-override dropdown-number-cell-sample">
+      <ReactGridContainer id="dropdown-number-cell-sample">
         <ReactGrid
           cellMatrixProps={this.state}
           cellTemplates={{ 
             'rating': new RateCellTemplate, 
             'flag': new FlagCellTemplate,
-            'dropdownNumber' : new DropdownNumberCellTemplate, // TODO - add this cell template to data - currently unused
+            'dropdownNumber' : new DropdownNumberCellTemplate,
           }}
           onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
           license={'non-commercial'}

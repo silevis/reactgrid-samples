@@ -37,7 +37,7 @@ export default class RateCellSample extends React.Component<{}, CellMatrixProps>
 
   render() {
     return (
-      <ReactGridContainer className="rg-style-override rate-cell-sample">
+      <ReactGridContainer id="rate-cell-sample">
         <ReactGrid
           cellMatrixProps={this.state}
           cellTemplates={{ 

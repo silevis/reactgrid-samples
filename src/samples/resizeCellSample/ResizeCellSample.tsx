@@ -47,7 +47,7 @@ export default class ResizeCellSample extends React.Component<{}, CellMatrixProp
 
   render() {
     return (
-      <ReactGridContainer className="rg-style-override resize-cell-sample">
+      <ReactGridContainer id="resize-cell-sample">
         <ReactGrid
           cellMatrixProps={this.getMatrix()}
           cellTemplates={{ 

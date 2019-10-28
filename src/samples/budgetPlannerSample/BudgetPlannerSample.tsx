@@ -312,7 +312,7 @@ export const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
 
 const BudgetPlannerSample: React.FC = () => {
     return (
-        <ReactGridContainer className="rg-style-override budget-planner">
+        <ReactGridContainer id="budget-planner">
             <BudgetPlanner
                 budgetData={BudgetPlannerDemoData.budgetData}
                 dateRange={BudgetPlannerDemoData.dateRange}
