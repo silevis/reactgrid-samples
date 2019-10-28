@@ -34,14 +34,15 @@ import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
 import { columns } from '../../data/columns';
 import { rows } from '../../data/rows';
-var DynaGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"], ["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"])));
-var DropdownNumberCell = (function (_super) {
-    __extends(DropdownNumberCell, _super);
-    function DropdownNumberCell() {
+import './styling.scss';
+var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"], ["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"])));
+var DropdownNumberCellSample = (function (_super) {
+    __extends(DropdownNumberCellSample, _super);
+    function DropdownNumberCellSample() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
-            columns: columns(true, true).slice(),
-            rows: rows(true).slice()
+            columns: columns(true, true),
+            rows: rows(true)
         };
         _this.prepareDataChanges = function (dataChanges) {
             var state = __assign({}, _this.state);
@@ -58,16 +59,16 @@ var DropdownNumberCell = (function (_super) {
         };
         return _this;
     }
-    DropdownNumberCell.prototype.render = function () {
+    DropdownNumberCellSample.prototype.render = function () {
         var _this = this;
-        return (React.createElement(DynaGridContainer, null,
+        return (React.createElement(ReactGridContainer, { className: "dropdown-number-cell-sample" },
             React.createElement(ReactGrid, { cellMatrixProps: this.state, cellTemplates: {
                     'rating': new RateCellTemplate,
                     'flag': new FlagCellTemplate,
                     'dropdownNumber': new DropdownNumberCellTemplate,
                 }, onDataChanged: function (changes) { return _this.setState(_this.prepareDataChanges(changes)); }, license: 'non-commercial' })));
     };
-    return DropdownNumberCell;
+    return DropdownNumberCellSample;
 }(React.Component));
-export default DropdownNumberCell;
+export { DropdownNumberCellSample };
 var templateObject_1;

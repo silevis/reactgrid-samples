@@ -27,21 +27,24 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import * as React from 'react';
-import styled from 'styled-components';
 import { ReactGrid } from '@silevis/reactgrid';
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
-import { columns } from '../../data/columns';
-import { rows } from '../../data/rows';
+import { DropdownNumberCellTemplate } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
+import { VirtualEnv, VirtualUser } from './VirtualUser';
+import { columns } from '../../data/crm/columns';
+import { rows } from '../../data/crm/rows';
+import styled from 'styled-components';
 import './styling.scss';
 var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"], ["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"])));
-var RateCellSample = (function (_super) {
-    __extends(RateCellSample, _super);
-    function RateCellSample() {
+var MultiUserSample = (function (_super) {
+    __extends(MultiUserSample, _super);
+    function MultiUserSample() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
-            columns: columns(true, true),
-            rows: rows(true)
+            columns: columns(false, false),
+            rows: rows(true),
+            focuses: []
         };
         _this.prepareDataChanges = function (dataChanges) {
             var state = __assign({}, _this.state);
@@ -58,12 +61,39 @@ var RateCellSample = (function (_super) {
         };
         return _this;
     }
-    RateCellSample.prototype.render = function () {
-        var _this = this;
-        return (React.createElement(ReactGridContainer, { className: "rate-cell-sample" },
-            React.createElement(ReactGrid, { cellMatrixProps: this.state, cellTemplates: { 'rating': new RateCellTemplate, 'flag': new FlagCellTemplate }, onDataChanged: function (changes) { return _this.setState(_this.prepareDataChanges(changes)); }, license: 'non-commercial' })));
+    MultiUserSample.prototype.componentDidMount = function () {
+        this.setVirtualEnv();
     };
-    return RateCellSample;
+    MultiUserSample.prototype.componentWillUnmount = function () {
+        this.unsetVirtualEnv();
+    };
+    MultiUserSample.prototype.setVirtualEnv = function () {
+        var _this = this;
+        var virtEnv = new VirtualEnv(this.state, this.prepareDataChanges);
+        virtEnv
+            .addUser(new VirtualUser('#2274A5'))
+            .addUser(new VirtualUser('#F75C03'))
+            .addUser(new VirtualUser('#F1C40F'))
+            .addUser(new VirtualUser('#D90368'))
+            .addUser(new VirtualUser('#00A754'));
+        this.intervalId = window.setInterval(function () {
+            _this.setState(virtEnv.updateView(_this.state));
+        }, 1000);
+    };
+    MultiUserSample.prototype.unsetVirtualEnv = function () {
+        this.setState({ focuses: [] });
+        window.clearInterval(this.intervalId);
+    };
+    MultiUserSample.prototype.render = function () {
+        var _this = this;
+        return (React.createElement(ReactGridContainer, { className: "multi-user-sample" },
+            React.createElement(ReactGrid, { cellMatrixProps: this.state, cellTemplates: {
+                    'rating': new RateCellTemplate,
+                    'flag': new FlagCellTemplate,
+                    'dropdownNumber': new DropdownNumberCellTemplate,
+                }, customFocuses: this.state.focuses, onDataChanged: function (changes) { return _this.setState(_this.prepareDataChanges(changes)); }, license: 'non-commercial' })));
+    };
+    return MultiUserSample;
 }(React.Component));
-export { RateCellSample };
+export { MultiUserSample };
 var templateObject_1;

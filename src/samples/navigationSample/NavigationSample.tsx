@@ -6,12 +6,12 @@ import { SideNav } from './SideNav';
 import 'office-ui-fabric-react/dist/css/fabric.min.css';
 import './styling.scss';
 
-export default class NavigationSample extends React.Component {
+export class NavigationSample extends React.Component {
   render() {
     let routes = navLinks.map((navLink: ISampleNavLink) => {
       return <Route key={navLink.url} path={navLink.url} exact={true} component={navLink.component} />
     });
-    routes = [...routes, <Route key={-1} render={() => { return <h1>Select sample from nav</h1>}} />];
+    routes = [...routes, <Route key={-1} render={() => { return <h1>Select sample from nav</h1> }} />];
     return (
       <BrowserRouter>
         <div className="ms-Grid" id="navigation-sample" dir="ltr">

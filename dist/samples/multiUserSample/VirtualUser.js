@@ -40,6 +40,16 @@ var ReactGridDataGenerator = (function () {
         if (max === void 0) { max = 70; }
         return getRandomInt(min, max);
     };
+    ReactGridDataGenerator.prototype.getRandomDate = function (start, end) {
+        if (start === void 0) { start = new Date(1955, 0, 1); }
+        if (end === void 0) { end = new Date(1990, 0, 1); }
+        var d = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())), month = '' + (d.getMonth() + 1), day = '' + d.getDate(), year = d.getFullYear();
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        return [year, month, day].join('-');
+    };
     ReactGridDataGenerator.prototype.getRandomPosition = function () {
         var positions = ReactGridDataGenerator.data.position;
         return { name: positions[getRandomInt(0, positions.length)], depth: 1 };
@@ -47,18 +57,7 @@ var ReactGridDataGenerator = (function () {
     ReactGridDataGenerator.prototype.getRandomBoolean = function () {
         return Math.random() < .5;
     };
-    ReactGridDataGenerator.prototype.createNewUser = function () {
-        ++ReactGridDataGenerator.nextId;
-        var id = ReactGridDataGenerator.nextId;
-        var name = this.getRandomName();
-        var surname = this.getRandomSurname();
-        var age = this.getRandomAge();
-        var country = this.getRandomCountry();
-        var position = this.getRandomPosition();
-        var onHoliday = this.getRandomBoolean();
-        return { id: id, name: name, surname: surname, age: age, country: country, position: position, onHoliday: onHoliday, pinned: false };
-    };
-    ReactGridDataGenerator.nextId = 12;
+    ReactGridDataGenerator.nextId = 0;
     ReactGridDataGenerator.data = {
         name: ['Jacob', 'Tom', 'John', 'Allie', 'Zoe', 'Ashe', 'Fred', 'Rob', 'Alison', 'Arcady', 'Tom', 'Jerry'],
         surname: ['Hudson', 'Perkins', 'Mason', 'Armstrong', 'King', 'Collins', 'Bush', 'Maddison', 'Del Rey', 'Goletz', 'Ferrer'],
@@ -91,6 +90,7 @@ var VirtualEnv = (function () {
 export { VirtualEnv };
 var VirtualUser = (function () {
     function VirtualUser(color) {
+        this.color = color;
         this.count = 0;
         this.focusX = 0;
         this.focusY = 0;
@@ -98,37 +98,47 @@ var VirtualUser = (function () {
     }
     VirtualUser.prototype.updateFocusesState = function (state) {
         var _this = this;
-        this.focusX = getRandomInt(1, state.fields.length);
-        this.focusY = getRandomInt(1, state.records.length);
-        var focuses = state.focuses.slice().filter(function (f) { return f.color !== _this.color; });
-        var newFocus = state.records.length !== 1 && state.fields[this.focusX] ? { colId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, color: this.color } : {};
+        this.focusX = getRandomInt(0, state.columns.length);
+        this.focusY = getRandomInt(1, state.rows.length);
+        var focuses = state.focuses.slice().filter(function (focus) { return focus.color !== _this.color; });
+        var newFocus = state.rows.length !== 1 && state.columns[this.focusX]
+            ? { colId: state.columns[this.focusX].id, rowId: state.rows[this.focusY].id, color: this.color }
+            : {};
         return __assign({}, state, { focuses: focuses.concat([newFocus]) });
     };
     VirtualUser.prototype.getUpdatedFieldState = function (state, handleData) {
-        if (state == null || state.fields[this.focusX] == undefined || state.records[this.focusY] == undefined)
+        if (state == null || state.columns[this.focusX] == undefined || state.rows[this.focusY] == undefined || state.rows[this.focusY].cells[this.focusX] == undefined)
             return null;
-        var _a = state.fields[this.focusX], name = _a.name, type = _a.type;
+        var _a = state.rows[this.focusY].cells[this.focusX], data = _a.data, type = _a.type;
         var dataGen = new ReactGridDataGenerator();
-        var newFieldData = dataGen.getDataAttrByKey(name);
+        var newFieldData = dataGen.getDataAttrByKey(state.columns[this.focusX].id);
         if (newFieldData == null) {
             switch (type) {
                 case 'checkbox': {
-                    newFieldData = dataGen.getRandomBoolean();
+                    newFieldData = !data;
                     break;
                 }
                 case 'number': {
                     newFieldData = dataGen.getRandomAge(10, 70);
                     break;
                 }
-                case 'text': {
-                    newFieldData = dataGen.getRandomName() + ' and ' + dataGen.getRandomName();
+                case 'date': {
+                    newFieldData = dataGen.getRandomDate();
+                    break;
+                }
+                case 'flag': {
+                    newFieldData = dataGen.getRandomCountry();
+                    break;
+                }
+                case 'dropdownNumber': {
+                    newFieldData = { value: getRandomInt(0, 100), isOpened: false };
                     break;
                 }
                 default:
                     break;
             }
         }
-        return __assign({}, handleData([{ columnId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, type: type, initialData: '', newData: newFieldData }]), { focuses: state.focuses });
+        return __assign({}, handleData([{ columnId: state.columns[this.focusX].id, rowId: state.rows[this.focusY].id, type: type, initialData: '', newData: newFieldData }]), { focuses: state.focuses });
     };
     VirtualUser.prototype.makeChanges = function (state, handleData) {
         switch (this.count++) {

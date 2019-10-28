@@ -15,6 +15,7 @@ const ReactGridContainer = styled.div`
 `;
 
 export default class RateCellSample extends React.Component<{}, CellMatrixProps> {
+
   state = {
     columns:  columns(true, true),
     rows:     rows(true)

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReactGrid, DataChange, Focus, CellMatrixProps} from '@silevis/reactgrid';
+import { ReactGrid, DataChange, Focus, CellMatrixProps } from '@silevis/reactgrid';
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { DropdownNumberCellTemplate } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
@@ -20,12 +20,12 @@ export interface IMultiUserSampleState extends CellMatrixProps {
   focuses: Focus[]
 }
 
-export default class MultiUserSample extends React.Component<{}, IMultiUserSampleState> {
+export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> {
 
   state = {
-    columns:  columns(false, false),
-    rows:     rows(true),
-    focuses:  []
+    columns: columns(false, false),
+    rows: rows(true),
+    focuses: []
   }
 
   intervalId?: number;
@@ -42,14 +42,14 @@ export default class MultiUserSample extends React.Component<{}, IMultiUserSampl
     const virtEnv: VirtualEnv = new VirtualEnv(this.state, this.prepareDataChanges);
 
     virtEnv
-        .addUser(new VirtualUser('#2274A5'))
-        .addUser(new VirtualUser('#F75C03'))
-        .addUser(new VirtualUser('#F1C40F'))
-        .addUser(new VirtualUser('#D90368'))
-        .addUser(new VirtualUser('#00A754'));
+      .addUser(new VirtualUser('#2274A5'))
+      .addUser(new VirtualUser('#F75C03'))
+      .addUser(new VirtualUser('#F1C40F'))
+      .addUser(new VirtualUser('#D90368'))
+      .addUser(new VirtualUser('#00A754'));
 
     this.intervalId = window.setInterval(() => {
-        this.setState(virtEnv.updateView(this.state));
+      this.setState(virtEnv.updateView(this.state));
     }, 1000);
   }
 
@@ -77,10 +77,10 @@ export default class MultiUserSample extends React.Component<{}, IMultiUserSampl
       <ReactGridContainer id="multi-user-sample">
         <ReactGrid
           cellMatrixProps={this.state}
-          cellTemplates={{ 
-            'rating': new RateCellTemplate, 
+          cellTemplates={{
+            'rating': new RateCellTemplate,
             'flag': new FlagCellTemplate,
-            'dropdownNumber' : new DropdownNumberCellTemplate,
+            'dropdownNumber': new DropdownNumberCellTemplate,
           }}
           customFocuses={this.state.focuses}
           onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}

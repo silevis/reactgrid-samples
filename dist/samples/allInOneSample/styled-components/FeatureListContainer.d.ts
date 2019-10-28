@@ -1,8 +1,8 @@
 /// <reference types="react" />
-import { IDemoActions, IDynaGridDemoState } from '../AllInOneSample';
+import { IReactgridAllInOneActions, IReactgridAllInOneState } from '../AllInOneSample';
 interface IFeatureListContainer {
-    demoActions: IDemoActions;
-    state: IDynaGridDemoState;
+    demoActions: IReactgridAllInOneActions;
+    state: IReactgridAllInOneState;
     children?: any;
 }
 export declare const FeatureListContainer: (props: IFeatureListContainer) => JSX.Element;

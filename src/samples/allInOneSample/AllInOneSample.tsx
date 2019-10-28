@@ -264,7 +264,7 @@ const records: any[] = [
     },
 ]
 
-export default class AllInOneSample extends React.Component<{}, IReactgridAllInOneState> {
+export class AllInOneSample extends React.Component<{}, IReactgridAllInOneState> {
     state = {
         fields: [...fields],
         records: [...records],

@@ -1,12 +1,5 @@
 import { INavLink } from 'office-ui-fabric-react/lib/Nav';
-import AllInOneSample from '../allInOneSample/AllInOneSample';
-import RateCellSample from '../rateCellSample/RateCellSample';
-import DropdownNumberCellSample from '../dropdownNumberCellSample/DropdownNumberCellSample';
-import BudgetPlannerSample from '../budgetPlannerSample/BudgetPlannerSample';
-import ColumnReorderSample from '../columnReorderSample/ColumnReorderSample';
-import ResizeCellSample from '../resizeCellSample/ResizeCellSample';
-import MultiUserSample from '../multiUserSample/MultiUserSample';
-
+import { AllInOneSample, RateCellSample, DropdownNumberCellSample, BudgetPlannerSample, ColumnReorderSample, ResizeCellSample, MultiUserSample } from '../../samples';
 
 export interface ISampleNavLink extends INavLink {
   component?: any;

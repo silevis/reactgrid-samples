@@ -15,7 +15,7 @@ const ReactGridContainer = styled.div`
   min-height: 400px;
 `;
 
-export default class DropdownNumberCell extends React.Component<{}, CellMatrixProps> {
+export class DropdownNumberCellSample extends React.Component<{}, CellMatrixProps> {
   state = {
     columns:  columns(true, false),
     rows:     rows(true)
@@ -40,8 +40,8 @@ export default class DropdownNumberCell extends React.Component<{}, CellMatrixPr
       <ReactGridContainer id="dropdown-number-cell-sample">
         <ReactGrid
           cellMatrixProps={this.state}
-          cellTemplates={{ 
-            'rating': new RateCellTemplate, 
+          cellTemplates={{
+            'rating': new RateCellTemplate,
             'flag': new FlagCellTemplate,
             'dropdownNumber' : new DropdownNumberCellTemplate,
           }}

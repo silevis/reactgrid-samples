@@ -5,6 +5,7 @@ import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns } from '../../data/columns';
 import { rows } from '../../data/rows';
+import styled from 'styled-components';
 
 const ReactGridContainer = styled.div`
   position: relative;
