@@ -9,6 +9,13 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -83,7 +90,7 @@ var VirtualEnv = (function () {
         this.handleData = handleData;
     }
     VirtualEnv.prototype.addUser = function (virtualUser) {
-        this.virtualUsers = this.virtualUsers.concat([virtualUser]);
+        this.virtualUsers = __spreadArrays(this.virtualUsers, [virtualUser]);
         return this;
     };
     return VirtualEnv;
@@ -100,9 +107,9 @@ var VirtualUser = (function () {
         var _this = this;
         this.focusX = getRandomInt(1, state.fields.length);
         this.focusY = getRandomInt(1, state.records.length);
-        var focuses = state.focuses.slice().filter(function (f) { return f.color !== _this.color; });
+        var focuses = __spreadArrays(state.focuses).filter(function (f) { return f.color !== _this.color; });
         var newFocus = state.records.length !== 1 && state.fields[this.focusX] ? { colId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, color: this.color } : {};
-        return __assign({}, state, { focuses: focuses.concat([newFocus]) });
+        return __assign(__assign({}, state), { focuses: __spreadArrays(focuses, [newFocus]) });
     };
     VirtualUser.prototype.getUpdatedFieldState = function (state, handleData) {
         if (state == null || state.fields[this.focusX] == undefined || state.records[this.focusY] == undefined)
@@ -128,7 +135,7 @@ var VirtualUser = (function () {
                     break;
             }
         }
-        return __assign({}, handleData([{ columnId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, type: type, initialData: '', newData: newFieldData }]), { focuses: state.focuses });
+        return __assign(__assign({}, handleData([{ columnId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, type: type, initialData: '', newData: newFieldData }])), { focuses: state.focuses });
     };
     VirtualUser.prototype.makeChanges = function (state, handleData) {
         switch (this.count++) {

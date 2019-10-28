@@ -51,7 +51,7 @@ var BudgetPlannerNumberCellTemplate = (function () {
     };
     BudgetPlannerNumberCellTemplate.prototype.handleKeyDown = function (cellData, keyCode, ctrl, shift, alt, props) {
         if (!ctrl && !alt && !shift && isNumberInput(keyCode))
-            return { cellData: __assign({}, cellData, { value: NaN }), enableEditMode: true };
+            return { cellData: __assign(__assign({}, cellData), { value: NaN }), enableEditMode: true };
         return { cellData: cellData, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER };
     };
     return BudgetPlannerNumberCellTemplate;
@@ -96,11 +96,11 @@ var BudgetPlannerTextCellTemplate = (function () {
     };
     BudgetPlannerTextCellTemplate.prototype.handleKeyDown = function (cellData, keyCode, ctrl, shift, alt, props) {
         if (!ctrl && !alt && isTextInput(keyCode))
-            return { cellData: __assign({}, cellData, { value: '' }), enableEditMode: true };
+            return { cellData: __assign(__assign({}, cellData), { value: '' }), enableEditMode: true };
         return { cellData: cellData, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER };
     };
     BudgetPlannerTextCellTemplate.prototype.getCustomStyle = function (cellData, isInEditMode, props) {
-        return { backgroundColor: '#34495E', color: 'white' };
+        return { backgroundColor: 'transparent' };
     };
     ;
     return BudgetPlannerTextCellTemplate;
@@ -148,9 +148,7 @@ var BudgetPlannerColumnHeaderCellTemplate = (function () {
     BudgetPlannerColumnHeaderCellTemplate.prototype.handleKeyDown = function (cellData, keyCode, ctrl, shift, alt) {
         var newCellData = { cellData: cellData, enableEditMode: false };
         if (keyCode === keyCodes.SPACE || keyCode === keyCodes.END || keyCode === 1) {
-            console.log('column collapse/expand event');
-            newCellData.cellData = __assign({}, cellData, { isCollapsed: !cellData.isCollapsed });
-            console.log('was', cellData.isCollapsed, 'is', newCellData.cellData.isCollapsed);
+            newCellData.cellData = __assign(__assign({}, cellData), { isCollapsed: !cellData.isCollapsed });
         }
         return newCellData;
     };
@@ -166,15 +164,16 @@ var BudgetPlannerColumnHeaderCellTemplate = (function () {
         }
         var ret = [
             {
-                backgroundColor: 'green',
+                backgroundColor: '#32325d',
                 color: 'white'
             },
             {
-                backgroundColor: 'purple',
+                backgroundColor: '#525f7f',
                 color: 'white',
             },
             {
-                backgroundColor: 'pink'
+                backgroundColor: '#6c757d',
+                color: 'white',
             }
         ];
         return ret[parentCount];

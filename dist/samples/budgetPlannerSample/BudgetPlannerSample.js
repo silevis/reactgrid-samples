@@ -13,6 +13,13 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 import React from 'react';
 import styled from 'styled-components';
 import { ReactGrid } from '@silevis/reactgrid';
@@ -73,9 +80,9 @@ var BudgetPlanner = function (props) {
                 id: 'header',
                 height: 40,
                 reorderable: false,
-                cells: [
+                cells: __spreadArrays([
                     { type: 'text', data: { value: 'Category', isCollapsed: false } }
-                ].concat(computedColumns.slice(1).map(function (column) {
+                ], computedColumns.slice(1).map(function (column) {
                     var columnData = column.id.split(',');
                     var newCell = {
                         type: 'columnHeader',
@@ -104,9 +111,9 @@ var BudgetPlanner = function (props) {
                 id: category.id,
                 reorderable: false,
                 height: 40,
-                cells: [
+                cells: __spreadArrays([
                     { type: 'columnHeader', data: { value: category.category, isCollapsed: category.isCollapsed } }
-                ].concat(computedColumns.slice(1).map(function (column, idx) {
+                ], computedColumns.slice(1).map(function (column, idx) {
                     var newCell = { data: { value: 0 }, type: 'bpNumber' };
                     var columnData = column.id.toString().split(',');
                     newCell.data.isCollapsed = false;
@@ -226,7 +233,7 @@ var BudgetPlanner = function (props) {
                     setCollapsedLabels(newCollapsedLabels);
                 }
                 else {
-                    var newBudgetData = budgetData.slice();
+                    var newBudgetData = __spreadArrays(budgetData);
                     var entry = newBudgetData.find(function (x) { return x.id === dataChange.rowId; });
                     if (!entry) {
                         return;
@@ -236,7 +243,7 @@ var BudgetPlanner = function (props) {
                 }
             }
             else if (dataChange.type === 'number') {
-                var newBudgetData = budgetData.slice();
+                var newBudgetData = __spreadArrays(budgetData);
                 var _loop_1 = function (category) {
                     var subcategory = category.subcategories.find(function (x) { return x.id === dataChange.rowId; });
                     if (!subcategory) {
@@ -277,7 +284,7 @@ var BudgetPlanner = function (props) {
         }, license: 'non-commercial', cellMatrixProps: generateCellMatrixProps(), disableRowSelection: true, cellTemplates: myCellTemplates, onDataChanged: dataChangeHandler }));
 };
 export var BudgetPlannerSample = function () {
-    return (React.createElement(ReactGridContainer, { className: "budget-planner" },
+    return (React.createElement(ReactGridContainer, { id: "budget-planner" },
         React.createElement(BudgetPlanner, { budgetData: BudgetPlannerDemoData.budgetData, dateRange: BudgetPlannerDemoData.dateRange })));
 };
 var templateObject_1;
