@@ -26,8 +26,6 @@ export default class ColumnReorderSample extends React.Component<{}, CellMatrixP
     const columns: ColumnProps[] = [...this.state.columns].map((c: ColumnProps, cIdx: number) => ({
       ...c,
       onDrop: (idxs: Id[]) => {
-        console.log([...idxs]);
-        
         this.setState({ 
           columns: this.getReorderedColumns(idxs as string[], cIdx),
           rows: this.getUpdatedRows([...idxs].reverse().map((id: Id) => this.state.columns.findIndex(c => c.id === id)), cIdx) 
