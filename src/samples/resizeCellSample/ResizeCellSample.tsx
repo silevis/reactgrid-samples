@@ -5,7 +5,6 @@ import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns } from '../../data/columns';
 import { rows } from '../../data/rows';
-import styled from 'styled-components';
 
 const ReactGridContainer = styled.div`
   position: relative;
@@ -14,7 +13,7 @@ const ReactGridContainer = styled.div`
   min-height: 400px;
 `;
 
-export default class ResizeCellSample extends React.Component<{}, CellMatrixProps> {
+export class ResizeCellSample extends React.Component<{}, CellMatrixProps> {
   state = {
     columns:  columns(false, true),
     rows:     rows(false),

@@ -15,7 +15,7 @@ const DynaGridContainer = styled.div`
 `;
 
 
-export default class ColumnReorderSample extends React.Component<{}, CellMatrixProps> {
+export class ColumnReorderSample extends React.Component<{}, CellMatrixProps> {
 
   state = {
     columns:  columns(true, false),

@@ -14,7 +14,7 @@ const ReactGridContainer = styled.div`
   min-height: 400px;
 `;
 
-export default class RateCellSample extends React.Component<{}, CellMatrixProps> {
+export class RateCellSample extends React.Component<{}, CellMatrixProps> {
 
   state = {
     columns:  columns(true, true),
