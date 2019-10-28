@@ -60,8 +60,11 @@ var RateCellSample = (function (_super) {
     }
     RateCellSample.prototype.render = function () {
         var _this = this;
-        return (React.createElement(ReactGridContainer, { className: "rate-cell-sample" },
-            React.createElement(ReactGrid, { cellMatrixProps: this.state, cellTemplates: { 'rating': new RateCellTemplate, 'flag': new FlagCellTemplate }, onDataChanged: function (changes) { return _this.setState(_this.prepareDataChanges(changes)); }, license: 'non-commercial' })));
+        return (React.createElement(ReactGridContainer, { id: "rate-cell-sample" },
+            React.createElement(ReactGrid, { cellMatrixProps: this.state, cellTemplates: {
+                    'rating': new RateCellTemplate,
+                    'flag': new FlagCellTemplate
+                }, onDataChanged: function (changes) { return _this.setState(_this.prepareDataChanges(changes)); }, license: 'non-commercial' })));
     };
     return RateCellSample;
 }(React.Component));

@@ -26,6 +26,13 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 import * as React from 'react';
 import { ReactGrid } from '@silevis/reactgrid';
 import { VirtualEnv, VirtualUser, ReactGridDataGenerator } from './VirtualUser';
@@ -225,8 +232,8 @@ var AllInOneSample = (function (_super) {
     function AllInOneSample() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
-            fields: fields.slice(),
-            records: records.slice(),
+            fields: __spreadArrays(fields),
+            records: __spreadArrays(records),
             focuses: [],
             virtualUsers: false,
             resizing: false,
@@ -304,7 +311,7 @@ var AllInOneSample = (function (_super) {
     };
     AllInOneSample.prototype.addNewRecord = function () {
         var dataGen = new ReactGridDataGenerator();
-        var records = this.state.records.slice();
+        var records = __spreadArrays(this.state.records);
         for (var x = 0; x < 10; x++) {
             records.push(dataGen.createNewUser());
         }
@@ -312,7 +319,7 @@ var AllInOneSample = (function (_super) {
     };
     AllInOneSample.prototype.addNewField = function () {
         var _a;
-        var nextId = Math.max.apply(Math, this.state.fields.map(function (field) { return field.id; }).concat([1])) + 1;
+        var nextId = Math.max.apply(Math, __spreadArrays(this.state.fields.map(function (field) { return field.id; }), [1])) + 1;
         var randomCapitalLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
         var fieldName = nextId + randomCapitalLetter;
         var newField = {
@@ -322,9 +329,9 @@ var AllInOneSample = (function (_super) {
             width: 125,
             pinned: false,
         };
-        var updatedHeaderRecord = __assign({}, this.state.records.find(function (record) { return record.id === 'Id' ? record : undefined; }), (_a = {}, _a[fieldName] = fieldName, _a));
-        var updatedRecords = this.state.records.map(function (record) { return record.id === 'Id' ? updatedHeaderRecord : record; }).slice();
-        this.setState({ fields: this.state.fields.concat([newField]), records: updatedRecords });
+        var updatedHeaderRecord = __assign(__assign({}, this.state.records.find(function (record) { return record.id === 'Id' ? record : undefined; })), (_a = {}, _a[fieldName] = fieldName, _a));
+        var updatedRecords = __spreadArrays(this.state.records.map(function (record) { return record.id === 'Id' ? updatedHeaderRecord : record; }));
+        this.setState({ fields: __spreadArrays(this.state.fields, [newField]), records: updatedRecords });
     };
     AllInOneSample.prototype.unsetVirtualEnv = function () {
         this.setState({ virtualUsers: false, focuses: [] });
@@ -355,7 +362,7 @@ var AllInOneSample = (function (_super) {
                 _this.setState({ records: _this.reorderedRows(ids, record.id, position) });
             },
             canDrop: function (ids) {
-                var records = _this.state.records.slice();
+                var records = __spreadArrays(_this.state.records);
                 var movedRecords = records.filter(function (record) { return ids.includes(record.id); });
                 movedRecords = _this.prepareMovedRecords(movedRecords).movedRecords;
                 if (movedRecords.some(function (r) { return r.id === record.id; })) {
@@ -380,15 +387,15 @@ var AllInOneSample = (function (_super) {
         if (direction === 'right') {
             destination = destination - colIdxs.length + 1;
         }
-        clearedFields.splice.apply(clearedFields, [destination, 0].concat(movedColumns));
+        clearedFields.splice.apply(clearedFields, __spreadArrays([destination, 0], movedColumns));
         return clearedFields;
     };
     AllInOneSample.prototype.reorderedColumns = function (colIdxs, to) {
         var direction = to > colIdxs[0] ? 'right' : 'left';
-        return this.calculateColumnReorder(this.state.fields.slice(), colIdxs, direction, to);
+        return this.calculateColumnReorder(__spreadArrays(this.state.fields), colIdxs, direction, to);
     };
     AllInOneSample.prototype.findParent = function (currentRecord) {
-        var records = this.state.records.slice();
+        var records = __spreadArrays(this.state.records);
         if (!currentRecord.parentId) {
             return true;
         }
@@ -421,7 +428,7 @@ var AllInOneSample = (function (_super) {
     };
     AllInOneSample.prototype.prepareMovedRecords = function (movedRecords) {
         var movedChildren = [];
-        var tempMovedRecords = movedRecords.slice();
+        var tempMovedRecords = __spreadArrays(movedRecords);
         var _loop_1 = function (i) {
             var children = this_1.getChildren(records, movedRecords[i].id);
             if (children.length > 0) {
@@ -520,7 +527,7 @@ var AllInOneSample = (function (_super) {
         else if (position === 'after') {
             targetIdx = targetIdx + 1 + (targetElement.position.isExpanded === false ? targetElementChildren.length : 0);
         }
-        clearedRecords.splice.apply(clearedRecords, [targetIdx, 0].concat(movedRecords));
+        clearedRecords.splice.apply(clearedRecords, __spreadArrays([targetIdx, 0], movedRecords));
         return clearedRecords;
     };
     AllInOneSample.prototype.handleRowContextMenu = function (selectedRowIds, menuOptions) {
@@ -573,7 +580,7 @@ var AllInOneSample = (function (_super) {
     };
     AllInOneSample.prototype.deleteRows = function (selectedRowIds) {
         var _this = this;
-        var records = this.state.records.slice();
+        var records = __spreadArrays(this.state.records);
         selectedRowIds.forEach(function (id) {
             var childrenIds = _this.getChildren(records, id).map(function (c) { return c.id; });
             selectedRowIds = selectedRowIds.concat(childrenIds);
@@ -581,42 +588,42 @@ var AllInOneSample = (function (_super) {
         return records.filter(function (r) { return !selectedRowIds.includes(r.id); });
     };
     AllInOneSample.prototype.deleteColumns = function (selectedColIds) {
-        return this.state.fields.slice().filter(function (f) { return !selectedColIds.includes(f.id); });
+        return __spreadArrays(this.state.fields).filter(function (f) { return !selectedColIds.includes(f.id); });
     };
     AllInOneSample.prototype.deleteRowsFocuses = function (selectedRowIds) {
-        return this.state.focuses.slice().filter(function (focusRow) { return !selectedRowIds.includes(focusRow.rowId); });
+        return __spreadArrays(this.state.focuses).filter(function (focusRow) { return !selectedRowIds.includes(focusRow.rowId); });
     };
     AllInOneSample.prototype.deleteColumnsFocuses = function (selectedColIds) {
-        return this.state.focuses.slice().filter(function (focusRow) { return !selectedColIds.includes(focusRow.columnId); });
+        return __spreadArrays(this.state.focuses).filter(function (focusRow) { return !selectedColIds.includes(focusRow.columnId); });
     };
     AllInOneSample.prototype.pinColumns = function (ids, direction) {
         var _this = this;
         var indexes = ids.map(function (id) { return _this.state.fields.findIndex(function (f) { return f.id == id; }); });
         if (direction == 'left') {
-            return __assign({}, this.state, { fields: this.reorderedColumns(indexes, this.state.frozenPanes.left).map(function (f) { return ids.includes(f.id) ? __assign({}, f, { pinned: true }) : f; }), frozenPanes: __assign({}, this.state.frozenPanes, { left: this.state.frozenPanes.left + indexes.length }) });
+            return __assign(__assign({}, this.state), { fields: this.reorderedColumns(indexes, this.state.frozenPanes.left).map(function (f) { return ids.includes(f.id) ? __assign(__assign({}, f), { pinned: true }) : f; }), frozenPanes: __assign(__assign({}, this.state.frozenPanes), { left: this.state.frozenPanes.left + indexes.length }) });
         }
         else {
-            return __assign({}, this.state, { fields: this.reorderedColumns(indexes, this.state.fields.length - this.state.frozenPanes.right - 1).map(function (f) { return ids.includes(f.id) ? __assign({}, f, { pinned: true }) : f; }), frozenPanes: __assign({}, this.state.frozenPanes, { right: this.state.frozenPanes.right + indexes.length }) });
+            return __assign(__assign({}, this.state), { fields: this.reorderedColumns(indexes, this.state.fields.length - this.state.frozenPanes.right - 1).map(function (f) { return ids.includes(f.id) ? __assign(__assign({}, f), { pinned: true }) : f; }), frozenPanes: __assign(__assign({}, this.state.frozenPanes), { right: this.state.frozenPanes.right + indexes.length }) });
         }
     };
     AllInOneSample.prototype.unpinColumns = function (ids) {
         var _this = this;
         var indexes = ids.map(function (id) { return _this.state.fields.findIndex(function (f) { return f.id == id; }); }).filter(function (i) { return _this.state.fields[i].pinned == true; });
         if (indexes[0] > this.state.frozenPanes.left) {
-            return __assign({}, this.state, { fields: this.calculateColumnReorder(this.state.fields.slice(), indexes, 'right', this.state.fields.length - this.state.frozenPanes.right).map(function (f) { return ids.includes(f.id) ? __assign({}, f, { pinned: false }) : f; }), frozenPanes: __assign({}, this.state.frozenPanes, { right: this.state.frozenPanes.right - indexes.length }) });
+            return __assign(__assign({}, this.state), { fields: this.calculateColumnReorder(__spreadArrays(this.state.fields), indexes, 'right', this.state.fields.length - this.state.frozenPanes.right).map(function (f) { return ids.includes(f.id) ? __assign(__assign({}, f), { pinned: false }) : f; }), frozenPanes: __assign(__assign({}, this.state.frozenPanes), { right: this.state.frozenPanes.right - indexes.length }) });
         }
         else {
-            return __assign({}, this.state, { fields: this.calculateColumnReorder(this.state.fields.slice(), indexes, 'left', this.state.frozenPanes.left - indexes.length).map(function (f) { return ids.includes(f.id) ? __assign({}, f, { pinned: false }) : f; }), frozenPanes: __assign({}, this.state.frozenPanes, { left: this.state.frozenPanes.left - indexes.length }) });
+            return __assign(__assign({}, this.state), { fields: this.calculateColumnReorder(__spreadArrays(this.state.fields), indexes, 'left', this.state.frozenPanes.left - indexes.length).map(function (f) { return ids.includes(f.id) ? __assign(__assign({}, f), { pinned: false }) : f; }), frozenPanes: __assign(__assign({}, this.state.frozenPanes), { left: this.state.frozenPanes.left - indexes.length }) });
         }
     };
     AllInOneSample.prototype.unpinRows = function (ids) {
         var _this = this;
         var indexes = ids.map(function (id) { return _this.state.records.findIndex(function (r) { return r.id == id; }); }).filter(function (i) { return _this.state.records[i].pinned == true; });
         if (indexes[0] > this.state.frozenPanes.top) {
-            return __assign({}, this.state, { records: this.reorderedRows(indexes, this.state.records.length - this.state.frozenPanes.bottom).map(function (f) { return ids.includes(f.id) ? __assign({}, f, { pinned: false }) : f; }), frozenPanes: __assign({}, this.state.frozenPanes, { bottom: this.state.frozenPanes.bottom - indexes.length }) });
+            return __assign(__assign({}, this.state), { records: this.reorderedRows(indexes, this.state.records.length - this.state.frozenPanes.bottom).map(function (f) { return ids.includes(f.id) ? __assign(__assign({}, f), { pinned: false }) : f; }), frozenPanes: __assign(__assign({}, this.state.frozenPanes), { bottom: this.state.frozenPanes.bottom - indexes.length }) });
         }
         else {
-            return __assign({}, this.state, { records: this.reorderedRows(indexes, this.state.frozenPanes.top - 1).map(function (f) { return ids.includes(f.id) ? __assign({}, f, { pinned: false }) : f; }), frozenPanes: __assign({}, this.state.frozenPanes, { top: this.state.frozenPanes.top - indexes.length }) });
+            return __assign(__assign({}, this.state), { records: this.reorderedRows(indexes, this.state.frozenPanes.top - 1).map(function (f) { return ids.includes(f.id) ? __assign(__assign({}, f), { pinned: false }) : f; }), frozenPanes: __assign(__assign({}, this.state.frozenPanes), { top: this.state.frozenPanes.top - indexes.length }) });
         }
     };
     AllInOneSample.prototype.pinRows = function (ids, direction) {
@@ -624,10 +631,10 @@ var AllInOneSample = (function (_super) {
         var indexes = [];
         ids.forEach(function (id) { return indexes.push(_this.state.records.findIndex(function (r) { return r.id == id; })); });
         if (direction == 'top') {
-            return __assign({}, this.state, { records: this.reorderedRows(indexes, this.state.frozenPanes.top).map(function (r) { return ids.includes(r.id) ? __assign({}, r, { pinned: true }) : r; }), frozenPanes: __assign({}, this.state.frozenPanes, { top: this.state.frozenPanes.top + indexes.length }) });
+            return __assign(__assign({}, this.state), { records: this.reorderedRows(indexes, this.state.frozenPanes.top).map(function (r) { return ids.includes(r.id) ? __assign(__assign({}, r), { pinned: true }) : r; }), frozenPanes: __assign(__assign({}, this.state.frozenPanes), { top: this.state.frozenPanes.top + indexes.length }) });
         }
         else {
-            return __assign({}, this.state, { records: this.reorderedRows(indexes, this.state.records.length - this.state.frozenPanes.bottom - 1).map(function (r) { return ids.includes(r.id) ? __assign({}, r, { pinned: true }) : r; }), frozenPanes: __assign({}, this.state.frozenPanes, { bottom: this.state.frozenPanes.bottom + indexes.length }) });
+            return __assign(__assign({}, this.state), { records: this.reorderedRows(indexes, this.state.records.length - this.state.frozenPanes.bottom - 1).map(function (r) { return ids.includes(r.id) ? __assign(__assign({}, r), { pinned: true }) : r; }), frozenPanes: __assign(__assign({}, this.state.frozenPanes), { bottom: this.state.frozenPanes.bottom + indexes.length }) });
         }
     };
     AllInOneSample.prototype.handleRangeContextMenu = function (selectedRowIds, selectedColIds, menuOptions) {
@@ -652,7 +659,7 @@ var AllInOneSample = (function (_super) {
         return React.createElement(DemoContainer, null,
             React.createElement(DemoBody, null,
                 React.createElement(FeatureListContainer, { demoActions: this.demoActions, state: this.state }),
-                React.createElement(ReactGridContainer, { className: "all-in-one" },
+                React.createElement(ReactGridContainer, { id: "all-in-one" },
                     React.createElement(ReactGrid, { cellMatrixProps: this.generateMatrix(), onDataChanged: function (changes) { return _this.setState(_this.prepareDataChanges(changes)); }, customFocuses: this.state.focuses, onRowContextMenu: function (selectedRowIds, menuOptions) { return _this.handleRowContextMenu(selectedRowIds, menuOptions); }, onColumnContextMenu: function (selectedColIds, menuOptions) { return _this.handleColContextMenu(selectedColIds, menuOptions); }, cellTemplates: this.getCustomCellTemplates(), disableFillHandle: this.state.disableFillHandle, disableRangeSelection: this.state.disableRangeSelection, disableRowSelection: false, disableColumnSelection: false, license: "non-commercial" }))));
     };
     return AllInOneSample;

@@ -86,7 +86,7 @@ var MultiUserSample = (function (_super) {
     };
     MultiUserSample.prototype.render = function () {
         var _this = this;
-        return (React.createElement(ReactGridContainer, { className: "multi-user-sample" },
+        return (React.createElement(ReactGridContainer, { id: "multi-user-sample" },
             React.createElement(ReactGrid, { cellMatrixProps: this.state, cellTemplates: {
                     'rating': new RateCellTemplate,
                     'flag': new FlagCellTemplate,

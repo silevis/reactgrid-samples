@@ -32,8 +32,8 @@ import { ReactGrid } from '@silevis/reactgrid';
 import { DropdownNumberCellTemplate } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
-import { columns } from '../../data/columns';
-import { rows } from '../../data/rows';
+import { columns } from '../../data/crm/columns';
+import { rows } from '../../data/crm/rows';
 import './styling.scss';
 var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"], ["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"])));
 var DropdownNumberCellSample = (function (_super) {
@@ -41,7 +41,7 @@ var DropdownNumberCellSample = (function (_super) {
     function DropdownNumberCellSample() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
-            columns: columns(true, true),
+            columns: columns(true, false),
             rows: rows(true)
         };
         _this.prepareDataChanges = function (dataChanges) {
@@ -61,7 +61,7 @@ var DropdownNumberCellSample = (function (_super) {
     }
     DropdownNumberCellSample.prototype.render = function () {
         var _this = this;
-        return (React.createElement(ReactGridContainer, { className: "dropdown-number-cell-sample" },
+        return (React.createElement(ReactGridContainer, { id: "dropdown-number-cell-sample" },
             React.createElement(ReactGrid, { cellMatrixProps: this.state, cellTemplates: {
                     'rating': new RateCellTemplate,
                     'flag': new FlagCellTemplate,
