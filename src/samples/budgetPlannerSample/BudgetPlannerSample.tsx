@@ -101,7 +101,8 @@ const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
 
                     newCell.data.isCollapsed = Boolean(collapsedLabels.columns[column.id]);
                     return newCell;
-                })]
+                })
+            ]
         }]
 
         // rows with numeric data
@@ -311,7 +312,7 @@ const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
 
 export const BudgetPlannerSample: React.FC = () => {
     return (
-        <ReactGridContainer className="budget-planner">
+        <ReactGridContainer id="budget-planner">
             <BudgetPlanner
                 budgetData={BudgetPlannerDemoData.budgetData}
                 dateRange={BudgetPlannerDemoData.dateRange}

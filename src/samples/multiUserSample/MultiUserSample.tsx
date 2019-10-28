@@ -74,7 +74,7 @@ export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> 
 
   render() {
     return (
-      <ReactGridContainer className="multi-user-sample">
+      <ReactGridContainer id="multi-user-sample">
         <ReactGrid
           cellMatrixProps={this.state}
           cellTemplates={{
