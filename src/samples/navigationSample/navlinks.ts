@@ -3,8 +3,10 @@ import AllInOneSample from '../allInOneSample/AllInOneSample';
 import RateCellSample from '../rateCellSample/RateCellSample';
 import DropdownNumberCellSample from '../dropdownNumberCellSample/DropdownNumberCellSample';
 import BudgetPlannerSample from '../budgetPlannerSample/BudgetPlannerSample';
+import ColumnReorderSample from '../columnReorderSample/ColumnReorderSample';
 import ResizeCellSample from '../resizeCellSample/ResizeCellSample';
 import MultiUserSample from '../multiUserSample/MultiUserSample';
+
 
 export interface ISampleNavLink extends INavLink {
   component?: any;
@@ -34,6 +36,12 @@ export const navLinks: ISampleNavLink[] = [
     key: '/BudgetPlannerSample',
     url: '/BudgetPlannerSample',
     component: BudgetPlannerSample
+  },
+  {
+    name: 'Column Reorder Sample',
+    key: '/ColumnReorderSample',
+    url: '/ColumnReorderSample',
+    component: ColumnReorderSample
   },
   {
     name: 'Resize Cell Sample',
