@@ -44,7 +44,8 @@ export default class ColumnReorderSample extends React.Component<{}, CellMatrixP
   private prepareDataChanges(dataChanges: DataChange[]): CellMatrixProps {
     const state = { ...this.state };
     dataChanges.forEach((change: DataChange) => {
-      state.rows.map((r: RowProps, i: number) => r.id == change.rowId ? r.cells[i].data = change.newData : r)
+      const columnIndex: number = this.state.columns.findIndex((column: ColumnProps) => column.id === change.columnId)
+      state.rows.forEach((r: RowProps) => { r.id == change.rowId ? r.cells[columnIndex].data = change.newData : r})
     })
     return state
   }
