@@ -1,6 +1,5 @@
 .rate {
   float: left;
-  height: 100%;
 }
 .rate:not(:checked) > input {
   position:absolute;
