@@ -35,7 +35,7 @@ import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate
 import { columns } from '../../data/crm/columns';
 import { rows } from '../../data/crm/rows';
 import './styling.scss';
-var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"], ["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"])));
+var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  min-height: 400px;\n"], ["\n  position: relative;\n  min-height: 400px;\n"])));
 var DropdownNumberCellSample = (function (_super) {
     __extends(DropdownNumberCellSample, _super);
     function DropdownNumberCellSample() {

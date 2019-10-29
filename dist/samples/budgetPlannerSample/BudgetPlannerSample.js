@@ -29,7 +29,7 @@ import './styling.scss';
 var MonthNameByIdx = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
 ];
-var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    position: relative;\n    margin-left: 10px;\n    width: 100%;\n    min-height: 400px;\n"], ["\n    position: relative;\n    margin-left: 10px;\n    width: 100%;\n    min-height: 400px;\n"])));
+var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    position: relative;\n    min-height: 400px;\n"], ["\n    position: relative;\n    min-height: 400px;\n"])));
 var BudgetPlanner = function (props) {
     var _a = React.useState(props.budgetData), budgetData = _a[0], setBudgetData = _a[1];
     var _b = React.useState({ columns: {}, rows: {} }), collapsedLabels = _b[0], setCollapsedLabels = _b[1];
@@ -51,7 +51,7 @@ var BudgetPlanner = function (props) {
             quarters: {}
         };
         var computedColumns = [
-            { id: 'tag', reorderable: false, resizable: true, width: 100 }
+            { id: 'tag', reorderable: false, resizable: false, width: 100 }
         ];
         getMonthsInRange(props.dateRange).forEach(function (month) {
             var newColumn = { reorderable: false, resizable: false };

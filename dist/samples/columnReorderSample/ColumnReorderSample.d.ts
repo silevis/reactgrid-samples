@@ -8,8 +8,6 @@ export declare class ColumnReorderSample extends React.Component<{}, CellMatrixP
     };
     private getMatrix;
     private prepareDataChanges;
-    private getReorderedColumns;
-    private getUpdatedRows;
-    private getReorderedRows;
+    private reorderArray;
     render(): JSX.Element;
 }
