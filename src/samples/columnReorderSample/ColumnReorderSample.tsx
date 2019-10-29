@@ -9,8 +9,6 @@ import '@silevis/reactgrid/dist/lib/assets/core.css';
 
 const DynaGridContainer = styled.div`
   position: relative;
-  margin-left: 10px;
-  width: 100%;
   min-height: 400px;
 `;
 

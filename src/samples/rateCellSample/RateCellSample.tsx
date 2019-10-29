@@ -9,8 +9,6 @@ import './styling.scss';
 
 const ReactGridContainer = styled.div`
   position: relative;
-  margin-left: 10px;
-  width: 100%;
   min-height: 400px;
 `;
 

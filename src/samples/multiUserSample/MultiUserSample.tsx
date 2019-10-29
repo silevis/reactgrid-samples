@@ -11,8 +11,6 @@ import './styling.scss';
 
 const ReactGridContainer = styled.div`
   position: relative;
-  margin-left: 10px;
-  width: 100%;
   min-height: 400px;
 `;
 
@@ -46,7 +44,8 @@ export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> 
       .addUser(new VirtualUser('#F75C03'))
       .addUser(new VirtualUser('#F1C40F'))
       .addUser(new VirtualUser('#D90368'))
-      .addUser(new VirtualUser('#00A754'));
+      .addUser(new VirtualUser('#4D8802'))
+      .addUser(new VirtualUser('#A771FE'));
 
     this.intervalId = window.setInterval(() => {
       this.setState(virtEnv.updateView(this.state));

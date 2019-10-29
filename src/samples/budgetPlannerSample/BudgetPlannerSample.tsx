@@ -12,8 +12,6 @@ const MonthNameByIdx = [
 
 const ReactGridContainer = styled.div`
     position: relative;
-    margin-left: 10px;
-    width: 100%;
     min-height: 400px;
 `
 
@@ -42,7 +40,7 @@ const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
             quarters: {} as any
         }
         const computedColumns: ColumnProps[] = [
-            { id: 'tag', reorderable: false, resizable: true, width: 100 }
+            { id: 'tag', reorderable: false, resizable: false, width: 100 }
         ];
 
         // compute grid columns for the date range
