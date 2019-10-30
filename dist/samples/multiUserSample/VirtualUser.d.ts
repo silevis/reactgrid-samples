@@ -4,6 +4,7 @@ export declare class ReactGridDataGenerator {
     static data: any;
     getDataAttrByKey(key: string): any;
     getRandomName(): string;
+    getRandomEmail(): string;
     getRandomSurname(): string;
     getRandomCountry(): string;
     getRandomAge(min?: number, max?: number): number;

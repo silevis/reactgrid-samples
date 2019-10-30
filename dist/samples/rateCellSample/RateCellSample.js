@@ -40,8 +40,8 @@ var RateCellSample = (function (_super) {
     function RateCellSample() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
-            columns: columns(true, true),
-            rows: rows(true)
+            columns: columns(false, false),
+            rows: rows(false)
         };
         _this.prepareDataChanges = function (dataChanges) {
             var state = __assign({}, _this.state);

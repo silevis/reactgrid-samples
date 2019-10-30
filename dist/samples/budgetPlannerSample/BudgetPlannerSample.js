@@ -23,7 +23,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 import React from 'react';
 import styled from 'styled-components';
 import { ReactGrid } from '@silevis/reactgrid';
-import BudgetPlannerDemoData from './BudgetPlannerSampleData';
+import BudgetPlannerSampleData from './BudgetPlannerSampleData';
 import { BudgetPlannerTextCellTemplate, BudgetPlannerNumberCellTemplate, BudgetPlannerColumnHeaderCellTemplate } from './../../cell-templates/budgetPlannerCells/BudgetPlannerCellTemplates';
 import './styling.scss';
 var MonthNameByIdx = [
@@ -78,7 +78,7 @@ var BudgetPlanner = function (props) {
         var parentQuarterCell;
         var computedRows = [{
                 id: 'header',
-                height: 40,
+                height: 25,
                 reorderable: false,
                 cells: __spreadArrays([
                     { type: 'text', data: { value: 'Category', isCollapsed: false } }
@@ -110,7 +110,7 @@ var BudgetPlanner = function (props) {
             var parentRow = {
                 id: category.id,
                 reorderable: false,
-                height: 40,
+                height: 25,
                 cells: __spreadArrays([
                     { type: 'columnHeader', data: { value: category.category, isCollapsed: category.isCollapsed } }
                 ], computedColumns.slice(1).map(function (column, idx) {
@@ -137,7 +137,7 @@ var BudgetPlanner = function (props) {
                 var row = {
                     id: subcategory.id,
                     reorderable: false,
-                    height: 40,
+                    height: 25,
                     cells: [{
                             type: 'columnHeader',
                             data: { value: subcategory.subcategory, isCollapsed: false, parent: parentRow.cells[0] }
@@ -222,7 +222,7 @@ var BudgetPlanner = function (props) {
                 return true;
             });
         });
-        return { columns: gridColumns, rows: gridRows };
+        return { columns: gridColumns, rows: gridRows, frozenLeftColumns: 1, frozenTopRows: 1 };
     };
     var dataChangeHandler = function (dataChanges) {
         dataChanges.forEach(function (dataChange) {
@@ -285,6 +285,6 @@ var BudgetPlanner = function (props) {
 };
 export var BudgetPlannerSample = function () {
     return (React.createElement(ReactGridContainer, { id: "budget-planner" },
-        React.createElement(BudgetPlanner, { budgetData: BudgetPlannerDemoData.budgetData, dateRange: BudgetPlannerDemoData.dateRange })));
+        React.createElement(BudgetPlanner, { budgetData: BudgetPlannerSampleData.budgetData, dateRange: BudgetPlannerSampleData.dateRange })));
 };
 var templateObject_1;
