@@ -1,6 +1,6 @@
 import { BudgetPlannerProps } from './BudgetPlannerSampleTypes';
 
-const BudgetPlannerDemoData: BudgetPlannerProps = {
+const BudgetPlannerSampleData: BudgetPlannerProps = {
     dateRange: { start: { year: 2018, month: 0 }, end: { year: 2020, month: 11 } },
     budgetData: [
         {
@@ -172,8 +172,83 @@ const BudgetPlannerDemoData: BudgetPlannerProps = {
                     }]
                 }
             ]
+        },  {
+            id: 'entertainment_waz',
+            category: 'entertainment',
+            isCollapsed: false,
+            subcategories: [
+                {
+                    subcategory: 'gifts',
+                    id: 'entertainment_gifts',
+                    entries: [{
+                        year: 2018,
+                        month: 5,
+                        value: 40
+                    }, {
+                        year: 2018,
+                        month: 6,
+                        value: 600
+                    }, {
+                        year: 2018,
+                        month: 7,
+                        value: 700
+                    }, {
+                        year: 2018,
+                        month: 8,
+                        value: 800,
+                    }]
+                }, {
+                    subcategory: 'cinema',
+                    id: 'entertainment_cinema',
+                    entries: [{
+                        year: 2018,
+                        month: 5,
+                        value: 100,
+                    }, {
+                        year: 2018,
+                        month: 6,
+                        value: 850,
+                    }, {
+                        year: 2018,
+                        month: 7,
+                        value: 900
+                    }]
+                }, {
+                    subcategory: 'restaurant',
+                    id: 'entertainment_restaurant',
+                    entries: [{
+                        year: 2018,
+                        month: 5,
+                        value: 60,
+                    }, {
+                        year: 2018,
+                        month: 7,
+                        value: 20,
+                    }, {
+                        year: 2018,
+                        month: 8,
+                        value: 30
+                    }]
+                }, {
+                    subcategory: 'other',
+                    id: 'entertainment_other',
+                    entries: [{
+                        year: 2018,
+                        month: 5,
+                        value: 15,
+                    }, {
+                        year: 2018,
+                        month: 7,
+                        value: 38,
+                    }, {
+                        year: 2018,
+                        month: 8,
+                        value: 12
+                    }]
+                }
+            ]
         }
     ]
 }
 
-export default BudgetPlannerDemoData;
+export default BudgetPlannerSampleData;

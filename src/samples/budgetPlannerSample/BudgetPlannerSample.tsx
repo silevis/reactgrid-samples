@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { ReactGrid, DataChange, CellMatrixProps, ColumnProps, RowProps, Cell, CellTemplates } from '@silevis/reactgrid';
 import { MonthOfYear, DateRange, BudgetPlannerProps, DataRow, Entry, MonthIdx, BudgetPlannerNumberCellData } from './BudgetPlannerSampleTypes';
-import BudgetPlannerDemoData from './BudgetPlannerSampleData';
+import BudgetPlannerSampleData from './BudgetPlannerSampleData';
 import { BudgetPlannerTextCellTemplate, BudgetPlannerNumberCellTemplate, BudgetPlannerColumnHeaderCellTemplate } from './../../cell-templates/budgetPlannerCells/BudgetPlannerCellTemplates';
 import './styling.scss';
 
@@ -75,7 +75,7 @@ const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
         // first row (header)
         const computedRows: RowProps[] = [{
             id: 'header',
-            height: 40,
+            height: 25,
             reorderable: false,
             cells: [
                 { type: 'text', data: { value: 'Category', isCollapsed: false } },
@@ -111,7 +111,7 @@ const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
             const parentRow: RowProps = {
                 id: category.id,
                 reorderable: false,
-                height: 40,
+                height: 25,
                 cells: [
                     { type: 'columnHeader', data: { value: category.category, isCollapsed: category.isCollapsed } },
                     ...computedColumns.slice(1).map((column, idx): Cell => {
@@ -140,7 +140,7 @@ const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
                 const row: RowProps = {
                     id: subcategory.id,
                     reorderable: false,
-                    height: 40,
+                    height: 25,
                     cells: [{
                         type: 'columnHeader',
                         data: { value: subcategory.subcategory, isCollapsed: false, parent: parentRow.cells[0] }
@@ -241,7 +241,7 @@ const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
             })
         })
 
-        return { columns: gridColumns, rows: gridRows };
+        return { columns: gridColumns, rows: gridRows, frozenLeftColumns: 1, frozenTopRows: 1 };
     }
 
     const dataChangeHandler = (dataChanges: DataChange[]): void => {
@@ -312,8 +312,8 @@ export const BudgetPlannerSample: React.FC = () => {
     return (
         <ReactGridContainer id="budget-planner">
             <BudgetPlanner
-                budgetData={BudgetPlannerDemoData.budgetData}
-                dateRange={BudgetPlannerDemoData.dateRange}
+                budgetData={BudgetPlannerSampleData.budgetData}
+                dateRange={BudgetPlannerSampleData.dateRange}
             />
         </ReactGridContainer>
     );
