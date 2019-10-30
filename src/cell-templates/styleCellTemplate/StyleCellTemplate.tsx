@@ -4,7 +4,7 @@ import { keyCodes, isTextInput, isNavigationKey, CellRenderProps, CellTemplate }
 export class StyleCellTemplate implements CellTemplate<string, any> {
 
     isValid(data: string): boolean {
-        return (typeof (data) === 'string');
+        return (typeof (data) === 'number');
     }
 
     textToCellData(text: string): string {
@@ -17,7 +17,7 @@ export class StyleCellTemplate implements CellTemplate<string, any> {
 
 
     renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = (props) => {
-        console.log(props);
+        // console.log(props);
 
         if (!props.isInEditMode) {
             return <div style={{

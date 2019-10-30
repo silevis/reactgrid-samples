@@ -52,12 +52,13 @@ const fields: ColumnProps[] = [{
 ]
 
 const api = async () => {
+  //console.log('api');
   const data = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd");
   const myJsonData = await data.json();
   const newRows: RowProps[] = [{
     id: 'header',
     reorderable: false,
-    height: 30,
+    height: 25,
     cells: [
       { type: 'header', data: 'Name' },
       { type: 'header', data: 'Symbol' },
@@ -71,14 +72,14 @@ const api = async () => {
     return {
       id: item.id,
       reorderable: false,
-      height: 30,
+      height: 25,
       cells: [
         { type: 'text', data: item.name },
         { type: 'text', data: item.symbol },
         { type: 'number', data: item.current_price },
         { type: 'number', data: item.low_24h },
         { type: 'number', data: item.high_24h },
-        { type: 'styleInside', data: item.high_24h }
+        { type: 'number', data: item.high_24h }
       ]
     }
   }));
@@ -106,6 +107,47 @@ export default class StockMarketDataSample extends React.Component {
   intervalId?: number;
 
 
+
+  private async findRow() {
+    console.log('findrow');
+    const newRows: RowProps[] = await api();
+    const statRows: RowProps[] = [...this.state.rows]
+
+
+
+
+    let callback = newRows.map((item: RowProps, idx) => {
+
+      if (statRows.length > 0 && item.cells[2].data !== statRows[idx].cells[2].data) {
+
+        console.log(item.cells[2], statRows[idx].cells[2])
+        // console.log(item)
+        // console.log('test', item.cells[2], statRows[idx].cells[2])
+        return {
+          id: item.id,
+          reorderable: false,
+          height: 25,
+          cells: [...item.cells, (item.cells[2].type = "styleInside")]
+        };
+
+      }
+      else {
+        return {
+          id: item.id,
+          reorderable: false,
+          height: 25,
+          cells: [...item.cells]
+        };
+      }
+    });
+    // this.setState(
+    //   {
+    //     rows: callback
+    //   })
+
+  }
+
+
   componentDidMount() {
     const renderValue = async () => {
       const newRows: RowProps[] = await api();
@@ -119,7 +161,7 @@ export default class StockMarketDataSample extends React.Component {
 
     this.intervalId = setInterval(
       () => { renderValue() }
-      , 500);
+      , 1000);
   }
 
 
@@ -128,20 +170,14 @@ export default class StockMarketDataSample extends React.Component {
   }
 
 
+  // zapisuje dane, poprzednie przenosze do buuforra czyli tablicy, wyciagnac z aktulnej tablicy (state) liste wysztkich krypto walut ( (nazwa i id) jej nr w kolejnosci ), porownac obecny stan z poprzednim wyciagajac idetyfiaktory wierszy,
+  // mamy liste wierszy ktora ulegay zmieninie, dla tych wierszy zminic typ komory na styleInside, 
+
+
   render() {
-
-    const findRow = async () => {
-      const newRows: RowProps[] = await api();
-
-
-      // return console.log(newRows)
-    }
-
-    { findRow() }
-
+    { this.findRow() }
     return (
       <>
-
         <ReactGridContainer className="resize-cell-sample">
           {this.intervalId != 0 ? <ReactGrid
             cellMatrixProps={{ columns: this.state.columns, rows: this.state.rows }}
