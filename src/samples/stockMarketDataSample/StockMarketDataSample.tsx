@@ -89,8 +89,6 @@ const api = async () => {
 
 
 export default class StockMarketDataSample extends React.Component {
-
-
   columns = fields.map((field) => ({
     id: field.id,
     reorderable: field.reorderable,
@@ -101,26 +99,23 @@ export default class StockMarketDataSample extends React.Component {
 
   state = {
     columns: this.columns,
-    rows: []
+    rows: [],
+    newRows: []
   };
 
   intervalId?: number;
 
-
-
   private async findRow() {
-    console.log('findrow');
     const newRows: RowProps[] = await api();
     const statRows: RowProps[] = [...this.state.rows]
 
-
-
-
     let callback = newRows.map((item: RowProps, idx) => {
 
+      // console.log(item.cells[2].data)
+      // console.log(statRows[idx])
       if (statRows.length > 0 && item.cells[2].data !== statRows[idx].cells[2].data) {
 
-        console.log(item.cells[2], statRows[idx].cells[2])
+        // console.log('WESZLo')
         // console.log(item)
         // console.log('test', item.cells[2], statRows[idx].cells[2])
         return {
@@ -149,19 +144,25 @@ export default class StockMarketDataSample extends React.Component {
 
 
   componentDidMount() {
-    const renderValue = async () => {
-      const newRows: RowProps[] = await api();
-      this.setState(
-        {
-          rows: newRows
-        }
-      )
-    }
-    renderValue();
+    api().then(data => {
+      this.setState({ rows: data });
+      const renderInterval = () => {
+        const state: any = { ...this.state };
+        const changedIdx = Math.floor(Math.random() * 10);
+        const randomValue = Math.random() * 10;
 
-    this.intervalId = setInterval(
-      () => { renderValue() }
-      , 1000);
+        if (randomValue.toString() !== state.rows[changedIdx].cells[2].data.toString()) {
+          data[changedIdx].cells[2] = {
+            ...data[changedIdx].cells[2],
+            data: randomValue,
+            type: "styleInside"
+          }
+        }
+        this.setState({ rows: data })
+      }
+
+      this.intervalId = setInterval(() => renderInterval(), 1000);
+    });
   }
 
 
@@ -175,7 +176,7 @@ export default class StockMarketDataSample extends React.Component {
 
 
   render() {
-    { this.findRow() }
+    // { this.findRow() }
     return (
       <>
         <ReactGridContainer className="resize-cell-sample">
