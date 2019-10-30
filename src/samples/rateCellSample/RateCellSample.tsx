@@ -33,7 +33,6 @@ export class RateCellSample extends React.Component<{}, CellMatrixProps> {
     return state
   }
 
-
   render() {
     return (
       <ReactGridContainer id="rate-cell-sample">
