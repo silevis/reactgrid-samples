@@ -749,7 +749,7 @@ export class AllInOneSample extends React.Component<{}, IReactgridAllInOneState>
                 <FeatureListContainer
                     demoActions={this.demoActions}
                     state={this.state} />
-                <ReactGridContainer id="all-in-one">
+                <ReactGridContainer id="all-in-one-sample">
                     <ReactGrid
                         cellMatrixProps={this.generateMatrix()}
                         onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
