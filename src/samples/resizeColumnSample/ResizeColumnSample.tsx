@@ -11,7 +11,7 @@ const ReactGridContainer = styled.div`
   min-height: 400px;
 `;
 
-export class ResizeCellSample extends React.Component<{}, CellMatrixProps> {
+export class ResizeColumnSample extends React.Component<{}, CellMatrixProps> {
   state = {
     columns:  columns(false, true),
     rows:     rows(false),
@@ -45,7 +45,7 @@ export class ResizeCellSample extends React.Component<{}, CellMatrixProps> {
 
   render() {
     return (
-      <ReactGridContainer id="resize-cell-sample">
+      <ReactGridContainer id="resize-column-sample">
         <ReactGrid
           cellMatrixProps={this.getMatrix()}
           cellTemplates={{ 

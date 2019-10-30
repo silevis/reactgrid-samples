@@ -13,7 +13,6 @@ export const rows = (reorderable: boolean): RowProps[] => [
       { type: 'header', data: 'Phone' },
       { type: 'header', data: 'City' },
       { type: 'header', data: 'Street' },
-      { type: 'header', data: 'Address' },
       { type: 'header', data: 'Registered' },
       { type: 'header', data: 'Country' },
       { type: 'header', data: 'Birth date' },
