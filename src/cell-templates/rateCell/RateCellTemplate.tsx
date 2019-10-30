@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { CellRenderProps, CellTemplate } from '@silevis/reactgrid';
-import './rate-cell-style.css';
+import './rate-cell-style.scss';
 
 export class RateCellTemplate implements CellTemplate<number, any> {
 
