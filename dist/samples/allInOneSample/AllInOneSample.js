@@ -659,7 +659,7 @@ var AllInOneSample = (function (_super) {
         return React.createElement(DemoContainer, null,
             React.createElement(DemoBody, null,
                 React.createElement(FeatureListContainer, { demoActions: this.demoActions, state: this.state }),
-                React.createElement(ReactGridContainer, { id: "all-in-one" },
+                React.createElement(ReactGridContainer, { id: "all-in-one-sample" },
                     React.createElement(ReactGrid, { cellMatrixProps: this.generateMatrix(), onDataChanged: function (changes) { return _this.setState(_this.prepareDataChanges(changes)); }, customFocuses: this.state.focuses, onRowContextMenu: function (selectedRowIds, menuOptions) { return _this.handleRowContextMenu(selectedRowIds, menuOptions); }, onColumnContextMenu: function (selectedColIds, menuOptions) { return _this.handleColContextMenu(selectedColIds, menuOptions); }, cellTemplates: this.getCustomCellTemplates(), disableFillHandle: this.state.disableFillHandle, disableRangeSelection: this.state.disableRangeSelection, disableRowSelection: false, disableColumnSelection: false, license: "non-commercial" }))));
     };
     return AllInOneSample;

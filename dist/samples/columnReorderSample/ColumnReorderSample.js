@@ -40,7 +40,7 @@ import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns } from '../../data/columns';
 import { rows } from '../../data/rows';
-import '@silevis/reactgrid/dist/lib/assets/core.css';
+import './styling.scss';
 var DynaGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  min-height: 400px;\n"], ["\n  position: relative;\n  min-height: 400px;\n"])));
 var ColumnReorderSample = (function (_super) {
     __extends(ColumnReorderSample, _super);
@@ -83,7 +83,7 @@ var ColumnReorderSample = (function (_super) {
     };
     ColumnReorderSample.prototype.render = function () {
         var _this = this;
-        return (React.createElement(DynaGridContainer, null,
+        return (React.createElement(DynaGridContainer, { id: "column-reorder-sample" },
             React.createElement(ReactGrid, { cellMatrixProps: this.getMatrix(), cellTemplates: {
                     'rating': new RateCellTemplate,
                     'flag': new FlagCellTemplate
