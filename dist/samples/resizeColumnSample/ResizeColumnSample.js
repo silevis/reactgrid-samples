@@ -40,10 +40,10 @@ import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns } from '../../data/columns';
 import { rows } from '../../data/rows';
-var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"], ["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"])));
-var ResizeCellSample = (function (_super) {
-    __extends(ResizeCellSample, _super);
-    function ResizeCellSample() {
+var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  min-height: 400px;\n"], ["\n  position: relative;\n  min-height: 400px;\n"])));
+var ResizeColumnSample = (function (_super) {
+    __extends(ResizeColumnSample, _super);
+    function ResizeColumnSample() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
             columns: columns(false, true),
@@ -64,7 +64,7 @@ var ResizeCellSample = (function (_super) {
         };
         return _this;
     }
-    ResizeCellSample.prototype.getMatrix = function () {
+    ResizeColumnSample.prototype.getMatrix = function () {
         var _this = this;
         var columns = __spreadArrays(this.state.columns).map(function (column, idx) { return (__assign(__assign({}, column), { onResize: function (width) {
                 columns[idx] = __assign(__assign({}, column), { width: width });
@@ -72,15 +72,15 @@ var ResizeCellSample = (function (_super) {
             } })); });
         return { columns: columns, rows: this.state.rows };
     };
-    ResizeCellSample.prototype.render = function () {
+    ResizeColumnSample.prototype.render = function () {
         var _this = this;
-        return (React.createElement(ReactGridContainer, { id: "resize-cell-sample" },
+        return (React.createElement(ReactGridContainer, { id: "resize-column-sample" },
             React.createElement(ReactGrid, { cellMatrixProps: this.getMatrix(), cellTemplates: {
                     'rating': new RateCellTemplate,
                     'flag': new FlagCellTemplate
                 }, onDataChanged: function (changes) { return _this.setState(_this.prepareDataChanges(changes)); }, license: 'non-commercial' })));
     };
-    return ResizeCellSample;
+    return ResizeColumnSample;
 }(React.Component));
-export { ResizeCellSample };
+export { ResizeColumnSample };
 var templateObject_1;

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ColumnProps, CellMatrixProps } from '@silevis/reactgrid';
-export declare class ResizeCellSample extends React.Component<{}, CellMatrixProps> {
+export declare class ResizeColumnSample extends React.Component<{}, CellMatrixProps> {
     state: {
         columns: ColumnProps[];
         rows: import("@silevis/reactgrid").RowProps[];

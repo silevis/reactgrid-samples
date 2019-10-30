@@ -1,3 +1,3 @@
 import { BudgetPlannerProps } from './BudgetPlannerSampleTypes';
-declare const BudgetPlannerDemoData: BudgetPlannerProps;
-export default BudgetPlannerDemoData;
+declare const BudgetPlannerSampleData: BudgetPlannerProps;
+export default BudgetPlannerSampleData;

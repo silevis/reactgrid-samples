@@ -34,14 +34,14 @@ import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate
 import { columns } from '../../data/columns';
 import { rows } from '../../data/rows';
 import './styling.scss';
-var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"], ["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"])));
+var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  min-height: 400px;\n"], ["\n  position: relative;\n  min-height: 400px;\n"])));
 var RateCellSample = (function (_super) {
     __extends(RateCellSample, _super);
     function RateCellSample() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
-            columns: columns(true, true),
-            rows: rows(true)
+            columns: columns(false, false),
+            rows: rows(false)
         };
         _this.prepareDataChanges = function (dataChanges) {
             var state = __assign({}, _this.state);

@@ -34,6 +34,11 @@ var ReactGridDataGenerator = (function () {
         var names = ReactGridDataGenerator.data.name;
         return names[getRandomInt(0, names.length)];
     };
+    ReactGridDataGenerator.prototype.getRandomEmail = function () {
+        var names = ReactGridDataGenerator.data.name;
+        var surnames = ReactGridDataGenerator.data.surname;
+        return names[getRandomInt(0, names.length)][0].toLowerCase() + "." + names[getRandomInt(0, surnames.length)].toLowerCase() + "@gmail.com";
+    };
     ReactGridDataGenerator.prototype.getRandomSurname = function () {
         var surnames = ReactGridDataGenerator.data.surname;
         return surnames[getRandomInt(0, surnames.length)];
@@ -69,7 +74,11 @@ var ReactGridDataGenerator = (function () {
         name: ['Jacob', 'Tom', 'John', 'Allie', 'Zoe', 'Ashe', 'Fred', 'Rob', 'Alison', 'Arcady', 'Tom', 'Jerry'],
         surname: ['Hudson', 'Perkins', 'Mason', 'Armstrong', 'King', 'Collins', 'Bush', 'Maddison', 'Del Rey', 'Goletz', 'Ferrer'],
         country: ['fra', 'hun', 'lbn', 'mli', 'deu', 'pol', 'prt', 'svk', 'gbr', 'alb', 'aut', 'bra'],
-        position: ['Director', 'Manager', 'Software Dev', 'QA', 'Automated Tester', 'Unemployed', 'Scrum Master', 'Project owner']
+        city: ['Pekin', 'Newark', 'Acapulco', 'El Paso', 'Warsaw', 'Athens', 'Moscow', 'Mexico', 'Toronto', 'Los Angeles'],
+        position: ['Director', 'Manager', 'Software Dev', 'QA', 'Automated Tester', 'Unemployed', 'Scrum Master', 'Project owner'],
+        sex: ['male', 'female'],
+        phone: [getRandomInt(10000000, 999999999)],
+        street: ['Jizhou Qu', 'Calle Oriente', 'Via Blanca', 'Dr. Ricardo Gutiérrez', 'Essex', 'Agar St', 'Boulevard Alexis-Nihon']
     };
     return ReactGridDataGenerator;
 }());
@@ -131,6 +140,10 @@ var VirtualUser = (function () {
                 }
                 case 'date': {
                     newFieldData = dataGen.getRandomDate();
+                    break;
+                }
+                case 'email': {
+                    newFieldData = dataGen.getRandomEmail();
                     break;
                 }
                 case 'flag': {

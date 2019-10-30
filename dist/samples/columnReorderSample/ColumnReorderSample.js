@@ -41,7 +41,7 @@ import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate
 import { columns } from '../../data/columns';
 import { rows } from '../../data/rows';
 import '@silevis/reactgrid/dist/lib/assets/core.css';
-var DynaGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"], ["\n  position: relative;\n  margin-left: 10px;\n  width: 100%;\n  min-height: 400px;\n"])));
+var DynaGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  min-height: 400px;\n"], ["\n  position: relative;\n  min-height: 400px;\n"])));
 var ColumnReorderSample = (function (_super) {
     __extends(ColumnReorderSample, _super);
     function ColumnReorderSample() {
@@ -51,14 +51,15 @@ var ColumnReorderSample = (function (_super) {
             rows: rows(true)
         };
         _this.getMatrix = function () {
-            var columns = __spreadArrays(_this.state.columns).map(function (c, cIdx) { return (__assign(__assign({}, c), { onDrop: function (idxs) {
+            var columns = __spreadArrays(_this.state.columns).map(function (column, cIdx) { return (__assign(__assign({}, column), { onDrop: function (idxs) {
+                    var arrayIndexes = idxs.map(function (id) { return _this.state.columns.findIndex(function (column) { return column.id === id; }); });
                     _this.setState({
-                        columns: _this.getReorderedColumns(idxs, cIdx),
-                        rows: _this.getUpdatedRows(__spreadArrays(idxs).reverse().map(function (id) { return _this.state.columns.findIndex(function (c) { return c.id === id; }); }), cIdx)
+                        columns: _this.reorderArray(_this.state.columns, arrayIndexes, cIdx),
+                        rows: _this.state.rows.map(function (row) { return (__assign(__assign({}, row), { cells: _this.reorderArray(row.cells, arrayIndexes, cIdx) })); }),
                     });
                 } })); });
-            var rows = __spreadArrays(_this.state.rows).map(function (r, rIdx) { return (__assign(__assign({}, r), { onDrop: function (idxs) { return _this.setState({
-                    rows: _this.getReorderedRows(idxs, rIdx)
+            var rows = __spreadArrays(_this.state.rows).map(function (row, rIdx) { return (__assign(__assign({}, row), { onDrop: function (idxs) { return _this.setState({
+                    rows: _this.reorderArray(_this.state.rows, idxs.map(function (id) { return _this.state.rows.findIndex(function (r) { return r.id === id; }); }), rIdx)
                 }); } })); });
             return { rows: rows, columns: columns };
         };
@@ -69,46 +70,16 @@ var ColumnReorderSample = (function (_super) {
         var state = __assign({}, this.state);
         dataChanges.forEach(function (change) {
             var columnIndex = _this.state.columns.findIndex(function (column) { return column.id === change.columnId; });
-            state.rows.forEach(function (r) { r.id == change.rowId ? r.cells[columnIndex].data = change.newData : r; });
+            state.rows.forEach(function (row) { row.id == change.rowId ? row.cells[columnIndex].data = change.newData : row; });
         });
         return state;
     };
-    ColumnReorderSample.prototype.getReorderedColumns = function (colIds, to) {
-        var movedColumns = __spreadArrays(this.state.columns).filter(function (c) { return colIds.includes(c.id); });
-        var clearedColumns = __spreadArrays(this.state.columns).filter(function (c) { return !colIds.includes(c.id); });
-        if (to > __spreadArrays(this.state.columns).findIndex(function (c) { return c.id == colIds[0]; }))
-            to -= colIds.length - 1;
-        clearedColumns.splice.apply(clearedColumns, __spreadArrays([to, 0], movedColumns));
-        return clearedColumns;
-    };
-    ColumnReorderSample.prototype.getUpdatedRows = function (from, to) {
-        var newRows = [];
-        this.state.rows.forEach(function (row) {
-            var newRow = __assign({}, row);
-            var newCells = __spreadArrays(row.cells);
-            var i = 0;
-            from.forEach(function (fromIdx) {
-                if (to > fromIdx) {
-                    newCells.splice(to - i, 0, newCells.splice(fromIdx, 1)[0]);
-                    i++;
-                }
-                else {
-                    newCells.splice(to, 0, newCells.splice(fromIdx - i, 1)[0]);
-                    i--;
-                }
-            });
-            newRow.cells = newCells;
-            newRows = __spreadArrays(newRows, [newRow]);
-        });
-        return newRows;
-    };
-    ColumnReorderSample.prototype.getReorderedRows = function (rowIds, to) {
-        var movedRows = __spreadArrays(this.state.rows).filter(function (r) { return rowIds.includes(r.id); });
-        var clearedRows = __spreadArrays(this.state.rows).filter(function (r) { return !rowIds.includes(r.id); });
-        if (to > __spreadArrays(this.state.rows).findIndex(function (r) { return r.id == rowIds[0]; }))
-            to -= rowIds.length - 1;
-        clearedRows.splice.apply(clearedRows, __spreadArrays([to, 0], movedRows));
-        return clearedRows;
+    ColumnReorderSample.prototype.reorderArray = function (arr, idxs, to) {
+        var movedElements = arr.filter(function (_, idx) { return idxs.includes(idx); });
+        to = Math.min.apply(Math, idxs) < to ? to += 1 : to -= idxs.filter(function (idx) { return idx < to; }).length;
+        var leftSide = arr.filter(function (_, idx) { return idx < to && !idxs.includes(idx); });
+        var rightSide = arr.filter(function (_, idx) { return idx >= to && !idxs.includes(idx); });
+        return __spreadArrays(leftSide, movedElements, rightSide);
     };
     ColumnReorderSample.prototype.render = function () {
         var _this = this;

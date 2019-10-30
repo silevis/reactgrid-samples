@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { CellRenderProps, CellTemplate } from '@silevis/reactgrid';
-import './number-dropdown-cell-style.css';
+import './number-dropdown-cell-style.scss';
 interface IDropdownNumberCell {
     value: number;
     isOpened: boolean;

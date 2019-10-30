@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './rate-cell-style.css';
+import './rate-cell-style.scss';
 var RateCellTemplate = (function () {
     function RateCellTemplate() {
         var _this = this;

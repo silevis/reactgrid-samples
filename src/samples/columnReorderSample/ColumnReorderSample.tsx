@@ -5,7 +5,8 @@ import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns } from '../../data/columns';
 import { rows } from '../../data/rows';
-import '@silevis/reactgrid/dist/lib/assets/core.css';
+import './styling.scss';
+
 
 const DynaGridContainer = styled.div`
   position: relative;
@@ -59,7 +60,7 @@ export class ColumnReorderSample extends React.Component<{}, CellMatrixProps> {
 
   render() {
     return (
-      <DynaGridContainer>
+      <DynaGridContainer id="column-reorder-sample">
         <ReactGrid
           cellMatrixProps={this.getMatrix()}
           cellTemplates={{

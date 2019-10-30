@@ -1,4 +1,4 @@
-import { AllInOneSample, RateCellSample, DropdownNumberCellSample, BudgetPlannerSample, ColumnReorderSample, ResizeCellSample, MultiUserSample } from '../../samples';
+import { AllInOneSample, RateCellSample, DropdownNumberCellSample, BudgetPlannerSample, ColumnReorderSample, ResizeColumnSample, MultiUserSample } from '../../samples';
 export var navLinks = [
     {
         name: 'All In One Sample',
@@ -31,10 +31,10 @@ export var navLinks = [
         component: ColumnReorderSample
     },
     {
-        name: 'Resize Cell Sample',
-        key: '/ResizeCellSample',
-        url: '/ResizeCellSample',
-        component: ResizeCellSample
+        name: 'Resize Column Sample',
+        key: '/ResizeColumnSample',
+        url: '/ResizeColumnSample',
+        component: ResizeColumnSample
     },
     {
         name: 'Multi User Sample',

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './number-dropdown-cell-style.css';
+import './number-dropdown-cell-style.scss';
 var DropdownNumberCellTemplate = (function () {
     function DropdownNumberCellTemplate() {
         var _this = this;
@@ -18,7 +18,7 @@ var DropdownNumberCellTemplate = (function () {
                                 } }, " \u276F"))),
                     props.cellData.isOpened &&
                         React.createElement("div", { className: "rg-dropdown-number-cell-dropdown" },
-                            React.createElement("input", { type: "range", min: _this.MIN_VAL, max: _this.MAX_VAL, step: _this.STEP, defaultValue: props.cellData.value.toString(), onChange: function (e) {
+                            React.createElement("input", { type: "range", min: _this.MIN_VAL, max: _this.MAX_VAL, step: _this.STEP, className: "rg-dropdown-number-cell-dropdown-input", defaultValue: props.cellData.value.toString(), onChange: function (e) {
                                     props.onCellDataChanged({ value: parseInt(e.currentTarget.value), isOpened: props.cellData.isOpened }, true);
                                 } })))));
         };
