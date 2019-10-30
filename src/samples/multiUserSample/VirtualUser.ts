@@ -37,8 +37,7 @@ export class ReactGridDataGenerator {
     getRandomEmail(): string {
         const names = ReactGridDataGenerator.data.name;
         const surnames = ReactGridDataGenerator.data.surname;
-        return `${names[getRandomInt(0, names.length)][0].toLowerCase()}.
-                ${names[getRandomInt(0, surnames.length)].toLowerCase()}@gmail.com`
+        return `${names[getRandomInt(0, names.length)][0].toLowerCase()}.${names[getRandomInt(0, surnames.length)].toLowerCase()}@gmail.com`
     }
 
 
