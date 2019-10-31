@@ -241,7 +241,14 @@ const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
             })
         })
 
-        return { columns: gridColumns, rows: gridRows, frozenLeftColumns: 1, frozenTopRows: 1 };
+        return { 
+            columns: gridColumns, 
+            rows: gridRows, 
+            frozenLeftColumns: 1, 
+            frozenTopRows: 1,
+            frozenBottomRows: 0,
+            frozenRightColumns: 0
+        };
     }
 
     const dataChangeHandler = (dataChanges: DataChange[]): void => {
