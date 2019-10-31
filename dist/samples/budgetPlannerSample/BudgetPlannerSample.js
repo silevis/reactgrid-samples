@@ -222,7 +222,14 @@ var BudgetPlanner = function (props) {
                 return true;
             });
         });
-        return { columns: gridColumns, rows: gridRows, frozenLeftColumns: 1, frozenTopRows: 1 };
+        return {
+            columns: gridColumns,
+            rows: gridRows,
+            frozenLeftColumns: 1,
+            frozenTopRows: 1,
+            frozenBottomRows: 0,
+            frozenRightColumns: 0
+        };
     };
     var dataChangeHandler = function (dataChanges) {
         dataChanges.forEach(function (dataChange) {
