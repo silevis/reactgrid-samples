@@ -224,11 +224,7 @@ var BudgetPlanner = function (props) {
         });
         return {
             columns: gridColumns,
-            rows: gridRows,
-            frozenLeftColumns: 1,
-            frozenTopRows: 1,
-            frozenBottomRows: 0,
-            frozenRightColumns: 0
+            rows: gridRows
         };
     };
     var dataChangeHandler = function (dataChanges) {
