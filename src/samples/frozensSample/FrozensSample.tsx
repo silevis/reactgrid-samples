@@ -13,10 +13,13 @@ const ReactGridContainer = styled.div`
   min-height: 400px;
 `;
 
-export class DropdownNumberCellSample extends React.Component<{}, CellMatrixProps> {
+export class FrozensSample extends React.Component<{}, CellMatrixProps> {
   state = {
-    columns:  columns(true, false),
-    rows:     rows(true)
+    columns:              columns(true, false),
+    rows:                 rows(true),
+    frozenTopRows:        1,
+    frozenLeftColumns:    2,
+    frozenRightColumns:   1
   }
 
   private prepareDataChanges = (dataChanges: DataChange[]): {} => {
@@ -35,7 +38,7 @@ export class DropdownNumberCellSample extends React.Component<{}, CellMatrixProp
 
   render() {
     return (
-      <ReactGridContainer id="dropdown-number-cell-sample">
+      <ReactGridContainer id="frozens-sample">
         <ReactGrid
           cellMatrixProps={this.state}
           cellTemplates={{
