@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ColumnProps, CellMatrixProps, RowProps } from '@silevis/reactgrid';
-import '@silevis/reactgrid/dist/lib/assets/core.css';
+import './styling.scss';
 export declare class ColumnReorderSample extends React.Component<{}, CellMatrixProps> {
     state: {
         columns: ColumnProps[];

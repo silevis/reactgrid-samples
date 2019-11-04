@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { keyCodes, isTextInput, isNavigationKey, CellRenderProps, CellTemplate } from '@silevis/reactgrid';
+import './flag-cell-style.scss';
 
 export class FlagCellTemplate implements CellTemplate<string, any> {
 
@@ -24,29 +25,15 @@ export class FlagCellTemplate implements CellTemplate<string, any> {
     renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = (props) => {
         if (!props.isInEditMode) {
             const flagISO = props.cellData.toLowerCase(); // ISO 3166-1, 2/3 letters
-            const flagURL = 'https://restcountries.eu/data/' + flagISO + '.svg';
-            return <div style={{
-                margin: 'auto auto',
-                width: '35px',
-                height: '21px',
-                backgroundSize: 'cover',
-                border: '1px solid #cccccc',
-                backgroundImage: 'url("' + flagURL + '"), url("https://upload.wikimedia.org/wikipedia/commons/0/04/Nuvola_unknown_flag.svg")',
-                backgroundPosition: 'center center'
+            const flagURL = `https://restcountries.eu/data/${flagISO}.svg`;
+            return <div 
+                className="rg-flag-wrapper"
+                style={{backgroundImage: 'url("' + flagURL + '"), url("https://upload.wikimedia.org/wikipedia/commons/0/04/Nuvola_unknown_flag.svg")',
             }} />
         }
         return <input
             type='text'
-            style={{
-                position: 'inherit',
-                width: '100%',
-                height: '100%',
-                padding: 0,
-                border: 0,
-                background: 'transparent',
-                fontSize: 14,
-                outline: 'none',
-            }}
+            className="rg-flag-input"
             ref={input => {
                 input && input.focus();
             }}

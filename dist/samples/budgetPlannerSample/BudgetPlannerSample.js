@@ -222,7 +222,10 @@ var BudgetPlanner = function (props) {
                 return true;
             });
         });
-        return { columns: gridColumns, rows: gridRows, frozenLeftColumns: 1, frozenTopRows: 1 };
+        return {
+            columns: gridColumns,
+            rows: gridRows
+        };
     };
     var dataChangeHandler = function (dataChanges) {
         dataChanges.forEach(function (dataChange) {
@@ -284,7 +287,7 @@ var BudgetPlanner = function (props) {
         }, license: 'non-commercial', cellMatrixProps: generateCellMatrixProps(), disableRowSelection: true, cellTemplates: myCellTemplates, onDataChanged: dataChangeHandler }));
 };
 export var BudgetPlannerSample = function () {
-    return (React.createElement(ReactGridContainer, { id: "budget-planner" },
+    return (React.createElement(ReactGridContainer, { id: "budget-planner-sample" },
         React.createElement(BudgetPlanner, { budgetData: BudgetPlannerSampleData.budgetData, dateRange: BudgetPlannerSampleData.dateRange })));
 };
 var templateObject_1;
