@@ -1,31 +1,16 @@
 import * as React from 'react';
 import { keyCodes, isTextInput, isNavigationKey } from '@silevis/reactgrid';
+import './flag-cell-style.scss';
 var FlagCellTemplate = (function () {
     function FlagCellTemplate() {
         this.renderContent = function (props) {
             if (!props.isInEditMode) {
                 var flagISO = props.cellData.toLowerCase();
-                var flagURL = 'https://restcountries.eu/data/' + flagISO + '.svg';
-                return React.createElement("div", { style: {
-                        margin: 'auto auto',
-                        width: '35px',
-                        height: '21px',
-                        backgroundSize: 'cover',
-                        border: '1px solid #cccccc',
-                        backgroundImage: 'url("' + flagURL + '"), url("https://upload.wikimedia.org/wikipedia/commons/0/04/Nuvola_unknown_flag.svg")',
-                        backgroundPosition: 'center center'
+                var flagURL = "https://restcountries.eu/data/" + flagISO + ".svg";
+                return React.createElement("div", { className: "rg-flag-wrapper", style: { backgroundImage: 'url("' + flagURL + '"), url("https://upload.wikimedia.org/wikipedia/commons/0/04/Nuvola_unknown_flag.svg")',
                     } });
             }
-            return React.createElement("input", { type: 'text', style: {
-                    position: 'inherit',
-                    width: '100%',
-                    height: '100%',
-                    padding: 0,
-                    border: 0,
-                    background: 'transparent',
-                    fontSize: 14,
-                    outline: 'none',
-                }, ref: function (input) {
+            return React.createElement("input", { type: 'text', className: "rg-flag-input", ref: function (input) {
                     input && input.focus();
                 }, defaultValue: props.cellData, onChange: function (e) { return props.onCellDataChanged(e.currentTarget.value, false); }, onCopy: function (e) { return e.stopPropagation(); }, onCut: function (e) { return e.stopPropagation(); }, onPaste: function (e) { return e.stopPropagation(); }, onPointerDown: function (e) { return e.stopPropagation(); }, onKeyDown: function (e) {
                     if (isTextInput(e.keyCode) || isNavigationKey(e))

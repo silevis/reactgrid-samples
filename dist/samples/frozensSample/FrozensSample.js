@@ -36,13 +36,16 @@ import { columns } from '../../data/crm/columns';
 import { rows } from '../../data/crm/rows';
 import './styling.scss';
 var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  min-height: 400px;\n"], ["\n  position: relative;\n  min-height: 400px;\n"])));
-var DropdownNumberCellSample = (function (_super) {
-    __extends(DropdownNumberCellSample, _super);
-    function DropdownNumberCellSample() {
+var FrozensSample = (function (_super) {
+    __extends(FrozensSample, _super);
+    function FrozensSample() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
             columns: columns(true, false),
-            rows: rows(true)
+            rows: rows(true),
+            frozenTopRows: 1,
+            frozenLeftColumns: 2,
+            frozenRightColumns: 1
         };
         _this.prepareDataChanges = function (dataChanges) {
             var state = __assign({}, _this.state);
@@ -59,16 +62,16 @@ var DropdownNumberCellSample = (function (_super) {
         };
         return _this;
     }
-    DropdownNumberCellSample.prototype.render = function () {
+    FrozensSample.prototype.render = function () {
         var _this = this;
-        return (React.createElement(ReactGridContainer, { id: "dropdown-number-cell-sample" },
+        return (React.createElement(ReactGridContainer, { id: "frozens-sample" },
             React.createElement(ReactGrid, { cellMatrixProps: this.state, cellTemplates: {
                     'rating': new RateCellTemplate,
                     'flag': new FlagCellTemplate,
                     'dropdownNumber': new DropdownNumberCellTemplate,
                 }, onDataChanged: function (changes) { return _this.setState(_this.prepareDataChanges(changes)); }, license: 'non-commercial' })));
     };
-    return DropdownNumberCellSample;
+    return FrozensSample;
 }(React.Component));
-export { DropdownNumberCellSample };
+export { FrozensSample };
 var templateObject_1;
