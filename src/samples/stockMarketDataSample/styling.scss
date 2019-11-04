@@ -1,4 +1,39 @@
-.resize-cell-sample {
-    // override styles here
-    @import '@silevis/reactgrid/dist/lib/assets/core.scss';
+
+
+ $base-red: rgba(255, 0, 0, 1);
+ $transparent-base-red: rgba(255, 0, 0, 0);
+ $base-green-yellow: rgba(0, 255, 0, 1);
+ $transparent-base-green-yellow: rgba(0, 255, 0, 0);
+
+.stock-market-cell-sample {
+
+      @keyframes background-red {
+        0% { background-color: $base-red; }
+        100% { background-color: $transparent-base-red; }
+      }
+
+      @keyframes background-green {
+        0% { background-color : $base-green-yellow; }
+        100% { background-color: $transparent-base-green-yellow; }
+      }
+
+    .red {
+        -webkit-animation: background-red 3s infinite; 
+        animation: background-red 3s infinite;
+    }
+    .greenyellow {
+        -webkit-animation: background-green 3s infinite; 
+        animation: background-green 3s infinite;
+    }
+     
+    .stockMarketBaseStyle{
+        display: flex;
+        width: 100%;
+        height: 100%;
+        align-items: center;
+       }
 }
+  
+
+
+    

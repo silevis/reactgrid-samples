@@ -17,21 +17,16 @@ export class StyleCellTemplate implements CellTemplate<string, any> {
 
 
     renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = (props) => {
-        // console.log(props);
+        // console.log(props.props);
 
         if (!props.isInEditMode) {
-            return <div style={{
-                margin: 'auto auto',
-                width: '100%',
-                height: '100%',
-                backgroundColor: 'red',
-                backgroundSize: 'cover',
-                border: '1px solid #cccccc',
-                backgroundPosition: 'center center'
-            }}
+            return (
+                <div
+                    className={props.props.className}>
+                    {props.cellData}
 
-                defaultValue={props.cellData}
-            >{props.cellData}</div>
+                </div>
+            )
 
         }
     }

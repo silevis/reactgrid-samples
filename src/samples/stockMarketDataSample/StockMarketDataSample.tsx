@@ -13,6 +13,10 @@ const ReactGridContainer = styled.div`
   min-height: 400px;
 `
 
+const Background = styled.div`
+background-color: red;
+`
+
 
 const fields: ColumnProps[] = [{
   id: 'name',
@@ -77,7 +81,7 @@ const api = async () => {
       cells: [
         { type: 'text', data: item.name },
         { type: 'text', data: item.symbol },
-        { type: 'number', data: item.current_price, props: { backgroundColor: 'none' } },
+        { type: 'styleInside', data: item.current_price, props: { className: 'stockMarketBaseStyle' } },
         { type: 'number', data: item.low_24h },
         { type: 'number', data: item.high_24h },
         { type: 'number', data: item.high_24h }
@@ -101,76 +105,65 @@ export default class StockMarketDataSample extends React.Component {
   state = {
     columns: this.columns,
     rows: [],
-    newRows: []
   };
 
   intervalId?: number;
 
-<<<<<<< HEAD
   componentDidMount() {
+
+
     const renderValue = async () => {
       const dataApi: RowProps[] = await api();
       const dataState: RowProps[] = [...this.state.rows]
 
-      const changedIdx = Math.floor(Math.random() * 10 + 1);
+      const changedIdx = Math.floor(Math.random() * 1 + 1);
 
 
       const returnRandom = () => {
         let randomValue = 0
+        let isexecute = false
         dataState.forEach((item, idx) => {
           if (idx == changedIdx) {
             const min = item.cells[3].data;
             const max = item.cells[4].data;
             randomValue = (Math.random() * (+max - +min) + +min);
-            Number(randomValue).toFixed(8);
+
           }
         })
-        return randomValue
-=======
-  private async findRow() {
-    const newRows: RowProps[] = await api();
-    const statRows: RowProps[] = [...this.state.rows]
-
-    let callback = newRows.map((item: RowProps, idx) => {
-
-      // console.log(item.cells[2].data)
-      // console.log(statRows[idx])
-      if (statRows.length > 0 && item.cells[2].data !== statRows[idx].cells[2].data) {
-
-        // console.log('WESZLo')
-        // console.log(item)
-        // console.log('test', item.cells[2], statRows[idx].cells[2])
-        return {
-          id: item.id,
-          reorderable: false,
-          height: 25,
-          cells: [...item.cells, (item.cells[2].type = "styleInside")]
-        };
-
-      }
-      else {
-        return {
-          id: item.id,
-          reorderable: false,
-          height: 25,
-          cells: [...item.cells]
-        };
->>>>>>> bbdfe8fda78545fce591ab61cf17c0a5fcd2303b
+        if (isexecute === false) {
+          isexecute = true
+          return randomValue
+        }
       }
 
       dataState.forEach((data, ids) => {
         dataApi.forEach((api, idt) => {
-          if (returnRandom() !== dataState[changedIdx].cells[2].data) {
-            dataApi[changedIdx].cells[2].data = returnRandom()
+
+
+          const random = returnRandom()
+
+
+
+
+
+          if (random !== dataState[changedIdx].cells[2].data) {
+            dataApi[changedIdx].cells[2].data = random
           }
+          console.log('random value: ' + random)
+
           if (dataState.length > 0 && api.cells[2].data !== data.cells[2].data && ids == idt) {
 
-            api.cells[2].props.backgroundColor = 'red'
-            // api.cells[2].type = 'styleInside'
+            console.log('poprzedni stan ' + data.cells[2].data)  // poprzedni stan  
+
+            // console.log('random value: ' + random)
+
+            if (api.cells[2].data <= data.cells[2].data) {
+              api.cells[2].props.className = 'stockMarketBaseStyle greenyellow'
+            }
+            if (api.cells[2].data >= data.cells[2].data) {
+              api.cells[2].props.className = 'stockMarketBaseStyle red'
+            }
           }
-
-<<<<<<< HEAD
-
         })
       })
       this.setState({ rows: dataApi })
@@ -179,29 +172,7 @@ export default class StockMarketDataSample extends React.Component {
     renderValue();
     this.intervalId = setInterval(
       () => { renderValue() }
-      , 3000);
-=======
-  componentDidMount() {
-    api().then(data => {
-      this.setState({ rows: data });
-      const renderInterval = () => {
-        const state: any = { ...this.state };
-        const changedIdx = Math.floor(Math.random() * 10);
-        const randomValue = Math.random() * 10;
-
-        if (randomValue.toString() !== state.rows[changedIdx].cells[2].data.toString()) {
-          data[changedIdx].cells[2] = {
-            ...data[changedIdx].cells[2],
-            data: randomValue,
-            type: "styleInside"
-          }
-        }
-        this.setState({ rows: data })
-      }
-
-      this.intervalId = setInterval(() => renderInterval(), 1000);
-    });
->>>>>>> bbdfe8fda78545fce591ab61cf17c0a5fcd2303b
+      , 6000);
   }
 
 
@@ -209,23 +180,15 @@ export default class StockMarketDataSample extends React.Component {
     clearInterval(this.intervalId);
   }
 
-
-  // zapisuje dane, poprzednie przenosze do buuforra czyli tablicy, wyciagnac z aktulnej tablicy (state) liste wysztkich krypto walut ( (nazwa i id) jej nr w kolejnosci ), porownac obecny stan z poprzednim wyciagajac idetyfiaktory wierszy,
-  // mamy liste wierszy ktora ulegay zmieninie, dla tych wierszy zminic typ komory na styleInside, 
-
   render() {
-<<<<<<< HEAD
-=======
-    // { this.findRow() }
->>>>>>> bbdfe8fda78545fce591ab61cf17c0a5fcd2303b
     return (
       <>
-        <ReactGridContainer className="resize-cell-sample">
+        <ReactGridContainer className="stock-market-cell-sample">
           {this.intervalId != 0 ? <ReactGrid
             cellMatrixProps={{ columns: this.state.columns, rows: this.state.rows }}
             cellTemplates={{ 'styleInside': new StyleCellTemplate }}
             license={'non-commercial'}
-          /> : 'Ładowanie...'}
+          /> : 'Loading...'}
         </ReactGridContainer>
       </>
     )
