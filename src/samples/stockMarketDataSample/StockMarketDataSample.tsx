@@ -109,75 +109,100 @@ export default class StockMarketDataSample extends React.Component {
 
   intervalId?: number;
 
-  componentDidMount() {
 
 
-    const renderValue = async () => {
-      const dataApi: RowProps[] = await api();
-      const dataState: RowProps[] = [...this.state.rows]
 
-      const changedIdx = Math.floor(Math.random() * 1 + 1);
+  returnRandomWith = (numberOfRows: number) => {
+    return Math.floor(Math.random() * numberOfRows + 1);
+  }
+
+  currentRandomValue = (dataState: RowProps[], numberOfRows: number): number => {
+
+    const row: RowProps | undefined = dataState.find((row: RowProps, idx: number) => {
+      return idx === numberOfRows
+    })
+
+    if (!row) return 0;
+    const min = row.cells[3].data;
+    const max = row.cells[4].data;
+    const randomValue = (Math.random() * (+max - +min) + +min);
+    return randomValue
+  }
 
 
-      const returnRandom = () => {
-        let randomValue = 0
-        let isexecute = false
-        dataState.forEach((item, idx) => {
-          if (idx == changedIdx) {
-            const min = item.cells[3].data;
-            const max = item.cells[4].data;
-            randomValue = (Math.random() * (+max - +min) + +min);
+  finndCheangeRow = (dataState: RowProps[], dataApi: RowProps[]): RowProps[] => {
+    if (!dataState) return []
+    const changedRows: RowProps[] = dataState.filter((data: RowProps, idx: number) => {
+      return idx != 0 && data.cells[2].data !== dataApi[idx].cells[2].data
+    });
+    return changedRows
+  }
 
+
+  renderValue = async () => {
+    const dataApi: RowProps[] = await api();
+    const dataState: RowProps[] = [...this.state.rows]
+
+
+    const changedIdx = this.returnRandomWith(5)
+    const randomvalue = this.currentRandomValue(dataState, changedIdx)
+
+    dataApi[changedIdx].cells[2].data = randomvalue
+
+    // console.log(randomvalue) //zmieniona wartosc
+
+
+    // if (this.finndCheangeRow(dataState, dataApi) !== null) {
+    //   console.log('nadeszla zmiana')
+    //   dataApi[changedIdx].cells[2].props.className = 'stockMarketBaseStyle greenyellow'
+    //   // }
+    // }
+    //potrzeba wczesniejszej wartosci
+
+    const cheangeRows = this.finndCheangeRow(dataState, dataApi)
+
+    // console.log(cheangeRows.map(item => item.cells[2].data))
+
+
+    // cheangeRows.map((item, idx) => {
+    //   if (item.cells[2].data <= randomvalue) {
+    //     dataApi[changedIdx].cells[2].props.className = 'stockMarketBaseStyle greenyellow'
+    //   }
+    //   if (item.cells[2].data >= randomvalue) {
+    //     dataApi[changedIdx].cells[2].props.className = 'stockMarketBaseStyle red'
+    //   }
+    // }
+    // )
+
+    // dataApi[changedIdx].cells[2].props.className = 'stockMarketBaseStyle greenyellow'
+
+    dataState.forEach((data, ids) => {
+      dataApi.forEach((api, idt) => {
+        if (dataState.length > 0 && api.cells[2].data !== data.cells[2].data && ids == idt) {
+          if (randomvalue >= data.cells[2].data) {
+            api.cells[2].props.className = 'stockMarketBaseStyle greenyellow'
           }
-        })
-        if (isexecute === false) {
-          isexecute = true
-          return randomValue
+          if (randomvalue <= data.cells[2].data) {
+            api.cells[2].props.className = 'stockMarketBaseStyle red'
+          }
         }
-      }
-
-      dataState.forEach((data, ids) => {
-        dataApi.forEach((api, idt) => {
-
-
-          const random = returnRandom()
-
-
-
-
-
-          if (random !== dataState[changedIdx].cells[2].data) {
-            dataApi[changedIdx].cells[2].data = random
-          }
-          console.log('random value: ' + random)
-
-          if (dataState.length > 0 && api.cells[2].data !== data.cells[2].data && ids == idt) {
-
-            console.log('poprzedni stan ' + data.cells[2].data)  // poprzedni stan  
-
-            // console.log('random value: ' + random)
-
-            if (api.cells[2].data <= data.cells[2].data) {
-              api.cells[2].props.className = 'stockMarketBaseStyle greenyellow'
-            }
-            if (api.cells[2].data >= data.cells[2].data) {
-              api.cells[2].props.className = 'stockMarketBaseStyle red'
-            }
-          }
-        })
       })
-      this.setState({ rows: dataApi })
-    }
+    })
+    this.setState({ rows: dataApi })
+  }
 
-    renderValue();
+
+  componentDidMount() {
+    this.renderValue();
     this.intervalId = setInterval(
-      () => { renderValue() }
-      , 6000);
+      () => { this.renderValue() }
+      , 3000);
   }
 
 
   componentWillUnmount() {
     clearInterval(this.intervalId);
+    console.log('end')
   }
 
   render() {
