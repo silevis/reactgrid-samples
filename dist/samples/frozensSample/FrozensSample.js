@@ -42,7 +42,7 @@ var FrozensSample = (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
             columns: columns(true, false),
-            rows: rows(true),
+            rows: rows(false),
             frozenTopRows: 1,
             frozenLeftColumns: 2,
             frozenRightColumns: 1

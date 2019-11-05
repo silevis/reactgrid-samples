@@ -43,7 +43,7 @@ var MultiUserSample = (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
             columns: columns(false, false),
-            rows: rows(true),
+            rows: rows(false),
             focuses: []
         };
         _this.prepareDataChanges = function (dataChanges) {
@@ -75,6 +75,13 @@ var MultiUserSample = (function (_super) {
             .addUser(new VirtualUser('#F75C03'))
             .addUser(new VirtualUser('#F1C40F'))
             .addUser(new VirtualUser('#D90368'))
+            .addUser(new VirtualUser('#00f2c3'))
+            .addUser(new VirtualUser('#ffd600'))
+            .addUser(new VirtualUser('#344675'))
+            .addUser(new VirtualUser('#212529'))
+            .addUser(new VirtualUser('#ffffff'))
+            .addUser(new VirtualUser('#000000'))
+            .addUser(new VirtualUser('#5e72e4'))
             .addUser(new VirtualUser('#4D8802'))
             .addUser(new VirtualUser('#A771FE'));
         this.intervalId = window.setInterval(function () {
@@ -92,7 +99,7 @@ var MultiUserSample = (function (_super) {
                     'rating': new RateCellTemplate,
                     'flag': new FlagCellTemplate,
                     'dropdownNumber': new DropdownNumberCellTemplate,
-                }, customFocuses: this.state.focuses, onDataChanged: function (changes) { return _this.setState(_this.prepareDataChanges(changes)); }, license: 'non-commercial' })));
+                }, customFocuses: this.state.focuses, onDataChanged: function (changes) { return _this.setState(_this.prepareDataChanges(changes)); }, license: 'non-commercial', disableColumnSelection: true })));
     };
     return MultiUserSample;
 }(React.Component));

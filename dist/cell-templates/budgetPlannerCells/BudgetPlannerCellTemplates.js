@@ -121,7 +121,7 @@ var BudgetPlannerColumnHeaderCellTemplate = (function () {
                     padding: 0,
                     border: 0,
                     background: 'transparent',
-                    fontSize: 14,
+                    fontSize: 19,
                     outline: 'none',
                 }, ref: function (input) {
                     if (input) {
@@ -164,16 +164,16 @@ var BudgetPlannerColumnHeaderCellTemplate = (function () {
         }
         var ret = [
             {
-                backgroundColor: '#32325d',
+                background: '#32325d',
                 color: 'white'
             },
             {
-                backgroundColor: '#525f7f',
+                background: '#525f7f',
                 color: 'white',
             },
             {
-                backgroundColor: '#6c757d',
                 color: 'white',
+                background: '#6c757d',
             }
         ];
         return ret[parentCount];
