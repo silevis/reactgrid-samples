@@ -12,7 +12,7 @@ export const columns = (reorderable: boolean, resizable: boolean): ColumnProps[]
   { id: 'country',    reorderable, resizable, width: 70 }, // flag
   { id: 'birth-date', reorderable, resizable, width: 90 }, // date
   { id: 'position',   reorderable, resizable, width: 130 }, // text
-  { id: 'skills',     reorderable, resizable, width: 140 }, // dropdown-number
+  { id: 'skills',     reorderable, resizable, width: 80 }, // dropdown-number
   { id: 'is-active',  reorderable, resizable, width: 80 }, // checkbox
 ];
 

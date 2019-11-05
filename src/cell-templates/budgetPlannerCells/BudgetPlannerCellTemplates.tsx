@@ -151,7 +151,7 @@ export class BudgetPlannerColumnHeaderCellTemplate implements CellTemplate<Budge
                 padding: 0,
                 border: 0,
                 background: 'transparent',
-                fontSize: 14,
+                fontSize: 19,
                 outline: 'none',
             }}
             ref={input => {
@@ -198,16 +198,16 @@ export class BudgetPlannerColumnHeaderCellTemplate implements CellTemplate<Budge
 
         const ret = [
             { // no ancestors
-                backgroundColor: '#32325d',
+                background: '#32325d',
                 color: 'white'
             },
             { // 1 ancestor
-                backgroundColor: '#525f7f',
+                background: '#525f7f',
                 color: 'white',
             },
             { // 2 ancestors
-                backgroundColor: '#6c757d',
                 color: 'white',
+                background: '#6c757d',
             }
         ]
 

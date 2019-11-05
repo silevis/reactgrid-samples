@@ -18,7 +18,7 @@ export class ReactGridDataGenerator {
         city: ['Pekin', 'Newark', 'Acapulco', 'El Paso', 'Warsaw', 'Athens', 'Moscow', 'Mexico', 'Toronto', 'Los Angeles'],
         position: ['Director', 'Manager', 'Software Dev', 'QA', 'Automated Tester', 'Unemployed', 'Scrum Master', 'Project owner'],
         sex: ['male', 'female'],
-        phone: [getRandomInt(10000000, 999999999)],
+        phone: [645654654, 654234987, 305732948, 94740349, 4028343, 543929348, 58473532, 120954368, 432875483, 54385439],
         street: ['Jizhou Qu', 'Calle Oriente', 'Via Blanca', 'Dr. Ricardo Gutiérrez', 'Essex', 'Agar St', 'Boulevard Alexis-Nihon']
     }
 
@@ -114,8 +114,6 @@ export class VirtualEnv {
 }
 
 export class VirtualUser {
-
-    // color: string;
 
     constructor(public color: string) {
         this.color = color;
