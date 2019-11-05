@@ -16,7 +16,7 @@ const ReactGridContainer = styled.div`
 export class FrozensSample extends React.Component<{}, CellMatrixProps> {
   state = {
     columns:              columns(true, false),
-    rows:                 rows(true),
+    rows:                 rows(false),
     frozenTopRows:        1,
     frozenLeftColumns:    2,
     frozenRightColumns:   1
