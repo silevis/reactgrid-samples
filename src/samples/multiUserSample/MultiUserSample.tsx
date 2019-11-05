@@ -22,7 +22,7 @@ export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> 
 
   state = {
     columns: columns(false, false),
-    rows: rows(true),
+    rows: rows(false),
     focuses: []
   }
 
@@ -44,6 +44,13 @@ export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> 
       .addUser(new VirtualUser('#F75C03'))
       .addUser(new VirtualUser('#F1C40F'))
       .addUser(new VirtualUser('#D90368'))
+      .addUser(new VirtualUser('#00f2c3'))
+      .addUser(new VirtualUser('#ffd600'))
+      .addUser(new VirtualUser('#344675'))
+      .addUser(new VirtualUser('#212529'))
+      .addUser(new VirtualUser('#ffffff'))
+      .addUser(new VirtualUser('#000000'))
+      .addUser(new VirtualUser('#5e72e4'))
       .addUser(new VirtualUser('#4D8802'))
       .addUser(new VirtualUser('#A771FE'));
 
@@ -84,6 +91,7 @@ export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> 
           customFocuses={this.state.focuses}
           onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
           license={'non-commercial'}
+          disableColumnSelection
         />
       </ReactGridContainer>
     )
