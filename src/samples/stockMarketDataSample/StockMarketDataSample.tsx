@@ -12,12 +12,6 @@ const ReactGridContainer = styled.div`
   height: 1200px;
   min-height: 400px;
 `
-
-const Background = styled.div`
-background-color: red;
-`
-
-
 const fields: ColumnProps[] = [{
   id: 'name',
   reorderable: false,
@@ -48,16 +42,9 @@ const fields: ColumnProps[] = [{
   resizable: false,
   width: 150,
 },
-{
-  id: 'High_24',
-  reorderable: false,
-  resizable: false,
-  width: 150,
-},
 ]
 
 const api = async () => {
-
   const data = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd");
   const myJsonData = await data.json();
   const newRows: RowProps[] = [{
@@ -70,9 +57,7 @@ const api = async () => {
       { type: 'header', data: 'Current value' },
       { type: 'header', data: 'Low 24h' },
       { type: 'header', data: 'High 24h' },
-      { type: 'header', data: 'High 20h' }
     ],
-
   }].concat(myJsonData.map((item: any) => {
     return {
       id: item.id,
@@ -84,7 +69,6 @@ const api = async () => {
         { type: 'styleInside', data: item.current_price, props: { className: 'stockMarketBaseStyle' } },
         { type: 'number', data: item.low_24h },
         { type: 'number', data: item.high_24h },
-        { type: 'number', data: item.high_24h }
       ]
     }
   }));
@@ -101,14 +85,12 @@ export default class StockMarketDataSample extends React.Component {
     width: field.width,
   })
   )
-
   state = {
     columns: this.columns,
     rows: [],
   };
-
   intervalId?: number;
-
+  array = new Array()
 
 
 
@@ -116,12 +98,10 @@ export default class StockMarketDataSample extends React.Component {
     return Math.floor(Math.random() * numberOfRows + 1);
   }
 
-  currentRandomValue = (dataState: RowProps[], numberOfRows: number): number => {
-
+  currentValueRandom = (dataState: RowProps[], numberOfRows: number): number => {
     const row: RowProps | undefined = dataState.find((row: RowProps, idx: number) => {
       return idx === numberOfRows
     })
-
     if (!row) return 0;
     const min = row.cells[3].data;
     const max = row.cells[4].data;
@@ -129,8 +109,16 @@ export default class StockMarketDataSample extends React.Component {
     return randomValue
   }
 
+  findIdsCheanged = (itemID: number | string, dataApi: RowProps[]) => {
+    dataApi.forEach((item, idx) => {
+      if (item.id === itemID) {
+        this.array.push(idx)
+      }
+    })
+    return this.array
+  }
 
-  finndCheangeRow = (dataState: RowProps[], dataApi: RowProps[]): RowProps[] => {
+  findCheangesRows = (dataState: RowProps[], dataApi: RowProps[]): RowProps[] => {
     if (!dataState) return []
     const changedRows: RowProps[] = dataState.filter((data: RowProps, idx: number) => {
       return idx != 0 && data.cells[2].data !== dataApi[idx].cells[2].data
@@ -142,55 +130,27 @@ export default class StockMarketDataSample extends React.Component {
   renderValue = async () => {
     const dataApi: RowProps[] = await api();
     const dataState: RowProps[] = [...this.state.rows]
-
-
-    const changedIdx = this.returnRandomWith(5)
-    const randomvalue = this.currentRandomValue(dataState, changedIdx)
+    const changedIdx = this.returnRandomWith(100)
+    const randomvalue = this.currentValueRandom(dataApi, changedIdx)
 
     dataApi[changedIdx].cells[2].data = randomvalue
 
-    // console.log(randomvalue) //zmieniona wartosc
+    const cheangeRows: RowProps[] = this.findCheangesRows(dataState, dataApi)
+    if (cheangeRows.length !== 0) {
+      cheangeRows.forEach((row) => {
+        let idsToCheanges: number[] = this.findIdsCheanged(row.id, dataApi)
+        idsToCheanges.forEach(id => {
+          if (dataApi[id].cells[2].data > dataState[id].cells[2].data)
+            dataApi[id].cells[2].props.className = 'stockMarketBaseStyle greenyellow'
 
-
-    // if (this.finndCheangeRow(dataState, dataApi) !== null) {
-    //   console.log('nadeszla zmiana')
-    //   dataApi[changedIdx].cells[2].props.className = 'stockMarketBaseStyle greenyellow'
-    //   // }
-    // }
-    //potrzeba wczesniejszej wartosci
-
-    const cheangeRows = this.finndCheangeRow(dataState, dataApi)
-
-    // console.log(cheangeRows.map(item => item.cells[2].data))
-
-
-    // cheangeRows.map((item, idx) => {
-    //   if (item.cells[2].data <= randomvalue) {
-    //     dataApi[changedIdx].cells[2].props.className = 'stockMarketBaseStyle greenyellow'
-    //   }
-    //   if (item.cells[2].data >= randomvalue) {
-    //     dataApi[changedIdx].cells[2].props.className = 'stockMarketBaseStyle red'
-    //   }
-    // }
-    // )
-
-    // dataApi[changedIdx].cells[2].props.className = 'stockMarketBaseStyle greenyellow'
-
-    dataState.forEach((data, ids) => {
-      dataApi.forEach((api, idt) => {
-        if (dataState.length > 0 && api.cells[2].data !== data.cells[2].data && ids == idt) {
-          if (randomvalue >= data.cells[2].data) {
-            api.cells[2].props.className = 'stockMarketBaseStyle greenyellow'
-          }
-          if (randomvalue <= data.cells[2].data) {
-            api.cells[2].props.className = 'stockMarketBaseStyle red'
-          }
-        }
+          if (dataApi[id].cells[2].data < dataState[id].cells[2].data)
+            dataApi[id].cells[2].props.className = 'stockMarketBaseStyle red'
+        })
+        idsToCheanges.length = 0
       })
-    })
+    }
     this.setState({ rows: dataApi })
   }
-
 
   componentDidMount() {
     this.renderValue();
@@ -198,11 +158,8 @@ export default class StockMarketDataSample extends React.Component {
       () => { this.renderValue() }
       , 3000);
   }
-
-
   componentWillUnmount() {
     clearInterval(this.intervalId);
-    console.log('end')
   }
 
   render() {
