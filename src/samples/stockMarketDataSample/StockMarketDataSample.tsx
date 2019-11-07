@@ -76,7 +76,6 @@ const api = async () => {
 
 }
 
-
 export default class StockMarketDataSample extends React.Component {
   columns = fields.map((field) => ({
     id: field.id,
@@ -92,8 +91,6 @@ export default class StockMarketDataSample extends React.Component {
   intervalId?: number;
   array = new Array()
 
-
-
   returnRandomWith = (numberOfRows: number) => {
     return Math.floor(Math.random() * numberOfRows + 1);
   }
@@ -105,8 +102,9 @@ export default class StockMarketDataSample extends React.Component {
     if (!row) return 0;
     const min = row.cells[3].data;
     const max = row.cells[4].data;
-    const randomValue = (Math.random() * (+max - +min) + +min);
-    return randomValue
+    const randomValue = (Math.random() * (+max - +min) + +min)
+    return parseFloat(randomValue.toFixed(6))
+
   }
 
   findIdsCheanged = (itemID: number | string, dataApi: RowProps[]) => {
@@ -126,11 +124,10 @@ export default class StockMarketDataSample extends React.Component {
     return changedRows
   }
 
-
   renderValue = async () => {
     const dataApi: RowProps[] = await api();
     const dataState: RowProps[] = [...this.state.rows]
-    const changedIdx = this.returnRandomWith(100)
+    const changedIdx = this.returnRandomWith(10)
     const randomvalue = this.currentValueRandom(dataApi, changedIdx)
 
     dataApi[changedIdx].cells[2].data = randomvalue
@@ -140,11 +137,7 @@ export default class StockMarketDataSample extends React.Component {
       cheangeRows.forEach((row) => {
         let idsToCheanges: number[] = this.findIdsCheanged(row.id, dataApi)
         idsToCheanges.forEach(id => {
-          if (dataApi[id].cells[2].data > dataState[id].cells[2].data)
-            dataApi[id].cells[2].props.className = 'stockMarketBaseStyle greenyellow'
-
-          if (dataApi[id].cells[2].data < dataState[id].cells[2].data)
-            dataApi[id].cells[2].props.className = 'stockMarketBaseStyle red'
+          dataApi[id].cells[2].data > dataState[id].cells[2].data ? dataApi[id].cells[2].props.className = 'stockMarketBaseStyle greenyellow' : dataApi[id].cells[2].props.className = 'stockMarketBaseStyle red'
         })
         idsToCheanges.length = 0
       })
