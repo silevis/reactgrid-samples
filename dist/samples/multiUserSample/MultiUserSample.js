@@ -26,6 +26,13 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 import * as React from 'react';
 import { ReactGrid } from '@silevis/reactgrid';
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
@@ -42,22 +49,33 @@ var MultiUserSample = (function (_super) {
     function MultiUserSample() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
-            columns: columns(false, false),
+            columns: columns(true, true),
             rows: rows(false),
             focuses: []
         };
         _this.prepareDataChanges = function (dataChanges) {
             var state = __assign({}, _this.state);
             dataChanges.forEach(function (change) {
-                state.rows.forEach(function (row) {
-                    if (row.id == change.rowId) {
-                        var field = _this.state.columns.findIndex(function (column) { return column.id == change.columnId; });
-                        if (field !== undefined)
-                            row.cells[field].data = change.newData;
-                    }
-                });
+                var columnIndex = _this.state.columns.findIndex(function (column) { return column.id === change.columnId; });
+                state.rows.forEach(function (row) { row.id == change.rowId ? row.cells[columnIndex].data = change.newData : row; });
             });
             return state;
+        };
+        _this.getMatrix = function () {
+            var columns = __spreadArrays(_this.state.columns).map(function (column, cIdx) { return (__assign(__assign({}, column), { onDrop: function (idxs) {
+                    var arrayIndexes = idxs.map(function (id) { return _this.state.columns.findIndex(function (column) { return column.id === id; }); });
+                    _this.setState({
+                        columns: _this.reorderArray(_this.state.columns, arrayIndexes, cIdx),
+                        rows: _this.state.rows.map(function (row) { return (__assign(__assign({}, row), { cells: _this.reorderArray(row.cells, arrayIndexes, cIdx) })); }),
+                    });
+                }, onResize: function (width) {
+                    columns[cIdx] = __assign(__assign({}, column), { width: width });
+                    _this.setState({ columns: columns });
+                } })); });
+            var rows = __spreadArrays(_this.state.rows).map(function (row, rIdx) { return (__assign(__assign({}, row), { onDrop: function (idxs) { return _this.setState({
+                    rows: _this.reorderArray(_this.state.rows, idxs.map(function (id) { return _this.state.rows.findIndex(function (r) { return r.id === id; }); }), rIdx)
+                }); } })); });
+            return { rows: rows, columns: columns };
         };
         return _this;
     }
@@ -92,14 +110,21 @@ var MultiUserSample = (function (_super) {
         this.setState({ focuses: [] });
         window.clearInterval(this.intervalId);
     };
+    MultiUserSample.prototype.reorderArray = function (arr, idxs, to) {
+        var movedElements = arr.filter(function (_, idx) { return idxs.includes(idx); });
+        to = Math.min.apply(Math, idxs) < to ? to += 1 : to -= idxs.filter(function (idx) { return idx < to; }).length;
+        var leftSide = arr.filter(function (_, idx) { return idx < to && !idxs.includes(idx); });
+        var rightSide = arr.filter(function (_, idx) { return idx >= to && !idxs.includes(idx); });
+        return __spreadArrays(leftSide, movedElements, rightSide);
+    };
     MultiUserSample.prototype.render = function () {
         var _this = this;
         return (React.createElement(ReactGridContainer, { id: "multi-user-sample" },
-            React.createElement(ReactGrid, { cellMatrixProps: this.state, cellTemplates: {
+            React.createElement(ReactGrid, { cellMatrixProps: this.getMatrix(), cellTemplates: {
                     'rating': new RateCellTemplate,
                     'flag': new FlagCellTemplate,
                     'dropdownNumber': new DropdownNumberCellTemplate,
-                }, customFocuses: this.state.focuses, onDataChanged: function (changes) { return _this.setState(_this.prepareDataChanges(changes)); }, license: 'non-commercial', disableColumnSelection: true })));
+                }, customFocuses: this.state.focuses, onDataChanged: function (changes) { return _this.setState(_this.prepareDataChanges(changes)); }, license: 'non-commercial' })));
     };
     return MultiUserSample;
 }(React.Component));

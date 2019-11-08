@@ -63,17 +63,16 @@ var ColumnReorderSample = (function (_super) {
                 }); } })); });
             return { rows: rows, columns: columns };
         };
+        _this.prepareDataChanges = function (dataChanges) {
+            var state = __assign({}, _this.state);
+            dataChanges.forEach(function (change) {
+                var columnIndex = _this.state.columns.findIndex(function (column) { return column.id === change.columnId; });
+                state.rows.forEach(function (row) { row.id == change.rowId ? row.cells[columnIndex].data = change.newData : row; });
+            });
+            return state;
+        };
         return _this;
     }
-    ColumnReorderSample.prototype.prepareDataChanges = function (dataChanges) {
-        var _this = this;
-        var state = __assign({}, this.state);
-        dataChanges.forEach(function (change) {
-            var columnIndex = _this.state.columns.findIndex(function (column) { return column.id === change.columnId; });
-            state.rows.forEach(function (row) { row.id == change.rowId ? row.cells[columnIndex].data = change.newData : row; });
-        });
-        return state;
-    };
     ColumnReorderSample.prototype.reorderArray = function (arr, idxs, to) {
         var movedElements = arr.filter(function (_, idx) { return idxs.includes(idx); });
         to = Math.min.apply(Math, idxs) < to ? to += 1 : to -= idxs.filter(function (idx) { return idx < to; }).length;

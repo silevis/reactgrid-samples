@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { Focus, CellMatrixProps } from '@silevis/reactgrid';
+import { Focus, CellMatrixProps, RowProps, ColumnProps } from '@silevis/reactgrid';
 import './styling.scss';
 export interface IMultiUserSampleState extends CellMatrixProps {
     focuses: Focus[];
 }
 export declare class MultiUserSample extends React.Component<{}, IMultiUserSampleState> {
     state: {
-        columns: import("@silevis/reactgrid").ColumnProps[];
-        rows: import("@silevis/reactgrid").RowProps[];
+        columns: ColumnProps[];
+        rows: RowProps[];
         focuses: never[];
     };
     intervalId?: number;
@@ -16,5 +16,7 @@ export declare class MultiUserSample extends React.Component<{}, IMultiUserSampl
     private setVirtualEnv;
     private unsetVirtualEnv;
     private prepareDataChanges;
+    private reorderArray;
+    private getMatrix;
     render(): JSX.Element;
 }

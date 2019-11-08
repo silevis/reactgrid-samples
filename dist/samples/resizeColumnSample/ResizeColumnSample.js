@@ -52,13 +52,8 @@ var ResizeColumnSample = (function (_super) {
         _this.prepareDataChanges = function (dataChanges) {
             var state = __assign({}, _this.state);
             dataChanges.forEach(function (change) {
-                state.rows.forEach(function (row) {
-                    if (row.id == change.rowId) {
-                        var field = _this.state.columns.findIndex(function (column) { return column.id == change.columnId; });
-                        if (field !== undefined)
-                            row.cells[field].data = change.newData;
-                    }
-                });
+                var columnIndex = _this.state.columns.findIndex(function (column) { return column.id === change.columnId; });
+                state.rows.forEach(function (row) { row.id == change.rowId ? row.cells[columnIndex].data = change.newData : row; });
             });
             return state;
         };
@@ -66,8 +61,8 @@ var ResizeColumnSample = (function (_super) {
     }
     ResizeColumnSample.prototype.getMatrix = function () {
         var _this = this;
-        var columns = __spreadArrays(this.state.columns).map(function (column, idx) { return (__assign(__assign({}, column), { onResize: function (width) {
-                columns[idx] = __assign(__assign({}, column), { width: width });
+        var columns = __spreadArrays(this.state.columns).map(function (column, cIdx) { return (__assign(__assign({}, column), { onResize: function (width) {
+                columns[cIdx] = __assign(__assign({}, column), { width: width });
                 _this.setState({ columns: columns });
             } })); });
         return { columns: columns, rows: this.state.rows };
