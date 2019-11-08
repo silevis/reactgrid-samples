@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { ReactGrid, DataChange, ColumnProps, CellMatrixProps } from '@silevis/reactgrid';
+import { ReactGrid, DataChange, ColumnProps, CellMatrixProps, RowProps } from '@silevis/reactgrid';
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns } from '../../data/columns';
@@ -18,27 +18,21 @@ export class ResizeColumnSample extends React.Component<{}, CellMatrixProps> {
   }
 
   private getMatrix() {
-    const columns: ColumnProps[] = [...this.state.columns].map((column, idx) => ({
+    const columns: ColumnProps[] = [...this.state.columns].map((column, cIdx) => ({
       ...column,
       onResize: width => {
-        columns[idx] = { ...column, width };
+        columns[cIdx] = { ...column, width };
         this.setState({ columns })
       }
     }));
-
     return { columns, rows: this.state.rows }
   }
 
-  private prepareDataChanges = (dataChanges: DataChange[]): {} => {
-    const state = { ...this.state }
-    dataChanges.forEach(change => {
-      state.rows.forEach((row: any) => {
-        if (row.id == change.rowId) {
-          const field = this.state.columns.findIndex((column: any) => column.id == change.columnId)
-          if (field !== undefined)
-            row.cells[field].data = change.newData;
-        }
-      })
+  private prepareDataChanges = (dataChanges: DataChange[]): CellMatrixProps => {
+    const state = { ...this.state };
+    dataChanges.forEach((change: DataChange) => {
+      const columnIndex: number = this.state.columns.findIndex((column: ColumnProps) => column.id === change.columnId)
+      state.rows.forEach((row: RowProps) => { row.id == change.rowId ? row.cells[columnIndex].data = change.newData : row })
     })
     return state
   }

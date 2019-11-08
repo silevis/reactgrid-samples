@@ -41,7 +41,7 @@ export class ColumnReorderSample extends React.Component<{}, CellMatrixProps> {
     return { rows, columns }
   }
 
-  private prepareDataChanges(dataChanges: DataChange[]): CellMatrixProps {
+  private prepareDataChanges = (dataChanges: DataChange[]): CellMatrixProps => {
     const state = { ...this.state };
     dataChanges.forEach((change: DataChange) => {
       const columnIndex: number = this.state.columns.findIndex((column: ColumnProps) => column.id === change.columnId)
