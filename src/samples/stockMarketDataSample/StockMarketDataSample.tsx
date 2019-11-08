@@ -44,9 +44,9 @@ const fields: ColumnProps[] = [{
 },
 ]
 
-const api = async () => {
-  const data = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd");
-  const myJsonData = await data.json();
+const fetchStockMarketData = async () => {
+  const promise = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd");
+  const myJsonData = await promise.json();
   const newRows: RowProps[] = [{
     id: 'header',
     reorderable: false,
@@ -107,7 +107,7 @@ export default class StockMarketDataSample extends React.Component {
 
   }
 
-  findIdsCheanged = (itemID: number | string, dataApi: RowProps[]) => {
+  findIdsChanged = (itemID: number | string, dataApi: RowProps[]) => {
     dataApi.forEach((item, idx) => {
       if (item.id === itemID) {
         this.array.push(idx)
@@ -116,7 +116,7 @@ export default class StockMarketDataSample extends React.Component {
     return this.array
   }
 
-  findCheangesRows = (dataState: RowProps[], dataApi: RowProps[]): RowProps[] => {
+  findChangesRows = (dataState: RowProps[], dataApi: RowProps[]): RowProps[] => {
     if (!dataState) return []
     const changedRows: RowProps[] = dataState.filter((data: RowProps, idx: number) => {
       return idx != 0 && data.cells[2].data !== dataApi[idx].cells[2].data
@@ -125,17 +125,17 @@ export default class StockMarketDataSample extends React.Component {
   }
 
   renderValue = async () => {
-    const dataApi: RowProps[] = await api();
+    const dataApi: RowProps[] = await fetchStockMarketData();
     const dataState: RowProps[] = [...this.state.rows]
     const changedIdx = this.returnRandomWith(10)
     const randomvalue = this.currentValueRandom(dataApi, changedIdx)
 
     dataApi[changedIdx].cells[2].data = randomvalue
 
-    const cheangeRows: RowProps[] = this.findCheangesRows(dataState, dataApi)
+    const cheangeRows: RowProps[] = this.findChangesRows(dataState, dataApi)
     if (cheangeRows.length !== 0) {
       cheangeRows.forEach((row) => {
-        let idsToCheanges: number[] = this.findIdsCheanged(row.id, dataApi)
+        let idsToCheanges: number[] = this.findIdsChanged(row.id, dataApi)
         idsToCheanges.forEach(id => {
           dataApi[id].cells[2].data > dataState[id].cells[2].data ? dataApi[id].cells[2].props.className = 'stockMarketBaseStyle greenyellow' : dataApi[id].cells[2].props.className = 'stockMarketBaseStyle red'
         })
@@ -159,7 +159,7 @@ export default class StockMarketDataSample extends React.Component {
     return (
       <>
         <ReactGridContainer className="stock-market-cell-sample">
-          {this.intervalId != 0 ? <ReactGrid
+          {this.state.rows.length !== 0 ? <ReactGrid
             cellMatrixProps={{ columns: this.state.columns, rows: this.state.rows }}
             cellTemplates={{ 'styleInside': new StyleCellTemplate }}
             license={'non-commercial'}
