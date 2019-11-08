@@ -1,6 +1,6 @@
 {
   "name": "@silevis/reactgrid-samples",
-  "version": "2.0.3-rc.2",
+  "version": "2.0.4",
   "main": "dist/mainExports.js",
   "typings": "dist/mainExports.d.ts",
   "devDependencies": {
@@ -9,19 +9,19 @@
     "@types/node": "11.13.6",
     "@types/react": "16.8.14",
     "@types/react-dom": "16.8.4",
-    "@types/react-router-dom": "^5.1.0",
-    "@types/styled-components": "^4.1.20",
-    "core-js": "^3.3.5",
+    "@types/react-router-dom": "^5.1.2",
+    "@types/styled-components": "^4.1.22",
+    "core-js": "^3.4.0",
     "cross-env": "^6.0.3",
-    "cypress": "^3.5.0",
+    "cypress": "^3.6.0",
     "node-sass": "^4.13.0",
     "npm-version-suffix": "^0.2.0",
-    "office-ui-fabric-react": "^7.55.3",
+    "office-ui-fabric-react": "^7.59.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "2.1.8",
-    "styled-components": "^4.4.0",
+    "styled-components": "^4.4.1",
     "typescript": "3.4.4"
   },
   "peerDependencies": {
@@ -39,7 +39,8 @@
   },
   "keywords": [
     "react",
-    "reactgrid"
+    "reactgrid",
+    "reactgrid-samples"
   ],
   "eslintConfig": {
     "extends": "react-app"
