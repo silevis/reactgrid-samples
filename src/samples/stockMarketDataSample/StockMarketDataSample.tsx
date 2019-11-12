@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReactGrid, DropPosition, Id, ColumnProps, CellMatrixProps } from '@silevis/reactgrid';
+import { ReactGrid, Id, ColumnProps } from '@silevis/reactgrid';
 import styled from 'styled-components';
 import { RowProps } from '@silevis/reactgrid';
 import { StyleCellTemplate } from '../../cell-templates/styleCellTemplate/StyleCellTemplate';
@@ -105,8 +105,7 @@ export class StockMarketDataSample extends React.Component {
     return parseFloat(randomValue.toFixed(6));
   }
 
-  // findIdsChanged = (dataApi: RowProps[], itemID: number | string) => dataApi.filter((item) => item.id === itemID).map((_, idx) =>  idx)
-  findIdsChanged = (itemID: number | string, dataApi: RowProps[]) => {
+  findIdsChanged = (itemID: Id, dataApi: RowProps[]) => {
     let changedRowIds: number[] = [];
     dataApi.forEach((item, idx) => {
       if (item.id === itemID) {
