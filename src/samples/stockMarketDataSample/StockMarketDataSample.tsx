@@ -7,7 +7,7 @@ import './styling.scss';
 
 const ReactGridContainer = styled.div`
   position: relative;
-  min-height: 1200px;
+  min-height: 400px;
 `
 
 const fields: ColumnProps[] = [
