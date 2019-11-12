@@ -264,7 +264,7 @@ const records: any[] = [
     },
 ]
 
-export default class AllInOneSample extends React.Component<{}, IReactgridAllInOneState> {
+export class AllInOneSample extends React.Component<{}, IReactgridAllInOneState> {
     state = {
         fields: [...fields],
         records: [...records],
@@ -749,11 +749,11 @@ export default class AllInOneSample extends React.Component<{}, IReactgridAllInO
                 <FeatureListContainer
                     demoActions={this.demoActions}
                     state={this.state} />
-                <ReactGridContainer className="all-in-one">
+                <ReactGridContainer id="all-in-one-sample">
                     <ReactGrid
                         cellMatrixProps={this.generateMatrix()}
                         onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
-                        customFocuses={this.state.focuses} // UNCOMMENT after FIX
+                        customFocuses={this.state.focuses}
                         onRowContextMenu={(selectedRowIds: Id[], menuOptions: MenuOption[]) => this.handleRowContextMenu(selectedRowIds, menuOptions)}
                         onColumnContextMenu={(selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleColContextMenu(selectedColIds, menuOptions)}
                         // onRangeContextMenu={(selectedRowIds: Id[], selectedColIds: Id[], menuOptions: MenuOption[]) => this.handleRangeContextMenu(selectedRowIds, selectedColIds, menuOptions)} 

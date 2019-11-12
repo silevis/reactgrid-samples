@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { ReactGrid, DataChange, CellMatrixProps, ColumnProps, RowProps, Cell, CellTemplates } from '@silevis/reactgrid';
 import { MonthOfYear, DateRange, BudgetPlannerProps, DataRow, Entry, MonthIdx, BudgetPlannerNumberCellData } from './BudgetPlannerSampleTypes';
-import BudgetPlannerDemoData from './BudgetPlannerSampleData';
+import BudgetPlannerSampleData from './BudgetPlannerSampleData';
 import { BudgetPlannerTextCellTemplate, BudgetPlannerNumberCellTemplate, BudgetPlannerColumnHeaderCellTemplate } from './../../cell-templates/budgetPlannerCells/BudgetPlannerCellTemplates';
 import './styling.scss';
 
@@ -12,12 +12,10 @@ const MonthNameByIdx = [
 
 const ReactGridContainer = styled.div`
     position: relative;
-    margin-left: 10px;
-    width: 100%;
     min-height: 400px;
 `
 
-export const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
+const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
     const [budgetData, setBudgetData] = React.useState(props.budgetData);
     const [collapsedLabels, setCollapsedLabels] = React.useState({ columns: {} as any, rows: {} as any });
 
@@ -42,7 +40,7 @@ export const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
             quarters: {} as any
         }
         const computedColumns: ColumnProps[] = [
-            { id: 'tag', reorderable: false, resizable: true, width: 100 }
+            { id: 'tag', reorderable: false, resizable: false, width: 100 }
         ];
 
         // compute grid columns for the date range
@@ -77,7 +75,7 @@ export const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
         // first row (header)
         const computedRows: RowProps[] = [{
             id: 'header',
-            height: 40,
+            height: 25,
             reorderable: false,
             cells: [
                 { type: 'text', data: { value: 'Category', isCollapsed: false } },
@@ -101,7 +99,8 @@ export const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
 
                     newCell.data.isCollapsed = Boolean(collapsedLabels.columns[column.id]);
                     return newCell;
-                })]
+                })
+            ]
         }]
 
         // rows with numeric data
@@ -112,7 +111,7 @@ export const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
             const parentRow: RowProps = {
                 id: category.id,
                 reorderable: false,
-                height: 40,
+                height: 25,
                 cells: [
                     { type: 'columnHeader', data: { value: category.category, isCollapsed: category.isCollapsed } },
                     ...computedColumns.slice(1).map((column, idx): Cell => {
@@ -141,7 +140,7 @@ export const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
                 const row: RowProps = {
                     id: subcategory.id,
                     reorderable: false,
-                    height: 40,
+                    height: 25,
                     cells: [{
                         type: 'columnHeader',
                         data: { value: subcategory.subcategory, isCollapsed: false, parent: parentRow.cells[0] }
@@ -242,7 +241,10 @@ export const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
             })
         })
 
-        return { columns: gridColumns, rows: gridRows };
+        return { 
+            columns: gridColumns, 
+            rows: gridRows
+        };
     }
 
     const dataChangeHandler = (dataChanges: DataChange[]): void => {
@@ -309,15 +311,13 @@ export const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
     )
 }
 
-const BudgetPlannerSample: React.FC = () => {
+export const BudgetPlannerSample: React.FC = () => {
     return (
-        <ReactGridContainer className="budget-planner">
+        <ReactGridContainer id="budget-planner-sample">
             <BudgetPlanner
-                budgetData={BudgetPlannerDemoData.budgetData}
-                dateRange={BudgetPlannerDemoData.dateRange}
+                budgetData={BudgetPlannerSampleData.budgetData}
+                dateRange={BudgetPlannerSampleData.dateRange}
             />
         </ReactGridContainer>
     );
 }
-
-export default BudgetPlannerSample;

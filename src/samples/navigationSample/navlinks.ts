@@ -1,11 +1,5 @@
 import { INavLink } from 'office-ui-fabric-react/lib/Nav';
-import AllInOneSample from '../allInOneSample/AllInOneSample';
-import RateCellSample from '../rateCellSample/RateCellSample';
-import DropdownNumberCellSample from '../dropdownNumberCellSample/DropdownNumberCellSample';
-import BudgetPlannerSample from '../budgetPlannerSample/BudgetPlannerSample';
-import ResizeCellSample from '../resizeCellSample/ResizeCellSample';
-import MultiUserSample from '../multiUserSample/MultiUserSample';
-import StockMarketDataSample from '../stockMarketDataSample/StockMarketDataSample';
+import { AllInOneSample, RateCellSample, FrozensSample, BudgetPlannerSample, ColumnReorderSample, ResizeColumnSample, MultiUserSample, StockMarketDataSample } from '../../samples';
 
 export interface ISampleNavLink extends INavLink {
   component?: any;
@@ -25,10 +19,10 @@ export const navLinks: ISampleNavLink[] = [
     component: RateCellSample
   },
   {
-    name: 'Dropdown Number Cell Sample',
-    key: '/DropdownNumberCellSample',
-    url: '/DropdownNumberCellSample',
-    component: DropdownNumberCellSample
+    name: 'Frozens Sample',
+    key: '/FrozensSample',
+    url: '/FrozensSample',
+    component: FrozensSample
   },
   {
     name: 'Budget Planner',
@@ -37,10 +31,16 @@ export const navLinks: ISampleNavLink[] = [
     component: BudgetPlannerSample
   },
   {
-    name: 'Resize Cell Sample',
-    key: '/ResizeCellSample',
-    url: '/ResizeCellSample',
-    component: ResizeCellSample
+    name: 'Column Reorder Sample',
+    key: '/ColumnReorderSample',
+    url: '/ColumnReorderSample',
+    component: ColumnReorderSample
+  },
+  {
+    name: 'Resize Column Sample',
+    key: '/ResizeColumnSample',
+    url: '/ResizeColumnSample',
+    component: ResizeColumnSample
   },
   {
     name: 'Multi User Sample',

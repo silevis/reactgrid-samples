@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { CellRenderProps, CellTemplate } from '@silevis/reactgrid';
-import './number-dropdown-cell-style.css';
+import './number-dropdown-cell-style.scss';
 
 interface IDropdownNumberCell {
   value: number;
@@ -61,6 +61,7 @@ export class DropdownNumberCellTemplate implements CellTemplate<IDropdownNumberC
                 min={this.MIN_VAL}
                 max={this.MAX_VAL}
                 step={this.STEP}
+                className="rg-dropdown-number-cell-dropdown-input"
                 defaultValue={props.cellData.value.toString()}
                 onChange={(e: React.FormEvent<HTMLInputElement>) => { 
                   props.onCellDataChanged({value: parseInt(e.currentTarget.value), isOpened: props.cellData.isOpened}, true)

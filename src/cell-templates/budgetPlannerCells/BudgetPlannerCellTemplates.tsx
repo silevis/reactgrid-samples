@@ -103,8 +103,7 @@ export class BudgetPlannerTextCellTemplate implements CellTemplate<BudgetPlanner
                     input.focus();
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
-            }
-            }
+            }}
             defaultValue={props.cellData.value}
             onChange={e => props.onCellDataChanged({ value: e.currentTarget.value, isCollapsed: false }, false)}
             onBlur={e => props.onCellDataChanged({ value: e.currentTarget.value, isCollapsed: false }, true)} // TODO should it be added to each cell? // additional question, because everything works without that
@@ -120,7 +119,7 @@ export class BudgetPlannerTextCellTemplate implements CellTemplate<BudgetPlanner
     }
 
     getCustomStyle(cellData: BudgetPlannerTextCellData, isInEditMode: boolean, props?: any): React.CSSProperties {
-        return { backgroundColor: '#34495E', color: 'white' };
+        return { backgroundColor: 'transparent' };
     };
 }
 
@@ -145,25 +144,22 @@ export class BudgetPlannerColumnHeaderCellTemplate implements CellTemplate<Budge
         }
 
         return <input
-            style={
-                {
-                    position: 'inherit',
-                    width: '100%',
-                    height: '100%',
-                    padding: 0,
-                    border: 0,
-                    background: 'transparent',
-                    fontSize: 14,
-                    outline: 'none',
-                }
-            }
+            style={{
+                position: 'inherit',
+                width: '100%',
+                height: '100%',
+                padding: 0,
+                border: 0,
+                background: 'transparent',
+                fontSize: 19,
+                outline: 'none',
+            }}
             ref={input => {
                 if (input) {
                     input.focus();
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
-            }
-            }
+            }}
             defaultValue={props.cellData.value}
             onChange={e => props.onCellDataChanged({ value: e.currentTarget.value, isCollapsed: false }, false)}
             onBlur={e => props.onCellDataChanged({ value: e.currentTarget.value, isCollapsed: false }, true)} // TODO should it be added to each cell? // additional question, because everything works without that
@@ -181,9 +177,9 @@ export class BudgetPlannerColumnHeaderCellTemplate implements CellTemplate<Budge
     handleKeyDown(cellData: BudgetPlannerTextCellData, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
         const newCellData = { cellData: cellData, enableEditMode: false }
         if (keyCode === keyCodes.SPACE || keyCode === keyCodes.END || keyCode === 1) {
-            console.log('column collapse/expand event');
+            // console.log('column collapse/expand event');
             newCellData.cellData = { ...cellData, isCollapsed: !cellData.isCollapsed }
-            console.log('was', cellData.isCollapsed, 'is', newCellData.cellData.isCollapsed);
+            // console.log('was', cellData.isCollapsed, 'is', newCellData.cellData.isCollapsed);
         }
         return newCellData;
     }
@@ -202,15 +198,16 @@ export class BudgetPlannerColumnHeaderCellTemplate implements CellTemplate<Budge
 
         const ret = [
             { // no ancestors
-                backgroundColor: 'green',
+                background: '#32325d',
                 color: 'white'
             },
             { // 1 ancestor
-                backgroundColor: 'purple',
+                background: '#525f7f',
                 color: 'white',
             },
             { // 2 ancestors
-                backgroundColor: 'pink'
+                color: 'white',
+                background: '#6c757d',
             }
         ]
 
