@@ -4,7 +4,7 @@
   "main": "dist/mainExports.js",
   "typings": "dist/mainExports.d.ts",
   "devDependencies": {
-    "@silevis/reactgrid": "github:silevis/reactgrid#build",
+    "@silevis/reactgrid": "github:silevis/reactgrid#030a7b0b8afe178ba007f5dbcf6f44d5dc233469",
     "@types/jest": "24.0.11",
     "@types/node": "11.13.6",
     "@types/react": "16.8.14",
