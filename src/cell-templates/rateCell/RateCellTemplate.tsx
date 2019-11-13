@@ -1,25 +1,15 @@
 import * as React from 'react';
-import { CellTemplate, Cell, CompatibleCell } from '@silevis/reactgrid';
+import { CellRenderProps, CellTemplate } from '@silevis/reactgrid';
 import './rate-cell-style.scss';
 
-export interface RateCell extends Cell {
-  type: 'rate',
-  text: string
-}
-export class RateCellTemplate implements CellTemplate<RateCell> {
+export class RateCellTemplate implements CellTemplate<number, any> {
 
   STARS: number = 6
   MIN_VAL: number = 1
 
-  validate(cell: RateCell): CompatibleCell<RateCell> {
-    if (cell.text === undefined || cell.text === null)
-      throw 'TextCell is missing text property'
-    return cell;
+  isValid(cellData: number): boolean {
+      return typeof (cellData) === 'number';
   }
-
-  // isValid(cellData: number): boolean {
-  //     return typeof (cellData) === 'number';
-  // }
 
   textToCellData(text: string): number {
     let result = parseFloat(text)
@@ -27,7 +17,7 @@ export class RateCellTemplate implements CellTemplate<RateCell> {
       return this.MIN_VAL
     else if (result > this.STARS)
       return this.STARS
-    else
+    else 
       return result
   }
 
@@ -35,20 +25,20 @@ export class RateCellTemplate implements CellTemplate<RateCell> {
     return isNaN(cellData) ? '' : cellData.toString();
   }
 
-  // handleKeyDown(cellData: RateCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
-  //   return { cellData, enableEditMode: false }
-  // }
+  handleKeyDown(cellData: number, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
+    return { cellData, enableEditMode: false }
+  }
 
-  render(cell: RateCell, isInEditMode: boolean, onCellChanged: (cell: RateCell, commit: boolean) => void): React.ReactNode {
+  renderContent: (props: CellRenderProps<number, any>) => React.ReactNode = (props) => {
     let stars: any[] = [];
     const randNumber = Math.floor(Math.random() * 100000); // TODO get unique ID in grid
-    for (let i = 1; i <= this.STARS; i++) {
+    for(let i = 1; i <= this.STARS; i++) {
       stars.push(
         <React.Fragment key={i}>
-          <input type="radio" id={`star_${i}_input_${randNumber}`} name={`rate_${randNumber}`} value={i}
-            checked={this.textToCellData(cell.toString()) === i} onChange={() => { }}
+          <input type="radio" id={`star_${i}_input_${randNumber}`} name={`rate_${randNumber}`} value={i} 
+            checked={this.textToCellData(props.cellData.toString()) === i} onChange={()=>{}}
           />
-          <label htmlFor={`star_${i}_input_${randNumber}`} title="text" onClick={(e) => { }} />
+          <label htmlFor={`star_${i}_input_${randNumber}`} title="text" onClick={(e) => { props.onCellDataChanged(i, true)}}/>
         </React.Fragment>
       )
     }
@@ -57,5 +47,5 @@ export class RateCellTemplate implements CellTemplate<RateCell> {
         {stars.reverse()}
       </div>
     )
-  }
+  } 
 }

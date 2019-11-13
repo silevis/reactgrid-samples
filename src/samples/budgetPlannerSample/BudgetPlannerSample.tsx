@@ -213,7 +213,7 @@ const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
             return row.cells[0].data.parent ? !row.cells[0].data.parent.data.isCollapsed : true;
         });
         gridRows.forEach(gridRow => {
-            gridRow.cells = gridRow.cells.filter((cell: any) => {
+            gridRow.cells = gridRow.cells.filter(cell => {
                 let cellHidden: boolean = false;
 
                 if (cell.data.parent) {
@@ -232,7 +232,7 @@ const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
 
         // convert cells to basic types
         gridRows.forEach(gridRow => {
-            gridRow.cells = gridRow.cells.filter((cell: any) => {
+            gridRow.cells = gridRow.cells.filter(cell => {
                 if (cell.type === 'bpNumber') {
                     cell.type = 'number';
                     cell.data = cell.data.value;
@@ -241,8 +241,8 @@ const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
             })
         })
 
-        return {
-            columns: gridColumns,
+        return { 
+            columns: gridColumns, 
             rows: gridRows
         };
     }
