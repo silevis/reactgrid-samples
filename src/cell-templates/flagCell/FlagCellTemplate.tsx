@@ -1,30 +1,36 @@
 import * as React from 'react';
-import { keyCodes, isTextInput, isNavigationKey, CellRenderProps, CellTemplate } from '@silevis/reactgrid';
+import { CellTemplate, Cell, CompatibleCell, isTextInput, isNavigationKey, keyCodes } from '@silevis/reactgrid';
 import './flag-cell-style.scss';
 
-export class FlagCellTemplate implements CellTemplate<string, any> {
+export interface FlagCell extends Cell {
+    type: 'flag';
+    text: string;
+  }
 
-    isValid(data: string): boolean {
-        return (typeof (data) === 'string');
+export class FlagCellTemplate implements CellTemplate<FlagCell> {
+
+    validate(cell: any): CompatibleCell<FlagCell> {        
+        if (cell.text === undefined || cell.text === null)
+            throw 'FlagCell is missing text property'
+        return cell;
     }
 
-    textToCellData(text: string): string {
-        return text;
-    }
-
-    cellDataToText(cellData: string) {
-        return cellData;
-    }
-
-    handleKeyDown(cellData: string, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, props?: any) {
+    handleKeyDown(cell: FlagCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: FlagCell, enableEditMode: boolean } {
         if (!ctrl && !alt && isTextInput(keyCode))
-            return { cellData: '', enableEditMode: true }
-        return { cellData, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
+            return { cell, enableEditMode: true }
+        return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 
-    renderContent: (props: CellRenderProps<string, any>) => React.ReactNode = (props) => {
-        if (!props.isInEditMode) {
-            const flagISO = props.cellData.toLowerCase(); // ISO 3166-1, 2/3 letters
+    update(cell: FlagCell, newCell: FlagCell | CompatibleCell): FlagCell {
+        if (newCell.text !== undefined && newCell.text.length !== 0) {
+            return { ...cell, text: newCell.text } as FlagCell;
+        }
+        return newCell as FlagCell;
+    }
+
+    render(cell: FlagCell, isInEditMode: boolean, onCellChanged: (cell: FlagCell, commit: boolean) => void): React.ReactNode {
+        if (!isInEditMode) {
+            const flagISO = cell.text.toLowerCase(); // ISO 3166-1, 2/3 letters
             const flagURL = `https://restcountries.eu/data/${flagISO}.svg`;
             return <div 
                 className="rg-flag-wrapper"
@@ -32,20 +38,19 @@ export class FlagCellTemplate implements CellTemplate<string, any> {
             }} />
         }
         return <input
-            type='text'
             className="rg-flag-input"
             ref={input => {
                 input && input.focus();
             }}
-            defaultValue={props.cellData}
-            onChange={e => props.onCellDataChanged(e.currentTarget.value, false)}
+            defaultValue={cell.text}
+            onChange={e => onCellChanged({ ...cell, text: e.currentTarget.value }, false)}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}
             onPointerDown={e => e.stopPropagation()}
             onKeyDown={e => {
                 if (isTextInput(e.keyCode) || isNavigationKey(e)) e.stopPropagation();
-                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = props.cellData; // reset
+                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = cell.text; // reset
             }}
         />
     }
