@@ -4,4 +4,4 @@
 // export * from './rateCellSample/RateCellSample';
 export * from './resizeColumnSample/ResizeColumnSample';
 export * from './columnReorderSample/ColumnReorderSample';
-// export * from './stockMarketDataSample/StockMarketDataSample';
+export * from './stockMarketDataSample/StockMarketDataSample';
