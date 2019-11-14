@@ -5,9 +5,9 @@ import {
   // FrozensSample, 
   // BudgetPlannerSample, 
   ColumnReorderSample, 
-  // ResizeColumnSample, 
+  ResizeColumnSample, 
   // MultiUserSample, 
-  // StockMarketDataSample 
+  StockMarketDataSample 
 } from '../../samples';
 
 export interface ISampleNavLink extends INavLink {
@@ -45,22 +45,22 @@ export const navLinks: ISampleNavLink[] = [
     url: '/ColumnReorderSample',
     component: ColumnReorderSample
   },
-  // {
-  //   name: 'Resize Column Sample',
-  //   key: '/ResizeColumnSample',
-  //   url: '/ResizeColumnSample',
-  //   component: ResizeColumnSample
-  // },
+  {
+    name: 'Resize Column Sample',
+    key: '/ResizeColumnSample',
+    url: '/ResizeColumnSample',
+    component: ResizeColumnSample
+  },
   // {
   //   name: 'Multi User Sample',
   //   key: '/MultiUserSample',
   //   url: '/MultiUserSample',
   //   component: MultiUserSample
   // },
-  // {
-  //   name: 'Stock Market Data Sample',
-  //   key: '/StockMarketDataSample',
-  //   url: '/StockMarketDataSample',
-  //   component: StockMarketDataSample
-  // },
+  {
+    name: 'Stock Market Data Sample',
+    key: '/StockMarketDataSample',
+    url: '/StockMarketDataSample',
+    component: StockMarketDataSample
+  },
 ];

@@ -1,46 +1,14 @@
 import * as React from 'react';
-import { ReactGrid, Id, Column, Row } from '@silevis/reactgrid';
+import { ReactGrid, Column, Id, Row } from '@silevis/reactgrid';
 import styled from 'styled-components';
 import { CssClassCell, CssClassCellTemplate } from '../../cell-templates/cssClassCellTemplate/CssClassTemplate';
+import { fields } from './../../data/stockMarket/columns'
 import './styling.scss';
 
 const ReactGridContainer = styled.div`
   position: relative;
   min-height: 400px;
 `
-
-const fields: Column[] = [
-  {
-    columnId: 'name',
-    reorderable: false,
-    rezisable: false,
-    width: 150,
-  },
-  {
-    columnId: 'Symbol',
-    reorderable: false,
-    rezisable: false,
-    width: 150,
-  },
-  {
-    columnId: 'Current value',
-    reorderable: false,
-    rezisable: false,
-    width: 150,
-  },
-  {
-    columnId: 'Low_24',
-    reorderable: false,
-    rezisable: false,
-    width: 150,
-  },
-  {
-    columnId: 'High_24',
-    reorderable: false,
-    rezisable: false,
-    width: 150,
-  },
-]
 
 const fetchStockMarketData = async () => {
   const promise = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd");
@@ -51,11 +19,11 @@ const fetchStockMarketData = async () => {
       reorderable: false,
       height: 25,
       cells: [
-        { type: 'header', data: 'Name' },
-        { type: 'header', data: 'Symbol' },
-        { type: 'header', data: 'Current value' },
-        { type: 'header', data: 'Low 24h' },
-        { type: 'header', data: 'High 24h' },
+        { type: 'header', text: 'Name' },
+        { type: 'header', text: 'Symbol' },
+        { type: 'header', text: 'Current value' },
+        { type: 'header', text: 'Low 24h' },
+        { type: 'header', text: 'High 24h' },
       ],
     },
     ...myJsonData.map((item: any) => {
@@ -64,11 +32,11 @@ const fetchStockMarketData = async () => {
         reorderable: false,
         height: 25,
         cells: [
-          { type: 'text', data: item.name },
-          { type: 'text', data: item.symbol },
-          { type: 'cssClass', data: item.current_price, props: { className: 'stockMarketBaseStyle' } },
-          { type: 'number', data: item.low_24h },
-          { type: 'number', data: item.high_24h },
+          { type: 'text', text: item.name },
+          { type: 'text', text: item.symbol },
+          { type: 'cssClass', value: item.current_price, className: 'stockMarketBaseStyle' },
+          { type: 'number', value: item.low_24h },
+          { type: 'number', value: item.high_24h },
         ]
       }
     }),
@@ -76,26 +44,28 @@ const fetchStockMarketData = async () => {
   return newRows;
 }
 
-export class StockMarketDataSample extends React.Component {
+interface StockMarketState {
+  columns:  Column[]
+  rows:     Row[]
+}
 
-  state = {
-    columns: fields.map((field: Column) => (  {
-      columnId: field.columnId,
-      reorderable: field.reorderable,
-      rezisable: field.rezisable,
-      width: field.width,
-    })),
-    rows: [],
-  };
-  
-  intervalId?: number;
-  
+export const StockMarketDataSample: React.FunctionComponent = () => {
 
-  returnRandomWith = (numberOfRows: number) => {
-    return Math.floor(Math.random() * numberOfRows + 1);
-  }
+  const [state, setState] = React.useState<StockMarketState>(() => ({ 
+    columns:  [...fields],
+    rows:     [], 
+  }))
 
-  currentValueRandom = (apiRows: Row[], numberOfRows: number): number => {
+  React.useEffect(() => {
+    const intervalId = setInterval(() => {
+      renderValue();
+    }, 3000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const returnRandomWith = (numberOfRows: number) =>  Math.floor(Math.random() * numberOfRows + 1)
+
+  const currentValueRandom = (apiRows: Row[], numberOfRows: number): number => {
     const row: Row | undefined = apiRows.find((_: Row, idx: number) => idx === numberOfRows);
     if (!row) return 0;
     const min = (row.cells[3] as CssClassCell).value;
@@ -104,7 +74,7 @@ export class StockMarketDataSample extends React.Component {
     return parseFloat(randomValue.toFixed(6));
   }
 
-  findIdsChanged = (itemID: Id, dataApi: Row[]) => {
+  const findIdsChanged = (itemID: Id, dataApi: Row[]) => {
     let changedRowIds: number[] = [];
     dataApi.forEach((item, idx) => {
       if (item.rowId === itemID) {
@@ -114,62 +84,51 @@ export class StockMarketDataSample extends React.Component {
     return changedRowIds;
   }
 
-  findChangedRows = (dataState: Row[], dataApi: Row[]): Row[] => {
+  const findChangedRows = (dataState: Row[], dataApi: Row[]): Row[] => {
     if (!dataState) return [];
     return dataState.filter((data: Row, idx: number) => idx != 0 && (data.cells[2] as CssClassCell).value !== (dataApi[idx].cells[2] as CssClassCell).value);
   }
 
-  renderValue = async () => {
+  const renderValue = async () => {
     const dataApi: Row[] = await fetchStockMarketData();
-    const dataState: Row[] = [...this.state.rows];
-    const changedIdx = this.returnRandomWith(dataState.length);
-    const randomvalue = this.currentValueRandom(dataApi, changedIdx);
+    const dataState: Row[] = [...state.rows];
+    const changedIdx = returnRandomWith(dataState.length);
 
-    
-    (dataApi[changedIdx].cells[2] as CssClassCell).value = randomvalue
+    (dataApi[changedIdx].cells[2] as CssClassCell).value = currentValueRandom(dataApi, changedIdx);
 
-    const cheangeRows: Row[] = this.findChangedRows(dataState, dataApi);
+    const cheangeRows: Row[] = findChangedRows(dataState, dataApi);
     if (cheangeRows.length !== 0) {
       cheangeRows.forEach((row) => {
-        let idsToCheanges: number[] = this.findIdsChanged(row.rowId, dataApi);
+        let idsToCheanges: number[] = findIdsChanged(row.rowId, dataApi);
         idsToCheanges.forEach(id => {
-          (dataApi[id].cells[2] as CssClassCell).className = 
-            (dataApi[id].cells[2] as CssClassCell).value > (dataState[id].cells[2] as CssClassCell).value 
-            ? 'stockMarketBaseStyle greenyellow' 
-            : 'stockMarketBaseStyle red';
+          const valueFromApi = (dataApi[id].cells[2] as CssClassCell).value;
+          const valueFromState = (dataState[id].cells[2] as CssClassCell).value;
+            if ( valueFromApi !== valueFromState) {
+              (dataApi[id].cells[2] as CssClassCell).className = valueFromApi > valueFromState
+                ? 'stockMarketBaseStyle greenyellow' 
+                : 'stockMarketBaseStyle red';
+            }
         })
         idsToCheanges.length = 0;
       })
     }
-    this.setState({ rows: dataApi });
+    setState({ columns: {...state.columns}, rows: dataApi });
   }
 
-  componentDidMount() {
-    this.renderValue();
-    this.intervalId = setInterval(
-      () => { this.renderValue(); }
-      , 3000);
-  }
-  componentWillUnmount() {
-    clearInterval(this.intervalId);
-  }
-
-  render() {
-    return (
-      <>
-        <ReactGridContainer className="stock-market-cell-sample">
-          {this.state.rows.length !== 0 ? 
-            <ReactGrid
-              rows={this.state.rows}
-              columns={this.state.columns}
-              cellTemplates={{ 'cssClass': new CssClassCellTemplate }}
-              license={'non-commercial'}
-              enableRowSelection
-              enableColumnSelection
-            /> : 'Loading...'}
-        </ReactGridContainer>
-      </>
-    )
-  }
+  return (
+    <>
+      <ReactGridContainer className="stock-market-cell-sample">
+        {state.rows.length !== 0 ? 
+          <ReactGrid
+            rows={state.rows}
+            columns={state.columns}
+            customCellTemplates={{ 'cssClass': new CssClassCellTemplate }}
+            license={'non-commercial'}
+            enableRowSelection
+            enableColumnSelection
+          /> : 'Loading...'}
+      </ReactGridContainer>
+    </>
+  )
 }
 
