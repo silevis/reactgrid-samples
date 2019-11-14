@@ -48,6 +48,9 @@ export const ColumnReorderSample: React.FunctionComponent = () => {
   }
 
   const handleCanReorderRows = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition): boolean => {
+    const rowIndex = state.rows.findIndex((row: Row) => row.rowId === targetColumnId);
+    if (rowIndex === 0)
+      return false;
     return true;
   }
 
