@@ -40,12 +40,12 @@ const BudgetPlanner: React.FC<BudgetPlannerProps> = (props) => {
             quarters: {} as any
         }
         const computedColumns: ColumnProps[] = [
-            { id: 'tag', reorderable: false, resizable: false, width: 100 }
+            { id: 'tag', reorderable: false, rezisable: false, width: 100 }
         ];
 
         // compute grid columns for the date range
         getMonthsInRange(props.dateRange).forEach(month => {
-            const newColumn = { reorderable: false, resizable: false } as any;
+            const newColumn = { reorderable: false, rezisable: false } as any;
             const quarterId = ['quarter', month.year, Math.floor(month.month / 3)].join(',');
             const yearId = ['year', month.year].join(',');
             const monthId = ['month', month.year, month.month].join(',');

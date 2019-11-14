@@ -1,16 +1,17 @@
-import { RowProps } from '@silevis/reactgrid';
+// import { Row } from '@silevis/reactgrid';
 // TODO reordable property
-export const rows = (reorderable: boolean): RowProps[] => [
+
+export const rows = (reorderable: boolean): any[] => [
   {
     id: 'header',
     height: 25,
     reorderable,
     cells: [
-      { type: 'header', data: 'Company' },
-      { type: 'header', data: 'Country' },
-      { type: 'header', data: 'Creation date' },
-      { type: 'header', data: 'Revenues ($ Mil.)' },
-      { type: 'header', data: 'Rating' }
+      { type: 'header', text: 'Company' },
+      { type: 'header', text: 'Country' },
+      // { type: 'header', text: 'Creation date' },
+      { type: 'header', text: 'Revenues ($ Mil.)' },
+      { type: 'header', text: 'Rating' }
     ]
   },
   {
@@ -18,11 +19,11 @@ export const rows = (reorderable: boolean): RowProps[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'text', data: 'Walmart' },
-      { type: 'flag', data: 'USA' },
-      { type: 'date', data: '1962-09-04' },
-      { type: 'number', data: 514.405 },
-      { type: 'rating', data: 2 }
+      { type: 'text', text: 'Walmart' },
+      { type: 'flag', text: 'USA' },
+      // { type: 'date', text: '1962-09-04' },
+      { type: 'number', value: 514.405 },
+      { type: 'rating', value: 2 }
     ]
   },
   {
@@ -30,11 +31,11 @@ export const rows = (reorderable: boolean): RowProps[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'text', data: 'Sinopec Group' },
-      { type: 'flag', data: 'CHN' },
-      { type: 'date', data: '2000-06-25' },
-      { type: 'number', data: 414.649 },
-      { type: 'rating', data: 3.5 }
+      { type: 'text', text: 'Sinopec Group' },
+      { type: 'flag', text: 'CHN' },
+      // { type: 'date', text: '2000-06-25' },
+      { type: 'number', value: 414.649 },
+      { type: 'rating', value: 3.5 }
     ]
   },
   {
@@ -42,11 +43,11 @@ export const rows = (reorderable: boolean): RowProps[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'text', data: 'Royal Dutch Shell' },
-      { type: 'flag', data: 'NLD' },
-      { type: 'date', data: '1907-04-19' },
-      { type: 'number', data: 396.556 },
-      { type: 'rating', data: 4.5 }
+      { type: 'text', text: 'Royal Dutch Shell' },
+      { type: 'flag', text: 'NLD' },
+      // { type: 'date', data: '1907-04-19' },
+      { type: 'number', value: 396.556 },
+      { type: 'rating', value: 4.5 }
     ]
   },
   {
@@ -54,11 +55,11 @@ export const rows = (reorderable: boolean): RowProps[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'text', data: 'ExxonMobil' },
-      { type: 'flag', data: 'USA' },
-      { type: 'date', data: '1999-02-12' },
-      { type: 'number', data: 343.427 },
-      { type: 'rating', data: 3.5 }
+      { type: 'text', text: 'ExxonMobil' },
+      { type: 'flag', text: 'USA' },
+      // { type: 'date', data: '1999-02-12' },
+      { type: 'number', value: 343.427 },
+      { type: 'rating', value: 3.5 }
     ]
   },
   {
@@ -66,11 +67,11 @@ export const rows = (reorderable: boolean): RowProps[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'text', data: 'Saudi Aramco' },
-      { type: 'flag', data: 'SAU' },
-      { type: 'date', data: '1933-11-09' },
-      { type: 'number', data: 355.905 },
-      { type: 'rating', data: 5 }
+      { type: 'text', text: 'Saudi Aramco' },
+      { type: 'flag', text: 'SAU' },
+      // { type: 'date', data: '1933-11-09' },
+      { type: 'number', value: 355.905 },
+      { type: 'rating', value: 5 }
     ]
   },
   {
@@ -78,11 +79,11 @@ export const rows = (reorderable: boolean): RowProps[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'text', data: 'Volkswagen' },
-      { type: 'flag', data: 'DEU' },
-      { type: 'date', data: '1937-05-28' },
-      { type: 'number', data: 278.342 },
-      { type: 'rating', data: 5 }
+      { type: 'text', text: 'Volkswagen' },
+      { type: 'flag', text: 'DEU' },
+      // { type: 'date', data: '1937-05-28' },
+      { type: 'number', value: 278.342 },
+      { type: 'rating', value: 5 }
     ]
   },
   {
@@ -90,11 +91,11 @@ export const rows = (reorderable: boolean): RowProps[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'text', data: 'Toyota' },
-      { type: 'flag', data: 'JPN' },
-      { type: 'date', data: '1937-08-28' },
-      { type: 'number', data: 192.724 },
-      { type: 'rating', data: 3 }
+      { type: 'text', text: 'Toyota' },
+      { type: 'flag', text: 'JPN' },
+      // { type: 'date', data: '1937-08-28' },
+      { type: 'number', value: 192.724 },
+      { type: 'rating', value: 3 }
     ]
   },
 
@@ -103,11 +104,11 @@ export const rows = (reorderable: boolean): RowProps[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'text', data: 'Visa' },
-      { type: 'flag', data: 'USA' },
-      { type: 'date', data: '1958-06-15' },
-      { type: 'number', data: 351.913 },
-      { type: 'rating', data: 4 }
+      { type: 'text', text: 'Visa' },
+      { type: 'flag', text: 'USA' },
+      // { type: 'date', data: '1958-06-15' },
+      { type: 'number', value: 351.913 },
+      { type: 'rating', value: 4 }
     ]
   },
   {
@@ -115,11 +116,11 @@ export const rows = (reorderable: boolean): RowProps[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'text', data: 'Taiwan Semiconductor' },
-      { type: 'flag', data: 'CHN' },
-      { type: 'date', data: '1987-11-17' },
-      { type: 'number', data: 264.256 },
-      { type: 'rating', data: 5 }
+      { type: 'text', text: 'Taiwan Semiconductor' },
+      { type: 'flag', text: 'CHN' },
+      // { type: 'date', data: '1987-11-17' },
+      { type: 'number', value: 264.256 },
+      { type: 'rating', value: 5 }
     ]
   },
   {
@@ -127,11 +128,11 @@ export const rows = (reorderable: boolean): RowProps[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'text', data: 'Samsung Electronics' },
-      { type: 'flag', data: 'KOR' },
-      { type: 'date', data: '1969-01-13' },
-      { type: 'number', data: 221.569 },
-      { type: 'rating', data: 5 }
+      { type: 'text', text: 'Samsung Electronics' },
+      { type: 'flag', text: 'KOR' },
+      // { type: 'date', data: '1969-01-13' },
+      { type: 'number', value: 221.569 },
+      { type: 'rating', value: 5 }
     ]
   },
   {
@@ -139,11 +140,11 @@ export const rows = (reorderable: boolean): RowProps[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'text', data: 'Glencore' },
-      { type: 'flag', data: 'CHE' },
-      { type: 'date', data: '1974-07-17' },
-      { type: 'number', data: 219.754 },
-      { type: 'rating', data: 4 }
+      { type: 'text', text: 'Glencore' },
+      { type: 'flag', text: 'CHE' },
+      // { type: 'date', data: '1974-07-17' },
+      { type: 'number', value: 219.754 },
+      { type: 'rating', value: 4 }
     ]
   },
   {
@@ -151,11 +152,11 @@ export const rows = (reorderable: boolean): RowProps[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'text', data: 'Total' },
-      { type: 'flag', data: 'FRA' },
-      { type: 'date', data: '1924-03-28' },
-      { type: 'number', data: 184.106 },
-      { type: 'rating', data: 3 }
+      { type: 'text', text: 'Total' },
+      { type: 'flag', text: 'FRA' },
+      // { type: 'date', data: '1924-03-28' },
+      { type: 'number', value: 184.106 },
+      { type: 'rating', value: 3 }
     ]
   },
   {
@@ -163,11 +164,11 @@ export const rows = (reorderable: boolean): RowProps[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'text', data: 'Trafigura' },
-      { type: 'flag', data: 'SGP' },
-      { type: 'date', data: '1993-06-15' },
-      { type: 'number', data: 180.744 },
-      { type: 'rating', data: 3 }
+      { type: 'text', text: 'Trafigura' },
+      { type: 'flag', text: 'SGP' },
+      // { type: 'date', data: '1993-06-15' },
+      { type: 'number', value: 180.744 },
+      { type: 'rating', value: 3 }
     ]
   },
   {
@@ -175,11 +176,11 @@ export const rows = (reorderable: boolean): RowProps[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'text', data: 'Daimler' },
-      { type: 'flag', data: 'DEU' },
-      { type: 'date', data: '1926-06-28' },
-      { type: 'number', data: 197.515 },
-      { type: 'rating', data: 4 }
+      { type: 'text', text: 'Daimler' },
+      { type: 'flag', text: 'DEU' },
+      // { type: 'date', data: '1926-06-28' },
+      { type: 'number', value: 197.515 },
+      { type: 'rating', value: 4 }
     ]
   },
   {
@@ -187,11 +188,11 @@ export const rows = (reorderable: boolean): RowProps[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'text', data: 'Exor' },
-      { type: 'flag', data: 'ITA' },
-      { type: 'date', data: '1927-07-27' },
-      { type: 'number', data: 175.009 },
-      { type: 'rating', data: 4 }
+      { type: 'text', text: 'Exor' },
+      { type: 'flag', text: 'ITA' },
+      // { type: 'date', data: '1927-07-27' },
+      { type: 'number', value: 175.009 },
+      { type: 'rating', value: 4 }
     ]
   },
   {
@@ -199,11 +200,11 @@ export const rows = (reorderable: boolean): RowProps[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'text', data: 'Chevron' },
-      { type: 'flag', data: 'USA' },
-      { type: 'date', data: '1879-09-10' },
-      { type: 'number', data: 166.339 },
-      { type: 'rating', data: 4 }
+      { type: 'text', text: 'Chevron' },
+      { type: 'flag', text: 'USA' },
+      // { type: 'date', data: '1879-09-10' },
+      { type: 'number', value: 166.339 },
+      { type: 'rating', value: 4 }
     ]
   },
   {
@@ -211,11 +212,11 @@ export const rows = (reorderable: boolean): RowProps[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'text', data: 'BP' },
-      { type: 'flag', data: 'GBR' },
-      { type: 'date', data: '1909-04-14' },
-      { type: 'number', data: 303.738 },
-      { type: 'rating', data: 5 }
+      { type: 'text', text: 'BP' },
+      { type: 'flag', text: 'GBR' },
+      // { type: 'date', data: '1909-04-14' },
+      { type: 'number', value: 303.738 },
+      { type: 'rating', value: 5 }
     ]
   },
 

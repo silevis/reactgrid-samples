@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { ReactGrid, Id, ColumnProps } from '@silevis/reactgrid';
+import { ReactGrid, Id, Column, Row } from '@silevis/reactgrid';
 import styled from 'styled-components';
-import { RowProps } from '@silevis/reactgrid';
-import { StyleCellTemplate } from '../../cell-templates/styleCellTemplate/StyleCellTemplate';
+import { CssClassCell, CssClassCellTemplate } from '../../cell-templates/cssClassCellTemplate/CssClassTemplate';
 import './styling.scss';
 
 const ReactGridContainer = styled.div`
@@ -10,35 +9,35 @@ const ReactGridContainer = styled.div`
   min-height: 400px;
 `
 
-const fields: ColumnProps[] = [
+const fields: Column[] = [
   {
-    id: 'name',
+    columnId: 'name',
     reorderable: false,
-    resizable: false,
+    rezisable: false,
     width: 150,
   },
   {
-    id: 'Symbol',
+    columnId: 'Symbol',
     reorderable: false,
-    resizable: false,
+    rezisable: false,
     width: 150,
   },
   {
-    id: 'Current value',
+    columnId: 'Current value',
     reorderable: false,
-    resizable: false,
+    rezisable: false,
     width: 150,
   },
   {
-    id: 'Low_24',
+    columnId: 'Low_24',
     reorderable: false,
-    resizable: false,
+    rezisable: false,
     width: 150,
   },
   {
-    id: 'High_24',
+    columnId: 'High_24',
     reorderable: false,
-    resizable: false,
+    rezisable: false,
     width: 150,
   },
 ]
@@ -46,7 +45,7 @@ const fields: ColumnProps[] = [
 const fetchStockMarketData = async () => {
   const promise = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd");
   const myJsonData = await promise.json();
-  const newRows: RowProps[] = [
+  const newRows: Row[] = [
     {
       id: 'header',
       reorderable: false,
@@ -67,7 +66,7 @@ const fetchStockMarketData = async () => {
         cells: [
           { type: 'text', data: item.name },
           { type: 'text', data: item.symbol },
-          { type: 'styleInside', data: item.current_price, props: { className: 'stockMarketBaseStyle' } },
+          { type: 'cssClass', data: item.current_price, props: { className: 'stockMarketBaseStyle' } },
           { type: 'number', data: item.low_24h },
           { type: 'number', data: item.high_24h },
         ]
@@ -80,10 +79,10 @@ const fetchStockMarketData = async () => {
 export class StockMarketDataSample extends React.Component {
 
   state = {
-    columns: fields.map((field) => (  {
-      id: field.id,
+    columns: fields.map((field: Column) => (  {
+      columnId: field.columnId,
       reorderable: field.reorderable,
-      resizable: field.resizable,
+      rezisable: field.rezisable,
       width: field.width,
     })),
     rows: [],
@@ -96,44 +95,48 @@ export class StockMarketDataSample extends React.Component {
     return Math.floor(Math.random() * numberOfRows + 1);
   }
 
-  currentValueRandom = (apiRows: RowProps[], numberOfRows: number): number => {
-    const row: RowProps | undefined = apiRows.find((_: RowProps, idx: number) => idx === numberOfRows);
+  currentValueRandom = (apiRows: Row[], numberOfRows: number): number => {
+    const row: Row | undefined = apiRows.find((_: Row, idx: number) => idx === numberOfRows);
     if (!row) return 0;
-    const min = row.cells[3].data;
-    const max = row.cells[4].data;
+    const min = (row.cells[3] as CssClassCell).value;
+    const max = (row.cells[4] as CssClassCell).value;
     const randomValue = (Math.random() * (+max - +min) + +min);
     return parseFloat(randomValue.toFixed(6));
   }
 
-  findIdsChanged = (itemID: Id, dataApi: RowProps[]) => {
+  findIdsChanged = (itemID: Id, dataApi: Row[]) => {
     let changedRowIds: number[] = [];
     dataApi.forEach((item, idx) => {
-      if (item.id === itemID) {
+      if (item.rowId === itemID) {
         changedRowIds = [...changedRowIds, idx]
       }
     });
     return changedRowIds;
   }
 
-  findChangedRows = (dataState: RowProps[], dataApi: RowProps[]): RowProps[] => {
+  findChangedRows = (dataState: Row[], dataApi: Row[]): Row[] => {
     if (!dataState) return [];
-    return dataState.filter((data: RowProps, idx: number) => idx != 0 && data.cells[2].data !== dataApi[idx].cells[2].data);
+    return dataState.filter((data: Row, idx: number) => idx != 0 && (data.cells[2] as CssClassCell).value !== (dataApi[idx].cells[2] as CssClassCell).value);
   }
 
   renderValue = async () => {
-    const dataApi: RowProps[] = await fetchStockMarketData();
-    const dataState: RowProps[] = [...this.state.rows];
+    const dataApi: Row[] = await fetchStockMarketData();
+    const dataState: Row[] = [...this.state.rows];
     const changedIdx = this.returnRandomWith(dataState.length);
     const randomvalue = this.currentValueRandom(dataApi, changedIdx);
 
-    dataApi[changedIdx].cells[2].data = randomvalue
+    
+    (dataApi[changedIdx].cells[2] as CssClassCell).value = randomvalue
 
-    const cheangeRows: RowProps[] = this.findChangedRows(dataState, dataApi);
+    const cheangeRows: Row[] = this.findChangedRows(dataState, dataApi);
     if (cheangeRows.length !== 0) {
       cheangeRows.forEach((row) => {
-        let idsToCheanges: number[] = this.findIdsChanged(row.id, dataApi);
+        let idsToCheanges: number[] = this.findIdsChanged(row.rowId, dataApi);
         idsToCheanges.forEach(id => {
-          dataApi[id].cells[2].props.className = dataApi[id].cells[2].data > dataState[id].cells[2].data ? 'stockMarketBaseStyle greenyellow' : 'stockMarketBaseStyle red';
+          (dataApi[id].cells[2] as CssClassCell).className = 
+            (dataApi[id].cells[2] as CssClassCell).value > (dataState[id].cells[2] as CssClassCell).value 
+            ? 'stockMarketBaseStyle greenyellow' 
+            : 'stockMarketBaseStyle red';
         })
         idsToCheanges.length = 0;
       })
@@ -155,11 +158,15 @@ export class StockMarketDataSample extends React.Component {
     return (
       <>
         <ReactGridContainer className="stock-market-cell-sample">
-          {this.state.rows.length !== 0 ? <ReactGrid
-            cellMatrixProps={{ columns: this.state.columns, rows: this.state.rows }}
-            cellTemplates={{ 'styleInside': new StyleCellTemplate }}
-            license={'non-commercial'}
-          /> : 'Loading...'}
+          {this.state.rows.length !== 0 ? 
+            <ReactGrid
+              rows={this.state.rows}
+              columns={this.state.columns}
+              cellTemplates={{ 'cssClass': new CssClassCellTemplate }}
+              license={'non-commercial'}
+              enableRowSelection
+              enableColumnSelection
+            /> : 'Loading...'}
         </ReactGridContainer>
       </>
     )

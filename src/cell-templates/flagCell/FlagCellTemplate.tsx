@@ -5,7 +5,7 @@ import './flag-cell-style.scss';
 export interface FlagCell extends Cell {
     type: 'flag';
     text: string;
-  }
+}
 
 export class FlagCellTemplate implements CellTemplate<FlagCell> {
 

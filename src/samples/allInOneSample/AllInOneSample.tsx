@@ -342,7 +342,7 @@ export class AllInOneSample extends React.Component<{}, IReactgridAllInOneState>
             id: field.id,
             width: field.width,
             reorderable: this.state.columnReordering,
-            resizable: this.state.resizing,
+            rezisable: this.state.resizing,
             onDrop: (ids) => this.setState({ fields: this.reorderedColumns(ids as number[], idx) }),
             onResize: width => { this.state.fields[idx].width = width, this.forceUpdate(); }
         }));
