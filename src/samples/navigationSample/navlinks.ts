@@ -7,7 +7,7 @@ import {
   ColumnReorderSample, 
   ResizeColumnSample, 
   // MultiUserSample, 
-  // StockMarketDataSample 
+  StockMarketDataSample 
 } from '../../samples';
 
 export interface ISampleNavLink extends INavLink {
@@ -57,10 +57,10 @@ export const navLinks: ISampleNavLink[] = [
   //   url: '/MultiUserSample',
   //   component: MultiUserSample
   // },
-  // {
-  //   name: 'Stock Market Data Sample',
-  //   key: '/StockMarketDataSample',
-  //   url: '/StockMarketDataSample',
-  //   component: StockMarketDataSample
-  // },
+  {
+    name: 'Stock Market Data Sample',
+    key: '/StockMarketDataSample',
+    url: '/StockMarketDataSample',
+    component: StockMarketDataSample
+  },
 ];
