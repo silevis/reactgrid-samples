@@ -15,7 +15,7 @@ const fetchStockMarketData = async () => {
   const myJsonData = await promise.json();
   const newRows: Row[] = [
     {
-      id: 'header',
+      rowId: 'header',
       reorderable: false,
       height: 25,
       cells: [
@@ -28,7 +28,7 @@ const fetchStockMarketData = async () => {
     },
     ...myJsonData.map((item: any) => {
       return {
-        id: item.id,
+        rowId: item.id,
         reorderable: false,
         height: 25,
         cells: [
@@ -53,15 +53,12 @@ export const StockMarketDataSample: React.FunctionComponent = () => {
 
   const [state, setState] = React.useState<StockMarketState>(() => ({ 
     columns:  [...fields],
-    rows:     [], 
+    rows:     []
   }))
 
-  React.useEffect(() => {
-    const intervalId = setInterval(() => {
-      renderValue();
-    }, 3000);
-    return () => clearInterval(intervalId);
-  }, []);
+  useInterval(() => {
+    renderValue()
+  }, 3000);
 
   const returnRandomWith = (numberOfRows: number) =>  Math.floor(Math.random() * numberOfRows + 1)
 
@@ -89,30 +86,54 @@ export const StockMarketDataSample: React.FunctionComponent = () => {
     return dataState.filter((data: Row, idx: number) => idx != 0 && (data.cells[2] as CssClassCell).value !== (dataApi[idx].cells[2] as CssClassCell).value);
   }
 
-  const renderValue = async () => {
-    const dataApi: Row[] = await fetchStockMarketData();
-    const dataState: Row[] = [...state.rows];
-    const changedIdx = returnRandomWith(dataState.length);
+  function useInterval(callback: any, delay: number) {
+    const savedCallback = React.useRef();
+  
+    React.useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+  
+    React.useEffect(() => {
+      function tick() {
+        (savedCallback as any).current();
+      }
+      if (delay !== null) {
+        let id = setInterval(tick, delay);
+        return () => clearInterval(id);
+      }
+    }, [delay]);
+  }
 
-    (dataApi[changedIdx].cells[2] as CssClassCell).value = currentValueRandom(dataApi, changedIdx);
-
-    const cheangeRows: Row[] = findChangedRows(dataState, dataApi);
-    if (cheangeRows.length !== 0) {
-      cheangeRows.forEach((row) => {
-        let idsToCheanges: number[] = findIdsChanged(row.rowId, dataApi);
-        idsToCheanges.forEach(id => {
-          const valueFromApi = (dataApi[id].cells[2] as CssClassCell).value;
-          const valueFromState = (dataState[id].cells[2] as CssClassCell).value;
-            if ( valueFromApi !== valueFromState) {
-              (dataApi[id].cells[2] as CssClassCell).className = valueFromApi > valueFromState
-                ? 'stockMarketBaseStyle greenyellow' 
-                : 'stockMarketBaseStyle red';
-            }
+  const renderValue = () => {
+    fetchStockMarketData().then((res: Row[]) => {
+      const dataApi: Row[] = res;
+      const dataState: Row[] = [...state.rows];
+      for (let i = 0; i < Math.floor(dataApi.length / 6); i++) {
+        const changedIdx = returnRandomWith(dataApi.length);
+        (dataApi[changedIdx].cells[2] as CssClassCell).value = currentValueRandom(dataApi, changedIdx);
+      }
+      
+      const cheangeRows: Row[] = findChangedRows(dataState, dataApi);
+      if (cheangeRows.length !== 0) {
+        cheangeRows.forEach(row => {
+          let idsToCheanges: number[] = findIdsChanged(row.rowId, dataApi);
+          idsToCheanges.forEach(id => {
+            const valueFromApi = (dataApi[id].cells[2] as CssClassCell).value;
+            const valueFromState = (dataState[id].cells[2] as CssClassCell).value;
+              if ( valueFromApi !== valueFromState) {
+                (dataApi[id].cells[2] as CssClassCell).className = valueFromApi > valueFromState
+                  ? 'stockMarketBaseStyle greenyellow' 
+                  : 'stockMarketBaseStyle red';
+              }
+          })
+          idsToCheanges.length = 0;
         })
-        idsToCheanges.length = 0;
-      })
-    }
-    setState({ columns: {...state.columns}, rows: dataApi });
+      }
+      setState({ columns: [...state.columns], rows: dataApi });
+    })
+    .catch(e => {
+      console.error(e);
+    });
   }
 
   return (
@@ -124,9 +145,11 @@ export const StockMarketDataSample: React.FunctionComponent = () => {
             columns={state.columns}
             customCellTemplates={{ 'cssClass': new CssClassCellTemplate }}
             license={'non-commercial'}
+            disableFillHandle
             enableRowSelection
             enableColumnSelection
-          /> : 'Loading...'}
+          /> 
+          : <span className='stock-market-loading'>Loading...</span>}
       </ReactGridContainer>
     </>
   )
