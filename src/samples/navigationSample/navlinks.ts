@@ -2,7 +2,7 @@ import { INavLink } from 'office-ui-fabric-react/lib/Nav';
 import { 
   // AllInOneSample, 
   // RateCellSample, 
-  // FrozensSample, 
+  FrozensSample, 
   // BudgetPlannerSample, 
   ColumnReorderSample, 
   ResizeColumnSample, 
@@ -27,12 +27,12 @@ export const navLinks: ISampleNavLink[] = [
   //   url: '/RateCellDemo',
   //   component: RateCellSample
   // },
-  // {
-  //   name: 'Frozens Sample',
-  //   key: '/FrozensSample',
-  //   url: '/FrozensSample',
-  //   component: FrozensSample
-  // },
+  {
+    name: 'Frozens Sample',
+    key: '/FrozensSample',
+    url: '/FrozensSample',
+    component: FrozensSample
+  },
   // {
   //   name: 'Budget Planner',
   //   key: '/BudgetPlannerSample',
