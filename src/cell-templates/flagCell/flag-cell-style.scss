@@ -4,7 +4,8 @@
     height: 21px;
     background-size: cover;
     border: 1px solid #cccccc;
-    background-position: center center
+    background-position: center center;
+    background-repeat: no-repeat;
 }
 
 .rg-flag-input {
@@ -16,4 +17,5 @@
     background: transparent;
     font-size: 1em;
     outline: none;
+    font-family: inherit;
 }
