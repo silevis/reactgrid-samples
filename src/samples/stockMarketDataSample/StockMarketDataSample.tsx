@@ -57,6 +57,7 @@ export const StockMarketDataSample: React.FunctionComponent = () => {
   }))
 
   React.useEffect(() => {
+    renderValue();
     const intervalId = setInterval(() => {
       renderValue();
     }, 3000);
@@ -89,30 +90,37 @@ export const StockMarketDataSample: React.FunctionComponent = () => {
     return dataState.filter((data: Row, idx: number) => idx != 0 && (data.cells[2] as CssClassCell).value !== (dataApi[idx].cells[2] as CssClassCell).value);
   }
 
-  const renderValue = async () => {
-    const dataApi: Row[] = await fetchStockMarketData();
-    const dataState: Row[] = [...state.rows];
-    const changedIdx = returnRandomWith(dataState.length);
-
-    (dataApi[changedIdx].cells[2] as CssClassCell).value = currentValueRandom(dataApi, changedIdx);
-
-    const cheangeRows: Row[] = findChangedRows(dataState, dataApi);
-    if (cheangeRows.length !== 0) {
-      cheangeRows.forEach((row) => {
-        let idsToCheanges: number[] = findIdsChanged(row.rowId, dataApi);
-        idsToCheanges.forEach(id => {
-          const valueFromApi = (dataApi[id].cells[2] as CssClassCell).value;
-          const valueFromState = (dataState[id].cells[2] as CssClassCell).value;
-            if ( valueFromApi !== valueFromState) {
-              (dataApi[id].cells[2] as CssClassCell).className = valueFromApi > valueFromState
-                ? 'stockMarketBaseStyle greenyellow' 
-                : 'stockMarketBaseStyle red';
-            }
+  const renderValue = () => {
+    fetchStockMarketData().then((res: Row[]) => {
+      const dataApi: Row[] = res;
+      const dataState: Row[] = [...state.rows];
+      for (let i = 0; i < Math.floor(dataApi.length / 2); i++) {
+        const changedIdx = returnRandomWith(dataApi.length);
+        (dataApi[changedIdx].cells[2] as CssClassCell).value = currentValueRandom(dataApi, changedIdx);
+      }
+      
+      const cheangeRows: Row[] = findChangedRows(dataState, dataApi);
+  
+      if (cheangeRows.length !== 0) {
+        cheangeRows.forEach(row => {
+          let idsToCheanges: number[] = findIdsChanged(row.rowId, dataApi);
+          idsToCheanges.forEach(id => {
+            const valueFromApi = (dataApi[id].cells[2] as CssClassCell).value;
+            const valueFromState = (dataState[id].cells[2] as CssClassCell).value;
+              if ( valueFromApi !== valueFromState) {
+                (dataApi[id].cells[2] as CssClassCell).className = valueFromApi > valueFromState
+                  ? 'stockMarketBaseStyle greenyellow' 
+                  : 'stockMarketBaseStyle red';
+              }
+          })
+          idsToCheanges.length = 0;
         })
-        idsToCheanges.length = 0;
-      })
-    }
-    setState({ columns: {...state.columns}, rows: dataApi });
+      }
+      setState({ columns: [...state.columns], rows: dataApi });
+    })
+    .catch(e => {
+      console.error(e);
+    });
   }
 
   return (
@@ -126,7 +134,8 @@ export const StockMarketDataSample: React.FunctionComponent = () => {
             license={'non-commercial'}
             enableRowSelection
             enableColumnSelection
-          /> : 'Loading...'}
+          /> 
+          : <span className='stock-market-loading'>Loading...</span>}
       </ReactGridContainer>
     </>
   )
