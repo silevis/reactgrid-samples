@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { keyCodes, CompatibleCell, CellTemplate, Cell, isTextInput } from '@silevis/reactgrid';
-import TimePicker from 'react-time-picker';
+// import TimePicker from 'react-time-picker';
 import "react-datepicker/dist/react-datepicker.css";
 import './time-cell-style.scss';
 
@@ -62,7 +62,7 @@ export class TimeCellTemplate implements CellTemplate<TimeCell> {
                     }
                 }}
             >
-                <TimePicker
+                {/* <TimePicker
                     isOpen={true}
                     clockIcon={null}
                     clearIcon={null}
@@ -71,7 +71,7 @@ export class TimeCellTemplate implements CellTemplate<TimeCell> {
                     }}
                     value={cell.time}
                     format="HH:mm"
-                />
+                /> */}
             </div>
         );
     }
