@@ -1,4 +1,4 @@
-import { IReactgridAllInOneState, Record } from './AllInOneSample';
+// import { IReactgridAllInOneState, Record } from './AllInOneSample';
 
 function getRandomInt(min: number, max: number) {
     min = Math.ceil(min);
@@ -51,7 +51,7 @@ export class ReactGridDataGenerator {
         return Math.random() < .5;
     }
 
-    createNewUser(): Record {
+    createNewUser(): any {
         ++ReactGridDataGenerator.nextId;
         const id = ReactGridDataGenerator.nextId;
         const name = this.getRandomName();
@@ -67,11 +67,11 @@ export class ReactGridDataGenerator {
 
 export class VirtualEnv {
 
-    handleData: (data: any) => IReactgridAllInOneState;
+    handleData: (data: any) => any;
     private virtualUsers: VirtualUser[] = [];
-    state: IReactgridAllInOneState;
+    state: any;
 
-    constructor(state: IReactgridAllInOneState, handleData: (data: any) => IReactgridAllInOneState) {
+    constructor(state: any, handleData: (data: any) => any) {
         this.state = state;
         this.handleData = handleData;
     }
@@ -81,8 +81,8 @@ export class VirtualEnv {
         return this;
     }
 
-    updateView = (state: IReactgridAllInOneState) => {
-        let modifiedState: IReactgridAllInOneState = state;
+    updateView = (state: any) => {
+        let modifiedState: any = state;
         this.virtualUsers.forEach(virtualUser => {
             modifiedState = virtualUser.makeChanges(modifiedState, this.handleData);
         });
@@ -101,7 +101,7 @@ export class VirtualUser {
     private focusX = 0;
     private focusY = 0;
 
-    updateFocusesState(state: IReactgridAllInOneState): IReactgridAllInOneState {
+    updateFocusesState(state: any): any {
         this.focusX = getRandomInt(1, state.fields.length)
         this.focusY = getRandomInt(1, state.records.length)
         var focuses = [...state.focuses].filter(f => f.color !== this.color)
@@ -109,7 +109,7 @@ export class VirtualUser {
         return { ...state, focuses: [...focuses, newFocus] }
     }
 
-    getUpdatedFieldState(state: IReactgridAllInOneState, handleData: (data: any) => IReactgridAllInOneState): any {
+    getUpdatedFieldState(state: any, handleData: (data: any) => any): any {
         if (state == null || state.fields[this.focusX] == undefined || state.records[this.focusY] == undefined)
             return null;
 
@@ -139,7 +139,7 @@ export class VirtualUser {
         return { ...handleData([{ columnId: state.fields[this.focusX].id, rowId: state.records[this.focusY].id, type: type, initialData: '', newData: newFieldData }]), focuses: state.focuses }
     }
 
-    makeChanges(state: IReactgridAllInOneState, handleData: (data: any) => IReactgridAllInOneState) {
+    makeChanges(state: any, handleData: (data: any) => any) {
         switch (this.count++) {
             case 0:
                 state = this.updateFocusesState(state);

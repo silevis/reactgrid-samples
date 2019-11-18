@@ -1,12 +1,12 @@
 import { INavLink } from 'office-ui-fabric-react/lib/Nav';
-import { 
+import {
   // AllInOneSample, 
   // RateCellSample, 
   // FrozensSample, 
   // BudgetPlannerSample, 
-  ColumnReorderSample, 
+  // ColumnReorderSample,
   // ResizeColumnSample, 
-  // MultiUserSample, 
+  MultiUserSample,
   // StockMarketDataSample 
 } from '../../samples';
 
@@ -39,24 +39,24 @@ export const navLinks: ISampleNavLink[] = [
   //   url: '/BudgetPlannerSample',
   //   component: BudgetPlannerSample
   // },
-  {
-    name: 'Column Reorder Sample',
-    key: '/ColumnReorderSample',
-    url: '/ColumnReorderSample',
-    component: ColumnReorderSample
-  },
+  // {
+  //   name: 'Column Reorder Sample',
+  //   key: '/ColumnReorderSample',
+  //   url: '/ColumnReorderSample',
+  //   component: ColumnReorderSample
+  // },
   // {
   //   name: 'Resize Column Sample',
   //   key: '/ResizeColumnSample',
   //   url: '/ResizeColumnSample',
   //   component: ResizeColumnSample
   // },
-  // {
-  //   name: 'Multi User Sample',
-  //   key: '/MultiUserSample',
-  //   url: '/MultiUserSample',
-  //   component: MultiUserSample
-  // },
+  {
+    name: 'Multi User Sample',
+    key: '/MultiUserSample',
+    url: '/MultiUserSample',
+    component: MultiUserSample
+  },
   // {
   //   name: 'Stock Market Data Sample',
   //   key: '/StockMarketDataSample',
