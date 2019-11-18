@@ -13,15 +13,15 @@ const ReactGridContainer = styled.div`
 `;
 
 interface ColumnReorderGridState {
-  columns:  Column[]
-  rows:     Row[]
+  columns: Column[]
+  rows: Row[]
 }
 
 export const ColumnReorderSample: React.FunctionComponent = () => {
 
-  const [state, setState] = React.useState<ColumnReorderGridState>(() => ({ 
-      columns:  dataColumns(true, false),
-      rows:     dataRows(true), 
+  const [state, setState] = React.useState<ColumnReorderGridState>(() => ({
+    columns: dataColumns(true, false),
+    rows: dataRows(true),
   }))
 
   const handleChanges = (changes: CellChange[]) => {

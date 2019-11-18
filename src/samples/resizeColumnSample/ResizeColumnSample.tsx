@@ -13,15 +13,15 @@ const ReactGridContainer = styled.div`
 `;
 
 interface ResizeColumnSample {
-  columns:  Column[]
-  rows:     Row[]
+  columns: Column[]
+  rows: Row[]
 }
 
 export const ResizeColumnSample: React.FunctionComponent = () => {
 
-  const [state, setState] = React.useState<ResizeColumnSample>(() => ({ 
-      columns:  dataColumns(false, true),
-      rows:     dataRows(false), 
+  const [state, setState] = React.useState<ResizeColumnSample>(() => ({
+    columns: dataColumns(false, true),
+    rows: dataRows(false),
   }))
 
   const handleChanges = (changes: CellChange[]) => {
@@ -36,15 +36,15 @@ export const ResizeColumnSample: React.FunctionComponent = () => {
   }
 
   const handleColumnResize = (ci: Id, width: number) => {
-      let newState = { ...state };
-      const columnIndex = newState.columns.findIndex(el => el.columnId === ci);
-      const resizedColumn: Column = newState.columns[columnIndex];
-      const updateColumn: Column = {
-        ...resizedColumn,
-        width
-      };
-      newState.columns[columnIndex] = updateColumn;
-      setState(newState);
+    let newState = { ...state };
+    const columnIndex = newState.columns.findIndex(el => el.columnId === ci);
+    const resizedColumn: Column = newState.columns[columnIndex];
+    const updateColumn: Column = {
+      ...resizedColumn,
+      width
+    };
+    newState.columns[columnIndex] = updateColumn;
+    setState(newState);
   }
 
   return (

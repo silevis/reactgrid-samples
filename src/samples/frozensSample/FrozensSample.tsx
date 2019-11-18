@@ -14,23 +14,23 @@ const ReactGridContainer = styled.div`
 `;
 
 interface FrozensState {
-  columns:              Column[]
-  rows:                 Row[],
-  frozenTopRows?:       number,
-  frozenBottomRows?:    number,
-  frozenLeftColumns?:   number,
-  frozenRightColumns?:  number,
+  columns: Column[]
+  rows: Row[],
+  frozenTopRows?: number,
+  frozenBottomRows?: number,
+  frozenLeftColumns?: number,
+  frozenRightColumns?: number,
 }
 
 
 export const FrozensSample: React.FunctionComponent = () => {
 
-  const [state, setState] = React.useState<FrozensState>(() => ({ 
-    columns:              [...crmColumns(true, false)],
-    rows:                 [...crmRows(true)],
-    frozenTopRows:        1,
-    frozenLeftColumns:    1,
-    frozenRightColumns:   1,
+  const [state, setState] = React.useState<FrozensState>(() => ({
+    columns: [...crmColumns(true, false)],
+    rows: [...crmRows(true)],
+    frozenTopRows: 1,
+    frozenLeftColumns: 1,
+    frozenRightColumns: 1,
   }))
 
   const handleChanges = (changes: CellChange[]) => {
@@ -52,7 +52,7 @@ export const FrozensSample: React.FunctionComponent = () => {
         customCellTemplates={{
           'rating': new RateCellTemplate,
           'flag': new FlagCellTemplate,
-          'dropdownNumber' : new DropdownNumberCellTemplate,
+          'dropdownNumber': new DropdownNumberCellTemplate,
         }}
         frozenTopRows={state.frozenTopRows}
         frozenBottomRows={state.frozenBottomRows}

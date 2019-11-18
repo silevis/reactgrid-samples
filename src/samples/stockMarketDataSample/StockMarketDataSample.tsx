@@ -45,22 +45,22 @@ const fetchStockMarketData = async () => {
 }
 
 interface StockMarketState {
-  columns:  Column[]
-  rows:     Row[]
+  columns: Column[]
+  rows: Row[]
 }
 
 export const StockMarketDataSample: React.FunctionComponent = () => {
 
-  const [state, setState] = React.useState<StockMarketState>(() => ({ 
-    columns:  [...fields],
-    rows:     []
+  const [state, setState] = React.useState<StockMarketState>(() => ({
+    columns: [...fields],
+    rows: []
   }))
 
   useInterval(() => {
     renderValue()
   }, 3000);
 
-  const returnRandomWith = (numberOfRows: number) =>  Math.floor(Math.random() * numberOfRows + 1)
+  const returnRandomWith = (numberOfRows: number) => Math.floor(Math.random() * numberOfRows + 1)
 
   const currentValueRandom = (apiRows: Row[], numberOfRows: number): number => {
     const row: Row | undefined = apiRows.find((_: Row, idx: number) => idx === numberOfRows);
@@ -88,11 +88,11 @@ export const StockMarketDataSample: React.FunctionComponent = () => {
 
   function useInterval(callback: any, delay: number) {
     const savedCallback = React.useRef();
-  
+
     React.useEffect(() => {
       savedCallback.current = callback;
     }, [callback]);
-  
+
     React.useEffect(() => {
       function tick() {
         (savedCallback as any).current();
@@ -112,7 +112,7 @@ export const StockMarketDataSample: React.FunctionComponent = () => {
         const changedIdx = returnRandomWith(dataApi.length);
         (dataApi[changedIdx].cells[2] as CssClassCell).value = currentValueRandom(dataApi, changedIdx);
       }
-      
+
       const cheangeRows: Row[] = findChangedRows(dataState, dataApi);
       if (cheangeRows.length !== 0) {
         cheangeRows.forEach(row => {
@@ -120,26 +120,26 @@ export const StockMarketDataSample: React.FunctionComponent = () => {
           idsToCheanges.forEach(id => {
             const valueFromApi = (dataApi[id].cells[2] as CssClassCell).value;
             const valueFromState = (dataState[id].cells[2] as CssClassCell).value;
-              if ( valueFromApi !== valueFromState) {
-                (dataApi[id].cells[2] as CssClassCell).className = valueFromApi > valueFromState
-                  ? 'stockMarketBaseStyle greenyellow' 
-                  : 'stockMarketBaseStyle red';
-              }
+            if (valueFromApi !== valueFromState) {
+              (dataApi[id].cells[2] as CssClassCell).className = valueFromApi > valueFromState
+                ? 'stockMarketBaseStyle greenyellow'
+                : 'stockMarketBaseStyle red';
+            }
           })
           idsToCheanges.length = 0;
         })
       }
       setState({ columns: [...state.columns], rows: dataApi });
     })
-    .catch(e => {
-      console.error(e);
-    });
+      .catch(e => {
+        console.error(e);
+      });
   }
 
   return (
     <>
       <ReactGridContainer className="stock-market-cell-sample">
-        {state.rows.length !== 0 ? 
+        {state.rows.length !== 0 ?
           <ReactGrid
             rows={state.rows}
             columns={state.columns}
@@ -148,7 +148,7 @@ export const StockMarketDataSample: React.FunctionComponent = () => {
             disableFillHandle
             enableRowSelection
             enableColumnSelection
-          /> 
+          />
           : <span className='stock-market-loading'>Loading...</span>}
       </ReactGridContainer>
     </>
