@@ -3,13 +3,14 @@ import { VirtualEnv, VirtualUser } from './VirtualUser';
 import { columns } from '../../data/crm/columns';
 import { rows } from '../../data/crm/rows';
 import styled from 'styled-components';
-import './styling.scss';
 import { CellChange } from '@silevis/reactgrid';
 import { HeaderCellTemplate } from '../../cell-templates/HeaderCellTemplate';
 import { CellLocation } from '@silevis/reactgrid/dist/lib/Model';
 import { ReactGrid } from '@silevis/reactgrid';
 import { DateCellTemplate } from '../../cell-templates/dateCell/DateCellTemplate';
-import { TimeCellTemplate } from '../../cell-templates/timeCell/TimeCellTemplate';
+import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
+import { DropdownNumberCellTemplate } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
+import './styling.scss';
 
 const ReactGridContainer = styled.div`
   position: relative;
@@ -45,18 +46,18 @@ export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> 
 
         // virtEnv
         //     .addUser(new VirtualUser('#2274A5'))
-        // .addUser(new VirtualUser('#F75C03'))
-        // .addUser(new VirtualUser('#F1C40F'))
-        // .addUser(new VirtualUser('#D90368'))
-        // .addUser(new VirtualUser('#00f2c3'))
-        // .addUser(new VirtualUser('#ffd600'))
-        // .addUser(new VirtualUser('#344675'))
-        // .addUser(new VirtualUser('#212529'))
-        // .addUser(new VirtualUser('#ffffff'))
-        // .addUser(new VirtualUser('#000000'))
-        // .addUser(new VirtualUser('#5e72e4'))
-        // .addUser(new VirtualUser('#4D8802'))
-        // .addUser(new VirtualUser('#A771FE'))
+        //     .addUser(new VirtualUser('#F75C03'))
+        //     .addUser(new VirtualUser('#F1C40F'))
+        //     .addUser(new VirtualUser('#D90368'))
+        //     .addUser(new VirtualUser('#00f2c3'))
+        //     .addUser(new VirtualUser('#ffd600'))
+        //     .addUser(new VirtualUser('#344675'))
+        //     .addUser(new VirtualUser('#212529'))
+        //     .addUser(new VirtualUser('#ffffff'))
+        //     .addUser(new VirtualUser('#000000'))
+        //     .addUser(new VirtualUser('#5e72e4'))
+        //     .addUser(new VirtualUser('#4D8802'))
+        //     .addUser(new VirtualUser('#A771FE'))
 
 
         // this.intervalId = window.setInterval(() => {
@@ -100,7 +101,8 @@ export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> 
                     customCellTemplates={{
                         'header': new HeaderCellTemplate,
                         'date': new DateCellTemplate,
-                        // 'time': new TimeCellTemplate,
+                        'flag': new FlagCellTemplate,
+                        'dropdownNumber': new DropdownNumberCellTemplate
                     }}
                     highlightLocations={this.state.highlightLocations}
                     license={'non-commercial'}

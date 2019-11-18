@@ -1,61 +1,67 @@
 import * as React from 'react';
-// import styled from 'styled-components';
-// import { ReactGrid, DataChange, ColumnProps, CellMatrixProps } from '@silevis/reactgrid';
-// import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
-// import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
-// import { columns } from '../../data/columns';
-// import { rows } from '../../data/rows';
+import styled from 'styled-components';
+import { ReactGrid, CellChange, Column, Id, Row, DropPosition } from '@silevis/reactgrid';
+import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
+import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
+import { columns as dataColumns } from '../../data/columns';
+import { rows as dataRows } from '../../data/rows';
+import './styling.scss';
 
-// const ReactGridContainer = styled.div`
-//   position: relative;
-//   min-height: 400px;
-// `;
+const ReactGridContainer = styled.div`
+  position: relative;
+  min-height: 400px;
+`;
 
-// export class ResizeColumnSample extends React.Component<{}, CellMatrixProps> {
-//   state = {
-//     columns:  columns(false, true),
-//     rows:     rows(false),
-//   }
+interface ResizeColumnSample {
+  columns: Column[]
+  rows: Row[]
+}
 
-//   private getMatrix() {
-//     const columns: ColumnProps[] = [...this.state.columns].map((column, idx) => ({
-//       ...column,
-//       onResize: width => {
-//         columns[idx] = { ...column, width };
-//         this.setState({ columns })
-//       }
-//     }));
+export const ResizeColumnSample: React.FunctionComponent = () => {
 
-//     return { columns, rows: this.state.rows }
-//   }
+  const [state, setState] = React.useState<ResizeColumnSample>(() => ({
+    columns: dataColumns(false, true),
+    rows: dataRows(false),
+  }))
 
-//   private prepareDataChanges = (dataChanges: DataChange[]): {} => {
-//     const state = { ...this.state }
-//     dataChanges.forEach(change => {
-//       state.rows.forEach((row: any) => {
-//         if (row.id == change.rowId) {
-//           const field = this.state.columns.findIndex((column: any) => column.id == change.columnId)
-//           if (field !== undefined)
-//             row.cells[field].data = change.newData;
-//         }
-//       })
-//     })
-//     return state
-//   }
+  const handleChanges = (changes: CellChange[]) => {
+    let newState = { ...state };
+    changes.forEach((change: any) => {
+      const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
+      const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
+      newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+    })
+    setState(newState);
+    return true;
+  }
 
-//   render() {
-//     return (
-//       <ReactGridContainer id="resize-column-sample">
-//         <ReactGrid
-//           cellMatrixProps={this.getMatrix()}
-//           cellTemplates={{ 
-//             'rating': new RateCellTemplate, 
-//             'flag': new FlagCellTemplate 
-//           }}
-//           onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
-//           license={'non-commercial'}
-//         />
-//       </ReactGridContainer> 
-//     )
-//   }
-// }
+  const handleColumnResize = (ci: Id, width: number) => {
+    let newState = { ...state };
+    const columnIndex = newState.columns.findIndex(el => el.columnId === ci);
+    const resizedColumn: Column = newState.columns[columnIndex];
+    const updateColumn: Column = {
+      ...resizedColumn,
+      width
+    };
+    newState.columns[columnIndex] = updateColumn;
+    setState(newState);
+  }
+
+  return (
+    <ReactGridContainer id="column-reorder-sample">
+      <ReactGrid
+        rows={state.rows}
+        columns={state.columns}
+        customCellTemplates={{
+          'rating': new RateCellTemplate,
+          'flag': new FlagCellTemplate
+        }}
+        onCellsChanged={handleChanges}
+        onColumnResized={handleColumnResize}
+        license={'non-commercial'}
+        enableColumnSelection
+        enableRowSelection
+      />
+    </ReactGridContainer>
+  )
+}

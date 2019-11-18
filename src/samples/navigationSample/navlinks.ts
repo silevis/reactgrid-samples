@@ -2,12 +2,12 @@ import { INavLink } from 'office-ui-fabric-react/lib/Nav';
 import {
   // AllInOneSample, 
   // RateCellSample, 
-  // FrozensSample, 
+  FrozensSample,
   // BudgetPlannerSample, 
-  // ColumnReorderSample,
-  // ResizeColumnSample, 
+  ColumnReorderSample,
+  ResizeColumnSample,
   MultiUserSample,
-  // StockMarketDataSample 
+  StockMarketDataSample
 } from '../../samples';
 
 export interface ISampleNavLink extends INavLink {

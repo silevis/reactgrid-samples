@@ -1,55 +1,66 @@
 import * as React from 'react';
-// import styled from 'styled-components';
-// import { ReactGrid, DataChange, CellMatrixProps } from '@silevis/reactgrid';
-// import { DropdownNumberCellTemplate } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
-// import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
-// import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
-// import { columns } from '../../data/crm/columns';
-// import { rows } from '../../data/crm/rows';
-// import './styling.scss';
+import styled from 'styled-components';
+import { ReactGrid, Column, CellChange, Row } from '@silevis/reactgrid';
+import { DropdownNumberCellTemplate } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
+import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
+import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
+import { columns as crmColumns } from '../../data/crm/columns';
+import { rows as crmRows } from '../../data/crm/rows';
+import './styling.scss';
 
-// const ReactGridContainer = styled.div`
-//   position: relative;
-//   min-height: 400px;
-// `;
+const ReactGridContainer = styled.div`
+  position: relative;
+  min-height: 400px;
+`;
 
-// export class FrozensSample extends React.Component<{}, CellMatrixProps> {
-//   state = {
-//     columns:              columns(true, false),
-//     rows:                 rows(true),
-//     frozenTopRows:        1,
-//     frozenLeftColumns:    2,
-//     frozenRightColumns:   1
-//   }
+interface FrozensState {
+  columns: Column[]
+  rows: Row[],
+  frozenTopRows?: number,
+  frozenBottomRows?: number,
+  frozenLeftColumns?: number,
+  frozenRightColumns?: number,
+}
 
-//   private prepareDataChanges = (dataChanges: DataChange[]): {} => {
-//     const state = { ...this.state }
-//     dataChanges.forEach(change => {
-//       state.rows.forEach((row: any) => {
-//         if (row.id == change.rowId) {
-//           const field = this.state.columns.findIndex((column: any) => column.id == change.columnId);
-//           if (field !== undefined)
-//             row.cells[field].data = change.newData;
-//         }
-//       })
-//     });
-//     return state
-//   };
 
-//   render() {
-//     return (
-//       <ReactGridContainer id="frozens-sample">
-//         <ReactGrid
-//           cellMatrixProps={this.state}
-//           cellTemplates={{
-//             'rating': new RateCellTemplate,
-//             'flag': new FlagCellTemplate,
-//             'dropdownNumber' : new DropdownNumberCellTemplate,
-//           }}
-//           onDataChanged={changes => this.setState(this.prepareDataChanges(changes))}
-//           license={'non-commercial'}
-//         />
-//       </ReactGridContainer>
-//     )
-//   }
-// }
+export const FrozensSample: React.FunctionComponent = () => {
+
+  const [state, setState] = React.useState<FrozensState>(() => ({
+    columns: [...crmColumns(true, false)],
+    rows: [...crmRows(true)],
+    frozenTopRows: 1,
+    frozenLeftColumns: 1,
+    frozenRightColumns: 1,
+  }))
+
+  const handleChanges = (changes: CellChange[]) => {
+    let newState = { ...state };
+    changes.forEach((change: any) => {
+      const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
+      const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
+      newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+    })
+    setState(newState);
+    return true;
+  }
+
+  return (
+    <ReactGridContainer id="frozens-sample">
+      <ReactGrid
+        rows={state.rows}
+        columns={state.columns}
+        customCellTemplates={{
+          'rating': new RateCellTemplate,
+          'flag': new FlagCellTemplate,
+          'dropdownNumber': new DropdownNumberCellTemplate,
+        }}
+        frozenTopRows={state.frozenTopRows}
+        frozenBottomRows={state.frozenBottomRows}
+        frozenLeftColumns={state.frozenLeftColumns}
+        frozenRightColumns={state.frozenRightColumns}
+        onCellsChanged={handleChanges}
+        license={'non-commercial'}
+      />
+    </ReactGridContainer>
+  )
+}

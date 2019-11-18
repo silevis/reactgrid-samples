@@ -3,7 +3,7 @@
 
 export const rows = (reorderable: boolean): any[] => [
   {
-    id: 'header',
+    rowId: 'header',
     height: 25,
     reorderable,
     cells: [
@@ -15,7 +15,7 @@ export const rows = (reorderable: boolean): any[] => [
     ]
   },
   {
-    id: '1',
+    rowId: '1',
     height: 25,
     reorderable,
     cells: [
@@ -27,7 +27,7 @@ export const rows = (reorderable: boolean): any[] => [
     ]
   },
   {
-    id: '2',
+    rowId: '2',
     height: 25,
     reorderable,
     cells: [
@@ -39,7 +39,7 @@ export const rows = (reorderable: boolean): any[] => [
     ]
   },
   {
-    id: '3',
+    rowId: '3',
     height: 25,
     reorderable,
     cells: [
@@ -51,7 +51,7 @@ export const rows = (reorderable: boolean): any[] => [
     ]
   },
   {
-    id: '4',
+    rowId: '4',
     height: 25,
     reorderable,
     cells: [
@@ -63,7 +63,7 @@ export const rows = (reorderable: boolean): any[] => [
     ]
   },
   {
-    id: '5',
+    rowId: '5',
     height: 25,
     reorderable,
     cells: [
@@ -75,7 +75,7 @@ export const rows = (reorderable: boolean): any[] => [
     ]
   },
   {
-    id: '6',
+    rowId: '6',
     height: 25,
     reorderable,
     cells: [
@@ -87,7 +87,7 @@ export const rows = (reorderable: boolean): any[] => [
     ]
   },
   {
-    id: '7',
+    rowId: '7',
     height: 25,
     reorderable,
     cells: [
@@ -100,7 +100,7 @@ export const rows = (reorderable: boolean): any[] => [
   },
 
   {
-    id: '8',
+    rowId: '8',
     height: 25,
     reorderable,
     cells: [
@@ -112,7 +112,7 @@ export const rows = (reorderable: boolean): any[] => [
     ]
   },
   {
-    id: '9',
+    rowId: '9',
     height: 25,
     reorderable,
     cells: [
@@ -124,7 +124,7 @@ export const rows = (reorderable: boolean): any[] => [
     ]
   },
   {
-    id: '10',
+    rowId: '10',
     height: 25,
     reorderable,
     cells: [
@@ -136,7 +136,7 @@ export const rows = (reorderable: boolean): any[] => [
     ]
   },
   {
-    id: '11',
+    rowId: '11',
     height: 25,
     reorderable,
     cells: [
@@ -148,7 +148,7 @@ export const rows = (reorderable: boolean): any[] => [
     ]
   },
   {
-    id: '12',
+    rowId: '12',
     height: 25,
     reorderable,
     cells: [
@@ -160,7 +160,7 @@ export const rows = (reorderable: boolean): any[] => [
     ]
   },
   {
-    id: '13',
+    rowId: '13',
     height: 25,
     reorderable,
     cells: [
@@ -172,7 +172,7 @@ export const rows = (reorderable: boolean): any[] => [
     ]
   },
   {
-    id: '14',
+    rowId: '14',
     height: 25,
     reorderable,
     cells: [
@@ -184,7 +184,7 @@ export const rows = (reorderable: boolean): any[] => [
     ]
   },
   {
-    id: '15',
+    rowId: '15',
     height: 25,
     reorderable,
     cells: [
@@ -196,7 +196,7 @@ export const rows = (reorderable: boolean): any[] => [
     ]
   },
   {
-    id: '16',
+    rowId: '16',
     height: 25,
     reorderable,
     cells: [
@@ -208,7 +208,7 @@ export const rows = (reorderable: boolean): any[] => [
     ]
   },
   {
-    id: '17',
+    rowId: '17',
     height: 25,
     reorderable,
     cells: [

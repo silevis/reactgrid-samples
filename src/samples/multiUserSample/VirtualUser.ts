@@ -14,7 +14,7 @@ export class ReactGridDataGenerator {
     static data: any = {
         name: ['Jacob', 'Tom', 'John', 'Allie', 'Zoe', 'Ashe', 'Fred', 'Rob', 'Alison', 'Arcady', 'Tom', 'Jerry'],
         surname: ['Hudson', 'Perkins', 'Mason', 'Armstrong', 'King', 'Collins', 'Bush', 'Maddison', 'Del Rey', 'Goletz', 'Ferrer'],
-        // country: ['fra', 'hun', 'lbn', 'mli', 'deu', 'pol', 'prt', 'svk', 'gbr', 'alb', 'aut', 'bra'],
+        country: ['fra', 'hun', 'lbn', 'mli', 'deu', 'pol', 'prt', 'svk', 'gbr', 'alb', 'aut', 'bra'],
         city: ['Pekin', 'Newark', 'Acapulco', 'El Paso', 'Warsaw', 'Athens', 'Moscow', 'Mexico', 'Toronto', 'Los Angeles'],
         position: ['Director', 'Manager', 'Software Dev', 'QA', 'Automated Tester', 'Unemployed', 'Scrum Master', 'Project owner'],
         sex: ['male', 'female'],
@@ -46,24 +46,18 @@ export class ReactGridDataGenerator {
         return surnames[getRandomInt(0, surnames.length)];
     }
 
-    // getRandomCountry(): string {
-    //     const countries = ReactGridDataGenerator.data.country;
-    //     return countries[getRandomInt(0, countries.length)];
-    // }
+    getRandomCountry(): string {
+        const countries = ReactGridDataGenerator.data.country;
+        return countries[getRandomInt(0, countries.length)];
+    }
 
     getRandomAge(min: number = 10, max: number = 70): number {
         return getRandomInt(min, max)
     }
 
-    //     getRandomDate(start = new Date(1955, 0, 1), end = new Date(1990, 0, 1)): string {
-    //         let d = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())),
-    //         month = '' + (d.getMonth() + 1),
-    //         day = '' + d.getDate(),
-    //         year = d.getFullYear();
-    //         if (month.length < 2) month = '0' + month;
-    //         if (day.length < 2) day = '0' + day;
-    //         return [year, month, day].join('-');
-    //     }
+    getRandomDate(start = new Date(1955, 0, 1), end = new Date(1990, 0, 1)): Date {
+        return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
+    }
 
     getRandomPosition(): any {
         const positions = ReactGridDataGenerator.data.position;
@@ -128,6 +122,7 @@ export class VirtualUser {
         const { type } = state.rows[this.highlightY].cells[this.highlightX];
         const dataGen: ReactGridDataGenerator = new ReactGridDataGenerator();
         let newFieldData: any = dataGen.getDataAttrByKey(state.columns[this.highlightX].columnId as string);
+        let newAdditionalFieldData = {};
         if (newFieldData == null) {
             switch (type) {
                 case 'checkbox': {
@@ -140,22 +135,24 @@ export class VirtualUser {
                     newFieldData = dataGen.getRandomAge(10, 70);
                     break;
                 }
-                // case 'date': {
-                //     newFieldData = dataGen.getRandomDate();
-                //     break;
-                // }
+                case 'date': {
+                    newFieldData = dataGen.getRandomDate();
+                    break;
+                }
                 case 'email': {
                     newFieldData = dataGen.getRandomEmail();
                     break;
                 }
-                // case 'flag': {
-                //     newFieldData = dataGen.getRandomCountry();
-                //     break;
-                // }
-                // case 'dropdownNumber': {
-                //     newFieldData = { value: getRandomInt(0, 100), isOpened: false };
-                //     break;
-                // }
+                case 'flag': {
+                    newFieldData = dataGen.getRandomCountry();
+                    break;
+                }
+                case 'dropdownNumber': {
+                    const data: any = state.rows[this.highlightY].cells[this.highlightX];
+                    newFieldData = getRandomInt(0, 100)
+                    newAdditionalFieldData = { isOpened: !data.isOpened }
+                    break;
+                }
                 default:
                     break;
             }
@@ -167,7 +164,7 @@ export class VirtualUser {
                         columnId: state.columns[this.highlightX].columnId,
                         rowId: state.rows[this.highlightY].rowId,
                         initialCell: { text: '', type, value: undefined },
-                        newCell: { text: newFieldData.toString(), type, value: newFieldData },
+                        newCell: { text: newFieldData.toString(), type, value: newFieldData, ...newAdditionalFieldData },
                     }
                 ]
             ), highlightLocations: state.highlightLocations

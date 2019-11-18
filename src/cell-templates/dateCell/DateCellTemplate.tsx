@@ -29,6 +29,7 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
     }
 
     validate(cell: any): CompatibleCell<DateCell> {
+        console.log(cell)
         if (cell.date === undefined) {
             // TODO some throw?
             return { ...cell, text: '' }
@@ -54,6 +55,7 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
         const newCellText = (newCell as CompatibleCell).text;
         const date_regex = /^\d{1,2}(\/|-)\d{1,2}(\/|-)\d{4}$/;
 
+        console.log(newCell)
 
         if (newCellDate !== undefined && newCellDate instanceof Date) {
             return { ...cell, date: newCellDate, text: this.getDate(newCellDate) } as DateCell;
