@@ -34,7 +34,6 @@ export class DropdownNumberCellTemplate implements CellTemplate<DropdownNumberCe
   }
 
   update(cell: Compatible<DropdownNumberCell>, cellToMerge: UncertainCompatible<DropdownNumberCell>): Compatible<DropdownNumberCell> {
-
     if (cellToMerge.value !== undefined && cellToMerge.value !== NaN)
       return this.getCompatibleCell({ ...cell, value: cellToMerge.value });
     const parsed = parseFloat(cellToMerge.text);
@@ -42,7 +41,7 @@ export class DropdownNumberCellTemplate implements CellTemplate<DropdownNumberCe
   }
 
   getStyle(cell: Compatible<DropdownNumberCell>, isInEditMode: boolean): CellStyle {
-    return ({overflow: 'unset'}) as any
+    return ({overflow: 'unset'}) as CellStyle
   };
 
   render(cell: Compatible<DropdownNumberCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<DropdownNumberCell>, commit: boolean) => void): React.ReactNode {
@@ -50,33 +49,28 @@ export class DropdownNumberCellTemplate implements CellTemplate<DropdownNumberCe
     
     return (
       <>
-        <div className="rg-dropdown-number-cell">
-          <div className="rg-dropdown-number-cell-wrapper">
-            <div className="rg-dropdown-number-cell-value"><span>{cell.value}</span></div>
-            <div className="rg-dropdown-number-cell-chevron">
-              <div
-                style={{ transform: !isOpen ? 'rotate(0deg)' : 'rotate(90deg)', transitionDuration: '200ms' }}
-                onClick={() => {setOpen(!isOpen)}}
-              > ❯
-              </div>
+        <div className="wrapper">
+          <div className="value"><span>{cell.value}</span></div>
+          <div className="chevron" onClick={() => {setOpen(!isOpen)}}>
+            <div style={{ transform: !isOpen ? 'rotate(0deg)' : 'rotate(90deg)', transitionDuration: '200ms' }}
+            > ❯
             </div>
           </div>
-          {isOpen &&
-            <div className="rg-dropdown-number-cell-dropdown">
-              <input
-                type="range"
-                min={DropdownNumberCellTemplate.MIN_VAL}
-                max={DropdownNumberCellTemplate.MAX_VAL}
-                step={DropdownNumberCellTemplate.STEP}
-                className="rg-dropdown-number-cell-dropdown-input"
-                defaultValue={cell.value.toString()}
-                onPointerDown={e => e.stopPropagation()}
-                onChange={(e: React.FormEvent<HTMLInputElement>) => {
-                  onCellChanged(this.getCompatibleCell({ ...cell, value: parseInt(e.currentTarget.value, 10) }), true);
-                }}
-              />
-            </div>}
         </div>
+        {isOpen &&
+          <div className="dropdown">
+            <input
+              type="range"
+              min={DropdownNumberCellTemplate.MIN_VAL}
+              max={DropdownNumberCellTemplate.MAX_VAL}
+              step={DropdownNumberCellTemplate.STEP}
+              defaultValue={cell.value.toString()}
+              onPointerDown={e => e.stopPropagation()}
+              onChange={(e: React.FormEvent<HTMLInputElement>) => {
+                onCellChanged(this.getCompatibleCell({ ...cell, value: parseInt(e.currentTarget.value, 10) }), true);
+              }}
+            />
+          </div>}
       </>
     )
   }

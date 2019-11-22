@@ -34,7 +34,7 @@ const fetchStockMarketData = async () => {
         cells: [
           { type: 'text', text: item.name },
           { type: 'text', text: item.symbol },
-          { type: 'cssClass', value: item.current_price, className: 'stockMarketBaseStyle' },
+          { type: 'cssClass', value: item.current_price },
           { type: 'number', value: item.low_24h },
           { type: 'number', value: item.high_24h },
         ]
@@ -122,8 +122,8 @@ export const StockMarketDataSample: React.FunctionComponent = () => {
             const valueFromState = (dataState[id].cells[2] as CssClassCell).value;
             if (valueFromApi !== valueFromState) {
               (dataApi[id].cells[2] as CssClassCell).className = valueFromApi > valueFromState
-                ? 'stockMarketBaseStyle greenyellow'
-                : 'stockMarketBaseStyle red';
+                ? 'growth'
+                : 'decrease';
             }
           })
           idsToCheanges.length = 0;

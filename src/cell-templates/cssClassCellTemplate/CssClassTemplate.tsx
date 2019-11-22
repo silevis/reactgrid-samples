@@ -5,7 +5,7 @@ import './css-class-style.scss';
 export interface CssClassCell extends Cell {
     type: 'cssClass';
     value: number;
-    className?: string | undefined;
+    className?: string;
 }
 
 export class CssClassCellTemplate implements CellTemplate<CssClassCell> {
@@ -20,12 +20,12 @@ export class CssClassCellTemplate implements CellTemplate<CssClassCell> {
         return { cell, enableEditMode: false }
     }
 
-    // getClassName(cell: Compatible<TextCell>, isInEditMode: boolean) {
-    //     const isValid = cell.validator ? cell.validator(cell.text) : true;
-    //     return isValid ? 'valid' : 'invalid';
-    // }
+    getClassName(cell: Compatible<CssClassCell>, isInEditMode: boolean) {
+        return cell.className ? cell.className : '';
+    }
 
     render(cell: Compatible<CssClassCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<CssClassCell>, commit: boolean) => void): React.ReactNode {
-        if (!isInEditMode) return <div className={cell.className}>{cell.value}</div>
+        if (!isInEditMode) return cell.value
     }
+    
 }

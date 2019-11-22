@@ -1,33 +1,27 @@
-$base-red:                       rgba(255, 0, 0, 1) !default;
-$transparent-base-red:           rgba(255, 0, 0, 0) !default;
-$base-green-yellow:              rgba(0, 255, 0, 1) !default;
-$transparent-base-green-yellow:  rgba(0, 255, 0, 0) !default;
+$base-decrease:             rgba(255, 0, 0, 1) !default;
+$transparent-base-decrease: rgba(255, 0, 0, 0) !default;
+$base-growth:               rgba(0, 255, 0, 1) !default;
+$transparent-base-growth:   rgba(0, 255, 0, 0) !default;
+$time:                        3s !default;
 
-.stock-market-cell-sample {
-
-  @keyframes background-red {
-    0% { background-color: $base-red; }
-    100% { background-color: $transparent-base-red; }
+.rg-cssClass-cell {
+  justify-content: flex-ends;
+  @keyframes decrease {
+    0% { background-color: $base-decrease; }
+    100% { background-color: $transparent-base-decrease; }
   }
 
-  @keyframes background-green {
-    0% { background-color : $base-green-yellow; }
-    100% { background-color: $transparent-base-green-yellow; }
+  @keyframes growth {
+    0% { background-color : $base-growth; }
+    100% { background-color: $transparent-base-growth; }
   }
 
-  .red {
-    -webkit-animation: background-red 3s infinite; 
-    animation: background-red 3s infinite;
+  &.decrease {
+    -webkit-animation: decrease $time infinite; 
+    animation: decrease $time infinite;
   }
-  .greenyellow {
-    -webkit-animation: background-green 3s infinite; 
-    animation: background-green 3s infinite;
-  }
-
-  .stockMarketBaseStyle{
-    display: flex;
-    width: 100%;
-    height: 100%;
-    align-items: center;
+  &.growth {
+    -webkit-animation: growth $time infinite; 
+    animation: growth $time infinite;
   }
 }

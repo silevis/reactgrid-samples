@@ -1,38 +1,31 @@
 /* https://github.com/darlanrod/input-range-scss/blob/master/example/inputrange.css */
 
-.rg-dropdown-number-cell {
-  width: 100%;
-  .rg-dropdown-number-cell-wrapper{
+.rg-dropdownNumber-cell {
+  .wrapper {
     height: 100%;
     width: 100%;
     display: flex;
     justify-content: space-between;
-  }
-  .rg-dropdown-number-cell-wrapper {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    .rg-dropdown-number-cell-value{
+    .value{
       display: flex;
       align-items: center;
     }
-    .rg-dropdown-number-cell-chevron{
+    .chevron{
       padding: 0 5px;
       margin: 0 10px 0 0;
       cursor: pointer;
     }
   }
-  .rg-dropdown-number-cell-dropdown {
+  .dropdown {
     position: absolute;
     top: calc(100%);
     padding: 0 3px;
     border: 1px solid #bbb;
     border-radius: 0 0 3px 3px;
     background-color: #ffffff;
+    margin-left: -2px;
     z-index: 5;
   }
-
 
   $track-color: #eceff1 !default;
   $thumb-color: #607d8b !default;
