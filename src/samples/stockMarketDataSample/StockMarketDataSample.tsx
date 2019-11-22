@@ -45,8 +45,8 @@ const fetchStockMarketData = async () => {
 }
 
 interface StockMarketState {
-  columns: Column[]
-  rows: Row[]
+  columns:  Column[]
+  rows:     Row[]
 }
 
 export const StockMarketDataSample: React.FunctionComponent = () => {
@@ -54,7 +54,7 @@ export const StockMarketDataSample: React.FunctionComponent = () => {
   const [state, setState] = React.useState<StockMarketState>(() => ({
     columns: [...fields],
     rows: []
-  }))
+  }));
 
   useInterval(() => {
     renderValue()
@@ -138,18 +138,20 @@ export const StockMarketDataSample: React.FunctionComponent = () => {
 
   return (
     <>
-      <ReactGridContainer className="stock-market-cell-sample">
+      <ReactGridContainer id="#stock-market-sample" className="stock-market-cell-sample">
         {state.rows.length !== 0 ?
           <ReactGrid
             rows={state.rows}
             columns={state.columns}
-            customCellTemplates={{ 'cssClass': new CssClassCellTemplate }}
+            customCellTemplates={{ 
+              'cssClass': new CssClassCellTemplate 
+            }}
             license={'non-commercial'}
             disableFillHandle
             enableRowSelection
             enableColumnSelection
           />
-          : <span className='stock-market-loading'>Loading...</span>}
+          : <span className='stock-market-sample-loader'>Loading...</span>}
       </ReactGridContainer>
     </>
   )

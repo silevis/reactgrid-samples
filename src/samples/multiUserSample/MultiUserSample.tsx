@@ -1,13 +1,9 @@
 import * as React from 'react';
+import { ReactGrid, CellChange, Highlight } from '@silevis/reactgrid';
+import styled from 'styled-components';
 import { VirtualEnv, VirtualUser } from './VirtualUser';
 import { columns } from '../../data/crm/columns';
 import { rows } from '../../data/crm/rows';
-import styled from 'styled-components';
-import { CellChange } from '@silevis/reactgrid';
-import { HeaderCellTemplate } from '../../cell-templates/HeaderCellTemplate';
-import { CellLocation } from '@silevis/reactgrid/dist/lib/Model';
-import { ReactGrid } from '@silevis/reactgrid';
-import { DateCellTemplate } from '../../cell-templates/dateCell/DateCellTemplate';
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { DropdownNumberCellTemplate } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
 import './styling.scss';
@@ -20,15 +16,15 @@ const ReactGridContainer = styled.div`
 export interface IMultiUserSampleState {
     columns: any,
     rows: any,
-    highlightLocations: CellLocation[]
+    highlight: Highlight[]
 }
 
 export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> {
 
     state = {
-        columns: columns(false, false),
-        rows: rows(false),
-        highlightLocations: []
+        columns:    columns(false, false),
+        rows:       rows(false),
+        highlight:  []
     }
 
     intervalId?: number;
@@ -66,7 +62,7 @@ export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> 
     }
 
     private unsetVirtualEnv() {
-        this.setState({ highlightLocations: [] });
+        this.setState({ highlight: [] });
         window.clearInterval(this.intervalId);
     }
 
@@ -99,12 +95,10 @@ export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> 
                     rows={this.state.rows}
                     onCellsChanged={this.handleChanges}
                     customCellTemplates={{
-                        'header': new HeaderCellTemplate,
-                        'date': new DateCellTemplate,
                         'flag': new FlagCellTemplate,
                         'dropdownNumber': new DropdownNumberCellTemplate
                     }}
-                    highlightLocations={this.state.highlightLocations}
+                    highlights={this.state.highlight}
                     license={'non-commercial'}
                     enableColumnSelection
                     enableRowSelection

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CellTemplate, Cell, CompatibleCell, isTextInput, isNavigationKey, keyCodes } from '@silevis/reactgrid';
+import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible, isNavigationKey, getCellProperty, isAlphaNumericKey, keyCodes } from '@silevis/reactgrid';
 import './flag-cell-style.scss';
 
 export interface FlagCell extends Cell {
@@ -9,26 +9,23 @@ export interface FlagCell extends Cell {
 
 export class FlagCellTemplate implements CellTemplate<FlagCell> {
 
-    validate(cell: any): CompatibleCell<FlagCell> {        
-        if (cell.text === undefined || cell.text === null)
-            throw 'FlagCell is missing text property'
-        return cell;
+    getCompatibleCell(uncertainCell: Uncertain<FlagCell>): Compatible<FlagCell> {
+        const text = getCellProperty(uncertainCell, 'text', 'string');
+        const value = parseFloat(text);
+        return { ...uncertainCell, text, value };
     }
 
-    handleKeyDown(cell: FlagCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: FlagCell, enableEditMode: boolean } {
-        if (!ctrl && !alt && isTextInput(keyCode))
+    handleKeyDown(cell: Compatible<FlagCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<FlagCell>, enableEditMode: boolean } {
+        if (!ctrl && !alt && isAlphaNumericKey(keyCode))
             return { cell, enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 
-    update(cell: FlagCell, newCell: FlagCell | CompatibleCell): FlagCell {
-        if (newCell.text !== undefined && newCell.text.length !== 0) {
-            return { ...cell, text: newCell.text } as FlagCell;
-        }
-        return newCell as FlagCell;
+    update(cell: Compatible<FlagCell>, cellToMerge: UncertainCompatible<FlagCell>): Compatible<FlagCell> {
+        return this.getCompatibleCell({ ...cell, text: cellToMerge.text });
     }
 
-    render(cell: FlagCell, isInEditMode: boolean, onCellChanged: (cell: FlagCell, commit: boolean) => void): React.ReactNode {
+    render(cell: Compatible<FlagCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<FlagCell>, commit: boolean) => void): React.ReactNode {
         if (!isInEditMode) {
             const flagISO = cell.text.toLowerCase(); // ISO 3166-1, 2/3 letters
             const flagURL = `https://restcountries.eu/data/${flagISO}.svg`;
@@ -43,14 +40,14 @@ export class FlagCellTemplate implements CellTemplate<FlagCell> {
                 input && input.focus();
             }}
             defaultValue={cell.text}
-            onChange={e => onCellChanged({ ...cell, text: e.currentTarget.value }, false)}
+            onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), false)}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}
             onPointerDown={e => e.stopPropagation()}
             onKeyDown={e => {
-                if (isTextInput(e.keyCode) || isNavigationKey(e)) e.stopPropagation();
-                if (e.keyCode == keyCodes.ESC) e.currentTarget.value = cell.text; // reset
+                if (isAlphaNumericKey(e.keyCode) || isNavigationKey(e.keyCode)) e.stopPropagation();
+                if (e.keyCode == keyCodes.ESCAPE) e.currentTarget.value = cell.text; // reset
             }}
         />
     }

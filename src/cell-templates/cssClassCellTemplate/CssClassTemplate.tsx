@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { CellTemplate, Cell, CompatibleCell } from '@silevis/reactgrid';
+import { CellTemplate, Cell, Compatible, Uncertain, getCellProperty } from '@silevis/reactgrid';
+import './css-class-style.scss';
 
 export interface CssClassCell extends Cell {
     type: 'cssClass';
@@ -9,17 +10,22 @@ export interface CssClassCell extends Cell {
 
 export class CssClassCellTemplate implements CellTemplate<CssClassCell> {
 
-    validate(cell: CssClassCell): CompatibleCell<CssClassCell> {
-        return { ...cell, text: cell.value.toString() }
+    getCompatibleCell(uncertainCell: Uncertain<CssClassCell>): Compatible<CssClassCell> {
+        const value = getCellProperty(uncertainCell, 'value', 'number');
+        const text = value.toString();
+        return { ...uncertainCell, value, text};
     }
 
-    handleKeyDown(cell: CssClassCell, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: CssClassCell, enableEditMode: boolean }  {
+    handleKeyDown(cell: Compatible<CssClassCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<CssClassCell>, enableEditMode: boolean } {
         return { cell, enableEditMode: false }
     }
 
-    render(cell: CssClassCell, isInEditMode: boolean, onCellChanged: (cell: CssClassCell, commit: boolean) => void): React.ReactNode {
-        if (!isInEditMode) {
-            return <div className={cell.className}>{cell.value}</div>
-        }
+    // getClassName(cell: Compatible<TextCell>, isInEditMode: boolean) {
+    //     const isValid = cell.validator ? cell.validator(cell.text) : true;
+    //     return isValid ? 'valid' : 'invalid';
+    // }
+
+    render(cell: Compatible<CssClassCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<CssClassCell>, commit: boolean) => void): React.ReactNode {
+        if (!isInEditMode) return <div className={cell.className}>{cell.value}</div>
     }
 }

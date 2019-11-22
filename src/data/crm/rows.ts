@@ -4,8 +4,8 @@ export const rows = (reorderable: boolean): any[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'text', text: 'Name' },
-      { type: 'text', text: 'Surname' },
+      { type: 'text',   text: 'Name' },
+      { type: 'text',   text: 'Surname' },
       { type: 'header', text: 'Sex' },
       { type: 'header', text: 'Email' },
       { type: 'header', text: 'Phone' },
@@ -31,12 +31,12 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'number', value: 7958372938 },
       { type: 'text', text: 'New York' },
       { type: 'text', text: 'Wellham Ave' },
-      { type: 'date', date: new Date() },
+      { type: 'date', date: new Date('2008-11-12') },
       { type: 'flag', text: 'usa' },
       { type: 'date', date: new Date('1962-09-04') },
       { type: 'text', text: 'Director' },
       { type: 'dropdownNumber', value: 20, isOpened: false },
-      { type: 'checkbox', value: true }
+      { type: 'checkbox', checked: true }
     ]
   },
   {
@@ -56,7 +56,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'date', date: new Date('1985-11-06') },
       { type: 'text', text: 'CEO' },
       { type: 'dropdownNumber', value: 50, isOpened: false },
-      { type: 'checkbox', value: false }
+      { type: 'checkbox', checked: false }
     ]
   },
   {
@@ -76,7 +76,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'date', date: new Date('1985-12-28') },
       { type: 'text', text: 'QA' },
       { type: 'dropdownNumber', value: 100, isOpened: false },
-      { type: 'checkbox', value: false }
+      { type: 'checkbox', checked: false }
     ]
   },
   {
@@ -96,7 +96,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'date', date: new Date('1973-07-11') },
       { type: 'text', text: 'IT Support' },
       { type: 'dropdownNumber', value: 90, isOpened: false },
-      { type: 'checkbox', value: false }
+      { type: 'checkbox', checked: false }
     ]
   },
   {
@@ -116,7 +116,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'date', date: new Date('1943-09-25') },
       { type: 'text', text: 'CFO' },
       { type: 'dropdownNumber', value: 100, isOpened: false },
-      { type: 'checkbox', value: false }
+      { type: 'checkbox', checked: false }
     ]
   },
   {
@@ -136,7 +136,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'date', date: new Date('1960-09-15') },
       { type: 'text', text: 'Marketing manager' },
       { type: 'dropdownNumber', value: 88, isOpened: false },
-      { type: 'checkbox', value: false }
+      { type: 'checkbox', checked: false }
     ]
   },
   {
@@ -156,7 +156,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'date', date: new Date('1954-12-01') },
       { type: 'text', text: 'CFO' },
       { type: 'dropdownNumber', value: 100, isOpened: false },
-      { type: 'checkbox', value: true }
+      { type: 'checkbox', checked: true }
     ]
   },
   {
@@ -176,7 +176,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'date', date: new Date('1979-07-12') },
       { type: 'text', text: 'Vice President' },
       { type: 'dropdownNumber', value: 88, isOpened: false },
-      { type: 'checkbox', value: true }
+      { type: 'checkbox', checked: true }
     ]
   },
   {
@@ -196,7 +196,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'date', date: new Date('1964-02-07') },
       { type: 'text', text: 'Operations manager' },
       { type: 'dropdownNumber', value: 77, isOpened: false },
-      { type: 'checkbox', value: false }
+      { type: 'checkbox', checked: false }
     ]
   },
   {
@@ -216,7 +216,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'date', date: new Date('1944-01-04') },
       { type: 'text', text: 'Accountant' },
       { type: 'dropdownNumber', value: 35, isOpened: false },
-      { type: 'checkbox', value: true }
+      { type: 'checkbox', checked: true }
     ]
   },
   {
@@ -236,7 +236,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'date', date: new Date('1970-04-18') },
       { type: 'text', text: 'Actor' },
       { type: 'dropdownNumber', value: 70, isOpened: false },
-      { type: 'checkbox', value: false }
+      { type: 'checkbox', checked: false }
     ]
   },
   {
@@ -256,7 +256,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'date', date: new Date('1950-04-15') },
       { type: 'text', text: 'CPA' },
       { type: 'dropdownNumber', value: 20, isOpened: false },
-      { type: 'checkbox', value: false }
+      { type: 'checkbox', checked: false }
     ]
   },
   {
@@ -276,7 +276,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'date', date: new Date('1950-01-24') },
       { type: 'text', text: '--' },
       { type: 'dropdownNumber', value: 10, isOpened: false },
-      { type: 'checkbox', value: true }
+      { type: 'checkbox', checked: true }
     ]
   },
   {
@@ -296,7 +296,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'date', date: new Date('1957-02-24') },
       { type: 'text', text: 'COO' },
       { type: 'dropdownNumber', value: 50, isOpened: false },
-      { type: 'checkbox', value: false }
+      { type: 'checkbox', checked: false }
     ]
   },
   {
@@ -316,7 +316,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'date', date: new Date('1925-08-27') },
       { type: 'text', text: '--' },
       { type: 'dropdownNumber', value: 20, isOpened: false },
-      { type: 'checkbox', value: false }
+      { type: 'checkbox', checked: false }
     ]
   },
   {
@@ -336,7 +336,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'date', date: new Date('1978-05-11') },
       { type: 'text', text: 'Manager' },
       { type: 'dropdownNumber', value: 70, isOpened: false },
-      { type: 'checkbox', value: false }
+      { type: 'checkbox', checked: false }
     ]
   },
   {
@@ -356,7 +356,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'date', date: new Date('1968-04-02') },
       { type: 'text', text: 'President' },
       { type: 'dropdownNumber', value: 40, isOpened: false },
-      { type: 'checkbox', value: true }
+      { type: 'checkbox', checked: true }
     ]
   },
 ]

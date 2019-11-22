@@ -22,15 +22,15 @@ interface FrozensState {
   frozenRightColumns?: number,
 }
 
-
 export const FrozensSample: React.FunctionComponent = () => {
 
   const [state, setState] = React.useState<FrozensState>(() => ({
-    columns: [...crmColumns(true, false)],
-    rows: [...crmRows(true)],
-    frozenTopRows: 1,
-    frozenLeftColumns: 1,
+    columns:            [...crmColumns(true, false)],
+    rows:               [...crmRows(true)],
+    frozenTopRows:      1,
+    frozenLeftColumns:  1,
     frozenRightColumns: 1,
+    frozenBottomRows:   undefined
   }))
 
   const handleChanges = (changes: CellChange[]) => {

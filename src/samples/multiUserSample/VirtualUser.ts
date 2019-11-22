@@ -107,12 +107,12 @@ export class VirtualUser {
     updateFocusesState(state: IMultiUserSampleState): IMultiUserSampleState {
         this.highlightX = getRandomInt(0, state.columns.length);
         this.highlightY = getRandomInt(1, state.rows.length);
-        const highlightLocations = [...state.highlightLocations].filter(highlight => highlight.color !== this.color);
+        const highlightLocations = [...state.highlight].filter(highlight => highlight.borderColor !== this.color);
         let newHighlight: any =
             state.rows.length !== 1 && state.columns[this.highlightX]
                 ? { columnId: state.columns[this.highlightX].columnId, rowId: state.rows[this.highlightY].rowId, color: this.color }
                 : {};
-        return { ...state, highlightLocations: [...highlightLocations, newHighlight] }
+        return { ...state, highlight: [...highlightLocations, newHighlight] }
     }
 
     getUpdatedFieldState(state: IMultiUserSampleState, handleData: (data: any) => IMultiUserSampleState): any {
@@ -167,7 +167,7 @@ export class VirtualUser {
                         newCell: { text: newFieldData.toString(), type, value: newFieldData, ...newAdditionalFieldData },
                     }
                 ]
-            ), highlightLocations: state.highlightLocations
+            ), highlightLocations: state.highlight
         }
     }
 
