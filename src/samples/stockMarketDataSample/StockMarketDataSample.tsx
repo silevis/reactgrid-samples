@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect, useRef} from 'react';
 import { ReactGrid, Column, Id, Row } from '@silevis/reactgrid';
 import styled from 'styled-components';
 import { CssClassCell, CssClassCellTemplate } from '../../cell-templates/cssClassCellTemplate/CssClassTemplate';
@@ -56,9 +56,7 @@ export const StockMarketDataSample: React.FunctionComponent = () => {
     rows: []
   }));
 
-  useInterval(() => {
-    renderValue()
-  }, 3000);
+  
 
   const returnRandomWith = (numberOfRows: number) => Math.floor(Math.random() * numberOfRows + 1)
 
@@ -86,23 +84,23 @@ export const StockMarketDataSample: React.FunctionComponent = () => {
     return dataState.filter((data: Row, idx: number) => idx != 0 && (data.cells[2] as CssClassCell).value !== (dataApi[idx].cells[2] as CssClassCell).value);
   }
 
-  function useInterval(callback: any, delay: number) {
+  const useInterval = (callback: any, delay: number) => {
     const savedCallback = React.useRef();
 
-    React.useEffect(() => {
+    useEffect(() => {
       savedCallback.current = callback;
     }, [callback]);
 
-    React.useEffect(() => {
-      function tick() {
-        (savedCallback as any).current();
-      }
+    useEffect(() => {
+      const tick = () => (savedCallback as any).current();
       if (delay !== null) {
         let id = setInterval(tick, delay);
         return () => clearInterval(id);
       }
     }, [delay]);
   }
+
+  useInterval(() => renderValue(), 3000);
 
   const renderValue = () => {
     fetchStockMarketData().then((res: Row[]) => {
@@ -121,9 +119,7 @@ export const StockMarketDataSample: React.FunctionComponent = () => {
             const valueFromApi = (dataApi[id].cells[2] as CssClassCell).value;
             const valueFromState = (dataState[id].cells[2] as CssClassCell).value;
             if (valueFromApi !== valueFromState) {
-              (dataApi[id].cells[2] as CssClassCell).className = valueFromApi > valueFromState
-                ? 'growth'
-                : 'decrease';
+              (dataApi[id].cells[2] as CssClassCell).className = valueFromApi > valueFromState  ? 'growth' : 'decrease';
             }
           })
           idsToCheanges.length = 0;
@@ -131,9 +127,7 @@ export const StockMarketDataSample: React.FunctionComponent = () => {
       }
       setState({ columns: [...state.columns], rows: dataApi });
     })
-      .catch(e => {
-        console.error(e);
-      });
+    .catch(console.error);
   }
 
   return (

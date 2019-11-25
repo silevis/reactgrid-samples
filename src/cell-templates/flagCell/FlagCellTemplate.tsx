@@ -35,7 +35,6 @@ export class FlagCellTemplate implements CellTemplate<FlagCell> {
             }} />
         }
         return <input
-            className="rg-flag-input"
             ref={input => {
                 input && input.focus();
             }}

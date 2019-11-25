@@ -8,8 +8,8 @@ $rate-star-color-disabled: #cccccc !default;
   & > label { margin-bottom: 0 }
   &:not(:checked) {
     & > input {
-      position:absolute;
-      top:-9999px;
+      position: absolute;
+      top: -9999px;
       &:checked {
         & + label:hover,
         & + label:hover ~ label,

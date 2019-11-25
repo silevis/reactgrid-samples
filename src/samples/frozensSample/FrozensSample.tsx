@@ -28,7 +28,7 @@ export const FrozensSample: React.FunctionComponent = () => {
     columns:            [...crmColumns(true, false)],
     rows:               [...crmRows(true)],
     frozenTopRows:      1,
-    frozenLeftColumns:  1,
+    frozenLeftColumns:  2,
     frozenRightColumns: 1,
     frozenBottomRows:   undefined
   }))
@@ -59,6 +59,8 @@ export const FrozensSample: React.FunctionComponent = () => {
         frozenLeftColumns={state.frozenLeftColumns}
         frozenRightColumns={state.frozenRightColumns}
         onCellsChanged={handleChanges}
+        enableColumnSelection
+        enableRowSelection
         license={'non-commercial'}
       />
     </ReactGridContainer>
