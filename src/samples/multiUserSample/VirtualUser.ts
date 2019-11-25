@@ -1,10 +1,9 @@
+import { Highlight, CellChange, UncertainCompatible, CheckboxCell, Cell, Compatible, EmailCell, DateCell, NumberCell} from '@silevis/reactgrid';
 import { IMultiUserSampleState } from './MultiUserSample';
+import { FlagCell } from '../../cell-templates/flagCell/FlagCellTemplate';
+import { DropdownNumberCell } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
 
-function getRandomInt(min: number, max: number) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min;
-}
+export type RandomDataTypes = string | number | Date | undefined;
 
 export class MultiUserDataGenerator {
 
@@ -19,46 +18,52 @@ export class MultiUserDataGenerator {
     phone:    [645654654, 654234987, 305732948, 94740349, 4028343, 543929348, 58473532, 120954368, 432875483, 54385439],
     street:   ['Jizhou Qu', 'Calle Oriente', 'Via Blanca', 'Dr. Ricardo Gutiérrez', 'Essex', 'Agar St', 'Boulevard Alexis-Nihon']
   }
+  static getRandomInt(min: number, max: number): number {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
 
-  getDataAttrByKey(key: string): any {
-    const randomArray = MultiUserDataGenerator.data[key];
-    if (randomArray !== undefined) return randomArray[getRandomInt(0, randomArray.length)];
-    return null
+  getDataAttrByKey(key: string): RandomDataTypes {
+    const selectedDataArray = MultiUserDataGenerator.data[key];
+    if (selectedDataArray !== undefined) 
+      return selectedDataArray[MultiUserDataGenerator.getRandomInt(0, selectedDataArray.length)];
+    return undefined
   }
 
   getRandomName(): string {
     const names = MultiUserDataGenerator.data.name;
-    return names[getRandomInt(0, names.length)];
+    return names[MultiUserDataGenerator.getRandomInt(0, names.length)];
   }
 
   getRandomEmail(): string {
     const names = MultiUserDataGenerator.data.name;
     const surnames = MultiUserDataGenerator.data.surname;
-    return `${names[getRandomInt(0, names.length)][0].toLowerCase()}.${names[getRandomInt(0, surnames.length)].toLowerCase()}@gmail.com`
+    return `${names[MultiUserDataGenerator.getRandomInt(0, names.length)][0].toLowerCase()}.${names[MultiUserDataGenerator.getRandomInt(0, surnames.length)].toLowerCase()}@gmail.com`
   }
 
   getRandomSurname(): string {
     const surnames = MultiUserDataGenerator.data.surname;
-    return surnames[getRandomInt(0, surnames.length)];
+    return surnames[MultiUserDataGenerator.getRandomInt(0, surnames.length)];
   }
 
   getRandomCountry(): string {
     const countries = MultiUserDataGenerator.data.country;
-    return countries[getRandomInt(0, countries.length)];
+    return countries[MultiUserDataGenerator.getRandomInt(0, countries.length)];
   }
 
   getRandomAge(min: number = 10, max: number = 70): number {
-    return getRandomInt(min, max)
+    return MultiUserDataGenerator.getRandomInt(min, max)
   }
 
   getRandomDate(start = new Date(1955, 0, 1), end = new Date(1990, 0, 1)): Date {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
   }
 
-  // getRandomPosition(): any {
-  //   const positions = MultiUserDataGenerator.data.position;
-  //   return { name: positions[getRandomInt(0, positions.length)], depth: 1 };
-  // }
+  getRandomPosition(): any {
+    const positions = MultiUserDataGenerator.data.position;
+    return { name: positions[MultiUserDataGenerator.getRandomInt(0, positions.length)], depth: 1 };
+  }
 
   getRandomBoolean(): boolean {
     return Math.random() < .5;
@@ -67,10 +72,10 @@ export class MultiUserDataGenerator {
 
 export class VirtualEnv {
 
-  handleData: (data: any) => IMultiUserSampleState;
+  handleData: (data: CellChange[]) => IMultiUserSampleState;
   private virtualUsers: VirtualUser[] = [];
 
-  constructor(handleData: (data: any) => IMultiUserSampleState) {
+  constructor(handleData: (data: CellChange[]) => IMultiUserSampleState) {
     this.handleData = handleData;
   }
 
@@ -90,103 +95,124 @@ export class VirtualEnv {
 
 export class VirtualUser {
 
-  constructor(public color: string) {
-    this.color = color;
+  constructor(public borderColor: string) {
+    this.borderColor = borderColor;
   }
 
-  private count = 0;
-  private highlightX = 0;
-  private highlightY = 0;
+  private count: number = 0;
+  private highlightColumnIdx: number = 0;
+  private highlightRowIdx: number = 0;
 
-  updateFocusesState(state: IMultiUserSampleState): IMultiUserSampleState {
-    this.highlightX = getRandomInt(0, state.columns.length);
-    this.highlightY = getRandomInt(1, state.rows.length);
-    const highlightLocations = [...state.highlights].filter(highlight => highlight.borderColor !== this.color);
-    let newHighlight: any =
-      state.rows.length !== 1 && state.columns[this.highlightX]
-          ? { columnId: state.columns[this.highlightX].columnId, rowId: state.rows[this.highlightY].rowId, color: this.color }
-          : {};
-    return { ...state, highlights: [...highlightLocations, newHighlight] }
+  updateHighlightsState(state: IMultiUserSampleState): IMultiUserSampleState {
+    this.highlightColumnIdx = MultiUserDataGenerator.getRandomInt(0, state.columns.length);
+    this.highlightRowIdx = MultiUserDataGenerator.getRandomInt(1, state.rows.length);
+    const highlightLocations: Highlight[] = [...state.highlights].filter(highlight => highlight.borderColor !== this.borderColor);
+    
+    if (state.rows.length > 0 && state.columns[this.highlightColumnIdx]) {
+      const highlight = { 
+        columnId: this.getHighlightedColumn(state).columnId, 
+        rowId: this.getHighlightedRow(state).rowId, 
+        borderColor: this.borderColor 
+      };
+      return { ...state, highlights: [...highlightLocations, highlight] };
+    }
+    return { ...state }
   }
 
-  getUpdatedFieldState(state: IMultiUserSampleState, handleData: (data: any) => IMultiUserSampleState): any {
-      if (state == null || state.columns[this.highlightX] === undefined || state.rows[this.highlightY] === undefined || state.rows[this.highlightY].cells[this.highlightX] === undefined) {
+  getHighlightedCell(state: IMultiUserSampleState) {
+    return this.getHighlightedRow(state).cells[this.highlightColumnIdx];
+  }
+
+  getHighlightedColumn(state: IMultiUserSampleState) {
+    return state.columns[this.highlightColumnIdx];
+  }
+
+  getHighlightedRow(state: IMultiUserSampleState) {
+    return state.rows[this.highlightRowIdx];
+  }
+
+  getUpdatedFieldState(state: IMultiUserSampleState, handleData: (data: CellChange[]) => IMultiUserSampleState): any {
+      if (state === null || (this.getHighlightedColumn(state) || this.getHighlightedRow(state) || this.getHighlightedCell(state)) === undefined) {
           return null;
       }
-      const { type } = state.rows[this.highlightY].cells[this.highlightX];
+      const cell = this.getHighlightedCell(state);
+
       const dataGen: MultiUserDataGenerator = new MultiUserDataGenerator();
-      let newFieldData: any = dataGen.getDataAttrByKey(state.columns[this.highlightX].columnId as string);
-      let newAdditionalFieldData = {};
-      if (newFieldData == null) {
-        switch (type) {
+      let newFieldData: RandomDataTypes = dataGen.getDataAttrByKey(this.getHighlightedColumn(state).columnId as string);
+      
+      let overridedProperties: Cell = { ...cell };
+
+      if (newFieldData === undefined) {
+        switch (cell.type) {
           case 'checkbox': {
-            // TODO use another soluton for below ..
-            const data: any = state.rows[this.highlightY].cells[this.highlightX];
-            newFieldData = !data.value
+            overridedProperties = ({ ...cell, checked: !(cell as CheckboxCell).checked } as Compatible<CheckboxCell>);
             break;
           }
           case 'number': {
-            newFieldData = dataGen.getRandomAge(10, 70);
+            overridedProperties = ({ value: dataGen.getRandomAge(10, 70) } as Compatible<NumberCell>);
             break;
           }
           case 'date': {
-            newFieldData = dataGen.getRandomDate();
+            overridedProperties = ({ date: dataGen.getRandomDate() } as Compatible<DateCell>);
             break;
           }
           case 'email': {
-            newFieldData = dataGen.getRandomEmail();
+            overridedProperties = ({ text: dataGen.getRandomEmail() } as Compatible<EmailCell>);
             break;
           }
           case 'flag': {
-            newFieldData = dataGen.getRandomCountry();
+            overridedProperties = ({ text: dataGen.getRandomCountry() } as Compatible<FlagCell>);
             break;
           }
           case 'dropdownNumber': {
-            const data: any = state.rows[this.highlightY].cells[this.highlightX];
-            newFieldData = getRandomInt(0, 100)
-            newAdditionalFieldData = { isOpened: !data.isOpened }
+            overridedProperties = ({ value: MultiUserDataGenerator.getRandomInt(0, 100) } as Compatible<DropdownNumberCell>);
             break;
           }
           default:
             break;
         }
+        
+      } else {
+        overridedProperties = ({ value: newFieldData, text: newFieldData.toString() } as Compatible<any>);
       }
       return {
         ...handleData([{
-          columnId: state.columns[this.highlightX].columnId,
-          rowId: state.rows[this.highlightY].rowId,
-          initialCell: { text: '', type, value: undefined },
-          newCell: { text: newFieldData.toString(), type, value: newFieldData, ...newAdditionalFieldData },
-        }]), highlightLocations: state.highlights
+          columnId: this.getHighlightedColumn(state).columnId,
+          rowId:this.getHighlightedRow(state).rowId,
+          initialCell: { ...cell },
+          newCell: { ...cell, ...overridedProperties },
+        }]), 
+        highlightLocations: state.highlights
       }
   }
 
-    makeChanges(state: IMultiUserSampleState, handleData: (data: any) => IMultiUserSampleState): IMultiUserSampleState {
-      switch (this.count++) {
-        case 0: {
-          state = this.updateFocusesState(state);
-          break;
-        }
-        case 1: {
-          state = this.getUpdatedFieldState(state, handleData);
-          break;
-        }
-        case 2: {
-          break;
-        }
-        case 3: {
-          state = this.updateFocusesState(state);
-          break;
-        }
-        case 4: {
-          state = this.getUpdatedFieldState(state, handleData);
-          break;
-        }
-        case 5: {
-          this.count = 0;
-          break;
-        }
+  makeChanges(state: IMultiUserSampleState, handleData: (data: CellChange[]) => IMultiUserSampleState): IMultiUserSampleState {
+    switch (this.count++) {
+      case 0: {
+        state = this.updateHighlightsState(state);
+        break;
       }
-      return state;
+      case 1: {
+        state = this.getUpdatedFieldState(state, handleData);
+        break;
+      }
+      case 2: {
+        break;
+      }
+      case 3: {
+        state = this.updateHighlightsState(state);
+        break;
+      }
+      case 4: {
+        state = this.getUpdatedFieldState(state, handleData);
+        break;
+      }
+      case 5: {
+        this.count = 0;
+        break;
+      }
+    }
+    return state;
   }
+
 }
