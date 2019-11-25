@@ -69,15 +69,13 @@ export class VirtualEnv {
 
   handleData: (data: any) => IMultiUserSampleState;
   private virtualUsers: VirtualUser[] = [];
-  private state: IMultiUserSampleState;
 
-  constructor(state: IMultiUserSampleState, handleData: (data: any) => IMultiUserSampleState) {
-    this.state = state;
+  constructor(handleData: (data: any) => IMultiUserSampleState) {
     this.handleData = handleData;
   }
 
   addUser(virtualUser: VirtualUser): VirtualEnv {
-    this.virtualUsers = [... this.virtualUsers, virtualUser]
+    this.virtualUsers = [...this.virtualUsers, virtualUser]
     return this;
   }
 

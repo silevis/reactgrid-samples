@@ -42,7 +42,7 @@ export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> 
     }
 
     private setVirtualEnv() {
-        const virtEnv: VirtualEnv = new VirtualEnv(this.state, this.prepareChanges);
+        const virtEnv: VirtualEnv = new VirtualEnv(this.makeChanges);
 
         virtEnv
             .addUser(new VirtualUser('#2274A5'))
@@ -68,17 +68,17 @@ export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> 
         window.clearInterval(this.intervalId);
     }
 
-    private prepareChanges = (changes: CellChange[]) => {
-        let newState = { ...this.state };
-        changes.forEach((change: any) => {
-            const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
-            const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
-            newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
-        })
-        return newState;
-    }
+    // private prepareChanges = (changes: CellChange[]) => {
+    //     let newState = { ...this.state };
+    //     changes.forEach((change: any) => {
+    //         const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
+    //         const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
+    //         newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+    //     })
+    //     return newState;
+    // }
 
-    private handleChanges = (changes: CellChange[]) => {
+    private makeChanges = (changes: CellChange[]): IMultiUserSampleState => {
         let newState = { ...this.state };
         changes.forEach((change: any) => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
@@ -86,6 +86,11 @@ export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> 
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         })
         this.setState(newState);
+        return newState;
+    }
+
+    private handleChanges = (changes: CellChange[]): boolean => {
+        this.makeChanges(changes);
         return true;
     }
 
