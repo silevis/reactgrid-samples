@@ -31,4 +31,4 @@ export const fields: Column[] = [
         resizable: false,
         width: 150,
     },
-    ]
+]

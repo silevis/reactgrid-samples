@@ -5,7 +5,8 @@ import {
   ColumnReorderSample,
   ResizeColumnSample,
   MultiUserSample,
-  StockMarketDataSample
+  StockMarketDataSample,
+  GroupCellSample,
 } from '../../samples';
 
 export interface ISampleNavLink extends INavLink {
@@ -13,6 +14,12 @@ export interface ISampleNavLink extends INavLink {
 }
 
 export const navLinks: ISampleNavLink[] = [
+  {
+    name: 'Group Cell Sample',
+    key: '/GroupCellSample',
+    url: '/GroupCellSample',
+    component: GroupCellSample
+  },
   {
     name: 'Frozens Sample',
     key: '/FrozensSample',
