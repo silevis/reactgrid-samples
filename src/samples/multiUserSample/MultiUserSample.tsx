@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReactGrid, CellChange, Highlight, Column, Row } from '@silevis/reactgrid';
+import { ReactGrid, CellChange, Highlight, Column, Row, DropPosition, Id, Cell } from '@silevis/reactgrid';
 import styled from 'styled-components';
 import { VirtualEnv, VirtualUser } from './VirtualUser';
 import { columns } from '../../data/crm/columns';
@@ -24,8 +24,8 @@ export interface IMultiUserSampleState {
 export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> {
 
     state = {
-        columns:            columns(false, false),
-        rows:               rows(false),
+        columns:            columns(true, true),
+        rows:               rows(true),
         frozenTopRows:      1,
         frozenLeftColumns:  2,
         highlights:         [],
@@ -68,15 +68,6 @@ export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> 
         window.clearInterval(this.intervalId);
     }
 
-    // private prepareChanges = (changes: CellChange[]) => {
-    //     let newState = { ...this.state };
-    //     changes.forEach((change: any) => {
-    //         const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
-    //         const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
-    //         newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
-    //     })
-    //     return newState;
-    // }
 
     private makeChanges = (changes: CellChange[]): IMultiUserSampleState => {
         let newState = { ...this.state };
@@ -87,6 +78,43 @@ export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> 
         })
         this.setState(newState);
         return newState;
+    }
+
+    private reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
+        const movedElements: T[] = arr.filter((_: T, idx: number) => idxs.includes(idx));
+        to = Math.min(...idxs) < to ? to += 1 : to -= idxs.filter(idx => idx < to).length;
+        const leftSide: T[] = arr.filter((_: T, idx: number) => idx < to && !idxs.includes(idx));
+        const rightSide: T[] = arr.filter((_: T, idx: number) => idx >= to && !idxs.includes(idx));
+        return [...leftSide, ...movedElements, ...rightSide];
+    }
+
+    private handleCanReorderColumns = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition): boolean => {
+        return true;
+    }
+    
+    private handleCanReorderRows = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition): boolean => {
+        const rowIndex = this.state.rows.findIndex((row: Row) => row.rowId === targetColumnId);
+        if (rowIndex === 0)
+          return false;
+        return true;
+    }
+    
+    private handleColumnsReordered = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
+        const to = this.state.columns.findIndex((column: Column) => column.columnId === targetColumnId);
+        this.setState({
+          columns: this.reorderArray<Column>(this.state.columns, columnIds as number[], to),
+          rows: this.state.rows.map(row => ({ ...row, cells: this.reorderArray<Cell>(row.cells, columnIds as number[], to) })),
+        });
+    }
+    
+    private handleRowsReordered = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
+        let newState = { ...this.state };
+        const to = this.state.rows.findIndex((row: Row) => row.rowId === targetRowId);
+        const ids = rowIds.map((id: Id) => this.state.rows.findIndex(r => r.rowId === id)) as number[];
+        this.setState({
+          ...newState,
+          rows: this.reorderArray<Row>(this.state.rows, ids, to)
+        });
     }
 
     private handleChanges = (changes: CellChange[]): boolean => {
@@ -108,6 +136,10 @@ export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> 
                     frozenTopRows={this.state.frozenTopRows}
                     frozenLeftColumns={this.state.frozenLeftColumns}
                     highlights={this.state.highlights}
+                    canReorderColumns={this.handleCanReorderColumns}
+                    canReorderRows={this.handleCanReorderRows}
+                    onColumnsReordered={this.handleColumnsReordered}
+                    onRowsReordered={this.handleRowsReordered}
                     license={'non-commercial'}
                     enableColumnSelection
                     enableRowSelection
