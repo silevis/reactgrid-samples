@@ -1,4 +1,4 @@
-import { Highlight, CellChange, UncertainCompatible, CheckboxCell, Cell, Compatible, EmailCell, DateCell, NumberCell} from '@silevis/reactgrid';
+import { Highlight, CellChange, CheckboxCell, Cell, Compatible, EmailCell, DateCell, NumberCell} from '@silevis/reactgrid';
 import { IMultiUserSampleState } from './MultiUserSample';
 import { FlagCell } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { DropdownNumberCell } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
@@ -72,7 +72,7 @@ export class MultiUserDataGenerator {
 
 export class VirtualEnv {
 
-  handleData: (data: CellChange[]) => IMultiUserSampleState;
+  private handleData: (data: CellChange[]) => IMultiUserSampleState;
   private virtualUsers: VirtualUser[] = [];
 
   constructor(handleData: (data: CellChange[]) => IMultiUserSampleState) {
@@ -87,7 +87,7 @@ export class VirtualEnv {
   updateView = (state: IMultiUserSampleState) => {
     let modifiedState: IMultiUserSampleState = {...state};
     this.virtualUsers.forEach(virtualUser => {
-        modifiedState = virtualUser.makeChanges(modifiedState, this.handleData);
+      modifiedState = virtualUser.makeChanges(modifiedState, this.handleData);
     });
     return modifiedState
   }
@@ -102,6 +102,18 @@ export class VirtualUser {
   private count: number = 0;
   private highlightColumnIdx: number = 0;
   private highlightRowIdx: number = 0;
+
+  getHighlightedCell(state: IMultiUserSampleState) {
+    return this.getHighlightedRow(state).cells[this.highlightColumnIdx];
+  }
+
+  getHighlightedColumn(state: IMultiUserSampleState) {
+    return state.columns[this.highlightColumnIdx];
+  }
+
+  getHighlightedRow(state: IMultiUserSampleState) {
+    return state.rows[this.highlightRowIdx];
+  }
 
   updateHighlightsState(state: IMultiUserSampleState): IMultiUserSampleState {
     this.highlightColumnIdx = MultiUserDataGenerator.getRandomInt(0, state.columns.length);
@@ -119,20 +131,8 @@ export class VirtualUser {
     return { ...state }
   }
 
-  getHighlightedCell(state: IMultiUserSampleState) {
-    return this.getHighlightedRow(state).cells[this.highlightColumnIdx];
-  }
-
-  getHighlightedColumn(state: IMultiUserSampleState) {
-    return state.columns[this.highlightColumnIdx];
-  }
-
-  getHighlightedRow(state: IMultiUserSampleState) {
-    return state.rows[this.highlightRowIdx];
-  }
-
   getUpdatedFieldState(state: IMultiUserSampleState, handleData: (data: CellChange[]) => IMultiUserSampleState): any {
-      if (state === null || (this.getHighlightedColumn(state) || this.getHighlightedRow(state) || this.getHighlightedCell(state)) === undefined) {
+      if (state === null || (!this.getHighlightedColumn(state) || !this.getHighlightedRow(state) || !this.getHighlightedCell(state))) {
           return null;
       }
       const cell = this.getHighlightedCell(state);
@@ -145,40 +145,40 @@ export class VirtualUser {
       if (newFieldData === undefined) {
         switch (cell.type) {
           case 'checkbox': {
-            overridedProperties = ({ ...cell, checked: !(cell as CheckboxCell).checked } as Compatible<CheckboxCell>);
+            overridedProperties = ({ ...cell, checked: !(cell as CheckboxCell).checked } as CheckboxCell);
             break;
           }
           case 'number': {
-            overridedProperties = ({ value: dataGen.getRandomAge(10, 70) } as Compatible<NumberCell>);
+            overridedProperties = ({ value: dataGen.getRandomAge(10, 70) } as NumberCell);
             break;
           }
           case 'date': {
-            overridedProperties = ({ date: dataGen.getRandomDate() } as Compatible<DateCell>);
+            overridedProperties = ({ date: dataGen.getRandomDate() } as DateCell);
             break;
           }
           case 'email': {
-            overridedProperties = ({ text: dataGen.getRandomEmail() } as Compatible<EmailCell>);
+            overridedProperties = ({ text: dataGen.getRandomEmail() } as EmailCell);
             break;
           }
           case 'flag': {
-            overridedProperties = ({ text: dataGen.getRandomCountry() } as Compatible<FlagCell>);
+            overridedProperties = ({ text: dataGen.getRandomCountry() } as FlagCell);
             break;
           }
           case 'dropdownNumber': {
-            overridedProperties = ({ value: MultiUserDataGenerator.getRandomInt(0, 100) } as Compatible<DropdownNumberCell>);
+            overridedProperties = ({ value: MultiUserDataGenerator.getRandomInt(0, 100) } as DropdownNumberCell);
             break;
           }
           default:
             break;
         }
-        
       } else {
         overridedProperties = ({ value: newFieldData, text: newFieldData.toString() } as Compatible<any>);
       }
+
       return {
         ...handleData([{
           columnId: this.getHighlightedColumn(state).columnId,
-          rowId:this.getHighlightedRow(state).rowId,
+          rowId: this.getHighlightedRow(state).rowId,
           initialCell: { ...cell },
           newCell: { ...cell, ...overridedProperties },
         }]), 
@@ -187,7 +187,7 @@ export class VirtualUser {
   }
 
   makeChanges(state: IMultiUserSampleState, handleData: (data: CellChange[]) => IMultiUserSampleState): IMultiUserSampleState {
-    switch (this.count++) {
+    switch (this.count) {
       case 0: {
         state = this.updateHighlightsState(state);
         break;
@@ -212,6 +212,7 @@ export class VirtualUser {
         break;
       }
     }
+    this.count++;
     return state;
   }
 

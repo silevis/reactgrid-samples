@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { ReactGrid, CellChange, Column, Id, Row, DropPosition } from '@silevis/reactgrid';
+import { ReactGrid, CellChange, Column, Id, Row } from '@silevis/reactgrid';
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns as dataColumns } from '../../data/columns';
@@ -13,8 +13,8 @@ const ReactGridContainer = styled.div`
 `;
 
 interface ResizeColumnSample {
-  columns: Column[]
-  rows: Row[]
+  columns:  Column[]
+  rows:     Row[]
 }
 
 export const ResizeColumnSample: React.FunctionComponent = () => {
@@ -26,7 +26,7 @@ export const ResizeColumnSample: React.FunctionComponent = () => {
 
   const handleChanges = (changes: CellChange[]) => {
     let newState = { ...state };
-    changes.forEach((change: any) => {
+    changes.forEach((change: CellChange) => {
       const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
       const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
       newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
@@ -39,10 +39,7 @@ export const ResizeColumnSample: React.FunctionComponent = () => {
     let newState = { ...state };
     const columnIndex = newState.columns.findIndex(el => el.columnId === ci);
     const resizedColumn: Column = newState.columns[columnIndex];
-    const updateColumn: Column = {
-      ...resizedColumn,
-      width
-    };
+    const updateColumn: Column = { ...resizedColumn, width };
     newState.columns[columnIndex] = updateColumn;
     setState(newState);
   }

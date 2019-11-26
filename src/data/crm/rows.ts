@@ -1,11 +1,13 @@
+import { Uncertain, TextCell, Row, DateCell } from '@silevis/reactgrid';
+
 export const rows = (reorderable: boolean): any[] => [
   {
     rowId: 'header',
     height: 25,
     reorderable,
     cells: [
-      { type: 'text',   text: 'Name' },
-      { type: 'text',   text: 'Surname' },
+      { type: 'header', text: 'Name' },
+      { type: 'header', text: 'Surname' },
       { type: 'header', text: 'Sex' },
       { type: 'header', text: 'Email' },
       { type: 'header', text: 'Phone' },
@@ -24,7 +26,8 @@ export const rows = (reorderable: boolean): any[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'text', text: 'Jacob' },
+      // IS IT CORRECT
+      { type: 'text', text: 'Jacob' } as TextCell,
       { type: 'text', text: 'Sandberg' },
       { type: 'text', text: 'male' },
       { type: 'email', text: 'j.sandberg@gmail.com' },
@@ -33,7 +36,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'text', text: 'Wellham Ave' },
       { type: 'date', date: new Date('2008-11-12') },
       { type: 'flag', text: 'usa' },
-      { type: 'date', date: new Date('1962-09-04') },
+      { type: 'date', date: new Date('1962-09-04') } as DateCell,
       { type: 'text', text: 'Director' },
       { type: 'dropdownNumber', value: 20, isOpened: false },
       { type: 'checkbox', checked: true }

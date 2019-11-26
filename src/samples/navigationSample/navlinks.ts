@@ -4,8 +4,8 @@ import {
   // RateCellSample, 
   FrozensSample,
   // BudgetPlannerSample, 
-  // ColumnReorderSample,
-  // ResizeColumnSample,
+  ColumnReorderSample,
+  ResizeColumnSample,
   MultiUserSample,
   StockMarketDataSample
 } from '../../samples';
@@ -39,18 +39,18 @@ export const navLinks: ISampleNavLink[] = [
   //   url: '/BudgetPlannerSample',
   //   component: BudgetPlannerSample
   // },
-  // {
-  //   name: 'Column Reorder Sample',
-  //   key: '/ColumnReorderSample',
-  //   url: '/ColumnReorderSample',
-  //   component: ColumnReorderSample
-  // },
-  // {
-  //   name: 'Resize Column Sample',
-  //   key: '/ResizeColumnSample',
-  //   url: '/ResizeColumnSample',
-  //   component: ResizeColumnSample
-  // },
+  {
+    name: 'Column Reorder Sample',
+    key: '/ColumnReorderSample',
+    url: '/ColumnReorderSample',
+    component: ColumnReorderSample
+  },
+  {
+    name: 'Resize Column Sample',
+    key: '/ResizeColumnSample',
+    url: '/ResizeColumnSample',
+    component: ResizeColumnSample
+  },
   {
     name: 'Multi User Sample',
     key: '/MultiUserSample',

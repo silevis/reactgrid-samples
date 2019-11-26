@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { ReactGrid, CellChange, Column, Id, Row, DropPosition } from '@silevis/reactgrid';
+import { ReactGrid, CellChange, Column, Id, Row, DropPosition, Cell } from '@silevis/reactgrid';
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns as dataColumns } from '../../data/columns';
@@ -35,11 +35,11 @@ export const ColumnReorderSample: React.FunctionComponent = () => {
     return true;
   }
 
-  const reorderArray = (arr: any[], idxs: number[], to: number) => {
-    const movedElements: any[] = arr.filter((_: any[], idx: number) => idxs.includes(idx));
+  const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
+    const movedElements: T[] = arr.filter((_: T, idx: number) => idxs.includes(idx));
     to = Math.min(...idxs) < to ? to += 1 : to -= idxs.filter(idx => idx < to).length;
-    const leftSide: any[] = arr.filter((_: any, idx: number) => idx < to && !idxs.includes(idx));
-    const rightSide: any[] = arr.filter((_: any, idx: number) => idx >= to && !idxs.includes(idx));
+    const leftSide: T[] = arr.filter((_: T, idx: number) => idx < to && !idxs.includes(idx));
+    const rightSide: T[] = arr.filter((_: T, idx: number) => idx >= to && !idxs.includes(idx));
     return [...leftSide, ...movedElements, ...rightSide];
   }
 
@@ -57,8 +57,8 @@ export const ColumnReorderSample: React.FunctionComponent = () => {
   const handleColumnsReordered = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
     const to = state.columns.findIndex((column: Column) => column.columnId === targetColumnId);
     setState({
-      columns: reorderArray(state.columns, columnIds as number[], to),
-      rows: state.rows.map(row => ({ ...row, cells: reorderArray(row.cells, columnIds as number[], to) })),
+      columns: reorderArray<Column>(state.columns, columnIds as number[], to),
+      rows: state.rows.map(row => ({ ...row, cells: reorderArray<Cell>(row.cells, columnIds as number[], to) })),
     });
   }
 
@@ -68,7 +68,7 @@ export const ColumnReorderSample: React.FunctionComponent = () => {
     const ids = rowIds.map((id: Id) => state.rows.findIndex(r => r.rowId === id)) as number[];
     setState({
       ...newState,
-      rows: reorderArray(state.rows, ids, to)
+      rows: reorderArray<Row>(state.rows, ids, to)
     });
   }
 

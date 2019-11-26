@@ -56,8 +56,6 @@ export const StockMarketDataSample: React.FunctionComponent = () => {
     rows: []
   }));
 
-  
-
   const returnRandomWith = (numberOfRows: number) => Math.floor(Math.random() * numberOfRows + 1)
 
   const currentValueRandom = (apiRows: Row[], numberOfRows: number): number => {
@@ -85,7 +83,7 @@ export const StockMarketDataSample: React.FunctionComponent = () => {
   }
 
   const useInterval = (callback: any, delay: number) => {
-    const savedCallback = React.useRef();
+    const savedCallback = useRef();
 
     useEffect(() => {
       savedCallback.current = callback;
