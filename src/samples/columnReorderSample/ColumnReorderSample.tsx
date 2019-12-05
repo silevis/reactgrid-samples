@@ -47,10 +47,9 @@ export const ColumnReorderSample: React.FunctionComponent = () => {
     return true;
   }
 
-  const handleCanReorderRows = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition): boolean => {
+  const handleCanReorderRows = (targetColumnId: Id, rowIds: Id[], dropPosition: DropPosition): boolean => {
     const rowIndex = state.rows.findIndex((row: Row) => row.rowId === targetColumnId);
-    if (rowIndex === 0)
-      return false;
+    if (rowIndex === 0) return false;
     return true;
   }
 
@@ -63,13 +62,10 @@ export const ColumnReorderSample: React.FunctionComponent = () => {
   }
 
   const handleRowsReordered = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
-    let newState = { ...state };
+    const newState = { ...state };
     const to = state.rows.findIndex((row: Row) => row.rowId === targetRowId);
     const ids = rowIds.map((id: Id) => state.rows.findIndex(r => r.rowId === id)) as number[];
-    setState({
-      ...newState,
-      rows: reorderArray<Row>(state.rows, ids, to)
-    });
+    setState({ ...newState, rows: reorderArray<Row>(state.rows, ids, to) });
   }
 
   return (

@@ -24,11 +24,11 @@ export interface IMultiUserSampleState {
 export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> {
 
     state = {
-        columns:            columns(true, true),
-        rows:               rows(true),
-        frozenTopRows:      1,
-        frozenLeftColumns:  2,
-        highlights:         [],
+        columns: columns(true, true),
+        rows: rows(true),
+        frozenTopRows: 1,
+        frozenLeftColumns: 2,
+        highlights: [],
     }
 
     intervalId?: number;
@@ -91,30 +91,26 @@ export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> 
     private handleCanReorderColumns = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition): boolean => {
         return true;
     }
-    
-    private handleCanReorderRows = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition): boolean => {
+
+    private handleCanReorderRows = (targetColumnId: Id, rowIds: Id[], dropPosition: DropPosition): boolean => {
         const rowIndex = this.state.rows.findIndex((row: Row) => row.rowId === targetColumnId);
-        if (rowIndex === 0)
-          return false;
+        if (rowIndex === 0) return false;
         return true;
     }
-    
+
     private handleColumnsReordered = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
         const to = this.state.columns.findIndex((column: Column) => column.columnId === targetColumnId);
         this.setState({
-          columns: this.reorderArray<Column>(this.state.columns, columnIds as number[], to),
-          rows: this.state.rows.map(row => ({ ...row, cells: this.reorderArray<Cell>(row.cells, columnIds as number[], to) })),
+            columns: this.reorderArray<Column>(this.state.columns, columnIds as number[], to),
+            rows: this.state.rows.map(row => ({ ...row, cells: this.reorderArray<Cell>(row.cells, columnIds as number[], to) })),
         });
     }
-    
+
     private handleRowsReordered = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
-        let newState = { ...this.state };
+        const newState = { ...this.state };
         const to = this.state.rows.findIndex((row: Row) => row.rowId === targetRowId);
         const ids = rowIds.map((id: Id) => this.state.rows.findIndex(r => r.rowId === id)) as number[];
-        this.setState({
-          ...newState,
-          rows: this.reorderArray<Row>(this.state.rows, ids, to)
-        });
+        this.setState({ ...newState, rows: this.reorderArray<Row>(this.state.rows, ids, to) });
     }
 
     private handleChanges = (changes: CellChange[]): boolean => {
