@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { ReactGrid, Column, CellChange, Row, SelectionMode, MenuOption, Id } from '@silevis/reactgrid';
+import { ReactGrid, Column, CellChange, Row, SelectionMode, MenuOption, Id, Cell } from '@silevis/reactgrid';
 import { DropdownNumberCellTemplate } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
@@ -53,16 +53,7 @@ export const ContextMenuSample: React.FunctionComponent = () => {
         ...menuOptions,
         {
           id: 'removeRow', label: 'Remove row', handler: () => {
-            console.log(state.rows.filter((row: Row) => {
-              console.log(row.rowId, selectedRowIds);
-
-              return selectedRowIds.includes(row.rowId)
-            }))
-
-            setState({
-              ...state,
-              rows: state.rows.filter((row: Row) => !selectedRowIds.includes(row.rowId))
-            });
+            setState({ ...state, rows: state.rows.filter((row: Row) => !selectedRowIds.includes(row.rowId)) });
           }
         },
       ]
@@ -70,16 +61,20 @@ export const ContextMenuSample: React.FunctionComponent = () => {
     if (selectionMode === 'column') {
       menuOptions = [
         ...menuOptions,
-        { id: 'columnOption', label: 'Custom menu column option', handler: () => { } },
+        {
+          id: 'removeColumn', label: 'Remove column', handler: () => {
+            const columns: Column[] = state.columns.filter((column: Column) => !selectedColIds.includes(column.columnId));
+            const columnsIdxs = state.columns.map((column: Column, idx: number) => {
+              if (!columns.includes(column)) return idx;
+              return undefined;
+            }).filter(idx => idx);
+            const rows = state.rows.map((row: Row) => ({ ...row, cells: row.cells.filter((_: Cell, idx: number) => !columnsIdxs.includes(idx)) }));
+            setState({ ...state, columns, rows });
+          }
+        },
       ]
     }
-
-    return [
-      ...menuOptions,
-      {
-        id: 'all', label: 'Custom menu option', handler: () => { }
-      },
-    ];
+    return menuOptions;
   }
 
   return (
