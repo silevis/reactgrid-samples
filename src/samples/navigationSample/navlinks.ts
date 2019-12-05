@@ -7,6 +7,7 @@ import {
   MultiUserSample,
   StockMarketDataSample,
   GroupCellSample,
+  ContextMenuSample,
 } from '../../samples';
 
 export interface ISampleNavLink extends INavLink {
@@ -25,6 +26,12 @@ export const navLinks: ISampleNavLink[] = [
     key: '/FrozensSample',
     url: '/FrozensSample',
     component: FrozensSample
+  },
+  {
+    name: 'Context Menu Sample',
+    key: '/ContextMenuSample',
+    url: '/ContextMenuSample',
+    component: ContextMenuSample
   },
   // {
   //   name: 'Budget Planner',

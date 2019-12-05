@@ -1,0 +1,111 @@
+import * as React from 'react';
+import styled from 'styled-components';
+import { ReactGrid, Column, CellChange, Row, SelectionMode, MenuOption, Id } from '@silevis/reactgrid';
+import { DropdownNumberCellTemplate } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
+import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
+import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
+import { columns as crmColumns } from '../../data/crm/columns';
+import { rows as crmRows } from '../../data/crm/rows';
+import './styling.scss';
+
+const ReactGridContainer = styled.div`
+  position: relative;
+  min-height: 400px;
+`;
+
+const InfoContainer = styled.div`
+  position: relative;
+  height: 100px;
+`;
+
+interface ContextMenuState {
+  columns: Column[]
+  rows: Row[],
+  selectedRowIds: Id[],
+  selectedColIds: Id[],
+  selectionMode: SelectionMode,
+}
+
+export const ContextMenuSample: React.FunctionComponent = () => {
+
+  const [state, setState] = React.useState<ContextMenuState>(() => ({
+    columns: [...crmColumns(true, false)],
+    rows: [...crmRows(true)],
+    selectedRowIds: [],
+    selectedColIds: [],
+    selectionMode: 'range'
+  }))
+
+  const handleChanges = (changes: CellChange[]) => {
+    let newState = { ...state };
+    changes.forEach((change: any) => {
+      const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
+      const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
+      newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+    })
+    setState(newState);
+    return true;
+  }
+
+  const handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {
+    if (selectionMode === 'row') {
+      menuOptions = [
+        ...menuOptions,
+        {
+          id: 'removeRow', label: 'Remove row', handler: () => {
+            console.log(state.rows.filter((row: Row) => {
+              console.log(row.rowId, selectedRowIds);
+
+              return selectedRowIds.includes(row.rowId)
+            }))
+
+            setState({
+              ...state,
+              rows: state.rows.filter((row: Row) => !selectedRowIds.includes(row.rowId))
+            });
+          }
+        },
+      ]
+    }
+    if (selectionMode === 'column') {
+      menuOptions = [
+        ...menuOptions,
+        { id: 'columnOption', label: 'Custom menu column option', handler: () => { } },
+      ]
+    }
+
+    return [
+      ...menuOptions,
+      {
+        id: 'all', label: 'Custom menu option', handler: () => { }
+      },
+    ];
+  }
+
+  return (
+    <>
+      <InfoContainer>
+        <h1>Context menu info</h1>
+        <input defaultValue={state.selectedColIds.toString()} />
+        <input defaultValue={state.selectedRowIds.toString()} />
+        <input defaultValue={state.selectionMode} />
+      </InfoContainer>
+      <ReactGridContainer id="context-menu-sample">
+        <ReactGrid
+          rows={state.rows}
+          columns={state.columns}
+          customCellTemplates={{
+            'rating': new RateCellTemplate,
+            'flag': new FlagCellTemplate,
+            'dropdownNumber': new DropdownNumberCellTemplate,
+          }}
+          onContextMenu={handleContextMenu}
+          onCellsChanged={handleChanges}
+          enableColumnSelection
+          enableRowSelection
+          license={'non-commercial'}
+        />
+      </ReactGridContainer>
+    </>
+  )
+}

@@ -5,3 +5,4 @@ export * from './resizeColumnSample/ResizeColumnSample';
 export * from './columnReorderSample/ColumnReorderSample';
 export * from './stockMarketDataSample/StockMarketDataSample';
 export * from './groupCellSample/GroupCellSample';
+export * from './contextMenuSample/ContextMenuSample';
