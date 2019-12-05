@@ -1,6 +1,6 @@
 {
   "name": "@silevis/reactgrid-samples",
-  "version": "2.0.3-rc.2",
+  "version": "2.0.4",
   "main": "dist/mainExports.js",
   "typings": "dist/mainExports.d.ts",
   "devDependencies": {
@@ -17,18 +17,18 @@
     "cypress": "^3.6.1",
     "node-sass": "^4.13.0",
     "npm-version-suffix": "^0.2.0",
-    "office-ui-fabric-react": "^7.64.0",
+    "office-ui-fabric-react": "^7.69.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "2.1.8",
     "react-time-picker": "^3.7.2",
     "styled-components": "^4.4.1",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.3"
   },
   "peerDependencies": {
-    "react": "^16.8.6",
-    "styled-components": "^4.2.0"
+    "react": "^16.12.0",
+    "styled-components": "^4.4.1"
   },
   "scripts": {
     "start": "react-scripts start",
