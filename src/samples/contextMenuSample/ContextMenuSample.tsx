@@ -21,9 +21,6 @@ const InfoContainer = styled.div`
 interface ContextMenuState {
   columns: Column[]
   rows: Row[],
-  selectedRowIds: Id[],
-  selectedColIds: Id[],
-  selectionMode: SelectionMode,
 }
 
 export const ContextMenuSample: React.FunctionComponent = () => {
@@ -31,9 +28,6 @@ export const ContextMenuSample: React.FunctionComponent = () => {
   const [state, setState] = React.useState<ContextMenuState>(() => ({
     columns: [...crmColumns(true, false)],
     rows: [...crmRows(true)],
-    selectedRowIds: [],
-    selectedColIds: [],
-    selectionMode: 'range'
   }))
 
   const handleChanges = (changes: CellChange[]) => {
@@ -79,12 +73,6 @@ export const ContextMenuSample: React.FunctionComponent = () => {
 
   return (
     <>
-      <InfoContainer>
-        <h1>Context menu info</h1>
-        <input defaultValue={state.selectedColIds.toString()} />
-        <input defaultValue={state.selectedRowIds.toString()} />
-        <input defaultValue={state.selectionMode} />
-      </InfoContainer>
       <ReactGridContainer id="context-menu-sample">
         <ReactGrid
           rows={state.rows}
