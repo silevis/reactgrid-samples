@@ -150,7 +150,7 @@ export const rows = (reorderable: boolean): any[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'group', text: 'is', depth: 0, isExpanded: true, parentId: 11 } as GroupCell,
+      { type: 'group', text: 'is', depth: 0, isExpanded: true, parentId: 11, hasChildrens: true } as GroupCell,
       { type: 'text', text: 'update/some-feature' } as TextCell,
       { type: 'text', text: 'rbicj7u5qxvkpqv2ti2bkthlw4yg1by4ht4c1wom' } as TextCell,
       { type: 'number', value: 400 } as NumberCell,
@@ -162,7 +162,7 @@ export const rows = (reorderable: boolean): any[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'group', text: 'is', depth: 0, isExpanded: true, parentId: 11 } as GroupCell,
+      { type: 'group', text: 'is', depth: 0, isExpanded: true, parentId: 11, hasChildrens: true } as GroupCell,
       { type: 'text', text: 'update/some-feature' } as TextCell,
       { type: 'text', text: 'cunj4bkbl2gow91atjtfcwko1zmqp6813l8x626v' } as TextCell,
       { type: 'number', value: 15 } as NumberCell,
@@ -174,7 +174,7 @@ export const rows = (reorderable: boolean): any[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'group', text: 'is', depth: 0, isExpanded: true, parentId: 11 } as GroupCell,
+      { type: 'group', text: 'is', depth: 0, isExpanded: true, parentId: 13} as GroupCell,
       { type: 'text', text: 'update/some-feature' } as TextCell,
       { type: 'text', text: 'iwpnwef8mtzsjyu1srihdwispyrjxvb5197ey6cz' } as TextCell,
       { type: 'number', value: 800 } as NumberCell,
@@ -186,7 +186,7 @@ export const rows = (reorderable: boolean): any[] => [
     height: 25,
     reorderable,
     cells: [
-      { type: 'group', text: 'is', depth: 0, isExpanded: true, parentId: 11 } as GroupCell,
+      { type: 'group', text: 'is', depth: 0, isExpanded: true, parentId: 13 } as GroupCell,
       { type: 'text', text: 'update/some-feature' } as TextCell,
       { type: 'text', text: '6wawna3wf02eggw27v8kgyclhla2c82apmdemay4' } as TextCell,
       { type: 'number', value: 200 } as NumberCell,

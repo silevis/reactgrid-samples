@@ -15,7 +15,21 @@ interface GroupTestGridStateData {
     rows:       Row[]
 }
 
+let headerRow = 
+{
+  rowId: -1,
+    cells: [
+        { type: 'header', text: `Id`} as HeaderCell,
+        { type: 'header', text: `Branch Name`} as HeaderCell,
+        { type: 'header', text: `Commit Hash`} as HeaderCell,
+        { type: 'header', text: `Added`} as HeaderCell,
+        { type: 'header', text: `Removed` } as HeaderCell,
+      ]
+}
+
 export const GroupCellSample: React.FunctionComponent = () => {
+
+  
 
     const getGroupCell = (row: Row): GroupCell => row.cells.find((cell: Cell) => cell.type === 'group') as GroupCell;
 
@@ -53,14 +67,10 @@ export const GroupCellSample: React.FunctionComponent = () => {
     };
 
     const createIndents = (rows: Row[]): Row[] => {
-      console.log('abcd');
         return rows.map((row: Row) => {
-            const groupCell: GroupCell = getGroupCell(row);
-            
+            const groupCell: GroupCell = getGroupCell(row);           
             if (groupCell.parentId === undefined) {
-               console.log("włazi");
                 const hasRowChildrens = hasChildren(rows, row);
-                console.log(hasRowChildrens);
                 groupCell.hasChildrens = hasRowChildrens;
                 if (hasRowChildrens) assignIndentAndHasChildrens(rows, row, 0);
             }
@@ -69,17 +79,15 @@ export const GroupCellSample: React.FunctionComponent = () => {
     };
 
     const getRowsFromData = (): Row[] => {
-      let dataList = dataRows(true);
-      dataList = dataList.slice(1,dataList.length);
-      console.log(dataList);
-       return [ ...dataList ].map((dataRow: any): Row => {
+       return [...dataRows(true)].map((dataRow: any): Row => {
+        
           if(dataRow.rowId === 'header'){
             return {
               rowId: dataRow.rowId,
                 cells: [
                     {
                         type: 'group',
-                        text: `id`,
+                        text: `Id`,
                         parentId: dataRow.cells[0].parentId,
                         isExpanded: true,
                     } as GroupCell,
@@ -107,16 +115,17 @@ export const GroupCellSample: React.FunctionComponent = () => {
                     { type: 'number', value: dataRow.cells[4].value } as NumberCell,
                 ]
             }
-          }
+         }
         }
         );
     };
 
     const [state, setState] = useState<GroupTestGridStateData>(() => {
         const columns: Column[] = dataColumns(true, false);
-        let rows: Row[] = getRowsFromData();
+        let rows: Row[] =  getRowsFromData();
         rows = createIndents(rows);
         rows = getExpandedRows(rows);
+        //rows = [headerRow, ...getExpandedRows(rows)];
         return { columns, rows }
     });
    
@@ -140,18 +149,7 @@ export const GroupCellSample: React.FunctionComponent = () => {
 
         setState({ ...state, rows: createIndents(newState.rows) });
         setRowsToRender([
-          {
-            rowId: -1,
-              cells: [
-                  { type: 'header', text: `Id`} as HeaderCell,
-                  { type: 'header', text: `Branch Name`} as HeaderCell,
-                  { type: 'header', text: `Commit Hash`} as HeaderCell,
-                  { type: 'header', text: `Added`} as HeaderCell,
-                  { type: 'header', text: `Removed` } as HeaderCell,
-                ]
-          },
-        
-          ...getExpandedRows(newState.rows)]);
+...getExpandedRows(newState.rows)]);
         return true;
     };
 
