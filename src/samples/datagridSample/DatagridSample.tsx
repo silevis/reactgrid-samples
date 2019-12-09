@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReactGrid, CellChange, Highlight, Column, Row, DropPosition, Id, Cell } from '@silevis/reactgrid';
+import { ReactGrid, CellChange, Highlight, Column, Row, DropPosition, Id, Cell, SelectionMode, MenuOption } from '@silevis/reactgrid';
 import styled from 'styled-components';
 import { VirtualEnv, VirtualUser } from './VirtualUser';
 import { columns } from '../../data/crm/columns';
@@ -13,7 +13,7 @@ const ReactGridContainer = styled.div`
   min-height: 400px;
 `;
 
-export interface IMultiUserSampleState {
+export interface IDatagridState {
     columns: Column[],
     rows: Row[],
     frozenTopRows?: number,
@@ -21,7 +21,7 @@ export interface IMultiUserSampleState {
     highlights: Highlight[]
 }
 
-export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> {
+export class DatagridSample extends React.Component<{}, IDatagridState> {
 
     state = {
         columns: columns(true, true),
@@ -69,7 +69,7 @@ export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> 
     }
 
 
-    private makeChanges = (changes: CellChange[]): IMultiUserSampleState => {
+    private makeChanges = (changes: CellChange[]): IDatagridState => {
         let newState = { ...this.state };
         changes.forEach((change: any) => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
@@ -118,9 +118,41 @@ export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> 
         return true;
     }
 
+    private handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {
+        if (selectionMode === 'row') {
+            menuOptions = [
+                ...menuOptions,
+                {
+                    id: 'removeRow', label: 'Remove row', handler: () => {
+                        const highlights = this.state.highlights.filter((h: Highlight) => !selectedRowIds.includes(h.rowId));
+                        this.setState({ rows: this.state.rows.filter((row: Row) => !selectedRowIds.includes(row.rowId)), highlights });
+                    }
+                },
+            ]
+        }
+        if (selectionMode === 'column') {
+            menuOptions = [
+                ...menuOptions,
+                {
+                    id: 'removeColumn', label: 'Remove column', handler: () => {
+                        const columns: Column[] = this.state.columns.filter((column: Column) => !selectedColIds.includes(column.columnId));
+                        const columnsIdxs = this.state.columns.map((column: Column, idx: number) => {
+                            if (!columns.includes(column)) return idx;
+                            return undefined;
+                        }).filter(idx => idx !== undefined);
+                        const rows = this.state.rows.map((row: Row) => ({ ...row, cells: row.cells.filter((_: Cell, idx: number) => !columnsIdxs.includes(idx)) }));
+                        const highlights = this.state.highlights.filter((h: Highlight) => !selectedColIds.includes(h.columnId));
+                        this.setState({ columns, rows, highlights });
+                    }
+                },
+            ]
+        }
+        return menuOptions;
+    }
+
     render() {
         return (
-            <ReactGridContainer id="multi-user-sample">
+            <ReactGridContainer id="datagrid-sample">
                 <ReactGrid
                     columns={this.state.columns}
                     rows={this.state.rows}
@@ -135,6 +167,7 @@ export class MultiUserSample extends React.Component<{}, IMultiUserSampleState> 
                     canReorderColumns={this.handleCanReorderColumns}
                     canReorderRows={this.handleCanReorderRows}
                     onColumnsReordered={this.handleColumnsReordered}
+                    onContextMenu={this.handleContextMenu}
                     onRowsReordered={this.handleRowsReordered}
                     license={'non-commercial'}
                     enableColumnSelection

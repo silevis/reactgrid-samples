@@ -1,8 +1,14 @@
 import { Column } from '@silevis/reactgrid';
 
-export const fields: Column[] = [
+export const columns: Column[] = [
     {
-        columnId: 'name',
+        columnId: 'Market rank',
+        reorderable: false,
+        resizable: false,
+        width: 100,
+    },
+    {
+        columnId: 'Name',
         reorderable: false,
         resizable: false,
         width: 150,
@@ -27,6 +33,12 @@ export const fields: Column[] = [
     },
     {
         columnId: 'High_24',
+        reorderable: false,
+        resizable: false,
+        width: 150,
+    },
+    {
+        columnId: 'Total volume',
         reorderable: false,
         resizable: false,
         width: 150,

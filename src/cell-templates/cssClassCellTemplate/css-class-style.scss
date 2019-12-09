@@ -5,7 +5,7 @@ $transparent-base-growth:   rgba(0, 255, 0, 0) !default;
 $time:                        3s !default;
 
 .rg-cssClass-cell {
-  justify-content: flex-ends;
+  justify-content: flex-end;
   @keyframes decrease {
     0% { background-color: $base-decrease; }
     100% { background-color: $transparent-base-decrease; }

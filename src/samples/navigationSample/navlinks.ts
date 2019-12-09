@@ -1,11 +1,10 @@
 import { INavLink } from 'office-ui-fabric-react/lib/Nav';
 import {
   FrozensSample,
-  // BudgetPlannerSample, 
   ColumnReorderSample,
   ResizeColumnSample,
-  MultiUserSample,
-  StockMarketDataSample,
+  DatagridSample,
+  CryptocurrencyMarketSample,
   GroupCellSample,
   ContextMenuSample,
 } from '../../samples';
@@ -33,12 +32,6 @@ export const navLinks: ISampleNavLink[] = [
     url: '/ContextMenuSample',
     component: ContextMenuSample
   },
-  // {
-  //   name: 'Budget Planner',
-  //   key: '/BudgetPlannerSample',
-  //   url: '/BudgetPlannerSample',
-  //   component: BudgetPlannerSample
-  // },
   {
     name: 'Column Reorder Sample',
     key: '/ColumnReorderSample',
@@ -52,15 +45,15 @@ export const navLinks: ISampleNavLink[] = [
     component: ResizeColumnSample
   },
   {
-    name: 'Multi User Sample',
-    key: '/MultiUserSample',
-    url: '/MultiUserSample',
-    component: MultiUserSample
+    name: 'Datagrid Sample',
+    key: '/DatagridSample',
+    url: '/DatagridSample',
+    component: DatagridSample
   },
   {
-    name: 'Stock Market Data Sample',
-    key: '/StockMarketDataSample',
-    url: '/StockMarketDataSample',
-    component: StockMarketDataSample
+    name: 'Cryptocurrency Market Sample',
+    key: '/CryptocurrencyMarketSample',
+    url: '/CryptocurrencyMarketSample',
+    component: CryptocurrencyMarketSample
   },
 ];

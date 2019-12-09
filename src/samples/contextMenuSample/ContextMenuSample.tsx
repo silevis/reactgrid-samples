@@ -61,7 +61,7 @@ export const ContextMenuSample: React.FunctionComponent = () => {
             const columnsIdxs = state.columns.map((column: Column, idx: number) => {
               if (!columns.includes(column)) return idx;
               return undefined;
-            }).filter(idx => idx);
+            }).filter(idx => idx !== undefined);
             const rows = state.rows.map((row: Row) => ({ ...row, cells: row.cells.filter((_: Cell, idx: number) => !columnsIdxs.includes(idx)) }));
             setState({ ...state, columns, rows });
           }
