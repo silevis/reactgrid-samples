@@ -32,9 +32,6 @@
     "build": "react-scripts build",
     "build:tsc": "rm -rf ./dist && tsc -p tsconfig.prod.json",
     "copy:styles": "cd scripts && copyStyles.sh",
-    "test": "node_modules\\.bin\\cypress open",
-    "test:automatic": "node_modules\\.bin\\cypress run --browser chrome --spec 'cypress/integration/*'",
-    "remove-suffix": "cross-env SUFFIX=rc node ./node_modules/npm-version-suffix/run-remove-suffix.js"
   },
   "keywords": [
     "react",
