@@ -32,20 +32,12 @@ jobs:
           command: npm run build:tsc
 
       - run:
-          name: Enter /scripts
-          command: cd scripts
-
-      - run:
-          name: List files
-          command: ls -all
-
-      - run:
-          name: chmod +x copyStyles.sh
-          command: chmod +x copyStyles.sh
+          name: Chmod
+          command: chmod +x ./scripts/copyStyles.sh
 
       - run:
           name: Run ./copyStyles.sh
-          command: ./copyStyles.sh
+          command: sh ./scripts/copyStyles.sh
 
       - run:
           name: Go up
