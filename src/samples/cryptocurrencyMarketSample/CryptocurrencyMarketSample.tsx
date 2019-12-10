@@ -41,8 +41,8 @@ const fetchCryptocurrencyMarketData = async () => {
 }
 
 interface CryptocurrencyMarketState {
-  columns: Column[]
-  rows: Row[]
+  columns: Column[];
+  rows: Row[];
 }
 
 export const CryptocurrencyMarketSample: React.FunctionComponent = () => {
@@ -135,6 +135,7 @@ export const CryptocurrencyMarketSample: React.FunctionComponent = () => {
               'cssClass': new CssClassCellTemplate
             }}
             license={'non-commercial'}
+            frozenTopRows={1}
             disableFillHandle
             enableRowSelection
             enableColumnSelection

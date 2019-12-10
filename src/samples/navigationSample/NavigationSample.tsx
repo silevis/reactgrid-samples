@@ -16,10 +16,10 @@ export class NavigationSample extends React.Component {
       <BrowserRouter>
         <div className="ms-Grid" id="navigation-sample" dir="ltr">
           <div className="ms-Grid-row">
-            <div className="ms-Grid-col ms-sm6 ms-md4 ms-lg3 ms-xl2" style={{ padding: 20 }}>
+            <div className="ms-Grid-col ms-sm6 ms-md4 ms-lg3" style={{ padding: 20 }}>
               <SideNav navLinks={navLinks} />
             </div>
-            <div className="ms-Grid-col ms-sm6 ms-md8 ms-lg9 ms-xl10">
+            <div className="ms-Grid-col ms-sm6 ms-md8 ms-lg9">
               <Switch>
                 {routes}
               </Switch>

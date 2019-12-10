@@ -100,22 +100,32 @@ export class DatagridSample extends React.Component<{}, IDatagridState> {
 
     private handleColumnsReordered = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
         const to = this.state.columns.findIndex((column: Column) => column.columnId === targetColumnId);
+        const columnIdxs = columnIds.map((id: Id, idx: number) => this.state.columns.findIndex((c: Column) => c.columnId === id));
         this.setState({
-            columns: this.reorderArray<Column>(this.state.columns, columnIds as number[], to),
-            rows: this.state.rows.map(row => ({ ...row, cells: this.reorderArray<Cell>(row.cells, columnIds as number[], to) })),
+            columns: this.reorderArray<Column>(this.state.columns, columnIdxs, to),
+            rows: this.state.rows.map(row => ({ ...row, cells: this.reorderArray<Cell>(row.cells, columnIdxs, to) })),
         });
     }
 
     private handleRowsReordered = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
         const newState = { ...this.state };
         const to = this.state.rows.findIndex((row: Row) => row.rowId === targetRowId);
-        const ids = rowIds.map((id: Id) => this.state.rows.findIndex(r => r.rowId === id)) as number[];
+        const ids = rowIds.map((id: Id) => this.state.rows.findIndex(r => r.rowId === id));
         this.setState({ ...newState, rows: this.reorderArray<Row>(this.state.rows, ids, to) });
     }
 
     private handleChanges = (changes: CellChange[]): boolean => {
         this.makeChanges(changes);
         return true;
+    }
+
+    private handleColumnResize = (ci: Id, width: number) => {
+        let newState = { ...this.state };
+        const columnIndex = newState.columns.findIndex(el => el.columnId === ci);
+        const resizedColumn: Column = newState.columns[columnIndex];
+        const updateColumn: Column = { ...resizedColumn, width };
+        newState.columns[columnIndex] = updateColumn;
+        this.setState(newState);
     }
 
     private handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {
@@ -169,6 +179,7 @@ export class DatagridSample extends React.Component<{}, IDatagridState> {
                     onColumnsReordered={this.handleColumnsReordered}
                     onContextMenu={this.handleContextMenu}
                     onRowsReordered={this.handleRowsReordered}
+                    onColumnResized={this.handleColumnResize}
                     license={'non-commercial'}
                     enableColumnSelection
                     enableRowSelection
