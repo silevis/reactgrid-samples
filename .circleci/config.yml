@@ -28,7 +28,7 @@ jobs:
                           key: v1-npm-deps-{{ checksum "package.json" }}
 
                   - run:
-                          name: Run build:tsc
+                          name: Run  build:tsc
                           command: npm run build:tsc
 
                   - run:
