@@ -40,10 +40,6 @@ jobs:
           command: sh ./scripts/copyStyles.sh
 
       - run:
-          name: Go up
-          command: cd ..
-
-      - run:
           name: Add changes
           command: git add -A
 
