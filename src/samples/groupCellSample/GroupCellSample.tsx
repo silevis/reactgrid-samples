@@ -15,21 +15,22 @@ interface GroupTestGridStateData {
     rows:       Row[]
 }
 
-let headerRow = 
-{
-  rowId: -1,
+let newRows = 
+    {
+    rowId: 'header',
+    reorderable: false,
+    height: 25,
     cells: [
-        { type: 'header', text: `Id`} as HeaderCell,
-        { type: 'header', text: `Branch Name`} as HeaderCell,
-        { type: 'header', text: `Commit Hash`} as HeaderCell,
-        { type: 'header', text: `Added`} as HeaderCell,
-        { type: 'header', text: `Removed` } as HeaderCell,
+        { type: 'header', text: `Id`},
+        { type: 'header', text: `Branch Name`},
+        { type: 'header', text: `Commit Hash`},
+        { type: 'header', text: `Added`},
+        { type: 'header', text: `Removed` },
       ]
-}
+    }
+
 
 export const GroupCellSample: React.FunctionComponent = () => {
-
-  
 
     const getGroupCell = (row: Row): GroupCell => row.cells.find((cell: Cell) => cell.type === 'group') as GroupCell;
 
@@ -66,6 +67,14 @@ export const GroupCellSample: React.FunctionComponent = () => {
         });
     };
 
+    const getDataFromRows = (rows: Row[]): Row[] => {
+        return rows.filter((item) => {
+            console.log(item);
+            return item.cells.find((cell: Cell) => cell.type === 'group') != undefined;
+            
+        })
+    }
+
     const createIndents = (rows: Row[]): Row[] => {
         return rows.map((row: Row) => {
             const groupCell: GroupCell = getGroupCell(row);           
@@ -78,58 +87,15 @@ export const GroupCellSample: React.FunctionComponent = () => {
         });
     };
 
-    const getRowsFromData = (): Row[] => {
-       return [...dataRows(true)].map((dataRow: any): Row => {
-        
-          if(dataRow.rowId === 'header'){
-            return {
-              rowId: dataRow.rowId,
-                cells: [
-                    {
-                        type: 'group',
-                        text: `Id`,
-                        parentId: dataRow.cells[0].parentId,
-                        isExpanded: true,
-                    } as GroupCell,
-                    { type: 'header', text: `${dataRow.cells[1].text}`} as HeaderCell,
-                    { type: 'header', text: `${dataRow.cells[2].text}`} as HeaderCell,
-                    { type: 'header', text: dataRow.cells[3].text } as HeaderCell,
-                    { type: 'header', text: dataRow.cells[4].text } as HeaderCell,
-                  ]
-            }
-          }
-          else{
-    
-            return {
-                rowId: dataRow.rowId,
-                cells: [
-                    {
-                        type: 'group',
-                        text: ` ${dataRow.rowId}`,
-                        parentId: dataRow.cells[0].parentId,
-                        isExpanded: true,
-                    } as GroupCell,
-                    { type: 'text', text: `${dataRow.cells[1].text}`} as TextCell,
-                    { type: 'text', text: `${dataRow.cells[2].text}`} as TextCell,
-                    { type: 'number', value: dataRow.cells[3].value } as NumberCell,
-                    { type: 'number', value: dataRow.cells[4].value } as NumberCell,
-                ]
-            }
-         }
-        }
-        );
-    };
-
     const [state, setState] = useState<GroupTestGridStateData>(() => {
         const columns: Column[] = dataColumns(true, false);
-        let rows: Row[] =  getRowsFromData();
+        let rows: Row[] = dataRows(true);
+        rows = getDataFromRows(rows);
         rows = createIndents(rows);
-        rows = getExpandedRows(rows);
-        //rows = [headerRow, ...getExpandedRows(rows)];
         return { columns, rows }
     });
    
-    const [rowsToRender, setRowsToRender] = useState<Row[]>([ ...state.rows ]);
+    const [rowsToRender, setRowsToRender] = useState<Row[]>([newRows, ...state.rows ]);
 
     const handleColumnResize = (ci: Id, width: number) => {
         let newState = { ...state };
@@ -148,8 +114,7 @@ export const GroupCellSample: React.FunctionComponent = () => {
         });
 
         setState({ ...state, rows: createIndents(newState.rows) });
-        setRowsToRender([
-...getExpandedRows(newState.rows)]);
+        setRowsToRender([newRows, ...getExpandedRows(newState.rows)]);
         return true;
     };
 
