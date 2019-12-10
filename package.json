@@ -31,7 +31,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build:tsc": "rm -rf ./dist && tsc -p tsconfig.prod.json",
-    "copy:styles": "cd scripts && copyStyles.sh",
+    "copy:styles": "cd scripts && copyStyles.sh"
   },
   "keywords": [
     "react",
