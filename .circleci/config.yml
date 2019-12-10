@@ -1,57 +1,65 @@
 defaults: &defaults
-      docker:
-            - image: circleci/node:10.16.3
+  docker:
+    - image: circleci/node:10.16.3
 
 version: 2
 jobs:
-      deploy-on-build:
-            <<: *defaults
+  deploy-on-build:
+    <<: *defaults
 
-            steps:
-                  - checkout
+    steps:
+      - checkout
 
-                  - run:
-                          name: Set configuration
-                          command: git config --global user.email "$GITHUB_AUTHOR_EMAIL" && git config --global user.name "$GITHUB_AUTHOR_NAME"
+      - run:
+          name: Set configuration
+          command: git config --global user.email "$GITHUB_AUTHOR_EMAIL" && git config --global user.name "$GITHUB_AUTHOR_NAME"
 
-                  - run:
-                          name: Pull changes
-                          command: git pull --tags origin build
+      - run:
+          name: Pull changes
+          command: git pull --tags origin build
 
-                  - run:
-                          name: Install Dependencies
-                          command: npm install
+      - run:
+          name: Install Dependencies
+          command: npm install
 
-                  - save_cache:
-                          paths:
-                                - node_modules
-                          key: v1-npm-deps-{{ checksum "package.json" }}
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-npm-deps-{{ checksum "package.json" }}
 
-                  - run:
-                          name: Run  build:tsc
-                          command: npm run build:tsc
+      - run:
+          name: Run build:tsc
+          command: npm run build:tsc
 
-                  - run:
-                          name: Run copy:styles
-                          command: npm run copy:styles
+      - run:
+          name: Enter /scripts
+          command: cd scripts
 
-                  - run:
-                          name: Add changes
-                          command: git add -A
+      - run:
+          name: Run ./copyStyles.sh
+          command: ./copyStyles.sh
 
-                  - run:
-                          name: Commit updated package version
-                          command: git commit -m "upgrade version [ci skip]"
+      - run:
+          name: Go up
+          command: cd ..
 
-                  - run:
-                          name: Push upgraded version
-                          command: git push https://$GITHUB_TOKEN@github.com/silevis/reactgrid-samples.git build
+      - run:
+          name: Add changes
+          command: git add -A
+
+      - run:
+          name: Commit updated package version
+          command: git commit -m "upgrade version [ci skip]"
+
+      - run:
+          name: Push upgraded version
+          command: git push https://$GITHUB_TOKEN@github.com/silevis/reactgrid-samples.git build
 
 workflows:
-      version: 2
-      main:
-            jobs:
-                  - deploy-on-build:
-                          filters:
-                                branches:
-                                      only: build
+  version: 2
+  main:
+    jobs:
+      - deploy-on-build:
+          filters:
+            branches:
+              only: build
