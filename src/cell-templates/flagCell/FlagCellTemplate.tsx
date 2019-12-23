@@ -29,10 +29,11 @@ export class FlagCellTemplate implements CellTemplate<FlagCell> {
         if (!isInEditMode) {
             const flagISO = cell.text.toLowerCase(); // ISO 3166-1, 2/3 letters
             const flagURL = `https://restcountries.eu/data/${flagISO}.svg`;
-            return <div 
+            return <div
                 className="rg-flag-wrapper"
-                style={{backgroundImage: 'url("' + flagURL + '"), url("https://upload.wikimedia.org/wikipedia/commons/0/04/Nuvola_unknown_flag.svg")',
-            }} />
+                style={{
+                    backgroundImage: 'url("' + flagURL + '"), url("https://upload.wikimedia.org/wikipedia/commons/0/04/Nuvola_unknown_flag.svg")',
+                }} />
         }
         return <input
             ref={input => {
@@ -44,6 +45,7 @@ export class FlagCellTemplate implements CellTemplate<FlagCell> {
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}
             onPointerDown={e => e.stopPropagation()}
+            onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), true)}
             onKeyDown={e => {
                 if (isAlphaNumericKey(e.keyCode) || isNavigationKey(e.keyCode)) e.stopPropagation();
                 if (e.keyCode == keyCodes.ESCAPE) e.currentTarget.value = cell.text; // reset
