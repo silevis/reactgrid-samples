@@ -135,7 +135,7 @@ export const CryptocurrencyMarketSample: React.FunctionComponent = () => {
               'cssClass': new CssClassCellTemplate
             }}
             license={'non-commercial'}
-            frozenTopRows={1}
+            stickyTopRows={1}
             disableFillHandle
             enableRowSelection
             enableColumnSelection

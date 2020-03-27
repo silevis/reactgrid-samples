@@ -95,8 +95,8 @@ export const GroupCellSample: React.FunctionComponent = () => {
                 columns={state.columns}
                 license={'non-commercial'}
                 onCellsChanged={handleChanges}
-                frozenLeftColumns={1}
-                frozenTopRows={1}
+                stickyLeftColumns={1}
+                stickyTopRows={1}
                 enableRowSelection
                 enableColumnSelection
             />

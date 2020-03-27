@@ -171,8 +171,8 @@ export class DatagridSample extends React.Component<{}, IDatagridState> {
                         'flag': new FlagCellTemplate,
                         'dropdownNumber': new DropdownNumberCellTemplate
                     }}
-                    frozenTopRows={this.state.frozenTopRows}
-                    frozenLeftColumns={this.state.frozenLeftColumns}
+                    stickyTopRows={this.state.frozenTopRows}
+                    stickyLeftColumns={this.state.frozenLeftColumns}
                     highlights={this.state.highlights}
                     canReorderColumns={this.handleCanReorderColumns}
                     canReorderRows={this.handleCanReorderRows}

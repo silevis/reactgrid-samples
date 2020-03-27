@@ -25,12 +25,12 @@ interface FrozensState {
 export const FrozensSample: React.FunctionComponent = () => {
 
   const [state, setState] = React.useState<FrozensState>(() => ({
-    columns:            [...crmColumns(true, false)],
-    rows:               [...crmRows(true)],
-    frozenTopRows:      1,
-    frozenLeftColumns:  2,
+    columns: [...crmColumns(true, false)],
+    rows: [...crmRows(true)],
+    frozenTopRows: 1,
+    frozenLeftColumns: 2,
     frozenRightColumns: 1,
-    frozenBottomRows:   undefined
+    frozenBottomRows: undefined
   }))
 
   const handleChanges = (changes: CellChange[]) => {
@@ -54,10 +54,10 @@ export const FrozensSample: React.FunctionComponent = () => {
           'flag': new FlagCellTemplate,
           'dropdownNumber': new DropdownNumberCellTemplate,
         }}
-        frozenTopRows={state.frozenTopRows}
-        frozenBottomRows={state.frozenBottomRows}
-        frozenLeftColumns={state.frozenLeftColumns}
-        frozenRightColumns={state.frozenRightColumns}
+        stickyTopRows={state.frozenTopRows}
+        stickyBottomRows={state.frozenBottomRows}
+        stickyLeftColumns={state.frozenLeftColumns}
+        stickyRightColumns={state.frozenRightColumns}
         onCellsChanged={handleChanges}
         enableColumnSelection
         enableRowSelection
