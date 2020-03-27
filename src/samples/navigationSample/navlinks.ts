@@ -1,6 +1,6 @@
 import { INavLink } from 'office-ui-fabric-react/lib/Nav';
 import {
-  FrozensSample,
+  StickySample,
   ColumnReorderSample,
   ResizeColumnSample,
   DatagridSample,
@@ -21,10 +21,10 @@ export const navLinks: ISampleNavLink[] = [
     component: GroupCellSample
   },
   {
-    name: 'Frozens Sample',
-    key: '/FrozensSample',
-    url: '/FrozensSample',
-    component: FrozensSample
+    name: 'Sticky Sample',
+    key: '/StickySample',
+    url: '/StickySample',
+    component: StickySample
   },
   {
     name: 'Context Menu Sample',

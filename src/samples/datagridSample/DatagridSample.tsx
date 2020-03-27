@@ -9,15 +9,18 @@ import { DropdownNumberCellTemplate } from '../../cell-templates/dropdownNumberC
 import './styling.scss';
 
 const ReactGridContainer = styled.div`
-  position: relative;
-  min-height: 400px;
+  /* position: relative; */
+  height: 300px;
+  width: 800px;
+  overflow: scroll;
+
 `;
 
 export interface IDatagridState {
     columns: Column[],
     rows: Row[],
-    frozenTopRows?: number,
-    frozenLeftColumns?: number,
+    stickyTopRows?: number,
+    stickyLeftColumns?: number,
     highlights: Highlight[]
 }
 
@@ -26,8 +29,8 @@ export class DatagridSample extends React.Component<{}, IDatagridState> {
     state = {
         columns: columns(true, true),
         rows: rows(true),
-        frozenTopRows: 1,
-        frozenLeftColumns: 2,
+        stickyTopRows: 1,
+        stickyLeftColumns: 2,
         highlights: [],
     }
 
@@ -171,8 +174,8 @@ export class DatagridSample extends React.Component<{}, IDatagridState> {
                         'flag': new FlagCellTemplate,
                         'dropdownNumber': new DropdownNumberCellTemplate
                     }}
-                    stickyTopRows={this.state.frozenTopRows}
-                    stickyLeftColumns={this.state.frozenLeftColumns}
+                    stickyTopRows={this.state.stickyTopRows}
+                    stickyLeftColumns={this.state.stickyLeftColumns}
                     highlights={this.state.highlights}
                     canReorderColumns={this.handleCanReorderColumns}
                     canReorderRows={this.handleCanReorderRows}
