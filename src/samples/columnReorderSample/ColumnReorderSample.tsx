@@ -79,7 +79,6 @@ export const ColumnReorderSample: React.FunctionComponent = () => {
           'flag': new FlagCellTemplate
         }}
         onCellsChanged={handleChanges}
-        license={'non-commercial'}
         canReorderColumns={handleCanReorderColumns}
         canReorderRows={handleCanReorderRows}
         onColumnsReordered={handleColumnsReordered}

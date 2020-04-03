@@ -45,45 +45,11 @@ export const StickySample: React.FunctionComponent = () => {
     return true;
   }
 
-  const getExt = () => {
-    return {
-      getAdditionalEventHandlers: (updateState: any) => {
-        return {
-          handleContextMenu: (event: any) =>
-            updateState((state: any) => state.currentBehavior.handleContextMenu(event, state)),
-          // scrollHandler: () => updateState((state: any) => state),
-        }
-      },
-      getDefaultProStateFields: (): any => {
-        return {
-          // currentBehavior: new DefaultBehavior(), // create behaviour manager ??
-          disableFillHandle: false,
-          disableRangeSelection: false,
-          enableColumnSelection: false,
-          enableRowSelection: false,
-          contextMenuPosition: { top: -1, left: -1 },
-          lineOrientation: 'horizontal',
-          linePosition: -1,
-          shadowSize: 0,
-          shadowPosition: -1,
-          shadowCursor: 'default',
-          selectionMode: 'range',
-          selectedRanges: [],
-          selectedIndexes: [],
-          selectedIds: [],
-          activeSelectedRangeIdx: 0,
-        }
-      },
-    }
-  }
-
-
   return (
     <ReactGridContainer id="sticky-sample">
       <ReactGrid
         rows={state.rows}
         columns={state.columns}
-        extensions={getExt()}
         customCellTemplates={{
           'rating': new RateCellTemplate,
           'flag': new FlagCellTemplate,
@@ -96,7 +62,6 @@ export const StickySample: React.FunctionComponent = () => {
         onCellsChanged={handleChanges}
         enableColumnSelection
         enableRowSelection
-        license={'non-commercial'}
       />
     </ReactGridContainer>
   )

@@ -12,7 +12,7 @@ const ReactGridContainer = styled.div`
   /* position: relative; */
   height: 300px;
   width: 800px;
-  overflow: scroll;
+  overflow: auto;
 
 `;
 
@@ -28,7 +28,9 @@ export class DatagridSample extends React.Component<{}, IDatagridState> {
 
     state = {
         columns: columns(true, true),
-        rows: rows(true),
+        rows: [
+            ...rows(true),
+        ],
         stickyTopRows: 1,
         stickyLeftColumns: 2,
         highlights: [],
@@ -73,6 +75,7 @@ export class DatagridSample extends React.Component<{}, IDatagridState> {
 
 
     private makeChanges = (changes: CellChange[]): IDatagridState => {
+        // TODO need update !
         let newState = { ...this.state };
         changes.forEach((change: any) => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
@@ -169,7 +172,7 @@ export class DatagridSample extends React.Component<{}, IDatagridState> {
                 <ReactGrid
                     columns={this.state.columns}
                     rows={this.state.rows}
-                    onCellsChanged={this.handleChanges}
+                    // onCellsChanged={this.handleChanges} // TODO need update
                     customCellTemplates={{
                         'flag': new FlagCellTemplate,
                         'dropdownNumber': new DropdownNumberCellTemplate
@@ -183,7 +186,7 @@ export class DatagridSample extends React.Component<{}, IDatagridState> {
                     onContextMenu={this.handleContextMenu}
                     onRowsReordered={this.handleRowsReordered}
                     onColumnResized={this.handleColumnResize}
-                    license={'non-commercial'}
+
                     enableColumnSelection
                     enableRowSelection
                 />

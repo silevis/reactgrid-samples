@@ -86,7 +86,6 @@ export const ContextMenuSample: React.FunctionComponent = () => {
           onCellsChanged={handleChanges}
           enableColumnSelection
           enableRowSelection
-          license={'non-commercial'}
         />
       </ReactGridContainer>
     </>

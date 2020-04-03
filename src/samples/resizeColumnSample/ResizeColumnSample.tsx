@@ -13,8 +13,8 @@ const ReactGridContainer = styled.div`
 `;
 
 interface ResizeColumnSample {
-  columns:  Column[]
-  rows:     Row[]
+  columns: Column[]
+  rows: Row[]
 }
 
 export const ResizeColumnSample: React.FunctionComponent = () => {
@@ -25,6 +25,7 @@ export const ResizeColumnSample: React.FunctionComponent = () => {
   }))
 
   const handleChanges = (changes: CellChange[]) => {
+    // mothing os buggy there!
     let newState = { ...state };
     changes.forEach((change: CellChange) => {
       const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
@@ -53,9 +54,8 @@ export const ResizeColumnSample: React.FunctionComponent = () => {
           'rating': new RateCellTemplate,
           'flag': new FlagCellTemplate
         }}
-        onCellsChanged={handleChanges}
+        // onCellsChanged={handleChanges}
         onColumnResized={handleColumnResize}
-        license={'non-commercial'}
         enableColumnSelection
         enableRowSelection
       />

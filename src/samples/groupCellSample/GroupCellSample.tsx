@@ -93,7 +93,6 @@ export const GroupCellSample: React.FunctionComponent = () => {
             <ReactGrid
                 rows={rowsToRender}
                 columns={state.columns}
-                license={'non-commercial'}
                 onCellsChanged={handleChanges}
                 stickyLeftColumns={1}
                 stickyTopRows={1}
