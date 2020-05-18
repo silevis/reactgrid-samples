@@ -172,7 +172,7 @@ export class DatagridSample extends React.Component<{}, IDatagridState> {
                 <ReactGrid
                     columns={this.state.columns}
                     rows={this.state.rows}
-                    // onCellsChanged={this.handleChanges} // TODO need update
+                    onCellsChanged={this.handleChanges}
                     customCellTemplates={{
                         'flag': new FlagCellTemplate,
                         'dropdownNumber': new DropdownNumberCellTemplate

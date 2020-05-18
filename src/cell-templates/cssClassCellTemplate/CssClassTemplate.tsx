@@ -13,7 +13,7 @@ export class CssClassCellTemplate implements CellTemplate<CssClassCell> {
     getCompatibleCell(uncertainCell: Uncertain<CssClassCell>): Compatible<CssClassCell> {
         const value = getCellProperty(uncertainCell, 'value', 'number');
         const text = value.toString();
-        return { ...uncertainCell, value, text};
+        return { ...uncertainCell, value, text };
     }
 
     handleKeyDown(cell: Compatible<CssClassCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<CssClassCell>, enableEditMode: boolean } {
@@ -27,5 +27,5 @@ export class CssClassCellTemplate implements CellTemplate<CssClassCell> {
     render(cell: Compatible<CssClassCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<CssClassCell>, commit: boolean) => void): React.ReactNode {
         if (!isInEditMode) return cell.value
     }
-    
+
 }
