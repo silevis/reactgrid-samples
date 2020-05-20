@@ -4,7 +4,7 @@
   "main": "dist/mainExports.js",
   "typings": "dist/mainExports.d.ts",
   "devDependencies": {
-    "@silevis/reactgrid": "file:../../ReactGrid-Pro/dist",
+    "@silevis/reactgrid": "file:reactgrid-1.0.10.tgz",
     "@types/node": "^11.15.12",
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
@@ -12,14 +12,12 @@
     "@types/styled-components": "^4.4.3",
     "node-sass": "^4.14.1",
     "office-ui-fabric-react": "^7.114.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "styled-components": "^4.4.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^2.1.8",
     "typescript": "^3.9.2"
-  },
-  "peerDependencies": {
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "styled-components": "^4.4.1"
   },
   "scripts": {
     "start": "react-scripts start",
