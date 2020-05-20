@@ -16,7 +16,9 @@ import {
   StickyPanesSample,
   ColumnsAndRowsReorderSample,
   ColumnResizingSample,
-  HandlingChangesSample
+  HandlingChangesSample,
+  LimitedHeightByParentSample,
+  NotLimitedHeightByParentSample
 } from '../../samples';
 
 export interface ISampleNavLink extends INavLink {
@@ -125,5 +127,17 @@ export const navLinks: ISampleNavLink[] = [
     key: '/HandlingChangesSample',
     url: '/HandlingChangesSample',
     component: HandlingChangesSample
+  },
+  {
+    name: 'Limited Height By Parent Sample',
+    key: '/LimitedHeightByParentSample',
+    url: '/LimitedHeightByParentSample',
+    component: LimitedHeightByParentSample
+  },
+  {
+    name: 'Not Limited Height By Parent Sample',
+    key: '/NotLimitedHeightByParentSample',
+    url: '/NotLimitedHeightByParentSample',
+    component: NotLimitedHeightByParentSample
   },
 ];
