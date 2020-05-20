@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+reactgrid*.tgz
 /lib
 /@silevis
 

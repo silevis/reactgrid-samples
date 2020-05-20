@@ -7,6 +7,16 @@ import {
   CryptocurrencyMarketSample,
   GroupCellSample,
   ContextMenuSample,
+  GettingStartedSample,
+  FlagCellTemplateSample,
+  CustomStylingSample,
+  HighlightsSample,
+  AdvancedContextMenuHandlingSample,
+  SimpleContextMenuHandlingSample,
+  StickyPanesSample,
+  ColumnsAndRowsReorderSample,
+  ColumnResizingSample,
+  HandlingChangesSample
 } from '../../samples';
 
 export interface ISampleNavLink extends INavLink {
@@ -55,5 +65,65 @@ export const navLinks: ISampleNavLink[] = [
     key: '/CryptocurrencyMarketSample',
     url: '/CryptocurrencyMarketSample',
     component: CryptocurrencyMarketSample
+  },
+  {
+    name: 'Getting Started Sample',
+    key: '/GettingStartedSample',
+    url: '/GettingStartedSample',
+    component: GettingStartedSample
+  },
+  {
+    name: 'Flag Cell Template',
+    key: '/FlagCellTemplateSample',
+    url: '/FlagCellTemplateSample',
+    component: FlagCellTemplateSample
+  },
+  {
+    name: 'Custom Styling',
+    key: '/CustomStylingSample',
+    url: '/CustomStylingSample',
+    component: CustomStylingSample
+  },
+  {
+    name: 'Highlights',
+    key: '/HighlightsSample',
+    url: '/HighlightsSample',
+    component: HighlightsSample
+  },
+  {
+    name: 'Advanced ContextMenu Handling',
+    key: '/AdvancedContextMenuHandlingSample',
+    url: '/AdvancedContextMenuHandlingSample',
+    component: AdvancedContextMenuHandlingSample
+  },
+  {
+    name: 'Simple ContextMenu Handling',
+    key: '/SimpleContextMenuHandlingSample',
+    url: '/SimpleContextMenuHandlingSample',
+    component: SimpleContextMenuHandlingSample
+  },
+  {
+    name: 'Sticky Panes Sample',
+    key: '/StickyPanesSample',
+    url: '/StickyPanesSample',
+    component: StickyPanesSample
+  },
+  {
+    name: 'Columns And Row Reorder Sample',
+    key: '/ColumnsAndRowReorderSample',
+    url: '/ColumnsAndRowReorderSample',
+    component: ColumnsAndRowsReorderSample
+  },
+  {
+    name: 'Column Resize Sample',
+    key: '/ColumnResizingSample',
+    url: '/ColumnResizingSample',
+    component: ColumnResizingSample
+  },
+  {
+    name: 'Handling Changes Sample',
+    key: '/HandlingChangesSample',
+    url: '/HandlingChangesSample',
+    component: HandlingChangesSample
   },
 ];
