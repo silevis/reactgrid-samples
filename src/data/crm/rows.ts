@@ -1,6 +1,6 @@
-import { Uncertain, TextCell, Row, DateCell } from '@silevis/reactgrid';
+import { TextCell, Row, DateCell, CheckboxCell, HeaderCell, NumberCell } from '@silevis/reactgrid';
 
-export const rows = (reorderable: boolean): any[] => [
+export const rows = (reorderable: boolean): any[] => [ // TODO ROW<generic>
   {
     rowId: 'header',
     height: 25,
@@ -19,7 +19,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'header', text: 'Position' },
       { type: 'header', text: 'Skills' },
       { type: 'header', text: 'Is active' },
-    ]
+    ] as HeaderCell[]
   },
   {
     rowId: '1',
@@ -40,7 +40,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'text', text: 'Director' },
       { type: 'dropdownNumber', value: 20, isOpened: false },
       { type: 'checkbox', checked: true }
-    ]
+    ] as TextCell[] | NumberCell[] | CheckboxCell[]
   },
   {
     rowId: '2',
