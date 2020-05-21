@@ -1,0 +1,9 @@
+node_modules
+scripts
+build
+cypress
+cypress.json
+public
+src
+tsconfig.*json
+package.*json
