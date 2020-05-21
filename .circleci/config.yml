@@ -1,0 +1,61 @@
+defaults: &defaults
+  docker:
+    - image: circleci/node:10.16.3
+
+version: 2
+jobs:
+  deploy-on-build:
+    <<: *defaults
+
+    steps:
+      - checkout
+
+      - run:
+          name: Set configuration
+          command: git config --global user.email "$GITHUB_AUTHOR_EMAIL" && git config --global user.name "$GITHUB_AUTHOR_NAME"
+
+      - run:
+          name: Pull changes
+          command: git pull --tags origin build
+
+      - run:
+          name: Install Dependencies
+          command: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-npm-deps-{{ checksum "package.json" }}
+
+      - run:
+          name: Run build:tsc
+          command: npm run build:tsc
+
+      - run:
+          name: Chmod
+          command: chmod +x ./scripts/copyStyles.sh
+
+      - run:
+          name: Run ./copyStyles.sh
+          command: sh ./scripts/copyStyles.sh
+
+      - run:
+          name: Add changes
+          command: git add -A
+
+      - run:
+          name: Commit updated package version
+          command: git commit -m "upgrade version [ci skip]"
+
+      - run:
+          name: Push upgraded version
+          command: git push https://$GITHUB_TOKEN@github.com/silevis/reactgrid-samples.git build
+
+workflows:
+  version: 2
+  main:
+    jobs:
+      - deploy-on-build:
+          filters:
+            branches:
+              only: build
