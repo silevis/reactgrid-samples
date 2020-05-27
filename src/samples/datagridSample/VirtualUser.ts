@@ -1,7 +1,8 @@
-import { Highlight, CellChange, CheckboxCell, Cell, Compatible, EmailCell, DateCell, NumberCell } from '@silevis/reactgrid';
+import { Highlight, CellChange, Compatible, } from '@silevis/reactgrid';
 import { IDatagridState } from './DatagridSample';
 import { FlagCell } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { DropdownNumberCell } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
+import { DefaultCellTypes } from '@silevis/reactgrid/lib';
 
 export type RandomDataTypes = string | number | Date | undefined;
 
@@ -72,15 +73,15 @@ export class DatagridDataGenerator {
 
 export class VirtualEnv {
 
-  private handleData: (data: CellChange[]) => IDatagridState;
+  private handleData: (data: CellChange<DefaultCellTypes | FlagCell | DropdownNumberCell>[]) => IDatagridState;
   private virtualUsers: VirtualUser[] = [];
 
-  constructor(handleData: (data: CellChange[]) => IDatagridState) {
+  constructor(handleData: (data: CellChange<DefaultCellTypes | FlagCell | DropdownNumberCell>[]) => IDatagridState) {
     this.handleData = handleData;
   }
 
   addUser(virtualUser: VirtualUser): VirtualEnv {
-    this.virtualUsers = [...this.virtualUsers, virtualUser]
+    this.virtualUsers = [...this.virtualUsers, virtualUser];
     return this;
   }
 
@@ -131,62 +132,64 @@ export class VirtualUser {
     return { ...state }
   }
 
-  getUpdatedFieldState(state: IDatagridState, handleData: (data: CellChange[]) => IDatagridState): any {
+  getUpdatedFieldState(state: IDatagridState, handleData: (data: CellChange<DefaultCellTypes | FlagCell | DropdownNumberCell>[]) => IDatagridState): any {
     if (state === null || (!this.getHighlightedColumn(state) || !this.getHighlightedRow(state) || !this.getHighlightedCell(state))) {
       return null;
     }
     const cell = this.getHighlightedCell(state);
 
     const dataGen: DatagridDataGenerator = new DatagridDataGenerator();
-    let newFieldData: RandomDataTypes = dataGen.getDataAttrByKey(this.getHighlightedColumn(state).columnId as string);
+    const newFieldData: RandomDataTypes = dataGen.getDataAttrByKey(this.getHighlightedColumn(state).columnId as string);
 
-    let overridedProperties: Cell = { ...cell };
+    let overridedProperties: DefaultCellTypes | FlagCell | DropdownNumberCell = { ...cell };
 
     if (newFieldData === undefined) {
       switch (cell.type) {
         case 'checkbox': {
-          overridedProperties = ({ ...cell, checked: !(cell as CheckboxCell).checked } as CheckboxCell);
+          overridedProperties = { ...cell, checked: !cell.checked };
           break;
         }
         case 'number': {
-          overridedProperties = ({ value: dataGen.getRandomAge(10, 70) } as NumberCell);
+          overridedProperties = { ...cell, value: dataGen.getRandomAge(10, 70) };
           break;
         }
         case 'date': {
-          overridedProperties = ({ date: dataGen.getRandomDate() } as DateCell);
+          overridedProperties = { ...cell, date: dataGen.getRandomDate() };
           break;
         }
         case 'email': {
-          overridedProperties = ({ text: dataGen.getRandomEmail() } as EmailCell);
+          overridedProperties = { ...cell, text: dataGen.getRandomEmail() };
           break;
         }
         case 'flag': {
-          overridedProperties = ({ text: dataGen.getRandomCountry() } as FlagCell);
+          overridedProperties = { ...cell, text: dataGen.getRandomCountry() };
           break;
         }
         case 'dropdownNumber': {
-          overridedProperties = ({ value: DatagridDataGenerator.getRandomInt(0, 100) } as DropdownNumberCell);
+          overridedProperties = { ...cell, value: DatagridDataGenerator.getRandomInt(0, 100) };
           break;
         }
         default:
           break;
       }
     } else {
-      overridedProperties = ({ value: newFieldData, text: newFieldData.toString() } as Compatible<any>);
+      const text = newFieldData.toString();
+      overridedProperties = { ...cell, value: parseInt(text, 10), text } as Compatible<DefaultCellTypes | FlagCell | DropdownNumberCell>;
     }
 
     return {
       ...handleData([{
         columnId: this.getHighlightedColumn(state).columnId,
         rowId: this.getHighlightedRow(state).rowId,
+        type: cell.type,
         initialCell: { ...cell },
-        newCell: { ...cell, ...overridedProperties },
+        newCell: { ...overridedProperties },
       }]),
       highlightLocations: state.highlights
     }
   }
 
-  makeChanges(state: IDatagridState, handleData: (data: CellChange[]) => IDatagridState): IDatagridState {
+  makeChanges(state: IDatagridState, handleData: (data: CellChange<DefaultCellTypes | FlagCell | DropdownNumberCell>[]) => IDatagridState): IDatagridState {
     switch (this.count) {
       case 0: {
         state = this.updateHighlightsState(state);

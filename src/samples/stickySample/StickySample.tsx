@@ -16,7 +16,7 @@ const ReactGridContainer = styled.div`
 
 interface StickyState {
   columns: Column[]
-  rows: Row[],
+  rows: ReturnType<typeof crmRows>,
   stickyTopRows?: number,
   stickyBottomRows?: number,
   stickyLeftColumns?: number,

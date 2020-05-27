@@ -57,8 +57,8 @@ export const ColumnReorderSample: React.FunctionComponent = () => {
     const to = state.columns.findIndex((column: Column) => column.columnId === targetColumnId);
     const columnIdxs = columnIds.map((id: Id, idx: number) => state.columns.findIndex((c: Column) => c.columnId === id));
     setState({
-      columns: reorderArray<Column>(state.columns, columnIdxs, to),
-      rows: state.rows.map(row => ({ ...row, cells: reorderArray<Cell>(row.cells, columnIdxs, to) })),
+      columns: reorderArray(state.columns, columnIdxs, to),
+      rows: state.rows.map(row => ({ ...row, cells: reorderArray(row.cells, columnIdxs, to) })),
     });
   }
 

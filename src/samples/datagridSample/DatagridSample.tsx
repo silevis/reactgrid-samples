@@ -1,24 +1,22 @@
 import * as React from 'react';
-import { ReactGrid, CellChange, Highlight, Column, Row, DropPosition, Id, Cell, SelectionMode, MenuOption } from '@silevis/reactgrid';
+import { ReactGrid, CellChange, Highlight, Column, DropPosition, Id, Cell, SelectionMode, MenuOption, DefaultCellTypes } from '@silevis/reactgrid';
 import styled from 'styled-components';
 import { VirtualEnv, VirtualUser } from './VirtualUser';
 import { columns } from '../../data/crm/columns';
 import { rows } from '../../data/crm/rows';
-import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
-import { DropdownNumberCellTemplate } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
+import { FlagCellTemplate, FlagCell } from '../../cell-templates/flagCell/FlagCellTemplate';
+import { DropdownNumberCellTemplate, DropdownNumberCell } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
 import './styling.scss';
 
 const ReactGridContainer = styled.div`
-  /* position: relative; */
-  height: 300px;
+  /* height: 300px;
   width: 800px;
-  overflow: auto;
-
+  overflow: auto; */
 `;
 
 export interface IDatagridState {
     columns: Column[],
-    rows: Row[],
+    rows: ReturnType<typeof rows>,
     stickyTopRows?: number,
     stickyLeftColumns?: number,
     highlights: Highlight[]
@@ -64,7 +62,6 @@ export class DatagridSample extends React.Component<{}, IDatagridState> {
             .addUser(new VirtualUser('#4D8802'))
             .addUser(new VirtualUser('#A771FE'))
 
-
         this.intervalId = setInterval(() => this.setState(virtEnv.updateView(this.state)), 1000);
     }
 
@@ -74,8 +71,7 @@ export class DatagridSample extends React.Component<{}, IDatagridState> {
     }
 
 
-    private makeChanges = (changes: CellChange[]): IDatagridState => {
-        // TODO need update !
+    private makeChanges = (changes: CellChange<DefaultCellTypes | FlagCell | DropdownNumberCell>[]): IDatagridState => {
         let newState = { ...this.state };
         changes.forEach((change: any) => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
@@ -99,30 +95,29 @@ export class DatagridSample extends React.Component<{}, IDatagridState> {
     }
 
     private handleCanReorderRows = (targetColumnId: Id, rowIds: Id[], dropPosition: DropPosition): boolean => {
-        const rowIndex = this.state.rows.findIndex((row: Row) => row.rowId === targetColumnId);
+        const rowIndex = this.state.rows.findIndex(row => row.rowId === targetColumnId);
         if (rowIndex === 0) return false;
         return true;
     }
 
-    private handleColumnsReordered = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
+    private handleColumnsReorder = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
         const to = this.state.columns.findIndex((column: Column) => column.columnId === targetColumnId);
         const columnIdxs = columnIds.map((id: Id, idx: number) => this.state.columns.findIndex((c: Column) => c.columnId === id));
         this.setState({
-            columns: this.reorderArray<Column>(this.state.columns, columnIdxs, to),
-            rows: this.state.rows.map(row => ({ ...row, cells: this.reorderArray<Cell>(row.cells, columnIdxs, to) })),
+            columns: this.reorderArray(this.state.columns, columnIdxs, to),
+            rows: this.state.rows.map(row => ({ ...row, cells: this.reorderArray(row.cells, columnIdxs, to) })),
         });
     }
 
-    private handleRowsReordered = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
+    private handleRowsReorder = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
         const newState = { ...this.state };
-        const to = this.state.rows.findIndex((row: Row) => row.rowId === targetRowId);
+        const to = this.state.rows.findIndex(row => row.rowId === targetRowId);
         const ids = rowIds.map((id: Id) => this.state.rows.findIndex(r => r.rowId === id));
-        this.setState({ ...newState, rows: this.reorderArray<Row>(this.state.rows, ids, to) });
+        this.setState({ ...newState, rows: this.reorderArray(this.state.rows, ids, to) });
     }
 
-    private handleChanges = (changes: CellChange[]): boolean => {
+    private handleChanges = (changes: CellChange[]) => {
         this.makeChanges(changes);
-        return true;
     }
 
     private handleColumnResize = (ci: Id, width: number) => {
@@ -141,7 +136,7 @@ export class DatagridSample extends React.Component<{}, IDatagridState> {
                 {
                     id: 'removeRow', label: 'Remove row', handler: () => {
                         const highlights = this.state.highlights.filter((h: Highlight) => !selectedRowIds.includes(h.rowId));
-                        this.setState({ rows: this.state.rows.filter((row: Row) => !selectedRowIds.includes(row.rowId)), highlights });
+                        this.setState({ rows: this.state.rows.filter(row => !selectedRowIds.includes(row.rowId)), highlights });
                     }
                 },
             ]
@@ -156,7 +151,7 @@ export class DatagridSample extends React.Component<{}, IDatagridState> {
                             if (!columns.includes(column)) return idx;
                             return undefined;
                         }).filter(idx => idx !== undefined);
-                        const rows = this.state.rows.map((row: Row) => ({ ...row, cells: row.cells.filter((_: Cell, idx: number) => !columnsIdxs.includes(idx)) }));
+                        const rows = this.state.rows.map(row => ({ ...row, cells: row.cells.filter((_: Cell, idx: number) => !columnsIdxs.includes(idx)) }));
                         const highlights = this.state.highlights.filter((h: Highlight) => !selectedColIds.includes(h.columnId));
                         this.setState({ columns, rows, highlights });
                     }
@@ -182,11 +177,10 @@ export class DatagridSample extends React.Component<{}, IDatagridState> {
                     highlights={this.state.highlights}
                     canReorderColumns={this.handleCanReorderColumns}
                     canReorderRows={this.handleCanReorderRows}
-                    onColumnsReordered={this.handleColumnsReordered}
+                    onColumnsReordered={this.handleColumnsReorder}
                     onContextMenu={this.handleContextMenu}
-                    onRowsReordered={this.handleRowsReordered}
+                    onRowsReordered={this.handleRowsReorder}
                     onColumnResized={this.handleColumnResize}
-
                     enableColumnSelection
                     enableRowSelection
                 />
