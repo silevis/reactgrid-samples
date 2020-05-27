@@ -54,7 +54,7 @@ export const ResizeColumnSample: React.FunctionComponent = () => {
           'rating': new RateCellTemplate,
           'flag': new FlagCellTemplate
         }}
-        // onCellsChanged={handleChanges}
+        onCellsChanged={handleChanges}
         onColumnResized={handleColumnResize}
         enableColumnSelection
         enableRowSelection
