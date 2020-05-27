@@ -1,6 +1,8 @@
-import { TextCell, Row, DateCell, CheckboxCell, HeaderCell, NumberCell } from '@silevis/reactgrid';
+import { Row, DefaultCellTypes } from '@silevis/reactgrid';
+import { FlagCell } from '../../cell-templates/flagCell/FlagCellTemplate';
+import { DropdownNumberCell } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
 
-export const rows = (reorderable: boolean): any[] => [ // TODO ROW<generic>
+export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | DropdownNumberCell>[] => [ // TODO ROW<generic>
   {
     rowId: 'header',
     height: 25,
@@ -19,7 +21,7 @@ export const rows = (reorderable: boolean): any[] => [ // TODO ROW<generic>
       { type: 'header', text: 'Position' },
       { type: 'header', text: 'Skills' },
       { type: 'header', text: 'Is active' },
-    ] as HeaderCell[]
+    ]
   },
   {
     rowId: '1',
@@ -27,7 +29,7 @@ export const rows = (reorderable: boolean): any[] => [ // TODO ROW<generic>
     reorderable,
     cells: [
       // IS IT CORRECT
-      { type: 'text', text: 'Jacob' } as TextCell,
+      { type: 'text', text: 'Jacob' },
       { type: 'text', text: 'Sandberg' },
       { type: 'text', text: 'male' },
       { type: 'email', text: 'j.sandberg@gmail.com' },
@@ -36,11 +38,11 @@ export const rows = (reorderable: boolean): any[] => [ // TODO ROW<generic>
       { type: 'text', text: 'Wellham Ave' },
       { type: 'date', date: new Date('2008-11-12') },
       { type: 'flag', text: 'usa' },
-      { type: 'date', date: new Date('1962-09-04') } as DateCell,
+      { type: 'date', date: new Date('1962-09-04') },
       { type: 'text', text: 'Director' },
       { type: 'dropdownNumber', value: 20, isOpened: false },
       { type: 'checkbox', checked: true }
-    ] as TextCell[] | NumberCell[] | CheckboxCell[]
+    ]
   },
   {
     rowId: '2',

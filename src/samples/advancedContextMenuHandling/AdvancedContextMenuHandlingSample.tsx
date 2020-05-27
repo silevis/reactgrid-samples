@@ -16,7 +16,7 @@ export const AdvancedContextMenuHandlingSample: React.FunctionComponent = () => 
         columns: [
             { columnId: "Name", width: 100 },
             { columnId: "Surname", width: 100 }
-        ],
+        ] as Column[],
         rows: [
             {
                 rowId: 0,
@@ -43,18 +43,14 @@ export const AdvancedContextMenuHandlingSample: React.FunctionComponent = () => 
                 rowId: 3,
                 cells: [{ type: "text", text: "" }, { type: "text", text: "" }]
             }
-        ]
+        ] as Row[]
     }));
 
     const handleChanges = (changes: CellChange[]) => {
-        let newState = { ...state };
-        changes.forEach((change: any) => {
-            const changeRowIdx = newState.rows.findIndex(
-                el => el.rowId === change.rowId
-            );
-            const changeColumnIdx = newState.columns.findIndex(
-                el => el.columnId === change.columnId
-            );
+        const newState = { ...state };
+        changes.forEach(change => {
+            const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
+            const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         });
         setState(newState);

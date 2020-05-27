@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ReactGrid, Column, Id, Row } from '@silevis/reactgrid';
+import { ReactGrid, Column, Id, Row, DefaultCellTypes } from '@silevis/reactgrid';
 import styled from 'styled-components';
 import { CssClassCell, CssClassCellTemplate } from '../../cell-templates/cssClassCellTemplate/CssClassTemplate';
 import { columns } from '../../data/cryptocurrencyMarket/columns'
@@ -13,14 +13,14 @@ const ReactGridContainer = styled.div`
 const fetchCryptocurrencyMarketData = async () => {
   const promise = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd");
   const currenciesAsJson = await promise.json();
-  const newRows: Row[] = [
+  const newRows: Row<DefaultCellTypes | CssClassCell>[] = [
     {
       rowId: 'header',
       reorderable: false,
       height: 25,
       cells: [...columns.map((c: Column) => ({ type: 'header', text: c.columnId }))],
     },
-    ...currenciesAsJson.map((item: any) => {
+    ...currenciesAsJson.map((item: { [key: string]: any }) => {
       return {
         rowId: item.id,
         reorderable: false,
@@ -42,7 +42,7 @@ const fetchCryptocurrencyMarketData = async () => {
 
 interface CryptocurrencyMarketState {
   columns: Column[];
-  rows: Row[];
+  rows: Row<DefaultCellTypes | CssClassCell>[];
 }
 
 export const CryptocurrencyMarketSample: React.FunctionComponent = () => {
@@ -54,8 +54,8 @@ export const CryptocurrencyMarketSample: React.FunctionComponent = () => {
 
   const returnRandomWith = (numberOfRows: number) => Math.floor(Math.random() * numberOfRows + 1)
 
-  const currentValueRandom = (apiRows: Row[], numberOfRows: number): number => {
-    const row: Row | undefined = apiRows.find((_: Row, idx: number) => idx === numberOfRows);
+  const currentValueRandom = <T extends Row<DefaultCellTypes | CssClassCell>>(apiRows: T[], numberOfRows: number): number => {
+    const row: Row<DefaultCellTypes | CssClassCell> | undefined = apiRows.find((_: T, idx: number) => idx === numberOfRows);
     if (!row) return 0;
     const min = (row.cells[4] as CssClassCell).value;
     const max = (row.cells[5] as CssClassCell).value;
@@ -63,7 +63,7 @@ export const CryptocurrencyMarketSample: React.FunctionComponent = () => {
     return parseFloat(randomValue.toFixed(6));
   }
 
-  const findIdsChanged = (itemID: Id, dataApi: Row[]) => {
+  const findIdsChanged = <T extends Row<DefaultCellTypes | CssClassCell>>(itemID: Id, dataApi: T[]) => {
     let changedRowIds: number[] = [];
     dataApi.forEach((item, idx) => {
       if (item.rowId === itemID) {
@@ -73,9 +73,9 @@ export const CryptocurrencyMarketSample: React.FunctionComponent = () => {
     return changedRowIds;
   }
 
-  const findChangedRows = (dataState: Row[], dataApi: Row[]): Row[] => {
+  const findChangedRows = <T extends Row<DefaultCellTypes | CssClassCell>>(dataState: T[], dataApi: T[]): T[] => {
     if (!dataState) return [];
-    return dataState.filter((data: Row, idx: number) => idx != 0 && (data.cells[3] as CssClassCell).value !== (dataApi[idx].cells[3] as CssClassCell).value);
+    return dataState.filter((data, idx) => idx != 0 && (data.cells[3] as CssClassCell).value !== (dataApi[idx].cells[3] as CssClassCell).value);
   }
 
   const useInterval = (callback: any, delay: number) => {
@@ -97,15 +97,15 @@ export const CryptocurrencyMarketSample: React.FunctionComponent = () => {
   useInterval(() => renderValue(), 3000);
 
   const renderValue = () => {
-    fetchCryptocurrencyMarketData().then((res: Row[]) => {
-      const dataApi: Row[] = res;
-      const dataState: Row[] = [...state.rows];
+    fetchCryptocurrencyMarketData().then(res => {
+      const dataApi = res;
+      const dataState = [...state.rows];
       for (let i = 0; i < Math.floor(dataApi.length / 6); i++) {
         const changedIdx = returnRandomWith(dataApi.length);
         (dataApi[changedIdx].cells[3] as CssClassCell).value = currentValueRandom(dataApi, changedIdx);
       }
 
-      const cheangeRows: Row[] = findChangedRows(dataState, dataApi);
+      const cheangeRows = findChangedRows(dataState, dataApi);
       if (cheangeRows.length !== 0) {
         cheangeRows.forEach(row => {
           let idsToChange: number[] = findIdsChanged(row.rowId, dataApi);

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { ReactGrid, Column, CellChange, Row, SelectionMode, MenuOption, Id, Cell } from '@silevis/reactgrid';
+import { ReactGrid, Column, CellChange, SelectionMode, MenuOption, Id, Cell } from '@silevis/reactgrid';
 import { DropdownNumberCellTemplate } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
@@ -13,14 +13,9 @@ const ReactGridContainer = styled.div`
   min-height: 400px;
 `;
 
-const InfoContainer = styled.div`
-  position: relative;
-  height: 100px;
-`;
-
 interface ContextMenuState {
   columns: Column[]
-  rows: Row[],
+  rows: ReturnType<typeof crmRows>,
 }
 
 export const ContextMenuSample: React.FunctionComponent = () => {
@@ -32,7 +27,7 @@ export const ContextMenuSample: React.FunctionComponent = () => {
 
   const handleChanges = (changes: CellChange[]) => {
     let newState = { ...state };
-    changes.forEach((change: any) => {
+    changes.forEach((change) => {
       const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
       const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
       newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
@@ -47,7 +42,7 @@ export const ContextMenuSample: React.FunctionComponent = () => {
         ...menuOptions,
         {
           id: 'removeRow', label: 'Remove row', handler: () => {
-            setState({ ...state, rows: state.rows.filter((row: Row) => !selectedRowIds.includes(row.rowId)) });
+            setState({ ...state, rows: state.rows.filter(row => !selectedRowIds.includes(row.rowId)) });
           }
         },
       ]
@@ -62,7 +57,7 @@ export const ContextMenuSample: React.FunctionComponent = () => {
               if (!columns.includes(column)) return idx;
               return undefined;
             }).filter(idx => idx !== undefined);
-            const rows = state.rows.map((row: Row) => ({ ...row, cells: row.cells.filter((_: Cell, idx: number) => !columnsIdxs.includes(idx)) }));
+            const rows = state.rows.map(row => ({ ...row, cells: row.cells.filter((_: Cell, idx: number) => !columnsIdxs.includes(idx)) }));
             setState({ ...state, columns, rows });
           }
         },

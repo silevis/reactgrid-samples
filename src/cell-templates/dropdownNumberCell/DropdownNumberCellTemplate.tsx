@@ -5,6 +5,7 @@ import './number-dropdown-cell-style.scss';
 
 export interface DropdownNumberCell extends Cell {
   type: 'dropdownNumber';
+  isOpened: boolean;
   value: number;
 }
 
@@ -16,9 +17,10 @@ export class DropdownNumberCellTemplate implements CellTemplate<DropdownNumberCe
 
   getCompatibleCell(uncertainCell: Uncertain<DropdownNumberCell>): Compatible<DropdownNumberCell> {
     const value = getCellProperty(uncertainCell, 'value', 'number');
+    const isOpened = getCellProperty(uncertainCell, 'isOpened', 'boolean');
     const text = value.toString();
     const limitedValue = this.getLimitedValue(value);
-    return { ...uncertainCell, value: limitedValue, text: limitedValue.toString()};
+    return { ...uncertainCell, value: limitedValue, text: limitedValue.toString(), isOpened };
   }
 
   getLimitedValue(value: number): number {
@@ -37,21 +39,21 @@ export class DropdownNumberCellTemplate implements CellTemplate<DropdownNumberCe
     if (cellToMerge.value !== undefined && cellToMerge.value !== NaN)
       return this.getCompatibleCell({ ...cell, value: cellToMerge.value });
     const parsed = parseFloat(cellToMerge.text);
-    return  this.getCompatibleCell({ ...cell, value: (parsed > 0 || parsed < 0) ? parsed : 0 });
+    return this.getCompatibleCell({ ...cell, value: (parsed > 0 || parsed < 0) ? parsed : 0 });
   }
 
   getStyle(cell: Compatible<DropdownNumberCell>, isInEditMode: boolean): CellStyle {
-    return ({overflow: 'unset'}) as CellStyle
+    return ({ overflow: 'unset' }) as CellStyle
   };
 
   render(cell: Compatible<DropdownNumberCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<DropdownNumberCell>, commit: boolean) => void): React.ReactNode {
     const [isOpen, setOpen] = React.useState<boolean>(false);
-    
+
     return (
       <>
         <div className="wrapper">
           <div className="value"><span>{cell.value}</span></div>
-          <div className="chevron" onClick={() => {setOpen(!isOpen)}}>
+          <div className="chevron" onClick={() => { setOpen(!isOpen) }}>
             <div style={{ transform: !isOpen ? 'rotate(0deg)' : 'rotate(90deg)', transitionDuration: '200ms' }}
             > ❯
             </div>
