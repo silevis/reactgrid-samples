@@ -14,7 +14,7 @@ reactgrid*.tgz
 # production
 # public
 .cache
-dist
+# dist
 .npmrc
 
 # misc
