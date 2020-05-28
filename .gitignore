@@ -12,9 +12,9 @@ reactgrid*.tgz
 /coverage
 
 # production
-/build
-public
+# public
 .cache
+dist
 .npmrc
 
 # misc

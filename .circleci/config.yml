@@ -23,7 +23,7 @@ jobs:
           command: npm install
 
       - run:
-          name: Write  NPM Token to ~/.npmrc
+          name: Write Azure DevOps NPM Token to ~/.npmrc
           command:
             printf "registry=https://pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/registry/\n
             always-auth=true\n\n
@@ -46,7 +46,7 @@ jobs:
           command: npm run build:tsc
 
       - run:
-          name: Chmod
+          name: Chmod scripts/copyStyles.sh
           command: chmod +x ./scripts/copyStyles.sh
 
       - run:
