@@ -37,13 +37,17 @@ jobs:
             ; end auth token" >> ~/.npmrc
 
       - run:
-          name: Install Dependencies
-          command: npm install
+          name: ~/.npmrc content
+          command: cat .npmrc
 
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-npm-deps-{{ checksum "package.json" }}
+      - run:
+          name: Install ReactGrid Pro
+          command: npm install @silevis/reactgrid@latest
+
+      # - save_cache:
+      #     paths:
+      #       - node_modules
+      #     key: v1-npm-deps-{{ checksum "package.json" }}
 
       - run:
           name: Run build:tsc
