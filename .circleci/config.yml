@@ -25,17 +25,21 @@ jobs:
       - run:
           name: Write  NPM Token to ~/.npmrc
           command:
-            echo "registry=https://pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/registry/
-            always-auth=true
+            printf "registry=https://pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/registry/\n
+            always-auth=true\n\n
 
-            ; begin auth token
-            //pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/registry/:username=Silevis
-            //pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/registry/:_password=[$BASE64_ENCODED_PERSONAL_ACCESS_TOKEN]
-            //pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/registry/:email=patryk.eliasz@silevis.com
-            //pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/:username=Silevis
-            //pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/:_password=[$BASE64_ENCODED_PERSONAL_ACCESS_TOKEN]
-            //pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/:email=patryk.eliasz@silevis.com
+            ; begin auth token\n
+            //pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/registry/:username=Silevis\n
+            //pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/registry/:_password=[$BASE64_ENCODED_PERSONAL_ACCESS_TOKEN]\n
+            //pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/registry/:email=patryk.eliasz@silevis.com\n
+            //pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/:username=Silevis\n
+            //pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/:_password=[$BASE64_ENCODED_PERSONAL_ACCESS_TOKEN]\n
+            //pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/:email=patryk.eliasz@silevis.com\n
             ; end auth token" >> .npmrc
+
+      - run:
+          name: .npmrc content
+          command: cat .npmrc
 
       - run:
           name: Install ReactGrid Pro
