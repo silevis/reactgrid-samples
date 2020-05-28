@@ -24,16 +24,17 @@ jobs:
 
       - run:
           name: Write  NPM Token to ~/.npmrc
-          command: echo "registry=https://$REGISTRY_URLregistry/
+          command:
+            echo "registry=https://pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/registry/
             always-auth=true
 
             ; begin auth token
-            //$REGISTRY_URLregistry/:username=Silevis
-            //$REGISTRY_URLregistry/:_password=[$BASE64_ENCODED_PERSONAL_ACCESS_TOKEN]
-            //$REGISTRY_URLregistry/:email=patryk.eliasz@silevis.com
-            //$REGISTRY_URL:username=Silevis
-            //$REGISTRY_URL:_password=[$BASE64_ENCODED_PERSONAL_ACCESS_TOKEN]
-            //$REGISTRY_URL:email=patryk.eliasz@silevis.com
+            //pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/registry/:username=Silevis
+            //pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/registry/:_password=[$BASE64_ENCODED_PERSONAL_ACCESS_TOKEN]
+            //pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/registry/:email=patryk.eliasz@silevis.com
+            //pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/:username=Silevis
+            //pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/:_password=[$BASE64_ENCODED_PERSONAL_ACCESS_TOKEN]
+            //pkgs.dev.azure.com/Silevis/ReactGrid/_packaging/ReactGrid-artifacts-feed/npm/:email=patryk.eliasz@silevis.com
             ; end auth token" >> .npmrc
 
       - run:
