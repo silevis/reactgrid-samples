@@ -24,7 +24,7 @@ jobs:
 
       - run:
           name: Write  NPM Token to ~/.npmrc
-          command: echo "registry=$REGISTRY_URLregistry/
+          command: echo "registry=https://$REGISTRY_URLregistry/
             always-auth=true
 
             ; begin auth token
@@ -34,7 +34,7 @@ jobs:
             //$REGISTRY_URL:username=Silevis
             //$REGISTRY_URL:_password=[$BASE64_ENCODED_PERSONAL_ACCESS_TOKEN]
             //$REGISTRY_URL:email=patryk.eliasz@silevis.com
-            ; end auth token" >> ~/.npmrc
+            ; end auth token" >> .npmrc
 
       - run:
           name: Install ReactGrid Pro
