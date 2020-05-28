@@ -18,9 +18,6 @@
     "styled-components": "^4.4.1",
     "typescript": "^3.9.3"
   },
-  "peerDependencies": {
-    "@silevis/reactgrid": "file:reactgrid-1.0.15.tgz"
-  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
