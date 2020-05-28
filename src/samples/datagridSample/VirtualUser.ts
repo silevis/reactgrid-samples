@@ -184,7 +184,7 @@ export class VirtualUser {
         type: cell.type,
         initialCell: { ...cell },
         newCell: { ...overridedProperties },
-      }]),
+      } as CellChange<DefaultCellTypes | FlagCell | DropdownNumberCell>]),
       highlightLocations: state.highlights
     }
   }

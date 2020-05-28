@@ -116,7 +116,7 @@ export class DatagridSample extends React.Component<{}, IDatagridState> {
         this.setState({ ...newState, rows: this.reorderArray(this.state.rows, ids, to) });
     }
 
-    private handleChanges = (changes: CellChange[]) => {
+    private handleChanges = (changes: CellChange<DefaultCellTypes | FlagCell | DropdownNumberCell>[]) => {
         this.makeChanges(changes);
     }
 
