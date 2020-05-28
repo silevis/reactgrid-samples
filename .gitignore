@@ -16,6 +16,7 @@ reactgrid*.tgz
 public
 .cache
 /dist
+.npmrc
 
 # misc
 .DS_Store
