@@ -39,7 +39,7 @@ jobs:
 
       - run:
           name: Install ReactGrid Pro
-          command: npm install @silevis/reactgrid@latest
+          command: npm install @silevis/reactgrid@latest --no-save
 
       - run:
           name: Run build:tsc
