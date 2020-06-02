@@ -1,0 +1,40 @@
+#budget-planning-container {
+  width: 100%;
+  padding: 0px 20px;
+  display: flex;
+}
+
+#budget-planning-header {
+  width: 100%;
+  height: 10vh;
+  display: flex;
+  flex-direction: row;
+  .ms-Dropdown-container, .ms-Label {
+    padding-right: 20px;
+  }
+}
+
+#budget-planning-react-grid {
+  width: 100%;
+  height: 60vh;
+  display:flex;
+  flex-direction: column;
+}
+
+#variable-views-budget-planner {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  height: calc(100vh - 112px);
+  overflow: auto;
+}
+
+#nevy-blue-header{
+  background-color: #344675!important;
+  color: white
+ }
+
+#grey-header {
+  background-color: #ccc;
+  color: black;
+}
