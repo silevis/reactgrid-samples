@@ -2,7 +2,6 @@ import { isString } from 'util';
 import { CellChange } from '@silevis/reactgrid';
 import { Value, Variable } from './interfaces';
 
-
 export interface GroupAttribute {
   name: string,
   fieldName: string,
@@ -10,21 +9,6 @@ export interface GroupAttribute {
   values: any,
   variables: any
 }
-
-export const removeEmptyValuesFromObject = (obj: any) => {
-  if (obj) {
-    const newObj: any = {};
-    Object.keys(obj).forEach(key => {
-      if (obj[key] && typeof obj[key] === "object" && !(obj[key] instanceof Date)) {
-        newObj[key] = removeEmptyValuesFromObject(obj[key]);
-        if (Object.keys(newObj[key]).length === 0) delete newObj[key]
-      } else if (obj[key] !== null && obj[key] !== '') {
-        newObj[key] = obj[key];
-      }
-    });
-    return newObj;
-  }
-};
 
 export const getAllVariablesType = (variables: Variable[]): any[] => {
   let groupOptions: any[] = [];

@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { groupBy, removeEmptyValuesFromObject, GroupAttribute } from './budgetPlannerData';
+import { groupBy, GroupAttribute } from './budgetPlannerData';
 import { calculateValues, getDefaultValues } from './budgetPlannerValues';
 import { Value } from './interfaces';
 

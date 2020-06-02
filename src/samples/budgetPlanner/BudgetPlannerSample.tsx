@@ -6,6 +6,8 @@ import { getDates } from './dates';
 import { Value } from './interfaces';
 import "./budget-planner.scss";
 import { Variable } from './models';
+import "./budget-planner.scss";
+
 
 export const BudgetPlannerSample: React.FC = () => {
 
@@ -20,44 +22,44 @@ export const BudgetPlannerSample: React.FC = () => {
     const budgetPlannerVariable = [{
       "_id": "5ece7cd19542be0001b1044h",
       "project": "Teamspot",
-      "employee": "Krzysztof",
-      "name": "test"
+      "job position": "Programmer",
+      "name": "Krzysztof"
     },
     {
       "_id": "5ece7cd19542be0001b104yy",
       "project": "Teamspot",
-      "employee": "Adrian",
-      "name": "xxc"
+      "job position": "Programmer",
+      "name": "Adrian"
     },
     {
       "_id": "5ece7cd19542be0001b104nn",
       "project": "Teamspot",
-      "employee": "Arek",
-      "name": "asda"
+      "job position": "Project manager",
+      "name": "Arek"
     },
     {
       "_id": "5ece7cd19542be0001b104rr",
       "project": "ReactGrid",
-      "employee": "Kamil",
-      "name": "ooo"
+      "job position": "Programmer",
+      "name": "Kamil"
     },
     {
       "_id": "5ece7cd42542be0001b104rr",
       "project": "ReactGrid",
-      "employee": "Patryk",
-      "name": "qwe"
+      "job position": "Programmer",
+      "name": "Patryk"
     },
     {
       "_id": "5ece7cd19542be0001b10ww",
       "project": "ReactGrid",
-      "employee": "Arek",
-      "name": "qwxd"
+      "job position": "Project manager",
+      "name": "Arek"
     },
     {
       "_id": "5ece7cd19542be0dcv1b10ww",
       "project": "CallCenter",
-      "employee": "Arek",
-      "name": "qwxd"
+      "job position": "Project manager",
+      "name": "Arek"
     },];
     setVariables(budgetPlannerVariable)
     // setDates([moment('01.01.2020').toDate(), moment('04.01.2020').toDate(), moment('05.01.2020').toDate()]) //MM-DD-RRRR

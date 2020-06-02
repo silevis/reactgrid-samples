@@ -1,6 +1,5 @@
 import moment from 'moment';
-import { GroupAttribute, removeEmptyValuesFromObject } from './budgetPlannerData';
-import { isNumber } from 'util';
+import { GroupAttribute } from './budgetPlannerData';
 import { getFormattedDate } from './BudgetPlannerUtil';
 import { Value } from './interfaces';
 
