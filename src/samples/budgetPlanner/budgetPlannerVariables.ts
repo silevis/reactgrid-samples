@@ -39,13 +39,6 @@ export const updateValues = (changes: CellChange[], values: Value[]): Value[] =>
       // @ts-ignore
       values[ValueIndex][splittedRowId[1]] = change.newCell.value;
     }
-    // TODO - update function to update on backend
-    // if update nodeValue to backend option
-    // let nodeValue: NodeValue | undefined = nodes.find((node: NodeValue) => node._id.toString() === splittedRowId[0].toString());
-    // if (nodeValue && splittedRowId.length >= 2) {
-    //   nodeValue[splittedRowId[1]] = change.newCell.value
-    // }
-
   });
   return values;
 }
