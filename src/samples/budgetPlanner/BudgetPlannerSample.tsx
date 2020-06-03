@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import moment from 'moment';
 import BudgetPlannerDisplay from './BudgetPlannerDisplay';
 import DataFilterOptions, { valuesFilterOptionsState } from './DataFilterOptions';
 import { getDates } from './dates';
@@ -8,11 +7,9 @@ import "./budget-planner.scss";
 import { Variable } from './models';
 import "./budget-planner.scss";
 
-
 export const BudgetPlannerSample: React.FC = () => {
 
-  const [filterDisabled, setFilterDisabled] = useState<boolean>(false)
-  const [span, setSpan] = useState<string>('month')
+  const [span] = useState<string>('month')
   const [values, setValues] = useState<Value[]>([])
   const [variables, setVariables] = useState<Variable[]>([])
   const [dates, setDates] = useState<Date[]>([])
@@ -62,20 +59,9 @@ export const BudgetPlannerSample: React.FC = () => {
       "name": "Arek"
     },];
     setVariables(budgetPlannerVariable)
-    // setDates([moment('01.01.2020').toDate(), moment('04.01.2020').toDate(), moment('05.01.2020').toDate()]) //MM-DD-RRRR
-    const budgetPlannerValues = [{
-      "_id": "7",
-      "date": "03.03.1996"
-    },
-    {
-      "_id": "8",
-      "date": "08.09.1996"
-    }]
-    // const values = budgetPlannerValues.map((value: Value) => ({ ...value, date: moment(value.date).toDate() }))
     const dates = getDates(null, 'month');
     setDates(dates)
     setValues(values as Variable[])
-
   }, []);
 
   useEffect(() => {
@@ -84,11 +70,8 @@ export const BudgetPlannerSample: React.FC = () => {
 
 
   const onGetValuesFilterOptions = async (valuesFilterOptions: valuesFilterOptionsState) => {
-    // const budgetPlannerValues 
-    // const values = budgetPlannerValues.map((value: Value) => ({ ...value, date: moment(value.date).toDate() }))
     setValues(values as Variable[])
     setDates(getDates(valuesFilterOptions, 'month'))
-
   }
 
   return (

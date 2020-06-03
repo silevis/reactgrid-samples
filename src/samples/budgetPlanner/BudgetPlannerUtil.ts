@@ -1,9 +1,8 @@
 import { Column, Row, HeaderCell, GroupCell, NumberCell, Cell, TextCell, DateCell } from '@silevis/reactgrid';
 import moment from 'moment';
-import { GroupAttribute } from "./budgetPlannerData";
 import { isString, isNumber, isDate } from 'util';
 import { DefaultCellTypes } from '@silevis/reactgrid/lib';
-import { Value, Variable } from './interfaces';
+import { Value, Variable, GroupAttribute } from './interfaces';
 
 export const getGroupsOptions = (variables: Variable[], disableGroupOptions: string[] = []): string[] => {
   let groupOptions: string[] = [];
@@ -40,7 +39,7 @@ export const getGroupAttributes = (groups: string[], values: Value[], dates: Dat
       if (groups[key + 1]) {
         getGroupAttributes(groups.slice(1), values, dates, span, groupAttributes[groupAttributeLength - 1].children as GroupAttribute[])
       } else {
-        groupAttributes[groupAttributeLength - 1].children = null
+        groupAttributes[groupAttributeLength - 1].children = undefined
       }
     })
     groups.splice(0, groups.length - 1)
@@ -49,7 +48,7 @@ export const getGroupAttributes = (groups: string[], values: Value[], dates: Dat
   return groupAttributes;
 }
 
-export const getGridColumns = (groups: string[], values: Value[], dates: Date[], span: string, groupAttributes: GroupAttribute[] | undefined = [], displayFields: string[], parentId?: string | undefined, columnsData: Column[] = []): Column[] => {
+export const getGridColumns = (dates: Date[], span: string, columnsData: Column[] = []): Column[] => {
   if (columnsData.length === 0) {
     columnsData = [{
       columnId: 0,
@@ -58,18 +57,17 @@ export const getGridColumns = (groups: string[], values: Value[], dates: Date[],
     }];
   }
   dates && dates.forEach((date: Date) => {
-    let cellText = getFormattedDate(date, span);
+    const cellText = getFormattedDate(date, span);
     columnsData.push({
       columnId: cellText,
       resizable: true,
       width: 180,
     });
   });
-
   return columnsData;
 }
 
-export const getHeaderRows = (dates: Date[], span: string, groupAttributes: GroupAttribute[] = [], displayFields: string[] = [] as string[], row?: Row): Row => {
+export const getHeaderRows = (dates: Date[], span: string, row?: Row): Row => {
   let cells: Array<DefaultCellTypes> = [];
   if (!row) row = { rowId: 'header' as string, cells: [] as Array<any> };
   if (row.cells.length === 0) {
@@ -100,7 +98,7 @@ export const getHeaderRows = (dates: Date[], span: string, groupAttributes: Grou
 
 export const getGridRows = (dates: Date[], data: GroupAttribute[], displayFields: string[], rows?: Row[] | undefined, parentId?: string | undefined): Row[] => {
   if (rows === undefined) rows = [] as Row[]
-  data.forEach((groupAttribute: GroupAttribute) => {
+  data && data.forEach((groupAttribute: GroupAttribute) => {
     let rowId = groupAttribute.name;
     if (parentId) rowId += parentId
     if (groupAttribute.children && groupAttribute.children.length > 0) {

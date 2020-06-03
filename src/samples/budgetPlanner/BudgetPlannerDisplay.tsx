@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { getGroupAttributes, getGridRows, getGridColumns, getHeaderRows } from './BudgetPlannerUtil';
-import { updateValues } from './budgetPlannerData';
 import { getVariableModel } from './budgetPlannerVariables';
-import { ReactGrid, CellChange, Column, Row, GroupCell, Cell, Id } from '@silevis/reactgrid';
+import { ReactGrid, CellChange, Column, Row, GroupCell, Cell, Id, DefaultCellTypes } from '@silevis/reactgrid';
 import { Dropdown, } from 'office-ui-fabric-react/lib/Dropdown';
 import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
 import { GroupGridStateData, Value } from './interfaces';
@@ -17,6 +16,7 @@ export interface BudgetPlannerDisplayProps {
 }
 
 export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayProps> = (props) => {
+
 
   const { values, variables, dates, span } = props
 
@@ -79,32 +79,34 @@ export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayP
     });
   };
 
+
   const handleChanges = (changes: CellChange[]) => {
+    const newState = { ...state };
+    changes.forEach((change: CellChange) => {
+      const changeRowIdx = newState.rows.findIndex((el: Row) => el.rowId === change.rowId);
+      const changeColumnIdx = newState.columns.findIndex((el: Column) => el.columnId === change.columnId);
+      newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+    });
+
     if (changes[0].initialCell.type === 'group') {
-      const newState = { ...state };
-      changes.forEach((change: CellChange) => {
-        const changeRowIdx = newState.rows.findIndex((el: Row) => el.rowId === change.rowId);
-        const changeColumnIdx = newState.columns.findIndex((el: Column) => el.columnId === change.columnId);
-        newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
-      });
+      const rowsToRender: Row<DefaultCellTypes>[] = [getHeaderRows(state.dates, span), ...getExpandedRows(newState.rows)]
       setState({ ...state, rows: createIndents(newState.rows) });
-      setRowsToRender([getHeaderRows(state.dates, span), ...getExpandedRows(newState.rows)]);
-    } else {
-      updateValues(changes, values);
-      updateTable()
+      setRowsToRender(rowsToRender);
     }
     return true;
   };
 
   const updateTable = (): void => {
-    const groupAttributes: Array<any> = getGroupAttributes([...groupByItemsFilds], variables, dates, span, []);
-    console.log()
-    let columns: Column[] = getGridColumns([...groupByItemsFilds], variables, dates, span, getVariableModel(getGroupAttributes([...groupByItemsFilds], variables, state.dates, span, []), state.dates, span, variables), displayFields);
+
+    const groupAttributes = getGroupAttributes([...groupByItemsFilds], variables, dates, span, []);
+    let columns: Column[] = getGridColumns(dates, span);
     const data = getVariableModel(groupAttributes, dates, span, variables);
     let rows: Row[] = [...getGridRows(dates, data, displayFields)];
     rows = createIndents(rows);
-    setRowsToRender([getHeaderRows(dates, span, getVariableModel(getGroupAttributes([...groupByItemsFilds], variables, dates, span, []),
-      state.dates, span, variables), displayFields), ...getExpandedRows(rows)]);
+    const test = [getHeaderRows(dates, span), ...getExpandedRows(rows)]
+
+    // console.log((test[5].cells[3] as NumberCell).value = 10)
+    setRowsToRender([getHeaderRows(dates, span), ...getExpandedRows(rows)]);
 
     setState({
       ...state, rows: rows, columns: columns, dates: dates
