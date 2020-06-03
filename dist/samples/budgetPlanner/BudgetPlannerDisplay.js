@@ -20,8 +20,7 @@ import React, { useState, useEffect } from 'react';
 import { getGroupAttributes, getGridRows, getGridColumns, getHeaderRows } from './BudgetPlannerUtil';
 import { getVariableModel } from './budgetPlannerVariables';
 import { ReactGrid } from '@silevis/reactgrid';
-import { Dropdown, } from 'office-ui-fabric-react/lib/Dropdown';
-import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
+import { initializeIcons, Dropdown } from 'office-ui-fabric-react';
 initializeIcons();
 export var BudgetPlannerDisplay = function (props) {
     var variables = props.variables, dates = props.dates, span = props.span;

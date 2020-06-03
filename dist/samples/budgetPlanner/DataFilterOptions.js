@@ -10,9 +10,7 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import React, { useState } from 'react';
-import { DatePicker, DayOfWeek } from 'office-ui-fabric-react/lib/DatePicker';
-import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
-import { mergeStyleSets } from 'office-ui-fabric-react/lib/Styling';
+import { DatePicker, DayOfWeek, DefaultButton, mergeStyleSets } from 'office-ui-fabric-react';
 var controlClass = mergeStyleSets({ control: { margin: '0px 20px 0px 0px', width: '300px' } });
 var buttonClass = mergeStyleSets({ control: { margin: '27px 20px 0px 0px', } });
 export var DataFilterOptions = function (props) {
