@@ -11,7 +11,7 @@
     "@types/styled-components": "^4.4.3",
     "moment": "^2.26.0",
     "node-sass": "^4.14.1",
-    "office-ui-fabric-react": "^7.117.1",
+    "office-ui-fabric-react": "^7.106.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
