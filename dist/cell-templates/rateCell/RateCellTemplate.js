@@ -42,7 +42,10 @@ var RateCellTemplate = (function () {
         var _loop_1 = function (i) {
             stars.push(React.createElement(React.Fragment, { key: i },
                 React.createElement("input", { type: "radio", id: "star_" + i + "_input_" + randNumber, name: "rate_" + randNumber, value: i, checked: this_1.textToCellData(cell.value) === i, onChange: function () { return null; } }),
-                React.createElement("label", { htmlFor: "star_" + i + "_input_" + randNumber, title: "text", onClick: function (e) { onCellChanged(__assign(__assign({}, cell), { value: i }), true); } })));
+                React.createElement("label", { htmlFor: "star_" + i + "_input_" + randNumber, title: "text", onClick: function (e) {
+                        e.preventDefault();
+                        onCellChanged(__assign(__assign({}, cell), { value: i }), true);
+                    } })));
         };
         var this_1 = this;
         for (var i = 1; i <= this.STARS; i++) {

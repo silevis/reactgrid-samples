@@ -55,7 +55,6 @@ export var HandlingChangesSample = function () {
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         });
         setState(newState);
-        return true;
     };
     return (React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, onCellsChanged: handleChanges }));
 };

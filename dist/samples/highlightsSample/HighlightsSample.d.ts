@@ -1,4 +1,4 @@
-import * as React from "react";
+/// <reference types="react" />
 import "./styling.scss";
 import '@silevis/reactgrid/lib/assets/core.scss';
-export declare const HighlightsSample: React.FunctionComponent;
+export declare const HighlightsSample: () => JSX.Element;

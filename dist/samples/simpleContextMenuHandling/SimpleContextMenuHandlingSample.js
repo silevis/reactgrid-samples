@@ -55,7 +55,6 @@ export var SimpleContextMenuHandlingSample = function () {
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         });
         setState(newState);
-        return true;
     };
     var simpleHandleContextMenu = function (selectedRowIds, selectedColIds, selectionMode, menuOptions) {
         return menuOptions;

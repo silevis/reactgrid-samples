@@ -50,8 +50,8 @@ export var ColumnResizingSample = function () {
         var newState = __assign({}, state);
         var columnIndex = newState.columns.findIndex(function (el) { return el.columnId === ci; });
         var resizedColumn = newState.columns[columnIndex];
-        var updateColumn = __assign(__assign({}, resizedColumn), { width: width });
-        newState.columns[columnIndex] = updateColumn;
+        var updatedColumn = __assign(__assign({}, resizedColumn), { width: width });
+        newState.columns[columnIndex] = updatedColumn;
         setState(newState);
     };
     return (React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, onColumnResized: handleColumnResize }));

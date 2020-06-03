@@ -1,3 +1,3 @@
-import * as React from "react";
+/// <reference types="react" />
 import "./styling.scss";
-export declare const AdvancedContextMenuHandlingSample: React.FunctionComponent;
+export declare const AdvancedContextMenuHandlingSample: () => JSX.Element;

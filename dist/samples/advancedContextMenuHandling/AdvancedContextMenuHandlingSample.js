@@ -17,7 +17,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 import * as React from "react";
-import { ReactGrid } from "@silevis/reactgrid";
+import { ReactGrid, } from "@silevis/reactgrid";
 import "./styling.scss";
 export var AdvancedContextMenuHandlingSample = function () {
     var _a = React.useState(function () { return ({
@@ -61,7 +61,6 @@ export var AdvancedContextMenuHandlingSample = function () {
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         });
         setState(newState);
-        return true;
     };
     var handleContextMenu = function (selectedRowIds, selectedColIds, selectionMode, menuOptions) {
         if (selectionMode === "row") {

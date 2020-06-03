@@ -1,3 +1,3 @@
-import * as React from "react";
+/// <reference types="react" />
 import "./styling.scss";
-export declare const ColumnsAndRowsReorderSample: React.FunctionComponent;
+export declare const ColumnsAndRowsReorderSample: () => JSX.Element;
