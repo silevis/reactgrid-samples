@@ -24,7 +24,7 @@ import { Dropdown, } from 'office-ui-fabric-react/lib/Dropdown';
 import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
 initializeIcons();
 export var BudgetPlannerDisplay = function (props) {
-    var values = props.values, variables = props.variables, dates = props.dates, span = props.span;
+    var variables = props.variables, dates = props.dates, span = props.span;
     var _a = useState([]), groupByItemsFilds = _a[0], setGroupByItemsFild = _a[1];
     var _b = useState(), rowsToRender = _b[0], setRowsToRender = _b[1];
     var _c = useState({}), state = _c[0], setState = _c[1];
@@ -98,7 +98,6 @@ export var BudgetPlannerDisplay = function (props) {
         var data = getVariableModel(groupAttributes, dates, span, variables);
         var rows = __spreadArrays(getGridRows(dates, data, displayFields));
         rows = createIndents(rows);
-        var test = __spreadArrays([getHeaderRows(dates, span)], getExpandedRows(rows));
         setRowsToRender(__spreadArrays([getHeaderRows(dates, span)], getExpandedRows(rows)));
         setState(__assign(__assign({}, state), { rows: rows, columns: columns, dates: dates }));
     };

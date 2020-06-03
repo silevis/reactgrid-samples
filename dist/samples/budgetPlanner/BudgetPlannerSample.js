@@ -49,46 +49,64 @@ export var BudgetPlannerSample = function () {
         var budgetPlannerVariable, dates;
         return __generator(this, function (_a) {
             budgetPlannerVariable = [{
-                    "_id": "5ece7cd19542be0001b1044h",
-                    "project": "Teamspot",
+                    "_id": "1",
+                    "project": "Rocket",
                     "job position": "Programmer",
-                    "name": "Krzysztof"
+                    "name": "Cruz Ballard"
                 },
                 {
-                    "_id": "5ece7cd19542be0001b104yy",
-                    "project": "Teamspot",
+                    "_id": "2",
+                    "project": "Rocket",
                     "job position": "Programmer",
-                    "name": "Adrian"
+                    "name": "Salahuddin Mcdowell"
                 },
                 {
-                    "_id": "5ece7cd19542be0001b104nn",
-                    "project": "Teamspot",
+                    "_id": "3",
+                    "project": "Rocket",
                     "job position": "Project manager",
-                    "name": "Arek"
+                    "name": "Marissa Rivera"
                 },
                 {
-                    "_id": "5ece7cd19542be0001b104rr",
-                    "project": "ReactGrid",
+                    "_id": "4",
+                    "project": "Rocket",
+                    "job position": "Tester",
+                    "name": "Korey Villalobos"
+                },
+                {
+                    "_id": "5",
+                    "project": "Electric car",
                     "job position": "Programmer",
-                    "name": "Kamil"
+                    "name": "Masuma Mccarthy"
                 },
                 {
-                    "_id": "5ece7cd42542be0001b104rr",
-                    "project": "ReactGrid",
+                    "_id": "6",
+                    "project": "Electric car",
                     "job position": "Programmer",
-                    "name": "Patryk"
+                    "name": "Sydney Castaneda"
                 },
                 {
-                    "_id": "5ece7cd19542be0001b10ww",
-                    "project": "ReactGrid",
+                    "_id": "7",
+                    "project": "Electric car",
                     "job position": "Project manager",
-                    "name": "Arek"
+                    "name": "Masuma McKenzie"
                 },
                 {
-                    "_id": "5ece7cd19542be0dcv1b10ww",
-                    "project": "CallCenter",
-                    "job position": "Project manager",
-                    "name": "Arek"
+                    "_id": "8",
+                    "project": "Electric car",
+                    "job position": "Tester",
+                    "name": "Simran Roy"
+                },
+                {
+                    "_id": "9",
+                    "project": "Perpetum",
+                    "job position": "Programmer",
+                    "name": "Cruz Ballard"
+                },
+                {
+                    "_id": "10",
+                    "project": "Perpetum",
+                    "job position": "Programmer",
+                    "name": "Rafferty Whiteley"
                 },];
             setVariables(budgetPlannerVariable);
             dates = getDates(null, 'month');
