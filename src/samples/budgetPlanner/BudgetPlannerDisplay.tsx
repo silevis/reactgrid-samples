@@ -16,9 +16,7 @@ export interface BudgetPlannerDisplayProps {
 }
 
 export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayProps> = (props) => {
-
-
-  const { values, variables, dates, span } = props
+  const { variables, dates, span } = props
 
   const [groupByItemsFilds, setGroupByItemsFild] = useState<string[]>([]);
   const [rowsToRender, setRowsToRender] = useState<Row[]>();
@@ -103,11 +101,7 @@ export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayP
     const data = getVariableModel(groupAttributes, dates, span, variables);
     let rows: Row[] = [...getGridRows(dates, data, displayFields)];
     rows = createIndents(rows);
-    const test = [getHeaderRows(dates, span), ...getExpandedRows(rows)]
-
-    // console.log((test[5].cells[3] as NumberCell).value = 10)
     setRowsToRender([getHeaderRows(dates, span), ...getExpandedRows(rows)]);
-
     setState({
       ...state, rows: rows, columns: columns, dates: dates
     });
@@ -126,8 +120,6 @@ export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayP
     newState.columns[columnIndex] = updateColumn
     setState(newState)
   }
-
-
   return (
     <>
       <div className="budget-planning-container">
