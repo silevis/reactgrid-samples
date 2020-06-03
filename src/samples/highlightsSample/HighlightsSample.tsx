@@ -1,13 +1,13 @@
 import * as React from "react";
-import { ReactGrid, Highlight } from "@silevis/reactgrid";
+import { ReactGrid, Highlight, Column, Row } from "@silevis/reactgrid";
 import "./styling.scss";
 import '@silevis/reactgrid/lib/assets/core.scss'
-export const HighlightsSample: React.FunctionComponent = () => {
+export const HighlightsSample = () => {
     const [state, setState] = React.useState(() => ({
         columns: [
             { columnId: "Name", width: 100 },
             { columnId: "Surname", width: 100 }
-        ],
+        ] as Column[],
         rows: [
             {
                 rowId: 0,
@@ -34,7 +34,7 @@ export const HighlightsSample: React.FunctionComponent = () => {
                 rowId: 3,
                 cells: [{ type: "text", text: "" }, { type: "text", text: "" }]
             }
-        ]
+        ] as Row[]
     }));
 
     const highlights: Highlight[] = [

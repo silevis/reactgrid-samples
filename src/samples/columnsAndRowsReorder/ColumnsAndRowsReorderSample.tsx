@@ -3,16 +3,17 @@ import {
     ReactGrid,
     Id,
     DropPosition,
-    Column
+    Column,
+    Row
 } from "@silevis/reactgrid";
 import "./styling.scss";
 
-export const ColumnsAndRowsReorderSample: React.FunctionComponent = () => {
+export const ColumnsAndRowsReorderSample = () => {
     const [state, setState] = React.useState(() => ({
         columns: [
             { columnId: "Name", width: 100, reorderable: true },
             { columnId: "Surname", width: 100, reorderable: true }
-        ],
+        ] as Column[],
         rows: [
             {
                 rowId: 0,
@@ -42,7 +43,7 @@ export const ColumnsAndRowsReorderSample: React.FunctionComponent = () => {
                 reorderable: true,
                 cells: [{ type: "text", text: "" }, { type: "text", text: "" }]
             }
-        ]
+        ] as Row[]
     }));
 
     const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {

@@ -3,6 +3,7 @@ scripts
 build
 cypress
 cypress.json
+.circleci
 public
 src
 tsconfig.*json

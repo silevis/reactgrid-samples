@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ReactGrid, Id } from "@silevis/reactgrid";
+import { ReactGrid, Id, Column, Row } from "@silevis/reactgrid";
 import "./styling.scss";
 
 export const ColumnResizingSample: React.FunctionComponent = () => {
@@ -7,7 +7,7 @@ export const ColumnResizingSample: React.FunctionComponent = () => {
         columns: [
             { columnId: "Name", resizable: true, width: 100 },
             { columnId: "Surname", resizable: true, width: 100 }
-        ],
+        ] as Column[],
         rows: [
             {
                 rowId: 0,
@@ -34,17 +34,17 @@ export const ColumnResizingSample: React.FunctionComponent = () => {
                 rowId: 3,
                 cells: [{ type: "text", text: "" }, { type: "text", text: "" }]
             }
-        ]
+        ] as Row[]
     }));
 
     const handleColumnResize = (ci: Id, width: number) => {
-        let newState = { ...state };
+        const newState = { ...state };
         const columnIndex = newState.columns.findIndex(el => el.columnId === ci);
-        const resizedColumn: any = newState.columns[columnIndex];
-        const updateColumn: any = { ...resizedColumn, width };
-        newState.columns[columnIndex] = updateColumn;
+        const resizedColumn = newState.columns[columnIndex];
+        const updatedColumn = { ...resizedColumn, width };
+        newState.columns[columnIndex] = updatedColumn;
         setState(newState);
-    };
+    }
 
     return (
         <ReactGrid

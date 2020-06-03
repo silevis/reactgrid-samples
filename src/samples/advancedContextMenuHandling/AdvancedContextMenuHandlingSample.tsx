@@ -7,11 +7,10 @@ import {
     SelectionMode,
     Column,
     Row,
-    Cell
 } from "@silevis/reactgrid";
 import "./styling.scss";
 
-export const AdvancedContextMenuHandlingSample: React.FunctionComponent = () => {
+export const AdvancedContextMenuHandlingSample = () => {
     const [state, setState] = React.useState(() => ({
         columns: [
             { columnId: "Name", width: 100 },
@@ -54,7 +53,6 @@ export const AdvancedContextMenuHandlingSample: React.FunctionComponent = () => 
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         });
         setState(newState);
-        return true;
     };
 
     const handleContextMenu = (
@@ -72,9 +70,7 @@ export const AdvancedContextMenuHandlingSample: React.FunctionComponent = () => 
                     handler: () => {
                         setState({
                             ...state,
-                            rows: state.rows.filter(
-                                (row: Row) => !selectedRowIds.includes(row.rowId)
-                            )
+                            rows: state.rows.filter(row => !selectedRowIds.includes(row.rowId))
                         });
                     }
                 }
@@ -87,20 +83,16 @@ export const AdvancedContextMenuHandlingSample: React.FunctionComponent = () => 
                     id: "removeColumn",
                     label: "Remove column",
                     handler: () => {
-                        const columns: Column[] = state.columns.filter(
-                            (column: Column) => !selectedColIds.includes(column.columnId)
-                        );
+                        const columns = state.columns.filter(column => !selectedColIds.includes(column.columnId));
                         const columnsIdxs = state.columns
-                            .map((column: Column, idx: number) => {
+                            .map((column, idx) => {
                                 if (!columns.includes(column)) return idx;
                                 return undefined;
                             })
                             .filter(idx => idx !== undefined);
-                        const rows = state.rows.map((row: Row) => ({
+                        const rows = state.rows.map(row => ({
                             ...row,
-                            cells: row.cells.filter(
-                                (_: Cell, idx: number) => !columnsIdxs.includes(idx)
-                            )
+                            cells: row.cells.filter((_, idx) => !columnsIdxs.includes(idx))
                         }));
                         setState({ ...state, ...columns, ...rows });
                     }
