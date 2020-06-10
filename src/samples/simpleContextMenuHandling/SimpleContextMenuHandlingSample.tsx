@@ -9,7 +9,7 @@ import {
     Column
 } from "@silevis/reactgrid";
 import "./styling.scss";
-import "@silevis/reactgrid/lib/assets/core.scss";
+import "@silevis/reactgrid/styles.css";
 
 export const SimpleContextMenuHandlingSample: React.FunctionComponent = () => {
     const [state, setState] = React.useState(() => ({

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ReactGrid } from "@silevis/reactgrid";
-import "@silevis/reactgrid/lib/assets/core.scss";
+import "@silevis/reactgrid/styles.css";
 
 
 export const GettingStartedSample: React.FunctionComponent = () => {
