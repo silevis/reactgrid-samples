@@ -162,7 +162,7 @@ export var CryptocurrencyMarketSample = function () {
         React.createElement(ReactGridContainer, { id: "cryptocurrency-market-sample" }, state.rows.length !== 0 ?
             React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, customCellTemplates: {
                     'cssClass': new CssClassCellTemplate
-                }, stickyTopRows: 1, disableFillHandle: true, enableRowSelection: true, enableColumnSelection: true })
+                }, stickyTopRows: 1, enableFillHandle: false, enableRowSelection: true, enableColumnSelection: true, enableRangeSelection: true })
             : React.createElement("span", { className: 'cryptocurrency-market-sample-loader' }, "Loading..."))));
 };
 var templateObject_1;

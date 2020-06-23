@@ -96,5 +96,5 @@ export var AdvancedContextMenuHandlingSample = function () {
         }
         return menuOptions;
     };
-    return (React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, onCellsChanged: handleChanges, onContextMenu: handleContextMenu, enableColumnSelection: true, enableRowSelection: true }));
+    return (React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, onCellsChanged: handleChanges, onContextMenu: handleContextMenu, enableFillHandle: true, enableRangeSelection: true, enableColumnSelection: true, enableRowSelection: true }));
 };

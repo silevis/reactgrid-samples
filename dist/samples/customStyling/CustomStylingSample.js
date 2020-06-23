@@ -76,9 +76,9 @@ export var CustomStylingSample = function () {
     }); })[0];
     return (React.createElement(React.Fragment, null,
         React.createElement("div", { style: { position: "relative", height: 250 } },
-            React.createElement(ReactGrid, { rows: state.rows, columns: state.columns })),
+            React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, enableFillHandle: true, enableRangeSelection: true })),
         React.createElement("div", { style: { position: "relative", height: 250 }, id: "reactgrid-red" },
-            React.createElement(ReactGrid, { rows: state.rows, columns: state.columns })),
+            React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, enableFillHandle: true, enableRangeSelection: true })),
         React.createElement("div", { style: { position: "relative", height: 250 }, id: "reactgrid-gold" },
-            React.createElement(ReactGrid, { rows: state.rows, columns: state.columns }))));
+            React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, enableFillHandle: true, enableRangeSelection: true }))));
 };

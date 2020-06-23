@@ -81,6 +81,6 @@ export var ContextMenuSample = function () {
                     'rating': new RateCellTemplate,
                     'flag': new FlagCellTemplate,
                     'dropdownNumber': new DropdownNumberCellTemplate,
-                }, onContextMenu: handleContextMenu, onCellsChanged: handleChanges, enableColumnSelection: true, enableRowSelection: true }))));
+                }, onContextMenu: handleContextMenu, onCellsChanged: handleChanges, enableColumnSelection: true, enableRowSelection: true, enableFillHandle: true, enableRangeSelection: true }))));
 };
 var templateObject_1;

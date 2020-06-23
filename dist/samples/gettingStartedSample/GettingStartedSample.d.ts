@@ -1,3 +1,3 @@
 import * as React from "react";
-import "@silevis/reactgrid/lib/assets/core.scss";
+import "@silevis/reactgrid/styles.css";
 export declare const GettingStartedSample: React.FunctionComponent;

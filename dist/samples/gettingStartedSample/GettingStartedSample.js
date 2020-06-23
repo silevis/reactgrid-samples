@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ReactGrid } from "@silevis/reactgrid";
-import "@silevis/reactgrid/lib/assets/core.scss";
+import "@silevis/reactgrid/styles.css";
 export var GettingStartedSample = function () {
     var state = React.useState(function () { return ({
         columns: [

@@ -12,7 +12,7 @@ var __assign = (this && this.__assign) || function () {
 import * as React from "react";
 import { ReactGrid } from "@silevis/reactgrid";
 import "./styling.scss";
-import "@silevis/reactgrid/lib/assets/core.scss";
+import "@silevis/reactgrid/styles.css";
 export var SimpleContextMenuHandlingSample = function () {
     var _a = React.useState(function () { return ({
         columns: [

@@ -88,9 +88,8 @@ export var GroupCellSample = function () {
         });
         setState(__assign(__assign({}, state), { rows: createIndents(newState.rows) }));
         setRowsToRender(__spreadArrays([headerRow], getExpandedRows(newState.rows)));
-        return true;
     };
     return (React.createElement(ReactGridContainer, { id: "group-cell-sample" },
-        React.createElement(ReactGrid, { rows: rowsToRender, columns: state.columns, onCellsChanged: handleChanges, stickyLeftColumns: 1, stickyTopRows: 1, enableRowSelection: true, enableColumnSelection: true })));
+        React.createElement(ReactGrid, { rows: rowsToRender, columns: state.columns, onCellsChanged: handleChanges, stickyLeftColumns: 1, stickyTopRows: 1, enableRowSelection: true, enableColumnSelection: true, enableFillHandle: true, enableRangeSelection: true })));
 };
 var templateObject_1;

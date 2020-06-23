@@ -1,4 +1,4 @@
 import * as React from "react";
 import "./styling.scss";
-import "@silevis/reactgrid/lib/assets/core.scss";
+import "@silevis/reactgrid/styles.css";
 export declare const SimpleContextMenuHandlingSample: React.FunctionComponent;

@@ -54,6 +54,6 @@ export var StickySample = function () {
                 'rating': new RateCellTemplate,
                 'flag': new FlagCellTemplate,
                 'dropdownNumber': new DropdownNumberCellTemplate,
-            }, stickyTopRows: state.stickyTopRows, stickyBottomRows: state.stickyBottomRows, stickyLeftColumns: state.stickyLeftColumns, stickyRightColumns: state.stickyRightColumns, onCellsChanged: handleChanges, enableColumnSelection: true, enableRowSelection: true })));
+            }, stickyTopRows: state.stickyTopRows, stickyBottomRows: state.stickyBottomRows, stickyLeftColumns: state.stickyLeftColumns, stickyRightColumns: state.stickyRightColumns, onCellsChanged: handleChanges, enableColumnSelection: true, enableRowSelection: true, enableFillHandle: true, enableRangeSelection: true })));
 };
 var templateObject_1;

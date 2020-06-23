@@ -118,6 +118,6 @@ export var BudgetPlannerDisplay = function (props) {
             React.createElement("div", { className: "budget-planning-header" },
                 React.createElement(Dropdown, { placeholder: "Select options", label: "Group by", selectedKeys: groupByItemsFilds, onChange: function (_, item) { return item && setGroupByItemsFild(item.selected ? __spreadArrays(groupByItemsFilds, [item.key]) : groupByItemsFilds.filter(function (key) { return key !== item.key; })); }, multiSelect: true, options: groupByItems.map(function (dropdownOption) { return ({ key: dropdownOption, text: dropdownOption }); }), styles: { dropdown: { width: 300 } } }))),
         React.createElement("div", { className: "budget-planning-container" },
-            React.createElement("div", { className: "budget-planning-react-grid" }, state.columns && rowsToRender && React.createElement(ReactGrid, { rows: rowsToRender, columns: state.columns, onCellsChanged: handleChanges, onColumnResized: handleColumnResize, stickyLeftColumns: 1, stickyTopRows: 1 })))));
+            React.createElement("div", { className: "budget-planning-react-grid" }, state.columns && rowsToRender && React.createElement(ReactGrid, { rows: rowsToRender, columns: state.columns, onCellsChanged: handleChanges, onColumnResized: handleColumnResize, enableFillHandle: true, enableRangeSelection: true, stickyLeftColumns: 1, stickyTopRows: 1 })))));
 };
 export default BudgetPlannerDisplay;

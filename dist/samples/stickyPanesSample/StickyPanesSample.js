@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ReactGrid } from "@silevis/reactgrid";
 import "./styling.scss";
-import "@silevis/reactgrid/lib/assets/core.scss";
+import "@silevis/reactgrid/styles.css";
 export var StickyPanesSample = function () {
     var _a = React.useState(function () { return ({
         columns: [
@@ -70,5 +70,5 @@ export var StickyPanesSample = function () {
             }
         ]
     }); }), state = _a[0], setState = _a[1];
-    return (React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, stickyLeftColumns: 1, stickyRightColumns: 1, stickyTopRows: 1, stickyBottomRows: 1 }));
+    return (React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, stickyLeftColumns: 1, stickyRightColumns: 1, stickyTopRows: 1, stickyBottomRows: 1, enableFillHandle: true, enableRangeSelection: true }));
 };

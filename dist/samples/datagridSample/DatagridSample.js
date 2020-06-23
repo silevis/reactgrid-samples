@@ -173,7 +173,7 @@ var DatagridSample = (function (_super) {
             React.createElement(ReactGrid, { columns: this.state.columns, rows: this.state.rows, onCellsChanged: this.handleChanges, customCellTemplates: {
                     'flag': new FlagCellTemplate,
                     'dropdownNumber': new DropdownNumberCellTemplate
-                }, stickyTopRows: this.state.stickyTopRows, stickyLeftColumns: this.state.stickyLeftColumns, highlights: this.state.highlights, canReorderColumns: this.handleCanReorderColumns, canReorderRows: this.handleCanReorderRows, onColumnsReordered: this.handleColumnsReorder, onContextMenu: this.handleContextMenu, onRowsReordered: this.handleRowsReorder, onColumnResized: this.handleColumnResize, enableColumnSelection: true, enableRowSelection: true })));
+                }, stickyTopRows: this.state.stickyTopRows, stickyLeftColumns: this.state.stickyLeftColumns, highlights: this.state.highlights, canReorderColumns: this.handleCanReorderColumns, canReorderRows: this.handleCanReorderRows, onColumnsReordered: this.handleColumnsReorder, onContextMenu: this.handleContextMenu, onRowsReordered: this.handleRowsReorder, onColumnResized: this.handleColumnResize, enableColumnSelection: true, enableRowSelection: true, enableFillHandle: true, enableRangeSelection: true })));
     };
     return DatagridSample;
 }(React.Component));

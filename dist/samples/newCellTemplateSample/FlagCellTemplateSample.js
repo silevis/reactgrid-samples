@@ -49,5 +49,5 @@ export var FlagCellTemplateSample = function () {
         setState(newState);
         return true;
     };
-    return (React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, onCellsChanged: handleChanges, customCellTemplates: { flag: new FlagCellTemplate() } }));
+    return (React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, onCellsChanged: handleChanges, customCellTemplates: { flag: new FlagCellTemplate() }, enableFillHandle: true, enableRangeSelection: true }));
 };
