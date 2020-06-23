@@ -183,6 +183,8 @@ export class DatagridSample extends React.Component<{}, IDatagridState> {
                     onColumnResized={this.handleColumnResize}
                     enableColumnSelection
                     enableRowSelection
+                    enableFillHandle
+                    enableRangeSelection
                 />
             </ReactGridContainer>
         )

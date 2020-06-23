@@ -46,6 +46,8 @@ export const FlagCellTemplateSample: React.FunctionComponent = () => {
             columns={state.columns}
             onCellsChanged={handleChanges}
             customCellTemplates={{ flag: new FlagCellTemplate() }}
+            enableFillHandle
+            enableRangeSelection
         />
     );
 }

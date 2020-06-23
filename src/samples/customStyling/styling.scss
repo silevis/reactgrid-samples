@@ -29,10 +29,10 @@ $partial-area-selected-border-width:    1px !default;
 
 $context-menu-option-padding:           8px 20px 8px 15px !default;
   font-family: 'poppins', sans-serif;
-  @import '@silevis/reactgrid/lib/assets/core.scss';
+  @import '@silevis/reactgrid/styles.scss';
 }
 
 #reactgrid-gold {
   $primary-color: gold;
-  @import '@silevis/reactgrid/lib/assets/core.scss';
+  @import '@silevis/reactgrid/styles.scss';
 }

@@ -135,9 +135,10 @@ export const CryptocurrencyMarketSample: React.FunctionComponent = () => {
               'cssClass': new CssClassCellTemplate
             }}
             stickyTopRows={1}
-            disableFillHandle
+            enableFillHandle={false}
             enableRowSelection
             enableColumnSelection
+            enableRangeSelection
           />
           : <span className='cryptocurrency-market-sample-loader'>Loading...</span>}
       </ReactGridContainer>

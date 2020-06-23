@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ReactGrid, Highlight, Column, Row } from "@silevis/reactgrid";
 import "./styling.scss";
-import '@silevis/reactgrid/lib/assets/core.scss'
+import '@silevis/reactgrid/styles.css'
 export const HighlightsSample = () => {
     const [state, setState] = React.useState(() => ({
         columns: [

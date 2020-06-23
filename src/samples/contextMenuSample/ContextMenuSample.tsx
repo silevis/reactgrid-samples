@@ -81,6 +81,8 @@ export const ContextMenuSample: React.FunctionComponent = () => {
           onCellsChanged={handleChanges}
           enableColumnSelection
           enableRowSelection
+          enableFillHandle
+          enableRangeSelection
         />
       </ReactGridContainer>
     </>

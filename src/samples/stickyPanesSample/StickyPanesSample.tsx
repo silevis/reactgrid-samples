@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ReactGrid } from "@silevis/reactgrid";
 import "./styling.scss";
-import "@silevis/reactgrid/lib/assets/core.scss";
+import "@silevis/reactgrid/styles.css";
 
 export const StickyPanesSample: React.FunctionComponent = () => {
     const [state, setState] = React.useState(() => ({
@@ -80,6 +80,8 @@ export const StickyPanesSample: React.FunctionComponent = () => {
             stickyRightColumns={1}
             stickyTopRows={1}
             stickyBottomRows={1}
+            enableFillHandle
+            enableRangeSelection
         />
     );
 }

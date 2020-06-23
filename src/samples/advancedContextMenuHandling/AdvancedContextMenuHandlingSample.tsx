@@ -108,6 +108,8 @@ export const AdvancedContextMenuHandlingSample = () => {
             columns={state.columns}
             onCellsChanged={handleChanges}
             onContextMenu={handleContextMenu}
+            enableFillHandle
+            enableRangeSelection
             enableColumnSelection
             enableRowSelection
         />

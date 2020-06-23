@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ReactGrid, CellChange, Column, Row } from "@silevis/reactgrid";
 import "./styling.scss";
-import "@silevis/reactgrid/lib/assets/core.scss";
+import "@silevis/reactgrid/styles.css";
 
 export const HandlingChangesSample: React.FunctionComponent = () => {
     const [state, setState] = React.useState(() => ({
