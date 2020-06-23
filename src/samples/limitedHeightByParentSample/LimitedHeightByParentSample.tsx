@@ -32,6 +32,8 @@ export const LimitedHeightByParentSample: React.FunctionComponent = () => {
                     'flag': new FlagCellTemplate
                 }}
                 stickyTopRows={1}
+                enableFillHandle
+                enableRangeSelection
             />
         </div>
     )

@@ -97,6 +97,8 @@ export const GroupCellSample: React.FunctionComponent = () => {
                 stickyTopRows={1}
                 enableRowSelection
                 enableColumnSelection
+                enableFillHandle
+                enableRangeSelection
             />
         </ReactGridContainer>
     )

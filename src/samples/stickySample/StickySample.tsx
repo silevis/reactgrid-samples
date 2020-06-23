@@ -62,6 +62,8 @@ export const StickySample: React.FunctionComponent = () => {
         onCellsChanged={handleChanges}
         enableColumnSelection
         enableRowSelection
+        enableFillHandle
+        enableRangeSelection
       />
     </ReactGridContainer>
   )

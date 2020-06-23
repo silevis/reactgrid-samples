@@ -80,6 +80,8 @@ export const StickyPanesSample: React.FunctionComponent = () => {
             stickyRightColumns={1}
             stickyTopRows={1}
             stickyBottomRows={1}
+            enableFillHandle
+            enableRangeSelection
         />
     );
 }

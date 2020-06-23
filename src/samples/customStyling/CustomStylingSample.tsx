@@ -82,6 +82,8 @@ export const CustomStylingSample: React.FunctionComponent = () => {
                 <ReactGrid
                     rows={state.rows}
                     columns={state.columns}
+                    enableFillHandle
+                    enableRangeSelection
                 />
             </div>
             <div
@@ -91,13 +93,19 @@ export const CustomStylingSample: React.FunctionComponent = () => {
                 <ReactGrid
                     rows={state.rows}
                     columns={state.columns}
+                    enableFillHandle
+                    enableRangeSelection
                 />
             </div>
             <div
                 style={{ position: "relative", height: 250 }}
                 id="reactgrid-gold"
             >
-                <ReactGrid rows={state.rows} columns={state.columns} />
+                <ReactGrid rows={state.rows}
+                    columns={state.columns}
+                    enableFillHandle
+                    enableRangeSelection
+                />
             </div>
         </>
     );

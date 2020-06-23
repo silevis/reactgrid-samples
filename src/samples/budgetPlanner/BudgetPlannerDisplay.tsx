@@ -146,6 +146,8 @@ export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayP
             columns={state.columns}
             onCellsChanged={handleChanges}
             onColumnResized={handleColumnResize}
+            enableFillHandle
+            enableRangeSelection
             stickyLeftColumns={1}
             stickyTopRows={1}
           />}

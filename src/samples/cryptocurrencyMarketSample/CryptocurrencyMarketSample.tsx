@@ -138,6 +138,7 @@ export const CryptocurrencyMarketSample: React.FunctionComponent = () => {
             enableFillHandle={false}
             enableRowSelection
             enableColumnSelection
+            enableRangeSelection
           />
           : <span className='cryptocurrency-market-sample-loader'>Loading...</span>}
       </ReactGridContainer>
