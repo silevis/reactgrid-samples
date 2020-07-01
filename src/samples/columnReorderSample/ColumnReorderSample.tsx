@@ -85,6 +85,7 @@ export const ColumnReorderSample: React.FunctionComponent = () => {
         onRowsReordered={handleRowsReordered}
         enableColumnSelection
         enableRowSelection
+        enableRangeSelection
       />
     </ReactGridContainer>
   )
