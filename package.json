@@ -17,7 +17,10 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^2.1.8",
     "styled-components": "^4.4.1",
-    "typescript": "^3.9.3"
+    "typescript": "^3.9.3",
+    "typeface-merriweather": "0.0.72",
+    "typeface-montserrat": "0.0.75",
+    "typeface-poppins": "0.0.72"
   },
   "peerDependencies": {
     "@silevis/reactgrid": "file:reactgrid-1.0.15.tgz"

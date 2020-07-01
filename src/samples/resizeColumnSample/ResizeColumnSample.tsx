@@ -58,6 +58,8 @@ export const ResizeColumnSample: React.FunctionComponent = () => {
         onColumnResized={handleColumnResize}
         enableColumnSelection
         enableRowSelection
+        enableFillHandle
+        enableRangeSelection
       />
     </ReactGridContainer>
   )
