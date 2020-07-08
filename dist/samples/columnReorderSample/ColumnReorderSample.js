@@ -76,8 +76,8 @@ export var ColumnReorderSample = function () {
     };
     return (React.createElement(ReactGridContainer, { id: "column-reorder-sample" },
         React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, customCellTemplates: {
-                'rating': new RateCellTemplate,
+                'rate': new RateCellTemplate,
                 'flag': new FlagCellTemplate
-            }, onCellsChanged: handleChanges, canReorderColumns: handleCanReorderColumns, canReorderRows: handleCanReorderRows, onColumnsReordered: handleColumnsReordered, onRowsReordered: handleRowsReordered, enableColumnSelection: true, enableRowSelection: true })));
+            }, onCellsChanged: handleChanges, canReorderColumns: handleCanReorderColumns, canReorderRows: handleCanReorderRows, onColumnsReordered: handleColumnsReordered, onRowsReordered: handleRowsReordered, enableColumnSelection: true, enableRowSelection: true, enableRangeSelection: true })));
 };
 var templateObject_1;
