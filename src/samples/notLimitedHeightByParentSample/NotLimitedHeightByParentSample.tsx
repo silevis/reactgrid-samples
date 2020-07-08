@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { ReactGrid, Column, Row } from '@silevis/reactgrid';
-import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
-import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
+import { ReactGrid, Column, Row, DefaultCellTypes } from '@silevis/reactgrid';
+import { RateCellTemplate, RateCell } from '../../cell-templates/rateCell/RateCellTemplate';
+import { FlagCellTemplate, FlagCell } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns as dataColumns } from '../../data/columns';
 import { rows as dataRows } from '../../data/rows';
 
 
 interface ColumnReorderGridState {
     columns: Column[]
-    rows: Row[]
+    rows: Row<DefaultCellTypes | FlagCell | RateCell>[]
 }
 
 export const NotLimitedHeightByParentSample: React.FunctionComponent = () => {
@@ -23,7 +23,7 @@ export const NotLimitedHeightByParentSample: React.FunctionComponent = () => {
             rows={state.rows}
             columns={state.columns}
             customCellTemplates={{
-                'rating': new RateCellTemplate,
+                'rate': new RateCellTemplate,
                 'flag': new FlagCellTemplate
             }}
             stickyTopRows={1}

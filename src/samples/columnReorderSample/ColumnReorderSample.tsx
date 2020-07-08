@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { ReactGrid, CellChange, Column, Id, Row, DropPosition, Cell } from '@silevis/reactgrid';
-import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
-import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
+import { ReactGrid, CellChange, Column, Id, Row, DropPosition, DefaultCellTypes } from '@silevis/reactgrid';
+import { RateCellTemplate, RateCell } from '../../cell-templates/rateCell/RateCellTemplate';
+import { FlagCellTemplate, FlagCell } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns as dataColumns } from '../../data/columns';
 import { rows as dataRows } from '../../data/rows';
 import './styling.scss';
@@ -14,7 +14,7 @@ const ReactGridContainer = styled.div`
 
 interface ColumnReorderGridState {
   columns: Column[]
-  rows: Row[]
+  rows: Row<DefaultCellTypes | FlagCell | RateCell>[]
 }
 
 export const ColumnReorderSample: React.FunctionComponent = () => {
@@ -48,7 +48,7 @@ export const ColumnReorderSample: React.FunctionComponent = () => {
   }
 
   const handleCanReorderRows = (targetColumnId: Id, rowIds: Id[], dropPosition: DropPosition): boolean => {
-    const rowIndex = state.rows.findIndex((row: Row) => row.rowId === targetColumnId);
+    const rowIndex = state.rows.findIndex((row) => row.rowId === targetColumnId);
     if (rowIndex === 0) return false;
     return true;
   }
@@ -64,9 +64,9 @@ export const ColumnReorderSample: React.FunctionComponent = () => {
 
   const handleRowsReordered = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
     const newState = { ...state };
-    const to = state.rows.findIndex((row: Row) => row.rowId === targetRowId);
+    const to = state.rows.findIndex((row) => row.rowId === targetRowId);
     const ids = rowIds.map((id: Id) => state.rows.findIndex(r => r.rowId === id));
-    setState({ ...newState, rows: reorderArray<Row>(state.rows, ids, to) });
+    setState({ ...newState, rows: reorderArray<Row<DefaultCellTypes | FlagCell | RateCell>>(state.rows, ids, to) });
   }
 
   return (
@@ -75,7 +75,7 @@ export const ColumnReorderSample: React.FunctionComponent = () => {
         rows={state.rows}
         columns={state.columns}
         customCellTemplates={{
-          'rating': new RateCellTemplate,
+          'rate': new RateCellTemplate,
           'flag': new FlagCellTemplate
         }}
         onCellsChanged={handleChanges}
@@ -85,6 +85,7 @@ export const ColumnReorderSample: React.FunctionComponent = () => {
         onRowsReordered={handleRowsReordered}
         enableColumnSelection
         enableRowSelection
+        enableRangeSelection
       />
     </ReactGridContainer>
   )

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { ReactGrid, Column, CellChange, Row } from '@silevis/reactgrid';
+import { ReactGrid, Column, CellChange, Id, DropPosition } from '@silevis/reactgrid';
 import { DropdownNumberCellTemplate } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
 import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
@@ -10,7 +10,7 @@ import './styling.scss';
 
 const ReactGridContainer = styled.div`
   height: 300px;
-  width: 600px;
+  width: 450px;
   overflow: scroll;
 `;
 
@@ -29,7 +29,7 @@ export const StickySample: React.FunctionComponent = () => {
     columns: [...crmColumns(true, false)],
     rows: [...crmRows(true)],
     stickyTopRows: 1,
-    stickyLeftColumns: 2,
+    stickyLeftColumns: 1,
     stickyRightColumns: 1,
     stickyBottomRows: undefined
   }))
@@ -42,6 +42,27 @@ export const StickySample: React.FunctionComponent = () => {
       newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
     })
     setState(newState);
+  }
+
+  const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
+    const movedElements: T[] = arr.filter((_: T, idx: number) => idxs.includes(idx));
+    to = Math.min(...idxs) < to ? to += 1 : to -= idxs.filter(idx => idx < to).length;
+    const leftSide: T[] = arr.filter((_: T, idx: number) => idx < to && !idxs.includes(idx));
+    const rightSide: T[] = arr.filter((_: T, idx: number) => idx >= to && !idxs.includes(idx));
+    return [...leftSide, ...movedElements, ...rightSide];
+  }
+
+  const handleColumnsReordered = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
+    const to = state.columns.findIndex((column: Column) => column.columnId === targetColumnId);
+    const columnIdxs = columnIds.map((id: Id, idx: number) => state.columns.findIndex((c: Column) => c.columnId === id));
+    setState({
+      ...state,
+      columns: reorderArray(state.columns, columnIdxs, to),
+      rows: state.rows.map(row => ({ ...row, cells: reorderArray(row.cells, columnIdxs, to) })),
+    });
+  }
+
+  const handleCanReorderColumns = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition): boolean => {
     return true;
   }
 
@@ -51,7 +72,7 @@ export const StickySample: React.FunctionComponent = () => {
         rows={state.rows}
         columns={state.columns}
         customCellTemplates={{
-          'rating': new RateCellTemplate,
+          'rate': new RateCellTemplate,
           'flag': new FlagCellTemplate,
           'dropdownNumber': new DropdownNumberCellTemplate,
         }}
@@ -60,6 +81,8 @@ export const StickySample: React.FunctionComponent = () => {
         stickyLeftColumns={state.stickyLeftColumns}
         stickyRightColumns={state.stickyRightColumns}
         onCellsChanged={handleChanges}
+        canReorderColumns={handleCanReorderColumns}
+        onColumnsReordered={handleColumnsReordered}
         enableColumnSelection
         enableRowSelection
         enableFillHandle

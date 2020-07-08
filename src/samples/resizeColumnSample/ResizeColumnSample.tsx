@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { ReactGrid, CellChange, Column, Id, Row } from '@silevis/reactgrid';
-import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
-import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
+import { ReactGrid, CellChange, Column, Id, Row, DefaultCellTypes } from '@silevis/reactgrid';
+import { RateCellTemplate, RateCell } from '../../cell-templates/rateCell/RateCellTemplate';
+import { FlagCellTemplate, FlagCell } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns as dataColumns } from '../../data/columns';
 import { rows as dataRows } from '../../data/rows';
 import './styling.scss';
@@ -14,7 +14,7 @@ const ReactGridContainer = styled.div`
 
 interface ResizeColumnSample {
   columns: Column[]
-  rows: Row[]
+  rows: Row<DefaultCellTypes | FlagCell | RateCell>[]
 }
 
 export const ResizeColumnSample: React.FunctionComponent = () => {
@@ -51,13 +51,15 @@ export const ResizeColumnSample: React.FunctionComponent = () => {
         rows={state.rows}
         columns={state.columns}
         customCellTemplates={{
-          'rating': new RateCellTemplate,
+          'rate': new RateCellTemplate,
           'flag': new FlagCellTemplate
         }}
         onCellsChanged={handleChanges}
         onColumnResized={handleColumnResize}
         enableColumnSelection
         enableRowSelection
+        enableFillHandle
+        enableRangeSelection
       />
     </ReactGridContainer>
   )

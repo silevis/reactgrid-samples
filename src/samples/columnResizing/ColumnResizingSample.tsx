@@ -51,6 +51,7 @@ export const ColumnResizingSample: React.FunctionComponent = () => {
             rows={state.rows}
             columns={state.columns}
             onColumnResized={handleColumnResize}
+            enableFillHandle
         />
     );
 }
