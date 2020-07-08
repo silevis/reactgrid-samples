@@ -1,6 +1,8 @@
-// import { Row } from '@silevis/reactgrid';
+import { Row, DefaultCellTypes } from '@silevis/reactgrid';
+import { FlagCell } from '../cell-templates/flagCell/FlagCellTemplate';
+import { RateCell } from '../cell-templates/rateCell/RateCellTemplate';
 
-export const rows = (reorderable: boolean): any[] => [
+export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | RateCell>[] => [
   {
     rowId: 'header',
     height: 25,
@@ -22,7 +24,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'flag', text: 'USA' },
       { type: 'date', date: new Date('1962-09-04') },
       { type: 'number', value: 514.405 },
-      { type: 'rating', value: 2 }
+      { type: 'rate', value: 2 }
     ]
   },
   {
@@ -34,7 +36,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'flag', text: 'CHN' },
       { type: 'date', date: new Date('2000-06-25') },
       { type: 'number', value: 414.649 },
-      { type: 'rating', value: 3.5 }
+      { type: 'rate', value: 3.5 }
     ]
   },
   {
@@ -46,7 +48,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'flag', text: 'NLD' },
       { type: 'date', date: new Date('1907-04-19') },
       { type: 'number', value: 396.556 },
-      { type: 'rating', value: 4.5 }
+      { type: 'rate', value: 4.5 }
     ]
   },
   {
@@ -58,7 +60,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'flag', text: 'USA' },
       { type: 'date', date: new Date('1999-02-12') },
       { type: 'number', value: 343.427 },
-      { type: 'rating', value: 3.5 }
+      { type: 'rate', value: 3.5 }
     ]
   },
   {
@@ -70,7 +72,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'flag', text: 'SAU' },
       { type: 'date', date: new Date('1933-11-09') },
       { type: 'number', value: 355.905 },
-      { type: 'rating', value: 5 }
+      { type: 'rate', value: 5 }
     ]
   },
   {
@@ -82,7 +84,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'flag', text: 'DEU' },
       { type: 'date', date: new Date('1937-05-28') },
       { type: 'number', value: 278.342 },
-      { type: 'rating', value: 5 }
+      { type: 'rate', value: 5 }
     ]
   },
   {
@@ -94,7 +96,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'flag', text: 'JPN' },
       { type: 'date', date: new Date('1937-08-28') },
       { type: 'number', value: 192.724 },
-      { type: 'rating', value: 3 }
+      { type: 'rate', value: 3 }
     ]
   },
 
@@ -107,7 +109,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'flag', text: 'USA' },
       { type: 'date', date: new Date('1958-06-15') },
       { type: 'number', value: 351.913 },
-      { type: 'rating', value: 4 }
+      { type: 'rate', value: 4 }
     ]
   },
   {
@@ -119,7 +121,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'flag', text: 'CHN' },
       { type: 'date', date: new Date('1987-11-17') },
       { type: 'number', value: 264.256 },
-      { type: 'rating', value: 5 }
+      { type: 'rate', value: 5 }
     ]
   },
   {
@@ -131,7 +133,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'flag', text: 'KOR' },
       { type: 'date', date: new Date('1969-01-13') },
       { type: 'number', value: 221.569 },
-      { type: 'rating', value: 5 }
+      { type: 'rate', value: 5 }
     ]
   },
   {
@@ -143,7 +145,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'flag', text: 'CHE' },
       { type: 'date', date: new Date('1974-07-17') },
       { type: 'number', value: 219.754 },
-      { type: 'rating', value: 4 }
+      { type: 'rate', value: 4 }
     ]
   },
   {
@@ -155,7 +157,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'flag', text: 'FRA' },
       { type: 'date', date: new Date('1924-03-28') },
       { type: 'number', value: 184.106 },
-      { type: 'rating', value: 3 }
+      { type: 'rate', value: 3 }
     ]
   },
   {
@@ -167,7 +169,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'flag', text: 'SGP' },
       { type: 'date', date: new Date('1993-06-15') },
       { type: 'number', value: 180.744 },
-      { type: 'rating', value: 3 }
+      { type: 'rate', value: 3 }
     ]
   },
   {
@@ -179,7 +181,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'flag', text: 'DEU' },
       { type: 'date', date: new Date('1926-06-28') },
       { type: 'number', value: 197.515 },
-      { type: 'rating', value: 4 }
+      { type: 'rate', value: 4 }
     ]
   },
   {
@@ -191,7 +193,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'flag', text: 'ITA' },
       { type: 'date', date: new Date('1927-07-27') },
       { type: 'number', value: 175.009 },
-      { type: 'rating', value: 4 }
+      { type: 'rate', value: 4 }
     ]
   },
   {
@@ -203,7 +205,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'flag', text: 'USA' },
       { type: 'date', date: new Date('1879-09-10') },
       { type: 'number', value: 166.339 },
-      { type: 'rating', value: 4 }
+      { type: 'rate', value: 4 }
     ]
   },
   {
@@ -215,7 +217,7 @@ export const rows = (reorderable: boolean): any[] => [
       { type: 'flag', text: 'GBR' },
       { type: 'date', date: new Date('1909-04-14') },
       { type: 'number', value: 303.738 },
-      { type: 'rating', value: 5 }
+      { type: 'rate', value: 5 }
     ]
   },
 ]
