@@ -123,37 +123,31 @@ export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayP
   console.log(groupByItemsFilds)
   return (
     <>
-      <div className="budget-planning-container">
-        <h3>
-          Variables Options
-        </h3>
+      <h3>
+        Variables Options
+      </h3>
+      <div className="budget-planning-header">
+        <Dropdown
+          placeholder="Select options"
+          label="Group by"
+          selectedKeys={groupByItemsFilds}
+          onChange={(_, item) => item && setGroupByItemsFild(item.selected ? [...groupByItemsFilds, item.key as string] : groupByItemsFilds.filter(key => key !== item.key))}
+          multiSelect
+          options={groupByItems.map((dropdownOption: string) => ({ key: dropdownOption, text: dropdownOption }))}
+          styles={{ dropdown: { width: 300 } }}
+        />
       </div>
-      <div className="budget-planning-container">
-        <div className="budget-planning-header">
-          <Dropdown
-            placeholder="Select options"
-            label="Group by"
-            selectedKeys={groupByItemsFilds}
-            onChange={(_, item) => item && setGroupByItemsFild(item.selected ? [...groupByItemsFilds, item.key as string] : groupByItemsFilds.filter(key => key !== item.key))}
-            multiSelect
-            options={groupByItems.map((dropdownOption: string) => ({ key: dropdownOption, text: dropdownOption }))}
-            styles={{ dropdown: { width: 300 } }}
-          />
-        </div>
-      </div>
-      <div className="budget-planning-container">
-        <div className="budget-planning-react-grid">
-          {state.columns && rowsToRender && <ReactGrid
-            rows={rowsToRender}
-            columns={state.columns}
-            onCellsChanged={handleChanges}
-            onColumnResized={handleColumnResize}
-            enableFillHandle
-            enableRangeSelection
-            stickyLeftColumns={1}
-            stickyTopRows={1}
-          />}
-        </div>
+      <div className="budget-planning-react-grid">
+        {state.columns && rowsToRender && <ReactGrid
+          rows={rowsToRender}
+          columns={state.columns}
+          onCellsChanged={handleChanges}
+          onColumnResized={handleColumnResize}
+          enableFillHandle
+          enableRangeSelection
+          stickyLeftColumns={1}
+          stickyTopRows={1}
+        />}
       </div>
     </>
   )
