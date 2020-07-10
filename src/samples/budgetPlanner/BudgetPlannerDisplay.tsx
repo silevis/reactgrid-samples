@@ -17,7 +17,7 @@ export interface BudgetPlannerDisplayProps {
 export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayProps> = (props) => {
   const { variables, dates, span } = props
 
-  const [groupByItemsFilds, setGroupByItemsFild] = useState<string[]>([]);
+  const [groupByItemsFilds, setGroupByItemsFild] = useState<string[]>(["job position", "name", "project"]);
   const [rowsToRender, setRowsToRender] = useState<Row[]>();
   const [state, setState] = useState<GroupGridStateData>({} as GroupGridStateData);
 
@@ -119,6 +119,8 @@ export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayP
     newState.columns[columnIndex] = updateColumn
     setState(newState)
   }
+
+  console.log(groupByItemsFilds)
   return (
     <>
       <div className="budget-planning-container">

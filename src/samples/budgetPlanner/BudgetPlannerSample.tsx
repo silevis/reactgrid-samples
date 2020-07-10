@@ -95,10 +95,10 @@ export const BudgetPlannerSample: React.FC = () => {
   return (
     <div>
       <div id="variable-views-budget-planner">
-        <div id="budget-planning-container">
+        <div id="budget-planning-container" style={{ padding: '0 20px' }}>
           <h3 className="w100">Values Options</h3>
         </div>
-        <div id="budget-planning-container">
+        <div id="budget-planning-container" style={{ padding: '0 20px' }}>
           <DataFilterOptions onGetValuesFilterOptions={onGetValuesFilterOptions} />
         </div>
         <BudgetPlannerDisplay
