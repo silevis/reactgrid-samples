@@ -10,7 +10,7 @@ export var NotLimitedHeightByParentSample = function () {
         rows: dataRows(true),
     }); }), state = _a[0], setState = _a[1];
     return (React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, customCellTemplates: {
-            'rating': new RateCellTemplate,
+            'rate': new RateCellTemplate,
             'flag': new FlagCellTemplate
         }, stickyTopRows: 1, enableFillHandle: true, enableRangeSelection: true }));
 };

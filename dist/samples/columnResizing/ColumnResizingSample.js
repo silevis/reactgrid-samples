@@ -54,5 +54,5 @@ export var ColumnResizingSample = function () {
         newState.columns[columnIndex] = updatedColumn;
         setState(newState);
     };
-    return (React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, onColumnResized: handleColumnResize }));
+    return (React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, onColumnResized: handleColumnResize, enableFillHandle: true }));
 };

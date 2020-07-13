@@ -16,7 +16,7 @@ export var LimitedHeightByParentSample = function () {
         React.createElement("h1", null, "Content inside"),
         " Example Content",
         React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, customCellTemplates: {
-                'rating': new RateCellTemplate,
+                'rate': new RateCellTemplate,
                 'flag': new FlagCellTemplate
             }, stickyTopRows: 1, enableFillHandle: true, enableRangeSelection: true })));
 };

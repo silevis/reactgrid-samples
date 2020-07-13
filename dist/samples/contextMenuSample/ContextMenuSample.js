@@ -78,7 +78,7 @@ export var ContextMenuSample = function () {
     return (React.createElement(React.Fragment, null,
         React.createElement(ReactGridContainer, { id: "context-menu-sample" },
             React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, customCellTemplates: {
-                    'rating': new RateCellTemplate,
+                    'rate': new RateCellTemplate,
                     'flag': new FlagCellTemplate,
                     'dropdownNumber': new DropdownNumberCellTemplate,
                 }, onContextMenu: handleContextMenu, onCellsChanged: handleChanges, enableColumnSelection: true, enableRowSelection: true, enableFillHandle: true, enableRangeSelection: true }))));
