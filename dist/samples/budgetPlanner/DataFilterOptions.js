@@ -12,7 +12,7 @@ var __assign = (this && this.__assign) || function () {
 import React, { useState } from 'react';
 import { DatePicker, DayOfWeek, DefaultButton, mergeStyleSets } from 'office-ui-fabric-react';
 var controlClass = mergeStyleSets({ control: { margin: '0px 20px 0px 0px', width: '300px' } });
-var buttonClass = mergeStyleSets({ control: { margin: '27px 20px 0px 0px', } });
+var buttonClass = mergeStyleSets({ control: { margin: '27px 20px 0px 0px', maxWidth: '300px' } });
 export var DataFilterOptions = function (props) {
     var DayPickerStrings = {
         months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],

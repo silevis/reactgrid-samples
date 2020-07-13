@@ -53,7 +53,7 @@ export var GroupCellSample = function () {
             var groupCell = getGroupCell(row);
             groupCell.indent = indent;
             var hasRowChildrens = hasChildren(allRows, row);
-            groupCell.hasChildrens = hasRowChildrens;
+            groupCell.hasChildren = hasRowChildrens;
             if (hasRowChildrens)
                 assignIndentAndHasChildrens(allRows, row, indent);
         });
@@ -64,7 +64,7 @@ export var GroupCellSample = function () {
             var groupCell = getGroupCell(row);
             if (groupCell.parentId === undefined) {
                 var hasRowChildrens = hasChildren(rows, row);
-                groupCell.hasChildrens = hasRowChildrens;
+                groupCell.hasChildren = hasRowChildrens;
                 if (hasRowChildrens)
                     assignIndentAndHasChildrens(rows, row, 0);
             }

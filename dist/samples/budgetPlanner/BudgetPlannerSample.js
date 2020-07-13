@@ -125,12 +125,9 @@ export var BudgetPlannerSample = function () {
             return [2];
         });
     }); };
-    return (React.createElement("div", null,
-        React.createElement("div", { id: "variable-views-budget-planner" },
-            React.createElement("div", { id: "budget-planning-container" },
-                React.createElement("h3", { className: "w100" }, "Values Options")),
-            React.createElement("div", { id: "budget-planning-container" },
-                React.createElement(DataFilterOptions, { onGetValuesFilterOptions: onGetValuesFilterOptions })),
-            React.createElement(BudgetPlannerDisplay, { values: values, variables: variables, dates: dates, span: span }))));
+    return (React.createElement("div", { className: "variable-views-budget-planner" },
+        React.createElement("h3", { className: "w100" }, "Values Options"),
+        React.createElement(DataFilterOptions, { onGetValuesFilterOptions: onGetValuesFilterOptions }),
+        React.createElement(BudgetPlannerDisplay, { values: values, variables: variables, dates: dates, span: span })));
 };
 export default BudgetPlannerSample;
