@@ -17,7 +17,7 @@ export interface BudgetPlannerDisplayProps {
 export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayProps> = (props) => {
   const { variables, dates, span } = props
 
-  const [groupByItemsFields, setGroupByItemsField] = useState<string[]>(["job position", "name", "project"]);
+  const [groupByItemsFields, setGroupByItemsField] = useState(["job position", "name", "project"]);
   const [rowsToRender, setRowsToRender] = useState<Row[]>();
   const [state, setState] = useState<GroupGridStateData>({} as GroupGridStateData);
 
@@ -85,10 +85,9 @@ export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayP
 
     if (changes[0].initialCell.type === 'group') {
       const rowsToRender: Row<DefaultCellTypes>[] = [getHeaderRows(state.dates, span), ...getExpandedRows(newState.rows)]
-      setState({ ...state, rows: createIndents(newState.rows) });
       setRowsToRender(rowsToRender);
     }
-    return true;
+    setState({ ...state, rows: createIndents(newState.rows) });
   };
 
   const updateTable = (): void => {
@@ -118,7 +117,6 @@ export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayP
     setState(newState)
   }
 
-  console.log(groupByItemsFields)
   return (
     <>
       <h3>
