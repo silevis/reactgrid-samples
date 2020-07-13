@@ -80,7 +80,12 @@ export var BudgetPlannerDisplay = function (props) {
         changes.forEach(function (change) {
             var changeRowIdx = newState.rows.findIndex(function (el) { return el.rowId === change.rowId; });
             var changeColumnIdx = newState.columns.findIndex(function (el) { return el.columnId === change.columnId; });
-            newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+            if (change.type === 'group') {
+                newState.rows[changeRowIdx].cells[changeColumnIdx] = __assign(__assign({}, change.newCell), { text: change.initialCell.text });
+            }
+            else {
+                newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+            }
         });
         if (changes[0].initialCell.type === 'group') {
             var rowsToRender_1 = __spreadArrays([getHeaderRows(state.dates, span)], getExpandedRows(newState.rows));
