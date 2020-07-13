@@ -2,7 +2,7 @@ import { Row, DefaultCellTypes } from '@silevis/reactgrid';
 import { FlagCell } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { DropdownNumberCell } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
 
-export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | DropdownNumberCell>[] => [ // TODO ROW<generic>
+export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | DropdownNumberCell>[] => [
   {
     rowId: 'header',
     height: 25,

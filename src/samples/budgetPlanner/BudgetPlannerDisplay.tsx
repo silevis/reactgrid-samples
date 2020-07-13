@@ -17,7 +17,7 @@ export interface BudgetPlannerDisplayProps {
 export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayProps> = (props) => {
   const { variables, dates, span } = props
 
-  const [groupByItemsFilds, setGroupByItemsFild] = useState<string[]>(["job position", "name", "project"]);
+  const [groupByItemsFields, setGroupByItemsField] = useState<string[]>(["job position", "name", "project"]);
   const [rowsToRender, setRowsToRender] = useState<Row[]>();
   const [state, setState] = useState<GroupGridStateData>({} as GroupGridStateData);
 
@@ -46,31 +46,29 @@ export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayP
   };
 
   const getDirectChildrenRows = (rows: Row[], parentRow: Row): Row[] => {
-    return rows.filter((row: Row) => !!row.cells.find((cell: Cell) => cell.type === 'group' && (cell as GroupCell).parentId === parentRow.rowId));
+    return rows.filter(row => !!row.cells.find(cell => cell.type === 'group' && cell.parentId === parentRow.rowId));
   }
 
-  const getParentRow = (rows: Row[], row: Row): Row | undefined => {
-    return rows.find((r: Row) => r.rowId === getGroupCell(row).parentId);
-  }
+  const getParentRow = (rows: Row[], row: Row): Row | undefined => rows.find(r => r.rowId === getGroupCell(row).parentId);
 
-  const assignIndentAndHasChildrens = (allRows: Row[], parentRow: Row, indent: number) => {
+  const assignIndentAndHasChildren = (allRows: Row[], parentRow: Row, indent: number) => {
     ++indent;
-    getDirectChildrenRows(allRows, parentRow).forEach((row: Row) => {
+    getDirectChildrenRows(allRows, parentRow).forEach(row => {
       const groupCell = getGroupCell(row);
       groupCell.indent = indent;
       const hasRowChildrens = hasChildren(allRows, row);
-      groupCell.hasChildrens = hasRowChildrens;
-      if (hasRowChildrens) assignIndentAndHasChildrens(allRows, row, indent);
+      groupCell.hasChildren = hasRowChildrens;
+      if (hasRowChildrens) assignIndentAndHasChildren(allRows, row, indent);
     });
   };
 
   const createIndents = (rows: Row[]): Row[] => {
-    return rows.map((row: Row) => {
+    return rows.map(row => {
       const groupCell: GroupCell = getGroupCell(row);
       if (groupCell.parentId === undefined) {
         const hasRowChildrens = hasChildren(rows, row);
-        groupCell.hasChildrens = hasRowChildrens;
-        if (hasRowChildrens) assignIndentAndHasChildrens(rows, row, 0);
+        groupCell.hasChildren = hasRowChildrens;
+        if (hasRowChildrens) assignIndentAndHasChildren(rows, row, 0);
       }
       return row;
     });
@@ -95,7 +93,7 @@ export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayP
 
   const updateTable = (): void => {
 
-    const groupAttributes = getGroupAttributes([...groupByItemsFilds], variables, dates, span, []);
+    const groupAttributes = getGroupAttributes([...groupByItemsFields], variables, dates, span, []);
     let columns: Column[] = getGridColumns(dates, span);
     const data = getVariableModel(groupAttributes, dates, span, variables);
     let rows: Row[] = [...getGridRows(dates, data, displayFields)];
@@ -108,7 +106,7 @@ export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayP
 
   useEffect(() => {
     updateTable()
-  }, [groupByItemsFilds, setGroupByItemsFild, dates]);
+  }, [groupByItemsFields, setGroupByItemsField, dates]);
 
 
   const handleColumnResize = (ci: Id, width: number) => {
@@ -120,7 +118,7 @@ export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayP
     setState(newState)
   }
 
-  console.log(groupByItemsFilds)
+  console.log(groupByItemsFields)
   return (
     <>
       <h3>
@@ -130,8 +128,8 @@ export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayP
         <Dropdown
           placeholder="Select options"
           label="Group by"
-          selectedKeys={groupByItemsFilds}
-          onChange={(_, item) => item && setGroupByItemsFild(item.selected ? [...groupByItemsFilds, item.key as string] : groupByItemsFilds.filter(key => key !== item.key))}
+          selectedKeys={groupByItemsFields}
+          onChange={(_, item) => item && setGroupByItemsField(item.selected ? [...groupByItemsFields, item.key as string] : groupByItemsFields.filter(key => key !== item.key))}
           multiSelect
           options={groupByItems.map((dropdownOption: string) => ({ key: dropdownOption, text: dropdownOption }))}
           styles={{ dropdown: { width: 300 } }}
