@@ -80,7 +80,11 @@ export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayP
     changes.forEach((change: CellChange) => {
       const changeRowIdx = newState.rows.findIndex((el: Row) => el.rowId === change.rowId);
       const changeColumnIdx = newState.columns.findIndex((el: Column) => el.columnId === change.columnId);
-      newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+      if (change.type === 'group') {
+        newState.rows[changeRowIdx].cells[changeColumnIdx] = { ...change.newCell, text: change.initialCell.text };
+      } else {
+        newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+      }
     });
 
     if (changes[0].initialCell.type === 'group') {
