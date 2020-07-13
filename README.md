@@ -4,7 +4,7 @@
 
 All about cases: [I'm an inline-style link](https://medium.com/better-programming/string-case-styles-camel-pascal-snake-and-kebab-case-981407998841)
 
-1. in ```src/``` dir: kabab-case
+1. in ```src/``` dir: kabab-case 
 
 2. in ```src/samples/``` dir: camelCase
 
