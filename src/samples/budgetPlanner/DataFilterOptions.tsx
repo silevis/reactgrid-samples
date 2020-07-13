@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { DatePicker, DayOfWeek, IDatePickerStrings, DefaultButton, mergeStyleSets } from 'office-ui-fabric-react';
 
 const controlClass = mergeStyleSets({ control: { margin: '0px 20px 0px 0px', width: '300px' } });
-const buttonClass = mergeStyleSets({ control: { margin: '27px 20px 0px 0px', } });
+const buttonClass = mergeStyleSets({ control: { margin: '27px 20px 0px 0px', maxWidth: '300px' } });
 
 interface ValuesFilterOptionsProps {
   onGetValuesFilterOptions: Function

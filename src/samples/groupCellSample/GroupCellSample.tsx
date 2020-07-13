@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { columns as dataColumns } from '../../data/group/columns';
 import { rows as dataRows, headerRow } from '../../data/group/rows';
-import { Cell, CellChange, Column, GroupCell, ReactGrid, Row, DefaultCellTypes } from '@silevis/reactgrid'
+import { Cell, CellChange, Column, GroupCell, ReactGrid, Row, DefaultCellTypes } from '@silevis/reactgrid';
 import './styling.scss';
 
 const ReactGridContainer = styled.div`
@@ -17,7 +17,7 @@ interface GroupTestGridStateData {
 
 export const GroupCellSample: React.FunctionComponent = () => {
 
-    const getGroupCell = (row: Row) => row.cells.find((cell: Cell) => cell.type === 'group') as GroupCell;
+    const getGroupCell = (row: Row) => row.cells.find((cell: DefaultCellTypes) => cell.type === 'group') as GroupCell;
 
     const hasChildren = (rows: Row[], row: Row): boolean => rows.some(r => getGroupCell(r).parentId === row.rowId);
 
@@ -27,11 +27,11 @@ export const GroupCellSample: React.FunctionComponent = () => {
             if (!getGroupCell(parentRow).isExpanded) return false;
             return isRowFullyExpanded(rows, parentRow);
         }
-        return true
+        return true;
     };
 
     const getExpandedRows = (rows: Row[]): Row[] => {
-        return rows.filter((row: Row) => {
+        return rows.filter(row => {
             const areAllParentsExpanded = isRowFullyExpanded(rows, row);
             return areAllParentsExpanded !== undefined ? areAllParentsExpanded : true;
         });
@@ -43,11 +43,11 @@ export const GroupCellSample: React.FunctionComponent = () => {
 
     const assignIndentAndHasChildrens = (allRows: Row[], parentRow: Row, indent: number) => {
         ++indent;
-        getDirectChildrenRows(allRows, parentRow).forEach((row: Row) => {
+        getDirectChildrenRows(allRows, parentRow).forEach(row => {
             const groupCell = getGroupCell(row);
             groupCell.indent = indent;
             const hasRowChildrens = hasChildren(allRows, row);
-            groupCell.hasChildrens = hasRowChildrens;
+            groupCell.hasChildren = hasRowChildrens;
             if (hasRowChildrens) assignIndentAndHasChildrens(allRows, row, indent);
         });
     };
@@ -55,11 +55,11 @@ export const GroupCellSample: React.FunctionComponent = () => {
     const getDataFromRows = (rows: Row[]): Row[] => rows.filter(row => row.cells.find(cell => cell.type === 'group') !== undefined);
 
     const createIndents = (rows: Row[]): Row[] => {
-        return rows.map((row: Row) => {
+        return rows.map(row => {
             const groupCell = getGroupCell(row);
             if (groupCell.parentId === undefined) {
                 const hasRowChildrens = hasChildren(rows, row);
-                groupCell.hasChildrens = hasRowChildrens;
+                groupCell.hasChildren = hasRowChildrens;
                 if (hasRowChildrens) assignIndentAndHasChildrens(rows, row, 0);
             }
             return row;
@@ -78,7 +78,7 @@ export const GroupCellSample: React.FunctionComponent = () => {
 
     const handleChanges = (changes: CellChange[]) => {
         const newState = { ...state };
-        changes.forEach((change: CellChange) => {
+        changes.forEach(change => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;

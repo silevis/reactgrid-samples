@@ -6,7 +6,7 @@
 
 .budget-planning-header {
   width: 100%;
-  height: 10vh;
+  height: 90px;
   display: flex;
   flex-direction: row;
   .ms-Dropdown-container, .ms-Label {
@@ -16,7 +16,8 @@
 
 .budget-planning-react-grid {
   width: 100%;
-  height: 60vh;
+  height: 400px;
+  overflow: scroll;
   display:flex;
   flex-direction: column;
 }
@@ -25,16 +26,16 @@
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
-  height: calc(100vh - 112px);
+  padding: 0 20px;
   overflow: auto;
 }
 
 .nevy-blue-header{
-  background-color: #344675!important;
-  color: white
+  background-color: #cedeeac2 !important;
+  color: #585858;
  }
 
 .grey-header {
-  background-color: #ccc;
+  background-color: #f1f1f1;
   color: black;
 }

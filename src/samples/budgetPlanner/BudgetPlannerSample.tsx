@@ -93,20 +93,15 @@ export const BudgetPlannerSample: React.FC = () => {
   }
 
   return (
-    <div>
-      <div id="variable-views-budget-planner">
-        <div id="budget-planning-container">
-          <h3 className="w100">Values Options</h3>
-        </div>
-        <div id="budget-planning-container">
-          <DataFilterOptions onGetValuesFilterOptions={onGetValuesFilterOptions} />
-        </div>
-        <BudgetPlannerDisplay
-          values={values}
-          variables={variables}
-          dates={dates}
-          span={span} />
-      </div>
+
+    <div className="variable-views-budget-planner">
+      <h3 className="w100">Values Options</h3>
+      <DataFilterOptions onGetValuesFilterOptions={onGetValuesFilterOptions} />
+      <BudgetPlannerDisplay
+        values={values}
+        variables={variables}
+        dates={dates}
+        span={span} />
     </div>
   )
 }

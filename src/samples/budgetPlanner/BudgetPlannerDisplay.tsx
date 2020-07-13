@@ -17,7 +17,7 @@ export interface BudgetPlannerDisplayProps {
 export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayProps> = (props) => {
   const { variables, dates, span } = props
 
-  const [groupByItemsFilds, setGroupByItemsFild] = useState<string[]>([]);
+  const [groupByItemsFields, setGroupByItemsField] = useState(["job position", "name", "project"]);
   const [rowsToRender, setRowsToRender] = useState<Row[]>();
   const [state, setState] = useState<GroupGridStateData>({} as GroupGridStateData);
 
@@ -46,31 +46,29 @@ export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayP
   };
 
   const getDirectChildrenRows = (rows: Row[], parentRow: Row): Row[] => {
-    return rows.filter((row: Row) => !!row.cells.find((cell: Cell) => cell.type === 'group' && (cell as GroupCell).parentId === parentRow.rowId));
+    return rows.filter(row => !!row.cells.find(cell => cell.type === 'group' && cell.parentId === parentRow.rowId));
   }
 
-  const getParentRow = (rows: Row[], row: Row): Row | undefined => {
-    return rows.find((r: Row) => r.rowId === getGroupCell(row).parentId);
-  }
+  const getParentRow = (rows: Row[], row: Row): Row | undefined => rows.find(r => r.rowId === getGroupCell(row).parentId);
 
-  const assignIndentAndHasChildrens = (allRows: Row[], parentRow: Row, indent: number) => {
+  const assignIndentAndHasChildren = (allRows: Row[], parentRow: Row, indent: number) => {
     ++indent;
-    getDirectChildrenRows(allRows, parentRow).forEach((row: Row) => {
+    getDirectChildrenRows(allRows, parentRow).forEach(row => {
       const groupCell = getGroupCell(row);
       groupCell.indent = indent;
       const hasRowChildrens = hasChildren(allRows, row);
-      groupCell.hasChildrens = hasRowChildrens;
-      if (hasRowChildrens) assignIndentAndHasChildrens(allRows, row, indent);
+      groupCell.hasChildren = hasRowChildrens;
+      if (hasRowChildrens) assignIndentAndHasChildren(allRows, row, indent);
     });
   };
 
   const createIndents = (rows: Row[]): Row[] => {
-    return rows.map((row: Row) => {
+    return rows.map(row => {
       const groupCell: GroupCell = getGroupCell(row);
       if (groupCell.parentId === undefined) {
         const hasRowChildrens = hasChildren(rows, row);
-        groupCell.hasChildrens = hasRowChildrens;
-        if (hasRowChildrens) assignIndentAndHasChildrens(rows, row, 0);
+        groupCell.hasChildren = hasRowChildrens;
+        if (hasRowChildrens) assignIndentAndHasChildren(rows, row, 0);
       }
       return row;
     });
@@ -87,15 +85,14 @@ export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayP
 
     if (changes[0].initialCell.type === 'group') {
       const rowsToRender: Row<DefaultCellTypes>[] = [getHeaderRows(state.dates, span), ...getExpandedRows(newState.rows)]
-      setState({ ...state, rows: createIndents(newState.rows) });
       setRowsToRender(rowsToRender);
     }
-    return true;
+    setState({ ...state, rows: createIndents(newState.rows) });
   };
 
   const updateTable = (): void => {
 
-    const groupAttributes = getGroupAttributes([...groupByItemsFilds], variables, dates, span, []);
+    const groupAttributes = getGroupAttributes([...groupByItemsFields], variables, dates, span, []);
     let columns: Column[] = getGridColumns(dates, span);
     const data = getVariableModel(groupAttributes, dates, span, variables);
     let rows: Row[] = [...getGridRows(dates, data, displayFields)];
@@ -108,7 +105,7 @@ export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayP
 
   useEffect(() => {
     updateTable()
-  }, [groupByItemsFilds, setGroupByItemsFild, dates]);
+  }, [groupByItemsFields, setGroupByItemsField, dates]);
 
 
   const handleColumnResize = (ci: Id, width: number) => {
@@ -119,39 +116,34 @@ export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayP
     newState.columns[columnIndex] = updateColumn
     setState(newState)
   }
+
   return (
     <>
-      <div className="budget-planning-container">
-        <h3>
-          Variables Options
-        </h3>
+      <h3>
+        Variables Options
+      </h3>
+      <div className="budget-planning-header">
+        <Dropdown
+          placeholder="Select options"
+          label="Group by"
+          selectedKeys={groupByItemsFields}
+          onChange={(_, item) => item && setGroupByItemsField(item.selected ? [...groupByItemsFields, item.key as string] : groupByItemsFields.filter(key => key !== item.key))}
+          multiSelect
+          options={groupByItems.map((dropdownOption: string) => ({ key: dropdownOption, text: dropdownOption }))}
+          styles={{ dropdown: { width: 300 } }}
+        />
       </div>
-      <div className="budget-planning-container">
-        <div className="budget-planning-header">
-          <Dropdown
-            placeholder="Select options"
-            label="Group by"
-            selectedKeys={groupByItemsFilds}
-            onChange={(_, item) => item && setGroupByItemsFild(item.selected ? [...groupByItemsFilds, item.key as string] : groupByItemsFilds.filter(key => key !== item.key))}
-            multiSelect
-            options={groupByItems.map((dropdownOption: string) => ({ key: dropdownOption, text: dropdownOption }))}
-            styles={{ dropdown: { width: 300 } }}
-          />
-        </div>
-      </div>
-      <div className="budget-planning-container">
-        <div className="budget-planning-react-grid">
-          {state.columns && rowsToRender && <ReactGrid
-            rows={rowsToRender}
-            columns={state.columns}
-            onCellsChanged={handleChanges}
-            onColumnResized={handleColumnResize}
-            enableFillHandle
-            enableRangeSelection
-            stickyLeftColumns={1}
-            stickyTopRows={1}
-          />}
-        </div>
+      <div className="budget-planning-react-grid">
+        {state.columns && rowsToRender && <ReactGrid
+          rows={rowsToRender}
+          columns={state.columns}
+          onCellsChanged={handleChanges}
+          onColumnResized={handleColumnResize}
+          enableFillHandle
+          enableRangeSelection
+          stickyLeftColumns={1}
+          stickyTopRows={1}
+        />}
       </div>
     </>
   )
