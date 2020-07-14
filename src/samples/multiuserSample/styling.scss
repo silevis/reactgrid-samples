@@ -1,0 +1,13 @@
+#multiuser-sample {
+    // override styles here
+
+    // $shadow-blur-radius:    7px !default; 
+    // $shadow-spread-radius:  -2px !default; 
+    // $shadow-length:         0px !default; 
+
+    // .rg-header-cell {
+    //     background-color: rgba(128, 128, 128, 0.1) !important;
+    // }
+
+    @import '@silevis/reactgrid/styles.scss';
+}

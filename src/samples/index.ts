@@ -1,4 +1,5 @@
 // export * from './budgetPlannerSample/BudgetPlannerSample';
+export * from './multiuserSample/MultiUser';
 export * from './stickySample/StickySample';
 export * from './datagridSample/DatagridSample';
 export * from './resizeColumnSample/ResizeColumnSample';

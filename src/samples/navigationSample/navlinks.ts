@@ -18,7 +18,8 @@ import {
   ColumnResizingSample,
   HandlingChangesSample,
   LimitedHeightByParentSample,
-  NotLimitedHeightByParentSample
+  NotLimitedHeightByParentSample,
+  MultiUserSample,
 } from '../../samples';
 import { BudgetPlannerSample } from '../budgetPlanner/BudgetPlannerSample';
 
@@ -27,6 +28,12 @@ export interface ISampleNavLink extends INavLink {
 }
 
 export const navLinks: ISampleNavLink[] = [
+  {
+    name: 'Multi User Sample',
+    key: '/MultiUserSample',
+    url: '/MultiUserSample',
+    component: MultiUserSample
+  },
   {
     name: 'Group Cell Sample',
     key: '/GroupCellSample',
