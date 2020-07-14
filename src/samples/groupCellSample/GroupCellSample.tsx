@@ -93,17 +93,27 @@ export const GroupCellSample: React.FunctionComponent = () => {
 
     const handleRowsReorder = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
         const newState = { ...state };
-        const to = state.rows.findIndex(row => row.rowId === targetRowId);
+        let to = newState.rows.findIndex(row => row.rowId === targetRowId);
         let rowIdxs = rowIds.map(id => state.rows.findIndex(r => r.rowId === id));
 
         if (rowIdxs.length === 1) {
-            const row = state.rows[rowIdxs[0]];
-            rowIdxs = [row, ...new Set(getRowChildren(state.rows, [], row))].map(item => state.rows.findIndex(r => r.rowId === item.rowId));
+            const row = newState.rows[rowIdxs[0]];
+            rowIdxs = [row, ...new Set(getRowChildren(newState.rows, [], row))].map(item => newState.rows.findIndex(r => r.rowId === item.rowId));
+
+            if (dropPosition === 'on') {
+                const onRow = newState.rows.find(row => row.rowId === targetRowId);
+                if (onRow) {
+                    const movingRowRoot = getGroupCell(row);
+                    movingRowRoot.parentId = onRow.rowId;
+                    to += 1;
+                }
+            }
+
         }
 
-        const reorderedRows = reorderArray(state.rows, rowIdxs, to);
+        const reorderedRows = reorderArray(newState.rows, rowIdxs, to);
 
-        setState({ ...newState, rows: reorderedRows });
+        setState({ ...newState, rows: createIndents(reorderedRows) });
         setRowsToRender([headerRow, ...getExpandedRows(reorderedRows)]);
     }
 
