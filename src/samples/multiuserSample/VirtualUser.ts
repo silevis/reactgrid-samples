@@ -1,4 +1,4 @@
-import { IDatagridState, VirtualEnvCellChange } from './VirtualEnv';
+import { IMultiUserState, VirtualEnvCellChange } from './VirtualEnv';
 
 export class VirtualUser {
 
@@ -95,7 +95,7 @@ export class VirtualUser {
        }
      }
     */
-    makeChanges(state: IDatagridState, handleData: (data: VirtualEnvCellChange[]) => IDatagridState): IDatagridState {
+    makeChanges(state: IMultiUserState, handleData: (data: VirtualEnvCellChange[]) => void): IMultiUserState {
         /* switch (this.count) {
             case 0: {
                 state = this.updateHighlightsState(state);

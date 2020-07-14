@@ -30,12 +30,10 @@ export const GroupCellSample: React.FunctionComponent = () => {
         return true;
     };
 
-    const getExpandedRows = (rows: Row[]): Row[] => {
-        return rows.filter(row => {
-            const areAllParentsExpanded = isRowFullyExpanded(rows, row);
-            return areAllParentsExpanded !== undefined ? areAllParentsExpanded : true;
-        });
-    };
+    const getExpandedRows = (rows: Row[]): Row[] => rows.filter(row => {
+        const areAllParentsExpanded = isRowFullyExpanded(rows, row);
+        return areAllParentsExpanded !== undefined ? areAllParentsExpanded : true;
+    });
 
     const getDirectChildrenRows = (rows: Row[], parentRow: Row): Row[] => rows.filter(row => !!row.cells.find(cell => cell.type === 'group' && cell.parentId === parentRow.rowId));
 

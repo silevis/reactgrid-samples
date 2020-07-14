@@ -4,7 +4,7 @@ import { VirtualUser } from './VirtualUser';
 import { FlagCell } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { DropdownNumberCell } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
 
-export interface IDatagridState {
+export interface IMultiUserState {
     columns: Column[],
     rows: ReturnType<typeof rows>,
     stickyTopRows?: number,
@@ -16,10 +16,10 @@ export type VirtualEnvCellChange = CellChange<DefaultCellTypes | FlagCell | Drop
 
 export class VirtualEnv {
 
-    private handleData: (data: VirtualEnvCellChange[]) => IDatagridState;
+    private handleData: (data: VirtualEnvCellChange[]) => void;
     private virtualUsers: VirtualUser[] = [];
 
-    constructor(handleData: (data: VirtualEnvCellChange[]) => IDatagridState) {
+    constructor(handleData: (data: VirtualEnvCellChange[]) => void) {
         this.handleData = handleData;
     }
 
@@ -28,8 +28,8 @@ export class VirtualEnv {
         return this;
     }
 
-    updateView = (state: IDatagridState) => {
-        let modifiedState: IDatagridState = { ...state };
+    updateView = (state: IMultiUserState) => {
+        let modifiedState: IMultiUserState = { ...state };
         this.virtualUsers.forEach(virtualUser => modifiedState = virtualUser.makeChanges(modifiedState, this.handleData));
         return modifiedState;
     }

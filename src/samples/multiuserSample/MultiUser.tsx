@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ReactGrid, Column, CellChange, Id, DropPosition } from '@silevis/reactgrid';
 import { DropdownNumberCellTemplate } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
@@ -7,6 +7,7 @@ import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate
 import { columns as crmColumns } from '../../data/crm/columns';
 import { rows as crmRows } from '../../data/crm/rows';
 import './styling.scss';
+import { VirtualEnv, VirtualEnvCellChange, IMultiUserState } from './VirtualEnv';
 
 const ReactGridContainer = styled.div`
   height: 300px;
@@ -14,27 +15,30 @@ const ReactGridContainer = styled.div`
   overflow: scroll;
 `;
 
-interface MultiUserState {
-  columns: Column[];
-  rows: ReturnType<typeof crmRows>;
-  stickyTopRows?: number;
-  stickyBottomRows?: number;
-  stickyLeftColumns?: number;
-  stickyRightColumns?: number;
-}
-
 export const MultiUserSample: React.FC = () => {
 
-  const [state, setState] = React.useState<MultiUserState>(() => ({
+  const [state, setState] = useState<IMultiUserState>(() => ({
     columns: [...crmColumns(true, false)],
     rows: [...crmRows(true)],
     stickyTopRows: 1,
     stickyLeftColumns: 1,
-    stickyRightColumns: 1,
-    stickyBottomRows: undefined
+    highlights: []
   }))
 
-  const handleChanges = (changes: CellChange[]) => {
+  const [virtualEnv, setVirtualEnv] = useState(() => {
+    return new VirtualEnv(handleChanges)
+  });
+
+  /* useEffect(() => {
+    const interval = setInterval(() => {
+      setState(virtualEnv.updateView(state))
+    }, 1000);
+    return () => {
+      clearInterval(interval)
+    };
+  }, []); */
+
+  const handleChanges = (changes: VirtualEnvCellChange[]) => {
     const newState = { ...state };
     changes.forEach(change => {
       const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
@@ -74,9 +78,7 @@ export const MultiUserSample: React.FC = () => {
           'dropdownNumber': new DropdownNumberCellTemplate,
         }}
         stickyTopRows={state.stickyTopRows}
-        stickyBottomRows={state.stickyBottomRows}
         stickyLeftColumns={state.stickyLeftColumns}
-        stickyRightColumns={state.stickyRightColumns}
         onCellsChanged={handleChanges}
         canReorderRows={handleCanReorderRows}
         onRowsReordered={handleRowsReorder}
