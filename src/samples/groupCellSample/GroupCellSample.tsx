@@ -57,6 +57,7 @@ export const GroupCellSample: React.FunctionComponent = () => {
         if (groupCell.parentId === undefined) {
             const hasRowChildrens = hasChildren(rows, row);
             groupCell.hasChildren = hasRowChildrens;
+            // if (hasRowChildrens) assignIndentAndHasChildrens(rows, row, groupCell.indent || 0);
             if (hasRowChildrens) assignIndentAndHasChildrens(rows, row, 0);
         }
         return row;
@@ -101,22 +102,36 @@ export const GroupCellSample: React.FunctionComponent = () => {
             rowIdxs = [row, ...new Set(getRowChildren(newState.rows, [], row))].map(item => newState.rows.findIndex(r => r.rowId === item.rowId));
 
             const onRow = newState.rows.find(row => row.rowId === targetRowId);
-            // console.log({ targetRowId, dropPosition, onRow })
             if (onRow) {
+                const movingRowRoot = getGroupCell(row);
                 if (dropPosition === 'on') {
-                    const movingRowRoot = getGroupCell(row);
                     movingRowRoot.parentId = onRow.rowId;
-                    to += 1;
+                    const onRowIndex = newState.rows.indexOf(onRow);
+                    const rowIndex = newState.rows.indexOf(row);
+                    if (rowIndex >= onRowIndex) {
+                        to += 1;
+                    }
                 } else {
                     const parentRow = getParentRow(newState.rows, onRow);
-                    if (parentRow) {
-                        const movingRowRoot = getGroupCell(row);
+                    if (parentRow
+                        // && !getGroupCell(parentRow).isExpanded
+                    ) {
+                        console.log({ 'aaa': 'aaa', targetRowId });
                         movingRowRoot.parentId = parentRow.rowId;
+                    } else {
+                        console.log({ 'zzz': 'zzz', targetRowId });
+                        if (dropPosition === 'after') {
+                            console.log('after')
+                            // movingRowRoot.parentId = undefined;
+                            // movingRowRoot.indent = undefined;
+                        } else {
+                            console.log('before')
+                            movingRowRoot.parentId = undefined;
+                            movingRowRoot.indent = undefined;
+                        }
                     }
                 }
             }
-
-            // 7 do wnetrza 12
         }
 
         const reorderedRows = reorderArray(newState.rows, rowIdxs, to);
@@ -135,7 +150,18 @@ export const GroupCellSample: React.FunctionComponent = () => {
         return acc;
     }
 
-    const handleCanReorderRows = (targetColumnId: Id, rowIds: Id[], dropPosition: DropPosition): boolean => {
+    const handleCanReorderRows = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition): boolean => {
+        const newState = { ...state };
+        let rowIdxs = rowIds.map(id => newState.rows.findIndex(row => row.rowId === id));
+        if (rowIdxs.length === 1) {
+            const row = newState.rows[rowIdxs[0]];
+            const rowChildren = [...new Set(getRowChildren(newState.rows, [], row))];
+            if (rowChildren.some(item => item.rowId === targetRowId)) {
+                return false;
+            }
+        } else {
+            return false;
+        }
         return true;
     }
 

@@ -76,7 +76,7 @@ export const getHeaderRows = (dates: Date[], span: string, row?: Row): Row => {
         type: 'header',
         text: 'Group by',
         className: 'nevy-blue-header',
-      } as HeaderCell)
+      })
     );
     row.cells.push(...cells);
     cells = [];
@@ -88,7 +88,7 @@ export const getHeaderRows = (dates: Date[], span: string, row?: Row): Row => {
         type: 'header',
         text: cellText,
         className: 'nevy-blue-header',
-      } as HeaderCell)
+      })
     )
   });
   row.cells.push(...cells);
