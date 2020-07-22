@@ -100,15 +100,23 @@ export const GroupCellSample: React.FunctionComponent = () => {
             const row = newState.rows[rowIdxs[0]];
             rowIdxs = [row, ...new Set(getRowChildren(newState.rows, [], row))].map(item => newState.rows.findIndex(r => r.rowId === item.rowId));
 
-            if (dropPosition === 'on') {
-                const onRow = newState.rows.find(row => row.rowId === targetRowId);
-                if (onRow) {
+            const onRow = newState.rows.find(row => row.rowId === targetRowId);
+            // console.log({ targetRowId, dropPosition, onRow })
+            if (onRow) {
+                if (dropPosition === 'on') {
                     const movingRowRoot = getGroupCell(row);
                     movingRowRoot.parentId = onRow.rowId;
                     to += 1;
+                } else {
+                    const parentRow = getParentRow(newState.rows, onRow);
+                    if (parentRow) {
+                        const movingRowRoot = getGroupCell(row);
+                        movingRowRoot.parentId = parentRow.rowId;
+                    }
                 }
             }
 
+            // 7 do wnetrza 12
         }
 
         const reorderedRows = reorderArray(newState.rows, rowIdxs, to);
