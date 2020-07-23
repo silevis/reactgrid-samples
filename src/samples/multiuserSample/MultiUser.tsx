@@ -42,13 +42,13 @@ export const MultiUserSample: React.FC = () => {
 
   useEffect(() => {
     virtualEnv
-      .addUser(new VirtualUser('blue'))
-      .addUser(new VirtualUser('red'))
-      .addUser(new VirtualUser('green'))
-      .addUser(new VirtualUser('magenta'))
-      .addUser(new VirtualUser('blueviolet'))
-      .addUser(new VirtualUser('cyan'))
-      .addUser(new VirtualUser('yellow'))
+      .addUser(new VirtualUser('darkolivegreen'))
+      .addUser(new VirtualUser('mediumpurple'))
+    // .addUser(new VirtualUser('green'))
+    // .addUser(new VirtualUser('magenta'))
+    // .addUser(new VirtualUser('blueviolet'))
+    // .addUser(new VirtualUser('cyan'))
+    // .addUser(new VirtualUser('yellow'))
 
     setState(virtualEnv.updateView(state));
   }, []);

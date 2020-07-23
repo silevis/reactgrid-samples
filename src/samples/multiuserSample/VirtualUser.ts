@@ -13,9 +13,7 @@ export class VirtualUser {
   private highlightRowIdx: number = 1;
   private currectLetterCount = -1;
   private drawData: string = '';
-
   private dataGen = new DatagridDataGenerator();
-
 
   getHighlightedCell(state: IMultiUserState) {
     return this.getHighlightedRow(state).cells[this.highlightColumnIdx];
@@ -30,8 +28,9 @@ export class VirtualUser {
   }
 
   drawHighlight(state: IMultiUserState) {
-    this.highlightColumnIdx = DatagridDataGenerator.getRandomInt(0, state.columns.length);
-    this.highlightRowIdx = DatagridDataGenerator.getRandomInt(1, state.rows.length);
+    const moveFactor = 3;
+    this.highlightColumnIdx = DatagridDataGenerator.getRandomInt(Math.max(0, this.highlightColumnIdx - moveFactor), Math.min(this.highlightColumnIdx + moveFactor, state.columns.length));
+    this.highlightRowIdx = DatagridDataGenerator.getRandomInt(Math.max(1, this.highlightRowIdx - moveFactor), Math.min(this.highlightRowIdx + moveFactor, state.rows.length));
   }
 
   updateHighlightsState(state: IMultiUserState): IMultiUserState {
@@ -66,7 +65,14 @@ export class VirtualUser {
       this.drawData = this.dataGen.getDataAttrByKey(this.getHighlightedColumn(state).columnId) as string;
     }
 
-    for (let i = 0; i < this.drawData.length; i++) {
+    const removeChars = DatagridDataGenerator.getRandomInt(0, 1);
+
+    for (let i = 0; i < this.currectLetterCount; i++) {
+
+      if (removeChars) {
+        // this.currectLetterCount -= removeChars;
+        break;
+      }
 
       state = {
         ...state,
