@@ -6,7 +6,6 @@ import { CellChange, Column, GroupCell, ReactGrid, Row, DefaultCellTypes, Id, Dr
 import './styling.scss';
 
 const ReactGridContainer = styled.div`
-  position: relative;
   min-height: 400px;
 `;
 
@@ -113,18 +112,18 @@ export const GroupCellSample: React.FunctionComponent = () => {
                     }
                 } else {
                     const parentRow = getParentRow(newState.rows, onRow);
-                    if (parentRow
-                        // && !getGroupCell(parentRow).isExpanded
-                    ) {
-                        console.log({ 'aaa': 'aaa', targetRowId });
+                    if (dropPosition === 'after') {
+                        movingRowRoot.parentId = onRow.rowId;
+                        console.log('after')
+                    }
+                    if (parentRow) {
                         movingRowRoot.parentId = parentRow.rowId;
-                    } else {
-                        console.log({ 'zzz': 'zzz', targetRowId });
+                        console.log('parentRow')
                         if (dropPosition === 'after') {
-                            console.log('after')
-                            // movingRowRoot.parentId = undefined;
-                            // movingRowRoot.indent = undefined;
-                        } else {
+                            movingRowRoot.parentId = onRow.rowId;
+                        }
+                    } else {
+                        if (dropPosition === 'before') {
                             console.log('before')
                             movingRowRoot.parentId = undefined;
                             movingRowRoot.indent = undefined;
@@ -153,7 +152,7 @@ export const GroupCellSample: React.FunctionComponent = () => {
     const handleCanReorderRows = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition): boolean => {
         const newState = { ...state };
         let rowIdxs = rowIds.map(id => newState.rows.findIndex(row => row.rowId === id));
-        if (rowIdxs.length === 1) {
+        if (rowIdxs.length === 1 && targetRowId !== headerRow.rowId) {
             const row = newState.rows[rowIdxs[0]];
             const rowChildren = [...new Set(getRowChildren(newState.rows, [], row))];
             if (rowChildren.some(item => item.rowId === targetRowId)) {

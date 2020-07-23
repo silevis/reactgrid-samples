@@ -24,7 +24,7 @@ export const MultiUserSample: React.FC = () => {
     columns: [...crmColumns(true, false)],
     rows: [...crmRows(true)],
     stickyTopRows: 1,
-    stickyLeftColumns: 1,
+    stickyLeftColumns: 0,
     highlights: []
   }));
 
@@ -44,9 +44,9 @@ export const MultiUserSample: React.FC = () => {
     virtualEnv
       .addUser(new VirtualUser('darkolivegreen'))
       .addUser(new VirtualUser('mediumpurple'))
-    // .addUser(new VirtualUser('green'))
-    // .addUser(new VirtualUser('magenta'))
-    // .addUser(new VirtualUser('blueviolet'))
+      // .addUser(new VirtualUser('blueviolet'))
+      // .addUser(new VirtualUser('green'))
+      .addUser(new VirtualUser('red'))
     // .addUser(new VirtualUser('cyan'))
     // .addUser(new VirtualUser('yellow'))
 

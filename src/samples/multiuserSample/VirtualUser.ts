@@ -28,7 +28,7 @@ export class VirtualUser {
   }
 
   drawHighlight(state: IMultiUserState) {
-    const moveFactor = 3;
+    const moveFactor = 2;
     this.highlightColumnIdx = DatagridDataGenerator.getRandomInt(Math.max(0, this.highlightColumnIdx - moveFactor), Math.min(this.highlightColumnIdx + moveFactor, state.columns.length));
     this.highlightRowIdx = DatagridDataGenerator.getRandomInt(Math.max(1, this.highlightRowIdx - moveFactor), Math.min(this.highlightRowIdx + moveFactor, state.rows.length));
   }
