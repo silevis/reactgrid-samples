@@ -29,7 +29,7 @@ export class VirtualEnv {
     }
 
     updateView = (state: IMultiUserState) => {
-        let modifiedState: IMultiUserState = { ...state };
+        let modifiedState = { ...state };
         this.virtualUsers.forEach(virtualUser => modifiedState = virtualUser.makeChanges(modifiedState, this.handleData));
         return modifiedState;
     }

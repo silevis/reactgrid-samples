@@ -8,10 +8,11 @@ import { columns as crmColumns } from '../../data/crm/columns';
 import { rows as crmRows } from '../../data/crm/rows';
 import './styling.scss';
 import { VirtualEnv, VirtualEnvCellChange, IMultiUserState } from './VirtualEnv';
+import { VirtualUser } from './VirtualUser';
 
 const ReactGridContainer = styled.div`
-  height: 300px;
-  width: 650px;
+  /* height: 300px;
+  width: 650px; */
   overflow: scroll;
 `;
 
@@ -25,19 +26,6 @@ export const MultiUserSample: React.FC = () => {
     highlights: []
   }))
 
-  const [virtualEnv, setVirtualEnv] = useState(() => {
-    return new VirtualEnv(handleChanges)
-  });
-
-  /* useEffect(() => {
-    const interval = setInterval(() => {
-      setState(virtualEnv.updateView(state))
-    }, 1000);
-    return () => {
-      clearInterval(interval)
-    };
-  }, []); */
-
   const handleChanges = (changes: VirtualEnvCellChange[]) => {
     const newState = { ...state };
     changes.forEach(change => {
@@ -47,6 +35,18 @@ export const MultiUserSample: React.FC = () => {
     })
     setState(newState);
   }
+
+  const [virtualEnv, setVirtualEnv] = useState(() => new VirtualEnv(handleChanges));
+
+  useEffect(() => {
+    virtualEnv
+      .addUser(new VirtualUser('blue'))
+    // .addUser(new VirtualUser('violet'))
+    const interval = setInterval(() => {
+      setState(virtualEnv.updateView(state))
+    }, 100);
+    return () => clearInterval(interval);
+  }, []);
 
   const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
     const movedElements: T[] = arr.filter((_: T, idx: number) => idxs.includes(idx));
@@ -77,6 +77,7 @@ export const MultiUserSample: React.FC = () => {
           'flag': new FlagCellTemplate,
           'dropdownNumber': new DropdownNumberCellTemplate,
         }}
+        highlights={state.highlights}
         stickyTopRows={state.stickyTopRows}
         stickyLeftColumns={state.stickyLeftColumns}
         onCellsChanged={handleChanges}
