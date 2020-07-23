@@ -15,14 +15,14 @@ export class DatagridDataGenerator {
     country: ['fra', 'hun', 'lbn', 'mli', 'deu', 'pol', 'prt', 'svk', 'gbr', 'alb', 'aut', 'bra'],
     city: ['Pekin', 'Newark', 'Acapulco', 'El Paso', 'Warsaw', 'Athens', 'Moscow', 'Mexico', 'Toronto', 'Los Angeles'],
     position: ['Director', 'Manager', 'Software Dev', 'QA', 'Automated Tester', 'Unemployed', 'Scrum Master', 'Project owner'],
-    email: ['e', 'm', 'a Dev', 'i',],
+    email: ['j.sandberg@gmail.com', 'mr.asgo@gmail.com', 'e.hudson@gmail.com', 'l.aaker@gmail.com', 'o.abtahi@gmail.com', 'j.adams@gmail.com', 'j.balasko@gmail.com', 's.bianchetti@gmail.com'],
     'birth-date': ['e', 'm', 'a Dev', 'i',],
-    'is-active': ['e', 'm', 'a Dev', 'i',],
-    skills: ['10', '20', '30', '40', '50', '60', '70', '80'],
-    sex: ['male', 'female'],
+    'is-active': ['false', 'true'],
+    skills: ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100'],
+    sex: ['male', 'female', '---'],
     phone: ['645654654', '654234987', '305732948', '94740349', '4028343', '543929348', '58473532', '120954368', '432875483', '54385439'],
     street: ['Jizhou Qu', 'Calle Oriente', 'Via Blanca', 'Dr. Ricardo Gutiérrez', 'Essex', 'Agar St', 'Boulevard Alexis-Nihon'],
-    registered: ['e', 'm', 'a Dev', 'i'],
+    registered: ['10.10.2020',],
   }
   static getRandomInt(min: number, max: number): number {
     min = Math.ceil(min);

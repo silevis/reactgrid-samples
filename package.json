@@ -41,5 +41,8 @@
   "browserslist": [
     ">0.2%",
     "not dead"
-  ]
+  ],
+  "dependencies": {
+    "@use-it/interval": "^0.1.3"
+  }
 }

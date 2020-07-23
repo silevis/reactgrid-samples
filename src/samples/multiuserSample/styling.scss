@@ -9,5 +9,10 @@
     //     background-color: rgba(128, 128, 128, 0.1) !important;
     // }
 
+    .rg-cell-focus {
+        transition: all 0.2s;
+        // height: 50px !important;
+    }
+
     @import '@silevis/reactgrid/styles.scss';
 }

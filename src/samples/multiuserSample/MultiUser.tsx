@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { ReactGrid, Column, CellChange, Id, DropPosition } from '@silevis/reactgrid';
-import { DropdownNumberCellTemplate } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
-import { FlagCellTemplate } from '../../cell-templates/flagCell/FlagCellTemplate';
+import { ReactGrid, DefaultCellTypes, CellChange, Id, DropPosition } from '@silevis/reactgrid';
+import { DropdownNumberCellTemplate, DropdownNumberCell } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
+import { FlagCellTemplate, FlagCell } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
 import { columns as crmColumns } from '../../data/crm/columns';
 import { rows as crmRows } from '../../data/crm/rows';
 import './styling.scss';
-import { VirtualEnv, VirtualEnvCellChange, IMultiUserState } from './VirtualEnv';
+import { VirtualEnv, IMultiUserState } from './VirtualEnv';
 import { VirtualUser } from './VirtualUser';
+import useInterval from '@use-it/interval';
+
 
 const ReactGridContainer = styled.div`
-  /* height: 300px;
-  width: 650px; */
   overflow: scroll;
 `;
+
+export type VirtualEnvCellChange = CellChange<DefaultCellTypes | FlagCell | DropdownNumberCell>;
 
 export const MultiUserSample: React.FC = () => {
 
@@ -24,7 +26,7 @@ export const MultiUserSample: React.FC = () => {
     stickyTopRows: 1,
     stickyLeftColumns: 1,
     highlights: []
-  }))
+  }));
 
   const handleChanges = (changes: VirtualEnvCellChange[]) => {
     const newState = { ...state };
@@ -36,17 +38,24 @@ export const MultiUserSample: React.FC = () => {
     setState(newState);
   }
 
-  const [virtualEnv, setVirtualEnv] = useState(() => new VirtualEnv(handleChanges));
+  const [virtualEnv, setVirtualEnv] = useState(() => new VirtualEnv());
 
   useEffect(() => {
     virtualEnv
       .addUser(new VirtualUser('blue'))
-    // .addUser(new VirtualUser('violet'))
-    const interval = setInterval(() => {
-      setState(virtualEnv.updateView(state))
-    }, 100);
-    return () => clearInterval(interval);
+      .addUser(new VirtualUser('red'))
+      .addUser(new VirtualUser('green'))
+      .addUser(new VirtualUser('magenta'))
+      .addUser(new VirtualUser('blueviolet'))
+      .addUser(new VirtualUser('cyan'))
+      .addUser(new VirtualUser('yellow'))
+
+    setState(virtualEnv.updateView(state));
   }, []);
+
+  useInterval(() => {
+    setState(virtualEnv.updateView(state))
+  }, 250);
 
   const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
     const movedElements: T[] = arr.filter((_: T, idx: number) => idxs.includes(idx));
