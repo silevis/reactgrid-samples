@@ -4,13 +4,13 @@ import { DatagridDataGenerator } from '../datagridSample/VirtualUser';
 
 export class VirtualUser {
 
-  constructor(public borderColor: string) {
+  constructor(public borderColor: string, private highlightColumnIdx: number, private highlightRowIdx: number) {
     this.borderColor = borderColor;
+    this.highlightColumnIdx = highlightColumnIdx;
+    this.highlightRowIdx = highlightRowIdx;
   }
 
   private count: number = 0;
-  private highlightColumnIdx: number = 1;
-  private highlightRowIdx: number = 1;
   private currectLetterCount = -1;
   private drawData: string = '';
   private dataGen = new DatagridDataGenerator();

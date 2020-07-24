@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { ReactGrid, DefaultCellTypes, CellChange, Id, DropPosition } from '@silevis/reactgrid';
+import { ReactGrid, DefaultCellTypes, CellChange, Id, DropPosition, MenuOption, SelectionMode } from '@silevis/reactgrid';
 import { DropdownNumberCellTemplate, DropdownNumberCell } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
 import { FlagCellTemplate, FlagCell } from '../../cell-templates/flagCell/FlagCellTemplate';
-import { RateCellTemplate } from '../../cell-templates/rateCell/RateCellTemplate';
 import { columns as crmColumns } from '../../data/crm/columns';
 import { rows as crmRows } from '../../data/crm/rows';
 import './styling.scss';
@@ -24,7 +23,7 @@ export const MultiUserSample: React.FC = () => {
     columns: [...crmColumns(true, false)],
     rows: [...crmRows(true)],
     stickyTopRows: 1,
-    stickyLeftColumns: 0,
+    stickyLeftColumns: 2,
     highlights: []
   }));
 
@@ -38,20 +37,33 @@ export const MultiUserSample: React.FC = () => {
     setState(newState);
   }
 
-  const [virtualEnv, setVirtualEnv] = useState(() => new VirtualEnv());
+  const [virtualEnv] = useState(() => new VirtualEnv());
 
   useEffect(() => {
     virtualEnv
-      .addUser(new VirtualUser('darkolivegreen'))
-      .addUser(new VirtualUser('mediumpurple'))
-      // .addUser(new VirtualUser('blueviolet'))
-      // .addUser(new VirtualUser('green'))
-      .addUser(new VirtualUser('red'))
-    // .addUser(new VirtualUser('cyan'))
-    // .addUser(new VirtualUser('yellow'))
+      .addUser(new VirtualUser('darkolivegreen', 12, 3))
+      .addUser(new VirtualUser('mediumpurple', 0, 0))
+      .addUser(new VirtualUser('red', 10, 12))
+      .addUser(new VirtualUser('orange', 0, 18))
 
     setState(virtualEnv.updateView(state));
   }, []);
+
+  const handleCanReorderColumns = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition): boolean => {
+    const columnInside = columnIds.includes(targetColumnId);
+    if (columnInside) return false;
+    return true;
+  }
+
+  const handleColumnsReorder = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
+    const to = state.columns.findIndex(column => column.columnId === targetColumnId);
+    const columnIdxs = columnIds.map((id: Id, idx: number) => state.columns.findIndex(c => c.columnId === id));
+    setState({
+      ...state,
+      columns: reorderArray(state.columns, columnIdxs, to),
+      rows: state.rows.map(row => ({ ...row, cells: reorderArray(row.cells, columnIdxs, to) })),
+    });
+  }
 
   useInterval(() => {
     setState(virtualEnv.updateView(state))
@@ -72,8 +84,63 @@ export const MultiUserSample: React.FC = () => {
     setState({ ...newState, rows: reorderArray(state.rows, ids, to) });
   }
 
-  const handleCanReorderRows = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition): boolean => {
+  const handleCanReorderRows = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition): boolean => {
+    const rowIndex = state.rows.findIndex(row => row.rowId === targetRowId);
+    const rowInside = rowIds.includes(targetRowId);
+    if (rowIndex === 0 || rowInside) return false;
     return true;
+  }
+
+  const handleColumnResize = (columnId: Id, width: number, selectedColIds: Id[]) => {
+    const newState = { ...state };
+
+    const setColumnWidth = (columnIndex: number) => {
+      const resizedColumn = newState.columns[columnIndex];
+      newState.columns[columnIndex] = { ...resizedColumn, width };
+    }
+
+    if (selectedColIds.includes(columnId)) {
+      const stateColumnIndexes = newState.columns
+        .filter(col => selectedColIds.includes(col.columnId))
+        .map(col => newState.columns.findIndex(el => el.columnId === col.columnId));
+      stateColumnIndexes.forEach(setColumnWidth);
+    } else {
+      const columnIndex = newState.columns.findIndex(col => col.columnId === columnId);
+      setColumnWidth(columnIndex);
+    }
+    setState(newState);
+  }
+
+  const handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {
+    if (selectionMode === 'row') {
+      menuOptions = [
+        ...menuOptions,
+        {
+          id: 'removeRow', label: 'Remove row', handler: () => {
+            const highlights = state.highlights.filter(h => !selectedRowIds.includes(h.rowId));
+            setState({ ...state, rows: state.rows.filter(row => !selectedRowIds.includes(row.rowId)), highlights });
+          }
+        },
+      ]
+    }
+    if (selectionMode === 'column') {
+      menuOptions = [
+        ...menuOptions,
+        {
+          id: 'removeColumn', label: 'Remove column', handler: () => {
+            const columns = state.columns.filter(column => !selectedColIds.includes(column.columnId));
+            const columnsIdxs = state.columns.map((column, idx) => {
+              if (!columns.includes(column)) return idx;
+              return undefined;
+            }).filter(idx => idx !== undefined);
+            const rows = state.rows.map(row => ({ ...row, cells: row.cells.filter((_, idx) => !columnsIdxs.includes(idx)) }));
+            const highlights = state.highlights.filter(h => !selectedColIds.includes(h.columnId));
+            setState({ ...state, columns, rows, highlights });
+          }
+        },
+      ]
+    }
+    return menuOptions;
   }
 
   return (
@@ -82,7 +149,6 @@ export const MultiUserSample: React.FC = () => {
         rows={state.rows}
         columns={state.columns}
         customCellTemplates={{
-          'rate': new RateCellTemplate,
           'flag': new FlagCellTemplate,
           'dropdownNumber': new DropdownNumberCellTemplate,
         }}
@@ -92,6 +158,10 @@ export const MultiUserSample: React.FC = () => {
         onCellsChanged={handleChanges}
         canReorderRows={handleCanReorderRows}
         onRowsReordered={handleRowsReorder}
+        canReorderColumns={handleCanReorderColumns}
+        onColumnsReordered={handleColumnsReorder}
+        onContextMenu={handleContextMenu}
+        onColumnResized={handleColumnResize}
         enableColumnSelection
         enableRowSelection
         enableFillHandle
