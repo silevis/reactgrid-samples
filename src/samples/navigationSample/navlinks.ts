@@ -19,6 +19,7 @@ import {
   HandlingChangesSample,
   LimitedHeightByParentSample,
   NotLimitedHeightByParentSample,
+  BPSample,
 } from '../../samples';
 import { BudgetPlannerSample } from '../budgetPlanner/BudgetPlannerSample';
 
@@ -27,6 +28,12 @@ export interface ISampleNavLink extends INavLink {
 }
 
 export const navLinks: ISampleNavLink[] = [
+  {
+    name: 'BP Sample',
+    key: '/BP',
+    url: '/BP',
+    component: BPSample,
+  },
   {
     name: 'Group Cell Sample',
     key: '/GroupCellSample',
