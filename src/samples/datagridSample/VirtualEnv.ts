@@ -2,7 +2,7 @@ import { Column, Highlight, } from '@silevis/reactgrid';
 import { rows } from '../../data/crm/rows';
 import { VirtualUser } from './VirtualUser';
 
-export interface IMultiUserState {
+export interface IDatagridState {
     columns: Column[],
     rows: ReturnType<typeof rows>,
     stickyTopRows?: number,
@@ -19,7 +19,7 @@ export class VirtualEnv {
         return this;
     }
 
-    updateView = (state: IMultiUserState) => {
+    updateView = (state: IDatagridState) => {
         let modifiedState = { ...state };
         this.virtualUsers.forEach(virtualUser => modifiedState = virtualUser.makeChanges(modifiedState));
         return modifiedState;

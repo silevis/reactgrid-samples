@@ -1,192 +1,172 @@
-import * as React from 'react';
-import { ReactGrid, CellChange, Highlight, Column, DropPosition, Id, Cell, SelectionMode, MenuOption, DefaultCellTypes } from '@silevis/reactgrid';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { VirtualEnv, VirtualUser } from './VirtualUser';
-import { columns } from '../../data/crm/columns';
-import { rows } from '../../data/crm/rows';
-import { FlagCellTemplate, FlagCell } from '../../cell-templates/flagCell/FlagCellTemplate';
+import { ReactGrid, DefaultCellTypes, CellChange, Id, DropPosition, MenuOption, SelectionMode } from '@silevis/reactgrid';
 import { DropdownNumberCellTemplate, DropdownNumberCell } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
+import { FlagCellTemplate, FlagCell } from '../../cell-templates/flagCell/FlagCellTemplate';
+import { columns as crmColumns } from '../../data/crm/columns';
+import { rows as crmRows } from '../../data/crm/rows';
 import './styling.scss';
+import { VirtualEnv, IDatagridState } from './VirtualEnv';
+import { VirtualUser } from './VirtualUser';
+import useInterval from '@use-it/interval';
+
 
 const ReactGridContainer = styled.div`
-  /* height: 300px;
-  width: 800px;
-  overflow: auto; */
+  overflow: scroll;
 `;
 
-export interface IDatagridState {
-    columns: Column[],
-    rows: ReturnType<typeof rows>,
-    stickyTopRows?: number,
-    stickyLeftColumns?: number,
-    highlights: Highlight[]
-}
+export type VirtualEnvCellChange = CellChange<DefaultCellTypes | FlagCell | DropdownNumberCell>;
 
-export class DatagridSample extends React.Component<{}, IDatagridState> {
+export const DatagridSample: React.FC = () => {
 
-    state = {
-        columns: columns(true, true),
-        rows: [
-            ...rows(true),
-        ],
-        stickyTopRows: 1,
-        stickyLeftColumns: 2,
-        highlights: [],
+  const [state, setState] = useState<IDatagridState>(() => ({
+    columns: [...crmColumns(true, false)],
+    rows: [...crmRows(true)],
+    stickyTopRows: 1,
+    stickyLeftColumns: 2,
+    highlights: []
+  }));
+
+  const handleChanges = (changes: VirtualEnvCellChange[]) => {
+    const newState = { ...state };
+    changes.forEach(change => {
+      const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
+      const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
+      newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+    })
+    setState(newState);
+  }
+
+  const [virtualEnv] = useState(() => new VirtualEnv());
+
+  useEffect(() => {
+    virtualEnv
+      .addUser(new VirtualUser('darkolivegreen', 12, 3))
+      .addUser(new VirtualUser('mediumpurple', 0, 0))
+      .addUser(new VirtualUser('red', 10, 12))
+      .addUser(new VirtualUser('orange', 0, 18))
+
+    setState(virtualEnv.updateView(state));
+  }, []);
+
+  const handleCanReorderColumns = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition): boolean => {
+    const columnInside = columnIds.includes(targetColumnId);
+    if (columnInside) return false;
+    return true;
+  }
+
+  const handleColumnsReorder = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
+    const to = state.columns.findIndex(column => column.columnId === targetColumnId);
+    const columnIdxs = columnIds.map((id: Id, idx: number) => state.columns.findIndex(c => c.columnId === id));
+    setState({
+      ...state,
+      columns: reorderArray(state.columns, columnIdxs, to),
+      rows: state.rows.map(row => ({ ...row, cells: reorderArray(row.cells, columnIdxs, to) })),
+    });
+  }
+
+  useInterval(() => {
+    setState(virtualEnv.updateView(state))
+  }, 250);
+
+  const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
+    const movedElements: T[] = arr.filter((_: T, idx: number) => idxs.includes(idx));
+    to = Math.min(...idxs) < to ? to += 1 : to -= idxs.filter(idx => idx < to).length;
+    const leftSide: T[] = arr.filter((_: T, idx: number) => idx < to && !idxs.includes(idx));
+    const rightSide: T[] = arr.filter((_: T, idx: number) => idx >= to && !idxs.includes(idx));
+    return [...leftSide, ...movedElements, ...rightSide];
+  }
+
+  const handleRowsReorder = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
+    const newState = { ...state };
+    const to = state.rows.findIndex(row => row.rowId === targetRowId);
+    const ids = rowIds.map(id => state.rows.findIndex(r => r.rowId === id));
+    setState({ ...newState, rows: reorderArray(state.rows, ids, to) });
+  }
+
+  const handleCanReorderRows = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition): boolean => {
+    const rowIndex = state.rows.findIndex(row => row.rowId === targetRowId);
+    const rowInside = rowIds.includes(targetRowId);
+    if (rowIndex === 0 || rowInside) return false;
+    return true;
+  }
+
+  const handleColumnResize = (columnId: Id, width: number, selectedColIds: Id[]) => {
+    const newState = { ...state };
+
+    const setColumnWidth = (columnIndex: number) => {
+      const resizedColumn = newState.columns[columnIndex];
+      newState.columns[columnIndex] = { ...resizedColumn, width };
     }
 
-    intervalId?: number;
-
-    componentDidMount() {
-        this.setVirtualEnv();
+    if (selectedColIds.includes(columnId)) {
+      const stateColumnIndexes = newState.columns
+        .filter(col => selectedColIds.includes(col.columnId))
+        .map(col => newState.columns.findIndex(el => el.columnId === col.columnId));
+      stateColumnIndexes.forEach(setColumnWidth);
+    } else {
+      const columnIndex = newState.columns.findIndex(col => col.columnId === columnId);
+      setColumnWidth(columnIndex);
     }
+    setState(newState);
+  }
 
-    componentWillUnmount() {
-        this.unsetVirtualEnv();
+  const handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {
+    if (selectionMode === 'row') {
+      menuOptions = [
+        ...menuOptions,
+        {
+          id: 'removeRow', label: 'Remove row', handler: () => {
+            const highlights = state.highlights.filter(h => !selectedRowIds.includes(h.rowId));
+            setState({ ...state, rows: state.rows.filter(row => !selectedRowIds.includes(row.rowId)), highlights });
+          }
+        },
+      ]
     }
-
-    private setVirtualEnv() {
-        const virtEnv: VirtualEnv = new VirtualEnv(this.makeChanges);
-
-        virtEnv
-            .addUser(new VirtualUser('#2274A5'))
-            .addUser(new VirtualUser('#F75C03'))
-            .addUser(new VirtualUser('#F1C40F'))
-            .addUser(new VirtualUser('#D90368'))
-            .addUser(new VirtualUser('#00f2c3'))
-            .addUser(new VirtualUser('#ffd600'))
-            .addUser(new VirtualUser('#344675'))
-            .addUser(new VirtualUser('#212529'))
-            .addUser(new VirtualUser('#ffffff'))
-            .addUser(new VirtualUser('#000000'))
-            .addUser(new VirtualUser('#5e72e4'))
-            .addUser(new VirtualUser('#4D8802'))
-            .addUser(new VirtualUser('#A771FE'))
-
-        this.intervalId = setInterval(() => this.setState(virtEnv.updateView(this.state)), 1000);
+    if (selectionMode === 'column') {
+      menuOptions = [
+        ...menuOptions,
+        {
+          id: 'removeColumn', label: 'Remove column', handler: () => {
+            const columns = state.columns.filter(column => !selectedColIds.includes(column.columnId));
+            const columnsIdxs = state.columns.map((column, idx) => {
+              if (!columns.includes(column)) return idx;
+              return undefined;
+            }).filter(idx => idx !== undefined);
+            const rows = state.rows.map(row => ({ ...row, cells: row.cells.filter((_, idx) => !columnsIdxs.includes(idx)) }));
+            const highlights = state.highlights.filter(h => !selectedColIds.includes(h.columnId));
+            setState({ ...state, columns, rows, highlights });
+          }
+        },
+      ]
     }
+    return menuOptions;
+  }
 
-    private unsetVirtualEnv() {
-        this.setState({ highlights: [] });
-        window.clearInterval(this.intervalId);
-    }
-
-
-    private makeChanges = (changes: CellChange<DefaultCellTypes | FlagCell | DropdownNumberCell>[]): IDatagridState => {
-        let newState = { ...this.state };
-        changes.forEach((change: any) => {
-            const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
-            const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
-            newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
-        })
-        this.setState(newState);
-        return newState;
-    }
-
-    private reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
-        const movedElements: T[] = arr.filter((_: T, idx: number) => idxs.includes(idx));
-        to = Math.min(...idxs) < to ? to += 1 : to -= idxs.filter(idx => idx < to).length;
-        const leftSide: T[] = arr.filter((_: T, idx: number) => idx < to && !idxs.includes(idx));
-        const rightSide: T[] = arr.filter((_: T, idx: number) => idx >= to && !idxs.includes(idx));
-        return [...leftSide, ...movedElements, ...rightSide];
-    }
-
-    private handleCanReorderColumns = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition): boolean => {
-        return true;
-    }
-
-    private handleCanReorderRows = (targetColumnId: Id, rowIds: Id[], dropPosition: DropPosition): boolean => {
-        const rowIndex = this.state.rows.findIndex(row => row.rowId === targetColumnId);
-        if (rowIndex === 0) return false;
-        return true;
-    }
-
-    private handleColumnsReorder = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
-        const to = this.state.columns.findIndex((column: Column) => column.columnId === targetColumnId);
-        const columnIdxs = columnIds.map((id: Id, idx: number) => this.state.columns.findIndex((c: Column) => c.columnId === id));
-        this.setState({
-            columns: this.reorderArray(this.state.columns, columnIdxs, to),
-            rows: this.state.rows.map(row => ({ ...row, cells: this.reorderArray(row.cells, columnIdxs, to) })),
-        });
-    }
-
-    private handleRowsReorder = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
-        const newState = { ...this.state };
-        const to = this.state.rows.findIndex(row => row.rowId === targetRowId);
-        const ids = rowIds.map((id: Id) => this.state.rows.findIndex(r => r.rowId === id));
-        this.setState({ ...newState, rows: this.reorderArray(this.state.rows, ids, to) });
-    }
-
-    private handleChanges = (changes: CellChange<DefaultCellTypes | FlagCell | DropdownNumberCell>[]) => {
-        this.makeChanges(changes);
-    }
-
-    private handleColumnResize = (ci: Id, width: number) => {
-        let newState = { ...this.state };
-        const columnIndex = newState.columns.findIndex(el => el.columnId === ci);
-        const resizedColumn: Column = newState.columns[columnIndex];
-        const updateColumn: Column = { ...resizedColumn, width };
-        newState.columns[columnIndex] = updateColumn;
-        this.setState(newState);
-    }
-
-    private handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {
-        if (selectionMode === 'row') {
-            menuOptions = [
-                ...menuOptions,
-                {
-                    id: 'removeRow', label: 'Remove row', handler: () => {
-                        const highlights = this.state.highlights.filter((h: Highlight) => !selectedRowIds.includes(h.rowId));
-                        this.setState({ rows: this.state.rows.filter(row => !selectedRowIds.includes(row.rowId)), highlights });
-                    }
-                },
-            ]
-        }
-        if (selectionMode === 'column') {
-            menuOptions = [
-                ...menuOptions,
-                {
-                    id: 'removeColumn', label: 'Remove column', handler: () => {
-                        const columns: Column[] = this.state.columns.filter((column: Column) => !selectedColIds.includes(column.columnId));
-                        const columnsIdxs = this.state.columns.map((column: Column, idx: number) => {
-                            if (!columns.includes(column)) return idx;
-                            return undefined;
-                        }).filter(idx => idx !== undefined);
-                        const rows = this.state.rows.map(row => ({ ...row, cells: row.cells.filter((_: Cell, idx: number) => !columnsIdxs.includes(idx)) }));
-                        const highlights = this.state.highlights.filter((h: Highlight) => !selectedColIds.includes(h.columnId));
-                        this.setState({ columns, rows, highlights });
-                    }
-                },
-            ]
-        }
-        return menuOptions;
-    }
-
-    render() {
-        return (
-            <ReactGridContainer id="datagrid-sample">
-                <ReactGrid
-                    columns={this.state.columns}
-                    rows={this.state.rows}
-                    onCellsChanged={this.handleChanges}
-                    customCellTemplates={{
-                        'flag': new FlagCellTemplate,
-                        'dropdownNumber': new DropdownNumberCellTemplate
-                    }}
-                    stickyTopRows={this.state.stickyTopRows}
-                    stickyLeftColumns={this.state.stickyLeftColumns}
-                    highlights={this.state.highlights}
-                    canReorderColumns={this.handleCanReorderColumns}
-                    canReorderRows={this.handleCanReorderRows}
-                    onColumnsReordered={this.handleColumnsReorder}
-                    onContextMenu={this.handleContextMenu}
-                    onRowsReordered={this.handleRowsReorder}
-                    onColumnResized={this.handleColumnResize}
-                    enableColumnSelection
-                    enableRowSelection
-                    enableFillHandle
-                    enableRangeSelection
-                />
-            </ReactGridContainer>
-        )
-    }
+  return (
+    <ReactGridContainer id="multiuser-sample">
+      <ReactGrid
+        rows={state.rows}
+        columns={state.columns}
+        customCellTemplates={{
+          'flag': new FlagCellTemplate,
+          'dropdownNumber': new DropdownNumberCellTemplate,
+        }}
+        highlights={state.highlights}
+        stickyTopRows={state.stickyTopRows}
+        stickyLeftColumns={state.stickyLeftColumns}
+        onCellsChanged={handleChanges}
+        canReorderRows={handleCanReorderRows}
+        onRowsReordered={handleRowsReorder}
+        canReorderColumns={handleCanReorderColumns}
+        onColumnsReordered={handleColumnsReorder}
+        onContextMenu={handleContextMenu}
+        onColumnResized={handleColumnResize}
+        enableColumnSelection
+        enableRowSelection
+        enableFillHandle
+        enableRangeSelection
+      />
+    </ReactGridContainer>
+  )
 }
