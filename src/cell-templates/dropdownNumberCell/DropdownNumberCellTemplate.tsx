@@ -18,17 +18,16 @@ export class DropdownNumberCellTemplate implements CellTemplate<DropdownNumberCe
   getCompatibleCell(uncertainCell: Uncertain<DropdownNumberCell>): Compatible<DropdownNumberCell> {
     const value = getCellProperty(uncertainCell, 'value', 'number');
     const isOpened = getCellProperty(uncertainCell, 'isOpened', 'boolean');
-    const text = value.toString();
     const limitedValue = this.getLimitedValue(value);
     return { ...uncertainCell, value: limitedValue, text: limitedValue.toString(), isOpened };
   }
 
   getLimitedValue(value: number): number {
     if (Number.isNaN(value) || value < DropdownNumberCellTemplate.MIN_VAL)
-      return DropdownNumberCellTemplate.MIN_VAL
+      return DropdownNumberCellTemplate.MIN_VAL;
     else if (value > DropdownNumberCellTemplate.MAX_VAL)
-      return DropdownNumberCellTemplate.MAX_VAL
-    else return value
+      return DropdownNumberCellTemplate.MAX_VAL;
+    else return value;
   }
 
   handleKeyDown(cell: Compatible<DropdownNumberCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<DropdownNumberCell>, enableEditMode: boolean } {
@@ -51,7 +50,7 @@ export class DropdownNumberCellTemplate implements CellTemplate<DropdownNumberCe
     return (
       <>
         <div className="wrapper">
-          <div className="value"><span>{cell.value}</span></div>
+          <div className="value">{cell.value}</div>
           <div className="chevron" onClick={() => { setOpen(!isOpen) }}>
             <div style={{ transform: !isOpen ? 'rotate(0deg)' : 'rotate(90deg)', transitionDuration: '200ms' }}
             > ❯
