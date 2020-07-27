@@ -35,7 +35,7 @@ export class DropdownNumberCellTemplate implements CellTemplate<DropdownNumberCe
   }
 
   update(cell: Compatible<DropdownNumberCell>, cellToMerge: UncertainCompatible<DropdownNumberCell>): Compatible<DropdownNumberCell> {
-    if (cellToMerge.value !== undefined && cellToMerge.value !== NaN)
+    if (cellToMerge.value !== undefined && !isNaN(cellToMerge.value))
       return this.getCompatibleCell({ ...cell, value: cellToMerge.value });
     const parsed = parseFloat(cellToMerge.text);
     return this.getCompatibleCell({ ...cell, value: (parsed > 0 || parsed < 0) ? parsed : 0 });

@@ -75,7 +75,7 @@ export const CryptocurrencyMarketSample: React.FunctionComponent = () => {
 
   const findChangedRows = <T extends Row<DefaultCellTypes | CssClassCell>>(dataState: T[], dataApi: T[]): T[] => {
     if (!dataState) return [];
-    return dataState.filter((data, idx) => idx != 0 && (data.cells[3] as CssClassCell).value !== (dataApi[idx].cells[3] as CssClassCell).value);
+    return dataState.filter((data, idx) => idx !== 0 && (data.cells[3] as CssClassCell).value !== (dataApi[idx].cells[3] as CssClassCell).value);
   }
 
   const useInterval = (callback: any, delay: number) => {
@@ -132,7 +132,7 @@ export const CryptocurrencyMarketSample: React.FunctionComponent = () => {
             rows={state.rows}
             columns={state.columns}
             customCellTemplates={{
-              'cssClass': new CssClassCellTemplate
+              'cssClass': new CssClassCellTemplate()
             }}
             stickyTopRows={1}
             enableFillHandle={false}

@@ -48,7 +48,7 @@ export class FlagCellTemplate implements CellTemplate<FlagCell> {
             onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), true)}
             onKeyDown={e => {
                 if (isAlphaNumericKey(e.keyCode) || isNavigationKey(e.keyCode)) e.stopPropagation();
-                if (e.keyCode == keyCodes.ESCAPE) e.currentTarget.value = cell.text; // reset
+                if (e.keyCode === keyCodes.ESCAPE) e.currentTarget.value = cell.text; // reset
             }}
         />
     }

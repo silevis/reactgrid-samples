@@ -47,7 +47,7 @@ export const DatagridSample: React.FC = () => {
       .addUser(new VirtualUser('orange', 0, 18))
 
     setState(virtualEnv.updateView(state));
-  }, []);
+  }, [virtualEnv]);
 
   const handleCanReorderColumns = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition): boolean => {
     const columnInside = columnIds.includes(targetColumnId);
@@ -149,8 +149,8 @@ export const DatagridSample: React.FC = () => {
         rows={state.rows}
         columns={state.columns}
         customCellTemplates={{
-          'flag': new FlagCellTemplate,
-          'dropdownNumber': new DropdownNumberCellTemplate,
+          'flag': new FlagCellTemplate(),
+          'dropdownNumber': new DropdownNumberCellTemplate(),
         }}
         highlights={state.highlights}
         stickyTopRows={state.stickyTopRows}

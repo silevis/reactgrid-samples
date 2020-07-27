@@ -1,4 +1,4 @@
-import { Column, Row, HeaderCell, GroupCell, NumberCell, Cell, TextCell, DateCell } from '@silevis/reactgrid';
+import { Column, Row, GroupCell, NumberCell, Cell, TextCell, DateCell } from '@silevis/reactgrid';
 import moment from 'moment';
 import { isString, isNumber, isDate } from 'util';
 import { DefaultCellTypes } from '@silevis/reactgrid/lib';
@@ -114,6 +114,7 @@ export const getGridRows = (dates: Date[], data: GroupAttribute[], displayFields
         } as GroupCell)
       )
       for (const key in groupAttribute.values) {
+
         dates.forEach((date: Date, keyDate: number) => {
           cells.push(
             createCell(0, 'grey-header')

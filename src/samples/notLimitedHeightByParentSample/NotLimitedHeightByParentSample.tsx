@@ -13,7 +13,7 @@ interface ColumnReorderGridState {
 
 export const NotLimitedHeightByParentSample: React.FunctionComponent = () => {
 
-    const [state, setState] = React.useState<ColumnReorderGridState>(() => ({
+    const [state] = React.useState<ColumnReorderGridState>(() => ({
         columns: dataColumns(true, false),
         rows: dataRows(true),
     }))
@@ -23,8 +23,8 @@ export const NotLimitedHeightByParentSample: React.FunctionComponent = () => {
             rows={state.rows}
             columns={state.columns}
             customCellTemplates={{
-                'rate': new RateCellTemplate,
-                'flag': new FlagCellTemplate
+                'rate': new RateCellTemplate(),
+                'flag': new FlagCellTemplate()
             }}
             stickyTopRows={1}
             enableFillHandle

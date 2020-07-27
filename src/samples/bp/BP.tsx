@@ -1,186 +1,66 @@
 import * as React from "react";
-import { ReactGrid, Column, Row, CellChange } from "@silevis/reactgrid";
-import "./styling.scss";
+import { ReactGrid, Column, Row, CellChange, DefaultCellTypes, TextCell, } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
-
-const nodes = [
-    {
-        name: 'Hadrian',
-        parentId: 'Pracownicy',
-        values: {
-            2020: {
-                q1: {
-                    1: '5000',
-                    2: '5000',
-                    3: '5000',
-                },
-                q2: {
-                    4: '5000',
-                    5: '5000',
-                    6: '5000',
-                },
-                q3: {
-                    7: '5000',
-                    8: '5000',
-                    9: '5000',
-                },
-                q4: {
-                    10: '5000',
-                    11: '5000',
-                    12: '5000',
-                },
-            }
-        }
-    },
-    {
-        name: 'Marek Antoniusz',
-        parentId: 'Pracownicy',
-        values: {
-            2020: {
-                q1: {
-                    1: '5000',
-                    2: '5000',
-                    3: '5000',
-                },
-                q2: {
-                    4: '5000',
-                    5: '5000',
-                    6: '5000',
-                },
-                q3: {
-                    7: '5000',
-                    8: '5000',
-                    9: '5000',
-                },
-                q4: {
-                    10: '5000',
-                    11: '5000',
-                    12: '5000',
-                },
-            }
-        }
-    },
-    {
-        name: 'Juliusz Gajusz Cezar',
-        parentId: 'Pracownicy',
-        values: {
-            2020: {
-                q1: {
-                    1: '5000',
-                    2: '5000',
-                    3: '5000',
-                },
-                q2: {
-                    4: '5000',
-                    5: '5000',
-                    6: '5000',
-                },
-                q3: {
-                    7: '5000',
-                    8: '5000',
-                    9: '5000',
-                },
-                q4: {
-                    10: '5000',
-                    11: '5000',
-                    12: '5000',
-                },
-            }
-        }
-    },
-];
-
-const vertical = [
-    {
-        Silevis: [
-            {
-                Koszty: [
-                    {
-                        Pracownicy: [
-                            { name: 'Hadrian' },
-                            { name: 'Marek Antoniusz' },
-                            { name: 'Juliusz Gajusz Cezar' },
-                        ],
-                    },
-                    {
-                        NonHuman: [
-                            { name: 'Uffok' },
-                        ]
-                    }
-                ]
-            }
-        ],
-    }
-];
-
-const rows = vertical.map((row, idx) => {
-    console.log(Object.keys(row)[0]);
-    return {
-        rowId: idx,
-        cells: [
-            { type: "group", text: "Name " + Object.keys(row)[0] },
-        ]
-    } as Row
-});
-
-const xxx = (node: any[], idx: number) => {
+import "./styling.scss";
+import { getDataFromRows, createIndents, getExpandedRows } from "./helpersFunctions";
+import { dataRows } from "./rows";
+import { dataColumns } from "./columns";
+import { HorizontalGroupCell, HorizontalGroupCellTemplate } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
 
 
-    const isLeaf = true;
-    if (isLeaf) {
-        return {
-            rowId: idx,
-            cells: [
-                { type: "group", text: `Idx: ${idx}` },
-            ]
-        }
-    }
+export type RowCells = DefaultCellTypes | HorizontalGroupCell;
+export type BPRow = Row<RowCells>;
 
-    node.forEach(node => {
-        xxx(node, idx++);
-    });
-
+interface BPState {
+    columns: Column[];
+    rows: BPRow[];
 }
-
-const quarters = {
-    q1: {},
-    q2: {},
-    q3: {},
-    q4: {},
-}
-
-const horizontal = [
-    {
-        2019: quarters,
-        2020: quarters,
-        2021: quarters,
-    }
-]
 
 export const BPSample: React.FC = () => {
-    const [state, setState] = React.useState(() => ({
-        columns: [
-            { columnId: "Struct", width: 200 },
-            // [...horizontal]
-        ] as Column[],
-        rows: [...rows] as Row[]
-    }));
+    const [state, setState] = React.useState<BPState>(() => {
+        let rows = [...dataRows];
+        const columns = [...dataColumns];
+        rows = getDataFromRows(rows);
+        rows = createIndents(rows);
 
-    const handleChanges = (changes: CellChange[]) => {
+        // TODO
+        // const z = getHorizontalGroupCell(dataRows[0].cells);
+        // const g = hasHorizontalChildren(columns, dataRows[0].cells, z);
+        // console.log({ dr: dataRows[0], z, g, rows });
+
+        return {
+            columns,
+            rows: [dataRows[0], ...rows]
+        }
+    });
+
+    const [rowsToRender, setRowsToRender] = React.useState<BPRow[]>([...getExpandedRows(state.rows)]);
+
+    const handleChanges = (changes: CellChange<RowCells>[]) => {
         const newState = { ...state };
         changes.forEach(change => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
-            newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+            if (changeRowIdx === 0 || changeColumnIdx === 0) {
+                newState.rows[changeRowIdx].cells[changeColumnIdx] = { ...change.newCell, text: (change.initialCell as TextCell).text } as TextCell;
+            } else {
+                newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+            }
         });
-        setState(newState);
+        setState({ ...state, rows: createIndents(newState.rows) });
+        setRowsToRender([...getExpandedRows(newState.rows)]);
     };
 
     return (
         <ReactGrid
-            rows={state.rows}
+            rows={rowsToRender}
             columns={state.columns}
             onCellsChanged={handleChanges}
+            stickyTopRows={1}
+            stickyLeftColumns={1}
+            customCellTemplates={{
+                horizontalGroup: new HorizontalGroupCellTemplate()
+            }}
         />
     );
 }

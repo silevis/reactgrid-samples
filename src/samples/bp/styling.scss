@@ -1,5 +1,29 @@
+.rg-horizontalGroup-cell {
+    .chevron {
+        .icon {
+            margin-top: -0.05em;
+        }
+        pointer-events: auto;
+        display: flex;
+        justify-content: center;
+        font-weight: bold;
+        margin-right: 1em * 0.1;
+        cursor: pointer;
+        transition: 200ms all ease-in-out;
+        height: 1em;
+        width: 1em;
+    }
+    .no-child {
+        width: 0.5em;
+    }
+    &.expanded .chevron {
+        transform: rotate(180deg);
+    }
+    &.collapsed .chevron {
+        transform: rotate(0deg);
+    }
+}
+
 #bp-sample {
-    // override styles here
-    // $primary-color:                     #f83586 !default;
     @import '@silevis/reactgrid/styles.scss';
 }
