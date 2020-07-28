@@ -1,4 +1,4 @@
-import { GroupCell, Column, DefaultCellTypes } from '@silevis/reactgrid';
+import { GroupCell, Column, DefaultCellTypes, Id } from '@silevis/reactgrid';
 import { BPRow, RowCells } from '..';
 import { HorizontalGroupCell } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
 
@@ -48,12 +48,13 @@ export const createIndents = (rows: BPRow[]): BPRow[] => rows.map(row => {
     return row;
 });
 
+/// COLUMN
 
-/// 
+export const getDataFromColumns = (columns: Column[]): Column[] => columns.slice(1, columns.length);
 
-export const getHorizontalGroupCell = (cells: RowCells[]) => cells.find((cell: RowCells) => cell.type === 'horizontalGroup') as HorizontalGroupCell;
+export const getHorizontalGroupCell = (cells: RowCells[], columnId: Id) => cells.find((cell: RowCells) => cell.type === 'horizontalGroup' && cell.parentId === columnId) as HorizontalGroupCell | undefined;
 
-export const hasHorizontalChildren = (columns: Column[], cells: RowCells[], cell: HorizontalGroupCell) => cells.some(cl => columns.some(col => col.columnId === cell.parentId));
+// export const hasHorizontalChildren = (columns: Column[], cells: RowCells[]) => cells.some(cl => columns.some(col => col.columnId === cell.parentId));
 
 // export const getParentColumn = (rows: BPRow[], row: BPRow): BPRow | undefined => rows.find(r => r.rowId === getHorizontalGroupCell(row).parentId);
 
@@ -68,7 +69,7 @@ export const getDirectChildrenColumns = (rows: BPRow[], parentRow: BPRow): BPRow
 //     return true;
 // };
 
-// export const getExpandedColumns = (rows: BPRow[]): BPRow[] => rows.filter(row => {
+// export const getExpandedColumnsIds = (rows: BPRow[]): BPRow[] => rows.filter(row => {
 //     const areAllParentsExpanded = isColumnFullyExpanded(rows, row);
 //     return areAllParentsExpanded !== undefined ? areAllParentsExpanded : true;
 // });

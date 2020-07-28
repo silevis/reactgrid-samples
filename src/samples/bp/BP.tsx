@@ -1,9 +1,9 @@
 import * as React from "react";
-import { ReactGrid, Column, Row, CellChange, DefaultCellTypes, TextCell, } from "@silevis/reactgrid";
+import { ReactGrid, Column, Row, CellChange, DefaultCellTypes, TextCell } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 import "./styling.scss";
-import { getDataFromRows, createIndents, getExpandedRows } from "./helpersFunctions";
-import { dataRows } from "./rows";
+import { getDataFromRows, createIndents, getExpandedRows, getDataFromColumns } from "./helpersFunctions";
+import { dataRows, topHeaderRow } from "./rows";
 import { dataColumns } from "./columns";
 import { HorizontalGroupCell, HorizontalGroupCellTemplate } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
 
@@ -19,22 +19,30 @@ interface BPState {
 export const BPSample: React.FC = () => {
     const [state, setState] = React.useState<BPState>(() => {
         let rows = [...dataRows];
-        const columns = [...dataColumns];
+        let columns = [...dataColumns];
+        columns = getDataFromColumns(columns);
         rows = getDataFromRows(rows);
         rows = createIndents(rows);
-
-        // TODO
-        // const z = getHorizontalGroupCell(dataRows[0].cells);
-        // const g = hasHorizontalChildren(columns, dataRows[0].cells, z);
-        // console.log({ dr: dataRows[0], z, g, rows });
-
         return {
-            columns,
-            rows: [dataRows[0], ...rows]
+            columns: [dataColumns[0], ...columns],
+            rows: [topHeaderRow, ...rows]
         }
     });
 
-    const [rowsToRender, setRowsToRender] = React.useState<BPRow[]>([...getExpandedRows(state.rows)]);
+    const [rowsToRender, setRowsToRender] = React.useState<BPRow[]>(() => {
+
+        return getExpandedRows(state.rows).map((row, idx) => {
+            return row;
+        })
+
+    });
+
+    const [colsToRender, setColsToRender] = React.useState<Column[]>(() => {
+        // console.log(topHeaderRow.cells);
+        return state.columns.filter((col, idx) => {
+            return col;
+        })
+    });
 
     const handleChanges = (changes: CellChange<RowCells>[]) => {
         const newState = { ...state };
@@ -54,7 +62,7 @@ export const BPSample: React.FC = () => {
     return (
         <ReactGrid
             rows={rowsToRender}
-            columns={state.columns}
+            columns={colsToRender}
             onCellsChanged={handleChanges}
             stickyTopRows={1}
             stickyLeftColumns={1}

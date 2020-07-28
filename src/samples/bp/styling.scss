@@ -24,6 +24,18 @@
     }
 }
 
+.blue {
+    background-color: lighten($color: blue, $amount: 45);
+}
+
+.green {
+    background-color: lighten($color: green, $amount: 70);
+}
+
+.red {
+    background-color: lighten($color: red, $amount: 45);
+}
+
 #bp-sample {
     @import '@silevis/reactgrid/styles.scss';
 }
