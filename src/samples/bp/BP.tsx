@@ -1,10 +1,10 @@
 import * as React from "react";
-import { ReactGrid, Column, Row, CellChange, DefaultCellTypes, TextCell } from "@silevis/reactgrid";
+import { ReactGrid, Row, CellChange, DefaultCellTypes, TextCell } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 import "./styling.scss";
-import { getDataFromRows, createIndents, getExpandedRows, getDataFromColumns } from "./helpersFunctions";
+import { getDataFromRows, createIndents, getExpandedRows, getDataFromColumns, fillCellMatrixHorizontally } from "./helpersFunctions";
 import { dataRows, topHeaderRow } from "./rows";
-import { dataColumns } from "./columns";
+import { dataColumns, BPColumn } from "./columns";
 import { HorizontalGroupCell, HorizontalGroupCellTemplate } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
 
 
@@ -12,7 +12,7 @@ export type RowCells = DefaultCellTypes | HorizontalGroupCell;
 export type BPRow = Row<RowCells>;
 
 interface BPState {
-    columns: Column[];
+    columns: BPColumn[];
     rows: BPRow[];
 }
 
@@ -22,6 +22,7 @@ export const BPSample: React.FC = () => {
         let columns = [...dataColumns];
         columns = getDataFromColumns(columns);
         rows = getDataFromRows(rows);
+        rows = fillCellMatrixHorizontally(rows);
         rows = createIndents(rows);
         return {
             columns: [dataColumns[0], ...columns],
@@ -37,8 +38,7 @@ export const BPSample: React.FC = () => {
 
     });
 
-    const [colsToRender, setColsToRender] = React.useState<Column[]>(() => {
-        // console.log(topHeaderRow.cells);
+    const [colsToRender, setColsToRender] = React.useState<BPColumn[]>(() => {
         return state.columns.filter((col, idx) => {
             return col;
         })
@@ -55,8 +55,9 @@ export const BPSample: React.FC = () => {
                 newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
             }
         });
-        setState({ ...state, rows: createIndents(newState.rows) });
-        setRowsToRender([...getExpandedRows(newState.rows)]);
+        const rows = fillCellMatrixHorizontally(newState.rows);
+        setState({ ...state, rows: createIndents(rows) });
+        setRowsToRender([...getExpandedRows(rows)]);
     };
 
     return (
@@ -69,6 +70,9 @@ export const BPSample: React.FC = () => {
             customCellTemplates={{
                 horizontalGroup: new HorizontalGroupCellTemplate()
             }}
+            enableRangeSelection
+            enableFillHandle
+            enableRowSelection
         />
     );
 }

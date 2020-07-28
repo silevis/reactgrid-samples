@@ -1,8 +1,8 @@
-import { GroupCell, Column, DefaultCellTypes, Id } from '@silevis/reactgrid';
+import { GroupCell, Column, DefaultCellTypes, Id, NumberCell } from '@silevis/reactgrid';
 import { BPRow, RowCells } from '..';
 import { HorizontalGroupCell } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
 
-const getGroupCell = (row: BPRow) => row.cells.find((cell: DefaultCellTypes | HorizontalGroupCell) => cell.type === 'group') as GroupCell;
+export const getGroupCell = (row: BPRow) => row.cells.find((cell: DefaultCellTypes | HorizontalGroupCell) => cell.type === 'group') as GroupCell;
 
 const hasChildren = (rows: BPRow[], row: BPRow): boolean => rows.some(r => getGroupCell(r)?.parentId === row.rowId);
 
@@ -19,6 +19,47 @@ export const getExpandedRows = (rows: BPRow[]): BPRow[] => rows.filter(row => {
     const areAllParentsExpanded = isRowFullyExpanded(rows, row);
     return areAllParentsExpanded !== undefined ? areAllParentsExpanded : true;
 });
+
+export const fillCellMatrixHorizontally = (rows: BPRow[]): BPRow[] => rows.map(row => {
+    const mappedCells = row.cells.map((cell, idx) => ({ className: cell.className, idx }));
+
+    mappedCells
+        .filter(mappedCell => mappedCell.className === 'green')
+        .forEach(mappedCell => {
+            const cells = row.cells as NumberCell[];
+            cells[mappedCell.idx].value = cells[mappedCell.idx + 1].value + cells[mappedCell.idx + 2].value + cells[mappedCell.idx + 3].value;
+        });
+
+    mappedCells
+        .filter(mappedCell => mappedCell.className === 'blue')
+        .forEach(mappedCell => {
+            const cells = row.cells as NumberCell[];
+            cells[mappedCell.idx].value = cells[mappedCell.idx + 1].value + cells[mappedCell.idx + 5].value
+                + cells[mappedCell.idx + 9].value + cells[mappedCell.idx + 13].value
+        });
+    return row;
+});
+
+export const cellMatrix = (rows: BPRow[]): BPRow[] => rows.map(row => {
+    const groupCell = getGroupCell(row);
+    if (groupCell && groupCell.parentId === undefined) {
+        const hasRowChildrens = hasChildren(rows, row);
+        if (hasRowChildrens) az(rows, row, 0);
+    }
+    return row;
+});
+
+const az = (allRows: BPRow[], parentRow: BPRow, level: number) => {
+    ++level;
+    getDirectChildrenRows(allRows, parentRow).forEach(row => {
+        // const groupCell = getGroupCell(row);
+        const hasRowChildrens = hasChildren(allRows, row);
+        if (!hasRowChildrens) {
+            // const pr = getParentRow(allRows, row);
+        }
+        if (hasRowChildrens) az(allRows, row, level);
+    });
+};
 
 const getDirectChildrenRows = (rows: BPRow[], parentRow: BPRow): BPRow[] => rows.filter(row => !!row.cells.find(cell => cell.type === 'group' && cell.parentId === parentRow.rowId));
 
@@ -42,7 +83,6 @@ export const createIndents = (rows: BPRow[]): BPRow[] => rows.map(row => {
     if (groupCell && groupCell.parentId === undefined) {
         const hasRowChildrens = hasChildren(rows, row);
         groupCell.hasChildren = hasRowChildrens;
-        // if (hasRowChildrens) assignIndentAndHasChildrens(rows, row, groupCell.indent || 0);
         if (hasRowChildrens) assignIndentAndHasChildrens(rows, row, 0);
     }
     return row;
