@@ -40,24 +40,35 @@ export const fillCellMatrixHorizontally = (rows: BPRow[]): BPRow[] => rows.map(r
     return row;
 });
 
-export const cellMatrix = (rows: BPRow[]): BPRow[] => rows.map(row => {
+export const fillCellMatrixVerticaly = (rows: BPRow[], rowz: BPRow[]): BPRow[] => rows.map(row => {
     const groupCell = getGroupCell(row);
     if (groupCell && groupCell.parentId === undefined) {
         const hasRowChildrens = hasChildren(rows, row);
-        if (hasRowChildrens) az(rows, row, 0);
+        if (hasRowChildrens) az(rows, row, rowz, 0);
     }
+    const parentRow = getParentRow(rows, row);
+    if (parentRow) {
+        rowz.push(parentRow);
+    }
+    // Gdzie silevis ??
     return row;
 });
 
-const az = (allRows: BPRow[], parentRow: BPRow, level: number) => {
+const az = (allRows: BPRow[], parentRow: BPRow, rowz: BPRow[], level: number) => {
     ++level;
     getDirectChildrenRows(allRows, parentRow).forEach(row => {
-        // const groupCell = getGroupCell(row);
+        const groupCell = getGroupCell(row);
         const hasRowChildrens = hasChildren(allRows, row);
         if (!hasRowChildrens) {
-            // const pr = getParentRow(allRows, row);
+            const parentRow = getParentRow(allRows, row);
+            // console.log({ row, pr: parentRow });
+            if (parentRow) {
+                rowz.push(row);
+                rowz.push(parentRow);
+            }
         }
-        if (hasRowChildrens) az(allRows, row, level);
+
+        if (hasRowChildrens) az(allRows, row, rowz, level);
     });
 };
 
