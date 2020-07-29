@@ -49,9 +49,7 @@ const resetAggregatedMonthFields = (row: BPRow) => {
 };
 
 export const fillCellMatrixVertically = (rows: BPRow[]) => {
-    const rowPairs = collectRowPairs(rows);
-    console.log(rowPairs);
-    rowPairs.forEach(rowPair => {
+    collectRowPairs(rows).forEach(rowPair => {
         rowPair.from.cells.forEach((_, idx) => {
             const fromCell = rowPair.from.cells[idx];
             const toCell = rowPair.to.cells[idx] as NumberCell;

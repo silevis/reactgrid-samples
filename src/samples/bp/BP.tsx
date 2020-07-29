@@ -1,11 +1,12 @@
 import * as React from "react";
-import { ReactGrid, Row, CellChange, DefaultCellTypes, TextCell } from "@silevis/reactgrid";
+import { ReactGrid, Row, CellChange, DefaultCellTypes, TextCell, NumberCell } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 import "./styling.scss";
 import {
     getDataFromRows, createIndents, getExpandedRows, getDataFromColumns, fillCellMatrixHorizontally,
     collectRowPairs,
-    fillCellMatrixVertically
+    fillCellMatrixVertically,
+    getGroupCell
 } from "./helpersFunctions";
 import { dataRows, topHeaderRow } from "./rows";
 import { dataColumns, BPColumn } from "./columns";
@@ -60,13 +61,27 @@ export const BPSample: React.FC = () => {
             if (changeRowIdx === 0 || changeColumnIdx === 0) {
                 newState.rows[changeRowIdx].cells[changeColumnIdx] = { ...change.newCell, text: (change.initialCell as TextCell).text } as TextCell;
             } else {
-                newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+                if (change.newCell.type === 'number' && (change.newCell.className === 'green' || change.newCell.className === 'blue')) {
+                    const groupCell = getGroupCell(newState.rows[changeRowIdx]);
+                    if (!groupCell.hasChildren) {
+                        updateNodeQuarter(newState, change.newCell.value, changeRowIdx, changeColumnIdx);
+                    }
+                } else {
+                    newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+                }
             }
         });
         const rows = fillCellMatrixHorizontally(newState.rows);
         fillCellMatrixVertically(rows);
         setState({ ...state, rows: createIndents(rows) });
         setRowsToRender([...getExpandedRows(rows)]);
+    };
+
+    const updateNodeQuarter = (state: BPState, valueToDivide: number, changeRowIdx: number, changeColumnIdx: number) => {
+        const partialValue = valueToDivide / 3;
+        for (let i = 1; i < 4; i++) {
+            (state.rows[changeRowIdx].cells[changeColumnIdx + i] as NumberCell).value = partialValue;
+        }
     };
 
     return (
