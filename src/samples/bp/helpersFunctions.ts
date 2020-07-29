@@ -1,7 +1,6 @@
 import { GroupCell, Column, DefaultCellTypes, Id, NumberCell } from '@silevis/reactgrid';
 import { BPRow, RowCells, RowPair } from '..';
 import { HorizontalGroupCell } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
-import { BPColumn } from './columns';
 
 export const getGroupCell = (row: BPRow) => row.cells.find((cell: DefaultCellTypes | HorizontalGroupCell) => cell.type === 'group') as GroupCell;
 
@@ -89,9 +88,9 @@ const collectRowPairsOnChildren = (allRows: BPRow[], parentRow: BPRow, acc: RowP
     });
 };
 
-const getDirectChildrenRows = (rows: BPRow[], parentRow: BPRow): BPRow[] => rows.filter(row => !!row.cells.find(cell => cell.type === 'group' && cell.parentId === parentRow.rowId));
+export const getDirectChildrenRows = (rows: BPRow[], parentRow: BPRow): BPRow[] => rows.filter(row => !!row.cells.find(cell => cell.type === 'group' && cell.parentId === parentRow.rowId));
 
-const getParentRow = (rows: BPRow[], row: BPRow): BPRow | undefined => rows.find(r => r.rowId === getGroupCell(row)?.parentId);
+export const getParentRow = (rows: BPRow[], row: BPRow): BPRow | undefined => rows.find(r => r.rowId === getGroupCell(row)?.parentId);
 
 const assignIndentAndHasChildrens = (allRows: BPRow[], parentRow: BPRow, indent: number) => {
     ++indent;
