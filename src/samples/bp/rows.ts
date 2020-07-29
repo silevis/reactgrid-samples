@@ -1,5 +1,4 @@
-import { Row, DefaultCellTypes, NumberCell } from "@silevis/reactgrid";
-import { HorizontalGroupCell } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
+import { Row, NumberCell } from "@silevis/reactgrid";
 import { RowCells } from './BP';
 
 const generateMonthHeader = (year: number, quarter: string, month: number) => {
@@ -40,44 +39,48 @@ export const topHeaderRow: Row<RowCells> = {
     ]
 };
 
+const generateNumberCell = (value: number, className: string = '', nanToZero: boolean = false) => {
+    return { type: 'number', value, className, nanToZero }
+}
+
 const emptyYear = () => [
-    { type: 'number', value: NaN, className: 'blue' },
-    { type: 'number', value: NaN, className: 'green' },
-    { type: 'number', value: NaN, className: 'red' },
-    { type: 'number', value: NaN, className: 'red' },
-    { type: 'number', value: NaN, className: 'red' },
-    { type: 'number', value: NaN, className: 'green' },
-    { type: 'number', value: NaN, className: 'red' },
-    { type: 'number', value: NaN, className: 'red' },
-    { type: 'number', value: NaN, className: 'red' },
-    { type: 'number', value: NaN, className: 'green' },
-    { type: 'number', value: NaN, className: 'red' },
-    { type: 'number', value: NaN, className: 'red' },
-    { type: 'number', value: NaN, className: 'red' },
-    { type: 'number', value: NaN, className: 'green' },
-    { type: 'number', value: NaN, className: 'red' },
-    { type: 'number', value: NaN, className: 'red' },
-    { type: 'number', value: NaN, className: 'red' },
+    generateNumberCell(NaN, 'blue'),
+    generateNumberCell(NaN, 'green'),
+    generateNumberCell(NaN, 'red'),
+    generateNumberCell(NaN, 'red'),
+    generateNumberCell(NaN, 'red'),
+    generateNumberCell(NaN, 'green'),
+    generateNumberCell(NaN, 'red'),
+    generateNumberCell(NaN, 'red'),
+    generateNumberCell(NaN, 'red'),
+    generateNumberCell(NaN, 'green'),
+    generateNumberCell(NaN, 'red'),
+    generateNumberCell(NaN, 'red'),
+    generateNumberCell(NaN, 'red'),
+    generateNumberCell(NaN, 'green'),
+    generateNumberCell(NaN, 'red'),
+    generateNumberCell(NaN, 'red'),
+    generateNumberCell(NaN, 'red'),
 ];
 
 const filledYear = () => [
-    { type: 'number', value: NaN, className: 'blue' },
-    { type: 'number', value: NaN, className: 'green' },
-    { type: 'number', value: 1, className: 'red' },
-    { type: 'number', value: 1, className: 'red' },
-    { type: 'number', value: 1, className: 'red' },
-    { type: 'number', value: NaN, className: 'green' },
-    { type: 'number', value: 1, className: 'red' },
-    { type: 'number', value: 1, className: 'red' },
-    { type: 'number', value: 1, className: 'red' },
-    { type: 'number', value: NaN, className: 'green' },
-    { type: 'number', value: 1, className: 'red' },
-    { type: 'number', value: 1, className: 'red' },
-    { type: 'number', value: 1, className: 'red' },
-    { type: 'number', value: NaN, className: 'green' },
-    { type: 'number', value: 1, className: 'red' },
-    { type: 'number', value: 1, className: 'red' },
-    { type: 'number', value: 1, className: 'red' },
+    generateNumberCell(NaN, 'blue'),
+    generateNumberCell(NaN, 'green'),
+    generateNumberCell(2, 'red'),
+    generateNumberCell(2, 'red'),
+    generateNumberCell(2, 'red'),
+    generateNumberCell(NaN, 'green'),
+    generateNumberCell(2, 'red'),
+    generateNumberCell(2, 'red'),
+    generateNumberCell(2, 'red'),
+    generateNumberCell(NaN, 'green'),
+    generateNumberCell(2, 'red'),
+    generateNumberCell(2, 'red'),
+    generateNumberCell(2, 'red'),
+    generateNumberCell(NaN, 'green'),
+    generateNumberCell(2, 'red'),
+    generateNumberCell(2, 'red'),
+    generateNumberCell(2, 'red'),
 ];
 
 export const dataRows: Row<RowCells>[] = [

@@ -2,7 +2,11 @@ import * as React from "react";
 import { ReactGrid, Row, CellChange, DefaultCellTypes, TextCell } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 import "./styling.scss";
-import { getDataFromRows, createIndents, getExpandedRows, getDataFromColumns, fillCellMatrixHorizontally, fillCellMatrixVerticaly } from "./helpersFunctions";
+import {
+    getDataFromRows, createIndents, getExpandedRows, getDataFromColumns, fillCellMatrixHorizontally,
+    collectRowPairs,
+    fillCellMatrixVertically
+} from "./helpersFunctions";
 import { dataRows, topHeaderRow } from "./rows";
 import { dataColumns, BPColumn } from "./columns";
 import { HorizontalGroupCell, HorizontalGroupCellTemplate } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
@@ -10,6 +14,8 @@ import { HorizontalGroupCell, HorizontalGroupCellTemplate } from '../../cell-tem
 
 export type RowCells = DefaultCellTypes | HorizontalGroupCell;
 export type BPRow = Row<RowCells>;
+
+export type RowPair = { from: BPRow, to: BPRow };
 
 interface BPState {
     columns: BPColumn[];
@@ -23,9 +29,8 @@ export const BPSample: React.FC = () => {
         columns = getDataFromColumns(columns);
         rows = getDataFromRows(rows);
         rows = fillCellMatrixHorizontally(rows);
-        const rowz: BPRow[] = [];
-        rows = fillCellMatrixVerticaly(rows, rowz);
-        console.log(rowz);
+
+        fillCellMatrixVertically(rows);
         rows = createIndents(rows);
         return {
             columns: [dataColumns[0], ...columns],
@@ -59,6 +64,7 @@ export const BPSample: React.FC = () => {
             }
         });
         const rows = fillCellMatrixHorizontally(newState.rows);
+        fillCellMatrixVertically(rows);
         setState({ ...state, rows: createIndents(rows) });
         setRowsToRender([...getExpandedRows(rows)]);
     };

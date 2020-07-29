@@ -1,5 +1,5 @@
 import { GroupCell, Column, DefaultCellTypes, Id, NumberCell } from '@silevis/reactgrid';
-import { BPRow, RowCells } from '..';
+import { BPRow, RowCells, RowPair } from '..';
 import { HorizontalGroupCell } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
 
 export const getGroupCell = (row: BPRow) => row.cells.find((cell: DefaultCellTypes | HorizontalGroupCell) => cell.type === 'group') as GroupCell;
@@ -40,35 +40,41 @@ export const fillCellMatrixHorizontally = (rows: BPRow[]): BPRow[] => rows.map(r
     return row;
 });
 
-export const fillCellMatrixVerticaly = (rows: BPRow[], rowz: BPRow[]): BPRow[] => rows.map(row => {
-    const groupCell = getGroupCell(row);
-    if (groupCell && groupCell.parentId === undefined) {
-        const hasRowChildrens = hasChildren(rows, row);
-        if (hasRowChildrens) az(rows, row, rowz, 0);
-    }
-    const parentRow = getParentRow(rows, row);
-    if (parentRow) {
-        rowz.push(parentRow);
-    }
-    // Gdzie silevis ??
-    return row;
-});
-
-const az = (allRows: BPRow[], parentRow: BPRow, rowz: BPRow[], level: number) => {
-    ++level;
-    getDirectChildrenRows(allRows, parentRow).forEach(row => {
-        const groupCell = getGroupCell(row);
-        const hasRowChildrens = hasChildren(allRows, row);
-        if (!hasRowChildrens) {
-            const parentRow = getParentRow(allRows, row);
-            // console.log({ row, pr: parentRow });
-            if (parentRow) {
-                rowz.push(row);
-                rowz.push(parentRow);
+export const fillCellMatrixVertically = (rows: BPRow[]) => {
+    const rowPairs = collectRowPairs(rows);
+    console.log(rowPairs);
+    rowPairs.forEach(rowPair => {
+        rowPair.from.cells.forEach((_, idx) => {
+            const fromCell = rowPair.from.cells[idx];
+            const toCell = rowPair.to.cells[idx] as NumberCell;
+            if (fromCell.type === 'number') {
+                const from = isNaN(fromCell.value) ? 0 : fromCell.value;
+                const to = isNaN(toCell.value) ? 0 : toCell.value;
+                toCell.value = from + to;
             }
-        }
+        });
+    });
+};
 
-        if (hasRowChildrens) az(allRows, row, rowz, level);
+export const collectRowPairs = (rows: BPRow[]) => {
+    const acc: RowPair[] = [];
+    rows.forEach(row => {
+        const groupCell = getGroupCell(row);
+        if (groupCell && groupCell.parentId === undefined) {
+            const hasRowChildrens = hasChildren(rows, row);
+            if (hasRowChildrens) collectRowPairsOnChildren(rows, row, acc);
+        }
+    });
+    return acc;
+};
+
+const collectRowPairsOnChildren = (allRows: BPRow[], parentRow: BPRow, acc: RowPair[]) => {
+    getDirectChildrenRows(allRows, parentRow).forEach(row => {
+        const hasRowChildrens = hasChildren(allRows, row);
+        if (hasRowChildrens) {
+            collectRowPairsOnChildren(allRows, row, acc);
+        }
+        acc.push({ from: row, to: parentRow });
     });
 };
 
