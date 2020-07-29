@@ -40,6 +40,14 @@ export const fillCellMatrixHorizontally = (rows: BPRow[]): BPRow[] => rows.map(r
     return row;
 });
 
+const resetAggregatedMonthFields = (row: BPRow) => {
+    row.cells.forEach(cell => {
+        if (cell.type === 'number') {
+            cell.value = NaN;
+        }
+    });
+};
+
 export const fillCellMatrixVertically = (rows: BPRow[]) => {
     const rowPairs = collectRowPairs(rows);
     console.log(rowPairs);
@@ -62,7 +70,10 @@ export const collectRowPairs = (rows: BPRow[]) => {
         const groupCell = getGroupCell(row);
         if (groupCell && groupCell.parentId === undefined) {
             const hasRowChildrens = hasChildren(rows, row);
-            if (hasRowChildrens) collectRowPairsOnChildren(rows, row, acc);
+            if (hasRowChildrens) {
+                collectRowPairsOnChildren(rows, row, acc);
+                resetAggregatedMonthFields(row);
+            };
         }
     });
     return acc;
@@ -73,6 +84,7 @@ const collectRowPairsOnChildren = (allRows: BPRow[], parentRow: BPRow, acc: RowP
         const hasRowChildrens = hasChildren(allRows, row);
         if (hasRowChildrens) {
             collectRowPairsOnChildren(allRows, row, acc);
+            resetAggregatedMonthFields(row);
         }
         acc.push({ from: row, to: parentRow });
     });
