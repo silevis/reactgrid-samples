@@ -1,4 +1,4 @@
-import { Row, NumberCell } from "@silevis/reactgrid";
+import { Row } from "@silevis/reactgrid";
 import { RowCells } from './BP';
 
 const generateMonthHeader = (year: number, quarter: string, month: number) => {
@@ -28,12 +28,10 @@ const generateYear = (year: number) => {
     ];
 }
 
-
-
 export const topHeaderRow: Row<RowCells> = {
     rowId: 'topHeader',
     cells: [
-        { type: 'text', text: 'Organization / Period', className: '' },
+        { type: 'text', text: 'Organization / Period' },
         ...generateYear(2020) as RowCells[],
         ...generateYear(2021) as RowCells[],
     ]
@@ -87,7 +85,7 @@ export const dataRows: Row<RowCells>[] = [
     {
         rowId: 'Silevis',
         cells: [
-            { type: 'group', text: 'Silevis', parentId: undefined, isExpanded: true },
+            { type: 'group', text: 'Silevis organization', parentId: undefined, isExpanded: true },
             ...emptyYear() as RowCells[],
             ...emptyYear() as RowCells[],
         ]
@@ -154,6 +152,22 @@ export const dataRows: Row<RowCells>[] = [
             { type: 'group', text: 'Wood', parentId: 'Materials' },
             ...filledYear() as RowCells[],
             ...filledYear() as RowCells[]
+        ]
+    },
+    {
+        rowId: 'Other',
+        cells: [
+            { type: 'group', text: 'Other', parentId: 'Silevis', isExpanded: true },
+            ...emptyYear() as RowCells[],
+            ...emptyYear() as RowCells[],
+        ]
+    },
+    {
+        rowId: 'Britenet',
+        cells: [
+            { type: 'group', text: 'DEV organization', isExpanded: true },
+            ...emptyYear() as RowCells[],
+            ...emptyYear() as RowCells[],
         ]
     },
 ];

@@ -1,6 +1,7 @@
 import { GroupCell, Column, DefaultCellTypes, Id, NumberCell } from '@silevis/reactgrid';
 import { BPRow, RowCells, RowPair } from '..';
 import { HorizontalGroupCell } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
+import { BPColumn } from './columns';
 
 export const getGroupCell = (row: BPRow) => row.cells.find((cell: DefaultCellTypes | HorizontalGroupCell) => cell.type === 'group') as GroupCell;
 
@@ -117,6 +118,15 @@ export const createIndents = (rows: BPRow[]): BPRow[] => rows.map(row => {
 
 /// COLUMN
 
+/* export const appendColumnIds = (rows: BPRow[], columns: BPColumn[]) => {
+    return rows.map((row, idx) => {
+        rows[idx].cells.forEach((cell, idxx) => {
+            (cell as any).columnId = columns[idxx - 1]?.columnId;
+        })
+        return row;
+    });
+} */
+
 export const getDataFromColumns = (columns: Column[]): Column[] => columns.slice(1, columns.length);
 
 export const getHorizontalGroupCell = (cells: RowCells[], columnId: Id) => cells.find((cell: RowCells) => cell.type === 'horizontalGroup' && cell.parentId === columnId) as HorizontalGroupCell | undefined;
@@ -127,25 +137,16 @@ export const getHorizontalGroupCell = (cells: RowCells[], columnId: Id) => cells
 
 export const getDirectChildrenColumns = (rows: BPRow[], parentRow: BPRow): BPRow[] => rows.filter(row => !!row.cells.find(cell => cell.type === 'horizontalGroup' && cell.parentId === parentRow.rowId));
 
-// export const isColumnFullyExpanded = (rows: BPRow[], row: BPRow): boolean => {
-//     const parentColumn = getParentColumn(rows, row);
-//     if (parentColumn) {
-//         if (!getHorizontalGroupCell(parentColumn).isExpanded) return false;
-//         return isColumnFullyExpanded(rows, parentColumn);
-//     }
-//     return true;
-// };
+export const isColumnFullyExpanded = (rows: BPRow[], row: BPRow): boolean => {
+    // const parentColumn = getParentColumn(rows, row);
+    // if (parentColumn) {
+    //     if (!getHorizontalGroupCell(parentColumn).isExpanded) return false;
+    //     return isColumnFullyExpanded(rows, parentColumn);
+    // }
+    return true;
+};
 
-// export const getExpandedColumnsIds = (rows: BPRow[]): BPRow[] => rows.filter(row => {
-//     const areAllParentsExpanded = isColumnFullyExpanded(rows, row);
-//     return areAllParentsExpanded !== undefined ? areAllParentsExpanded : true;
-// });
-
-// export const assignHasChildrens = (allRows: BPRow[], parentRow: BPRow) => {
-//     getDirectChildrenColumns(allRows, parentRow).forEach(row => {
-//         const horizontalGroupCell = getHorizontalGroupCell(row);
-//         const hasColumnChildrens = hasHorizontalChildren(allRows, row);
-//         horizontalGroupCell.hasChildren = hasColumnChildrens;
-//         if (hasColumnChildrens) assignHasChildrens(allRows, row);
-//     });
-// };
+export const getExpandedColumns = (rows: BPRow[]): BPRow[] => rows.filter(row => {
+    const areAllParentsExpanded = isColumnFullyExpanded(rows, row);
+    return areAllParentsExpanded !== undefined ? areAllParentsExpanded : true;
+});

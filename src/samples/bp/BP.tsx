@@ -4,9 +4,8 @@ import "@silevis/reactgrid/styles.css";
 import "./styling.scss";
 import {
     getDataFromRows, createIndents, getExpandedRows, getDataFromColumns, fillCellMatrixHorizontally,
-    collectRowPairs,
-    fillCellMatrixVertically,
-    getGroupCell
+    fillCellMatrixVertically, getGroupCell, collectRowPairs,
+    // appendColumnIds
 } from "./helpersFunctions";
 import { dataRows, topHeaderRow } from "./rows";
 import { dataColumns, BPColumn } from "./columns";
@@ -30,7 +29,8 @@ export const BPSample: React.FC = () => {
         columns = getDataFromColumns(columns);
         rows = getDataFromRows(rows);
         rows = fillCellMatrixHorizontally(rows);
-
+        // rows = appendColumnIds(rows, columns);
+        console.log(topHeaderRow);
         fillCellMatrixVertically(rows);
         rows = createIndents(rows);
         return {
@@ -41,6 +41,20 @@ export const BPSample: React.FC = () => {
 
     const [rowsToRender, setRowsToRender] = React.useState<BPRow[]>(() => {
 
+        // const acc: RowCells[] = [];
+        // topHeaderRow.cells.filter(cell => cell.className === 'blue').forEach(cell => {
+        //     acc.push(cell);
+        //     topHeaderRow.cells.filter(c => c.className === 'green' && (c as HorizontalGroupCell).parentId === (cell as any).text)
+        //         .forEach(ac => {
+        //             acc.push(ac)
+        //             topHeaderRow.cells.filter(ca => ca.className === 'red' && (ca as HorizontalGroupCell).parentId)
+        //                 .forEach(ac => {
+        //                     acc.push(ac)
+        //                 })
+
+        //         })
+        // })
+        // console.log(acc, topHeaderRow.cells);
         return getExpandedRows(state.rows).map((row, idx) => {
             return row;
         })
@@ -48,6 +62,7 @@ export const BPSample: React.FC = () => {
     });
 
     const [colsToRender, setColsToRender] = React.useState<BPColumn[]>(() => {
+        // console.log(topHeaderRow)
         return state.columns.filter((col, idx) => {
             return col;
         })
