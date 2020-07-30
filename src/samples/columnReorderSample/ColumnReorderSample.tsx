@@ -75,8 +75,8 @@ export const ColumnReorderSample: React.FunctionComponent = () => {
         rows={state.rows}
         columns={state.columns}
         customCellTemplates={{
-          'rate': new RateCellTemplate,
-          'flag': new FlagCellTemplate
+          'rate': new RateCellTemplate(),
+          'flag': new FlagCellTemplate(),
         }}
         onCellsChanged={handleChanges}
         canReorderColumns={handleCanReorderColumns}

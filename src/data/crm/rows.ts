@@ -2,10 +2,10 @@ import { Row, DefaultCellTypes } from '@silevis/reactgrid';
 import { FlagCell } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { DropdownNumberCell } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
 
-export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | DropdownNumberCell>[] => [
+export const rows = (reorderable: boolean, height: number = 25): Row<DefaultCellTypes | FlagCell | DropdownNumberCell>[] => [
   {
     rowId: 'header',
-    height: 25,
+    height: height,
     reorderable,
     cells: [
       { type: 'header', text: 'Name' },
@@ -25,10 +25,9 @@ export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | Dr
   },
   {
     rowId: '1',
-    height: 25,
+    height: height,
     reorderable,
     cells: [
-      // IS IT CORRECT
       { type: 'text', text: 'Jacob' },
       { type: 'text', text: 'Sandberg' },
       { type: 'text', text: 'male' },
@@ -46,7 +45,7 @@ export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | Dr
   },
   {
     rowId: '2',
-    height: 25,
+    height: height,
     reorderable,
     cells: [
       { type: 'text', text: 'Fred' },
@@ -66,7 +65,7 @@ export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | Dr
   },
   {
     rowId: '3',
-    height: 25,
+    height: height,
     reorderable,
     cells: [
       { type: 'text', text: 'Robin' },
@@ -86,7 +85,7 @@ export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | Dr
   },
   {
     rowId: '4',
-    height: 25,
+    height: height,
     reorderable,
     cells: [
       { type: 'text', text: 'Elizabeth' },
@@ -106,7 +105,7 @@ export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | Dr
   },
   {
     rowId: '5',
-    height: 25,
+    height: height,
     reorderable,
     cells: [
       { type: 'text', text: 'Lee' },
@@ -126,7 +125,7 @@ export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | Dr
   },
   {
     rowId: '6',
-    height: 25,
+    height: height,
     reorderable,
     cells: [
       { type: 'text', text: 'Willie' },
@@ -146,7 +145,7 @@ export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | Dr
   },
   {
     rowId: '7',
-    height: 25,
+    height: height,
     reorderable,
     cells: [
       { type: 'text', text: 'Quinton' },
@@ -166,7 +165,7 @@ export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | Dr
   },
   {
     rowId: '8',
-    height: 25,
+    height: height,
     reorderable,
     cells: [
       { type: 'text', text: 'Juan' },
@@ -186,7 +185,7 @@ export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | Dr
   },
   {
     rowId: '9',
-    height: 25,
+    height: height,
     reorderable,
     cells: [
       { type: 'text', text: 'Jason' },
@@ -206,7 +205,7 @@ export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | Dr
   },
   {
     rowId: '10',
-    height: 25,
+    height: height,
     reorderable,
     cells: [
       { type: 'text', text: 'Frank' },
@@ -226,7 +225,7 @@ export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | Dr
   },
   {
     rowId: '11',
-    height: 25,
+    height: height,
     reorderable,
     cells: [
       { type: 'text', text: 'Alan' },
@@ -246,7 +245,7 @@ export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | Dr
   },
   {
     rowId: '12',
-    height: 25,
+    height: height,
     reorderable,
     cells: [
       { type: 'text', text: 'Joanne' },
@@ -266,7 +265,7 @@ export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | Dr
   },
   {
     rowId: '13',
-    height: 25,
+    height: height,
     reorderable,
     cells: [
       { type: 'text', text: 'Daniel' },
@@ -286,7 +285,7 @@ export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | Dr
   },
   {
     rowId: '14',
-    height: 25,
+    height: height,
     reorderable,
     cells: [
       { type: 'text', text: 'Suzanne' },
@@ -306,7 +305,7 @@ export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | Dr
   },
   {
     rowId: '15',
-    height: 25,
+    height: height,
     reorderable,
     cells: [
       { type: 'text', text: 'Mohhamad' },
@@ -326,7 +325,7 @@ export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | Dr
   },
   {
     rowId: '16',
-    height: 25,
+    height: height,
     reorderable,
     cells: [
       { type: 'text', text: 'Laetitia' },
@@ -346,7 +345,7 @@ export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | Dr
   },
   {
     rowId: '17',
-    height: 25,
+    height: height,
     reorderable,
     cells: [
       { type: 'text', text: 'Serge' },

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getGroupAttributes, getGridRows, getGridColumns, getHeaderRows } from './BudgetPlannerUtil';
 import { getVariableModel } from './budgetPlannerVariables';
 import { ReactGrid, CellChange, Column, Row, GroupCell, Cell, Id, DefaultCellTypes } from '@silevis/reactgrid';
@@ -109,7 +109,9 @@ export const BudgetPlannerDisplay: React.FunctionComponent<BudgetPlannerDisplayP
 
   useEffect(() => {
     updateTable()
-  }, [groupByItemsFields, setGroupByItemsField, dates]);
+  }, [groupByItemsFields, setGroupByItemsField, dates,
+    updateTable
+  ]);
 
 
   const handleColumnResize = (ci: Id, width: number) => {

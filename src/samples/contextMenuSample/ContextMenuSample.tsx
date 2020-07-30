@@ -73,9 +73,9 @@ export const ContextMenuSample: React.FunctionComponent = () => {
           rows={state.rows}
           columns={state.columns}
           customCellTemplates={{
-            'rate': new RateCellTemplate,
-            'flag': new FlagCellTemplate,
-            'dropdownNumber': new DropdownNumberCellTemplate,
+            'rate': new RateCellTemplate(),
+            'flag': new FlagCellTemplate(),
+            'dropdownNumber': new DropdownNumberCellTemplate(),
           }}
           onContextMenu={handleContextMenu}
           onCellsChanged={handleChanges}

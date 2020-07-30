@@ -4,7 +4,7 @@ import "./styling.scss";
 import "@silevis/reactgrid/styles.css";
 
 export const StickyPanesSample: React.FunctionComponent = () => {
-    const [state, setState] = React.useState(() => ({
+    const [state] = React.useState(() => ({
         columns: [
             { columnId: "Name", width: 150 },
             { columnId: "Surname", width: 100 },

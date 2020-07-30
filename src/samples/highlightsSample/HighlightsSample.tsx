@@ -3,7 +3,7 @@ import { ReactGrid, Highlight, Column, Row } from "@silevis/reactgrid";
 import "./styling.scss";
 import '@silevis/reactgrid/styles.css'
 export const HighlightsSample = () => {
-    const [state, setState] = React.useState(() => ({
+    const [state] = React.useState(() => ({
         columns: [
             { columnId: "Name", width: 100 },
             { columnId: "Surname", width: 100 }

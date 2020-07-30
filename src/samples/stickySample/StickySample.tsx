@@ -72,9 +72,9 @@ export const StickySample: React.FunctionComponent = () => {
         rows={state.rows}
         columns={state.columns}
         customCellTemplates={{
-          'rate': new RateCellTemplate,
-          'flag': new FlagCellTemplate,
-          'dropdownNumber': new DropdownNumberCellTemplate,
+          'rate': new RateCellTemplate(),
+          'flag': new FlagCellTemplate(),
+          'dropdownNumber': new DropdownNumberCellTemplate(),
         }}
         stickyTopRows={state.stickyTopRows}
         stickyBottomRows={state.stickyBottomRows}
