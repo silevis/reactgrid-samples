@@ -4,16 +4,17 @@ import "@silevis/reactgrid/styles.css";
 import "./styling.scss";
 import {
     getDataFromRows, createIndents, getExpandedRows, getDataFromColumns, fillCellMatrixHorizontally,
-    fillCellMatrixVertically, getGroupCell, collectRowPairs, getDirectChildrenRows, getParentRow,
+    fillCellMatrixVertically, getGroupCell, getDirectChildrenRows, getParentRow,
     // appendColumnIds
 } from "./helpersFunctions";
 import { dataRows, topHeaderRow } from "./rows";
 import { dataColumns, BPColumn } from "./columns";
 import { HorizontalGroupCell, HorizontalGroupCellTemplate } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
 import { reorderArray } from './reorderArray';
+import { nonEditableNumberCellTemplate, NonEditableNumberCell } from './CellTemplates';
 
 
-export type RowCells = DefaultCellTypes | HorizontalGroupCell;
+export type RowCells = DefaultCellTypes | HorizontalGroupCell | NonEditableNumberCell;
 export type BPRow = Row<RowCells>;
 
 export type RowPair = { from: BPRow, to: BPRow };
@@ -43,12 +44,12 @@ export const BPSample: React.FC = () => {
     const [rowsToRender, setRowsToRender] = React.useState<BPRow[]>(() => {
 
         // const acc: RowCells[] = [];
-        // topHeaderRow.cells.filter(cell => cell.className === 'blue').forEach(cell => {
+        // topHeaderRow.cells.filter(cell => cell.className === 'year').forEach(cell => {
         //     acc.push(cell);
-        //     topHeaderRow.cells.filter(c => c.className === 'green' && (c as HorizontalGroupCell).parentId === (cell as any).text)
+        //     topHeaderRow.cells.filter(c => c.className === 'quarter' && (c as HorizontalGroupCell).parentId === (cell as any).text)
         //         .forEach(ac => {
         //             acc.push(ac)
-        //             topHeaderRow.cells.filter(ca => ca.className === 'red' && (ca as HorizontalGroupCell).parentId)
+        //             topHeaderRow.cells.filter(ca => ca.className === 'month' && (ca as HorizontalGroupCell).parentId)
         //                 .forEach(ac => {
         //                     acc.push(ac)
         //                 })
@@ -74,10 +75,11 @@ export const BPSample: React.FC = () => {
         changes.forEach(change => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
-            if (changeRowIdx === 0 || changeColumnIdx === 0) {
+            if (changeRowIdx === 0 && changeColumnIdx === 0) {
                 newState.rows[changeRowIdx].cells[changeColumnIdx] = { ...change.newCell, text: (change.initialCell as TextCell).text } as TextCell;
             } else {
-                if (change.newCell.type === 'number' && (change.newCell.className === 'green' || change.newCell.className === 'blue')) {
+                if ((change.newCell.type === 'number' || change.newCell.type === 'nonEditableNumber')
+                    && (change.newCell.className?.includes('quarter') || change.newCell.className?.includes('year'))) {
                     const groupCell = getGroupCell(newState.rows[changeRowIdx]);
                     if (!groupCell.hasChildren) {
                         updateNodeQuarter(newState, change.newCell.value, changeRowIdx, changeColumnIdx);
@@ -178,7 +180,8 @@ export const BPSample: React.FC = () => {
             stickyTopRows={1}
             stickyLeftColumns={1}
             customCellTemplates={{
-                horizontalGroup: new HorizontalGroupCellTemplate()
+                horizontalGroup: new HorizontalGroupCellTemplate(),
+                nonEditableNumber: nonEditableNumberCellTemplate,
             }}
             onRowsReordered={handleRowsReorder}
             canReorderRows={handleCanReorderRows}

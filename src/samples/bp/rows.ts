@@ -1,13 +1,15 @@
 import { Row, NumberCell } from "@silevis/reactgrid";
 import { RowCells } from './BP';
 import { HorizontalGroupCell } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
+import { NonEditableNumberCell } from './CellTemplates';
 
 const generateMonthHeader = (year: number, quarter: string, month: number): HorizontalGroupCell => {
-    return { type: 'horizontalGroup', text: `${year}-${quarter}-${month}`, className: 'red', parentId: `${year}-${quarter}` };
+    const formattedMonth = `${month}`.padStart(2, '0');
+    return { type: 'horizontalGroup', text: `${quarter}-${formattedMonth}`, className: 'month', parentId: `${year}-${quarter}` };
 }
 
-const generateQuarterHeader = (year: number, quarter: string): HorizontalGroupCell => {
-    return { type: 'horizontalGroup', text: quarter, className: 'green', parentId: `${year}`, hasChildren: true, isExpanded: false };
+const generateQuarterHeader = (year: number, quarter: string, hasChildren: boolean = false, isExpanded: boolean = false): HorizontalGroupCell => {
+    return { type: 'horizontalGroup', text: quarter, className: 'quarter', parentId: `${year}`, hasChildren, isExpanded };
 }
 
 const generateQuarter = (year: number, quarter: string, month: number) => {
@@ -19,9 +21,9 @@ const generateQuarter = (year: number, quarter: string, month: number) => {
     ]
 }
 
-const generateYear = (year: number) => {
+const generateYear = (year: number, hasChildren: boolean = false) => {
     return [
-        { type: 'horizontalGroup', text: `${year}`, className: 'blue', parentId: undefined, hasChildren: true },
+        { type: 'horizontalGroup', text: `${year}`, className: 'year', parentId: undefined, hasChildren },
         ...generateQuarter(year, 'Q1', 1),
         ...generateQuarter(year, 'Q2', 4),
         ...generateQuarter(year, 'Q3', 7),
@@ -42,44 +44,48 @@ const generateNumberCell = (value: number, className: string = '', nanToZero: bo
     return { type: 'number', value, className, nanToZero }
 }
 
+const generateNonEditableNumberCell = (value: number, className: string = '', nanToZero: boolean = false): NonEditableNumberCell => {
+    return { type: 'nonEditableNumber', value, className, nanToZero }
+}
+
 const emptyYear = (): RowCells[] => [
-    generateNumberCell(0, 'blue'),
-    generateNumberCell(0, 'green'),
-    generateNumberCell(0, 'red'),
-    generateNumberCell(0, 'red'),
-    generateNumberCell(0, 'red'),
-    generateNumberCell(0, 'green'),
-    generateNumberCell(0, 'red'),
-    generateNumberCell(0, 'red'),
-    generateNumberCell(0, 'red'),
-    generateNumberCell(0, 'green'),
-    generateNumberCell(0, 'red'),
-    generateNumberCell(0, 'red'),
-    generateNumberCell(0, 'red'),
-    generateNumberCell(0, 'green'),
-    generateNumberCell(0, 'red'),
-    generateNumberCell(0, 'red'),
-    generateNumberCell(0, 'red'),
+    generateNonEditableNumberCell(0, 'year'),
+    generateNonEditableNumberCell(0, 'quarter'),
+    generateNonEditableNumberCell(0, 'month'),
+    generateNonEditableNumberCell(0, 'month'),
+    generateNonEditableNumberCell(0, 'month'),
+    generateNonEditableNumberCell(0, 'quarter'),
+    generateNonEditableNumberCell(0, 'month'),
+    generateNonEditableNumberCell(0, 'month'),
+    generateNonEditableNumberCell(0, 'month'),
+    generateNonEditableNumberCell(0, 'quarter'),
+    generateNonEditableNumberCell(0, 'month'),
+    generateNonEditableNumberCell(0, 'month'),
+    generateNonEditableNumberCell(0, 'month'),
+    generateNonEditableNumberCell(0, 'quarter'),
+    generateNonEditableNumberCell(0, 'month'),
+    generateNonEditableNumberCell(0, 'month'),
+    generateNonEditableNumberCell(0, 'month'),
 ];
 
 const filledYear = (): RowCells[] => [
-    generateNumberCell(0, 'blue'),
-    generateNumberCell(0, 'green'),
-    generateNumberCell(2, 'red'),
-    generateNumberCell(2, 'red'),
-    generateNumberCell(2, 'red'),
-    generateNumberCell(0, 'green'),
-    generateNumberCell(2, 'red'),
-    generateNumberCell(2, 'red'),
-    generateNumberCell(2, 'red'),
-    generateNumberCell(0, 'green'),
-    generateNumberCell(2, 'red'),
-    generateNumberCell(2, 'red'),
-    generateNumberCell(2, 'red'),
-    generateNumberCell(0, 'green'),
-    generateNumberCell(2, 'red'),
-    generateNumberCell(2, 'red'),
-    generateNumberCell(2, 'red'),
+    generateNonEditableNumberCell(0, 'year'),
+    generateNumberCell(0, 'quarter editable'),
+    generateNumberCell(2, 'month editable'),
+    generateNumberCell(2, 'month editable'),
+    generateNumberCell(2, 'month editable'),
+    generateNumberCell(0, 'quarter editable'),
+    generateNumberCell(2, 'month editable'),
+    generateNumberCell(2, 'month editable'),
+    generateNumberCell(2, 'month editable'),
+    generateNumberCell(0, 'quarter editable'),
+    generateNumberCell(2, 'month editable'),
+    generateNumberCell(2, 'month editable'),
+    generateNumberCell(2, 'month editable'),
+    generateNumberCell(0, 'quarter editable'),
+    generateNumberCell(2, 'month editable'),
+    generateNumberCell(2, 'month editable'),
+    generateNumberCell(2, 'month editable'),
 ];
 
 export const dataRows: Row<RowCells>[] = [

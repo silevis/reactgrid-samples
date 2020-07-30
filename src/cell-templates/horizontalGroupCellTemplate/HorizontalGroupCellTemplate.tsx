@@ -38,16 +38,16 @@ export class HorizontalGroupCellTemplate implements CellTemplate<HorizontalGroup
     }
 
     handleKeyDown(cell: Compatible<HorizontalGroupCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<HorizontalGroupCell>, enableEditMode: boolean } {
-        let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
+        // let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
         const cellCopy = { ...cell };
-        const char = getCharFromKeyCode(keyCode, shift);
-        if (keyCode === keyCodes.SPACE && cellCopy.isExpanded !== undefined && !shift) {
-            cellCopy.isExpanded = !cellCopy.isExpanded;
-        } else if (!ctrl && !alt && isAlphaNumericKey(keyCode) && !(shift && keyCode === keyCodes.SPACE)) {
-            cellCopy.text = !shift ? char.toLowerCase() : char;
-            enableEditMode = true;
-        }
-        return { cell: cellCopy, enableEditMode };
+        // const char = getCharFromKeyCode(keyCode, shift);
+        // if (keyCode === keyCodes.SPACE && cellCopy.isExpanded !== undefined && !shift) {
+        //     cellCopy.isExpanded = !cellCopy.isExpanded;
+        // } else if (!ctrl && !alt && isAlphaNumericKey(keyCode) && !(shift && keyCode === keyCodes.SPACE)) {
+        //     cellCopy.text = !shift ? char.toLowerCase() : char;
+        //     enableEditMode = true;
+        // }
+        return { cell: cellCopy, enableEditMode: false }; // FORCED DISABLED EDIT MODE
     }
 
     getClassName(cell: Compatible<HorizontalGroupCell>, isInEditMode: boolean) {

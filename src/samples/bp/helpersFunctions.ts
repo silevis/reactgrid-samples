@@ -1,8 +1,8 @@
-import { GroupCell, Column, DefaultCellTypes, Id, NumberCell } from '@silevis/reactgrid';
+import { GroupCell, Column, Id, NumberCell } from '@silevis/reactgrid';
 import { BPRow, RowCells, RowPair } from '..';
 import { HorizontalGroupCell } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
 
-export const getGroupCell = (row: BPRow) => row.cells.find((cell: DefaultCellTypes | HorizontalGroupCell) => cell.type === 'group') as GroupCell;
+export const getGroupCell = (row: BPRow) => row.cells.find((cell: RowCells) => cell.type === 'group') as GroupCell;
 
 const hasChildren = (rows: BPRow[], row: BPRow): boolean => rows.some(r => getGroupCell(r)?.parentId === row.rowId);
 
@@ -24,14 +24,14 @@ export const fillCellMatrixHorizontally = (rows: BPRow[]): BPRow[] => rows.map(r
     const mappedCells = row.cells.map((cell, idx) => ({ className: cell.className, idx }));
 
     mappedCells
-        .filter(mappedCell => mappedCell.className === 'green')
+        .filter(mappedCell => mappedCell.className?.includes('quarter'))
         .forEach(mappedCell => {
             const cells = row.cells as NumberCell[];
             cells[mappedCell.idx].value = cells[mappedCell.idx + 1].value + cells[mappedCell.idx + 2].value + cells[mappedCell.idx + 3].value;
         });
 
     mappedCells
-        .filter(mappedCell => mappedCell.className === 'blue')
+        .filter(mappedCell => mappedCell.className?.includes('year'))
         .forEach(mappedCell => {
             const cells = row.cells as NumberCell[];
             cells[mappedCell.idx].value = cells[mappedCell.idx + 1].value + cells[mappedCell.idx + 5].value
@@ -42,7 +42,7 @@ export const fillCellMatrixHorizontally = (rows: BPRow[]): BPRow[] => rows.map(r
 
 const resetAggregatedMonthFields = (row: BPRow) => {
     row.cells.forEach(cell => {
-        if (cell.type === 'number') {
+        if (cell.type === 'number' || cell.type === 'nonEditableNumber') {
             cell.value = NaN;
         }
     });
@@ -53,7 +53,7 @@ export const fillCellMatrixVertically = (rows: BPRow[]) => {
         rowPair.from.cells.forEach((_, idx) => {
             const fromCell = rowPair.from.cells[idx];
             const toCell = rowPair.to.cells[idx] as NumberCell;
-            if (fromCell.type === 'number') {
+            if (fromCell.type === 'number' || fromCell.type === 'nonEditableNumber') {
                 const from = isNaN(fromCell.value) ? 0 : fromCell.value;
                 const to = isNaN(toCell.value) ? 0 : toCell.value;
                 toCell.value = from + to;
