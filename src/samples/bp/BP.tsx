@@ -173,21 +173,23 @@ export const BPSample: React.FC = () => {
     }
 
     return (
-        <ReactGrid
-            rows={rowsToRender}
-            columns={colsToRender}
-            onCellsChanged={handleChanges}
-            stickyTopRows={1}
-            stickyLeftColumns={1}
-            customCellTemplates={{
-                horizontalGroup: new HorizontalGroupCellTemplate(),
-                nonEditableNumber: nonEditableNumberCellTemplate,
-            }}
-            onRowsReordered={handleRowsReorder}
-            canReorderRows={handleCanReorderRows}
-            enableRangeSelection
-            enableFillHandle
-            enableRowSelection
-        />
+        <div className="bp-sample">
+            <ReactGrid
+                rows={rowsToRender}
+                columns={colsToRender}
+                onCellsChanged={handleChanges}
+                stickyTopRows={1}
+                stickyLeftColumns={1}
+                customCellTemplates={{
+                    horizontalGroup: new HorizontalGroupCellTemplate(),
+                    nonEditableNumber: nonEditableNumberCellTemplate,
+                }}
+                onRowsReordered={handleRowsReorder}
+                canReorderRows={handleCanReorderRows}
+                enableRangeSelection
+                enableFillHandle
+                enableRowSelection
+            />
+        </div>
     );
 }

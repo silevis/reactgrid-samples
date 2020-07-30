@@ -197,10 +197,10 @@ export const dataRows: Row<RowCells>[] = [
         ]
     },
     {
-        rowId: 'Insurence',
+        rowId: 'Insurance',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Insurence', parentId: 'Fixed', isExpanded: true },
+            { type: 'group', text: 'Insurance', parentId: 'Fixed', isExpanded: true },
             ...filledYear(1520, 1520),
             ...filledYear(1530, 1540),
         ]
