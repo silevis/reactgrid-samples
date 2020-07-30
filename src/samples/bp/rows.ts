@@ -68,25 +68,33 @@ const emptyYear = (): RowCells[] => [
     generateNonEditableNumberCell(0, 'month'),
 ];
 
-const filledYear = (): RowCells[] => [
-    generateNonEditableNumberCell(0, 'year'),
-    generateNumberCell(0, 'quarter editable'),
-    generateNumberCell(2, 'month editable'),
-    generateNumberCell(2, 'month editable'),
-    generateNumberCell(2, 'month editable'),
-    generateNumberCell(0, 'quarter editable'),
-    generateNumberCell(2, 'month editable'),
-    generateNumberCell(2, 'month editable'),
-    generateNumberCell(2, 'month editable'),
-    generateNumberCell(0, 'quarter editable'),
-    generateNumberCell(2, 'month editable'),
-    generateNumberCell(2, 'month editable'),
-    generateNumberCell(2, 'month editable'),
-    generateNumberCell(0, 'quarter editable'),
-    generateNumberCell(2, 'month editable'),
-    generateNumberCell(2, 'month editable'),
-    generateNumberCell(2, 'month editable'),
-];
+const getRandomInt = (min: number, max: number): number => {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
+const filledYear = (min: number = 0, max: number = 10000, bonus: number = 0): RowCells[] => {
+    return [
+        generateNonEditableNumberCell(0, 'year'),
+        generateNumberCell(0, 'quarter editable'),
+        generateNumberCell(getRandomInt(min, max), 'month editable'),
+        generateNumberCell(getRandomInt(min, max), 'month editable'),
+        generateNumberCell(getRandomInt(min, max), 'month editable'),
+        generateNumberCell(0, 'quarter editable'),
+        generateNumberCell(getRandomInt(min, max) + bonus * 1, 'month editable'),
+        generateNumberCell(getRandomInt(min, max) + bonus * 1, 'month editable'),
+        generateNumberCell(getRandomInt(min, max) + bonus * 1, 'month editable'),
+        generateNumberCell(0, 'quarter editable'),
+        generateNumberCell(getRandomInt(min, max) + bonus * 2, 'month editable'),
+        generateNumberCell(getRandomInt(min, max) + bonus * 2, 'month editable'),
+        generateNumberCell(getRandomInt(min, max) + bonus * 2, 'month editable'),
+        generateNumberCell(0, 'quarter editable'),
+        generateNumberCell(getRandomInt(min, max) + bonus * 3, 'month editable'),
+        generateNumberCell(getRandomInt(min, max) + bonus * 3, 'month editable'),
+        generateNumberCell(getRandomInt(min, max) + bonus * 3, 'month editable'),
+    ]
+};
 
 export const dataRows: Row<RowCells>[] = [
     {
@@ -94,98 +102,198 @@ export const dataRows: Row<RowCells>[] = [
         reorderable: true,
         cells: [
             { type: 'group', text: 'Silevis organization', parentId: undefined, isExpanded: true },
-            ...emptyYear() as RowCells[],
-            ...emptyYear() as RowCells[],
+            ...emptyYear(),
+            ...emptyYear(),
         ]
     },
     {
-        rowId: 'Costs',
+        rowId: 'Expenses',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Costs', parentId: 'Silevis', isExpanded: true },
-            ...emptyYear() as RowCells[],
-            ...emptyYear() as RowCells[],
+            { type: 'group', text: 'Expenses', parentId: 'Silevis', isExpanded: true },
+            ...emptyYear(),
+            ...emptyYear(),
         ]
     },
     {
-        rowId: 'Employees',
+        rowId: 'Fixed',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Employees', parentId: 'Costs', isExpanded: true },
-            ...emptyYear() as RowCells[],
-            ...emptyYear() as RowCells[],
+            { type: 'group', text: 'Fixed', parentId: 'Expenses', isExpanded: true },
+            ...emptyYear(),
+            ...emptyYear(),
         ]
     },
     {
-        rowId: 'Zdeněk Smetana',
+        rowId: 'Salaries',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Zdeněk Smetana', parentId: 'Employees', isExpanded: true },
-            ...filledYear() as RowCells[],
-            ...filledYear() as RowCells[]
+            { type: 'group', text: 'Salaries', parentId: 'Fixed', isExpanded: true },
+            ...emptyYear(),
+            ...emptyYear(),
         ]
     },
     {
-        rowId: 'Julio Igresias',
+        rowId: 'Serge Gainsbourg',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Julio Igresias', parentId: 'Employees' },
-            ...filledYear() as RowCells[],
-            ...filledYear() as RowCells[]
+            { type: 'group', text: 'Serge Gainsbourg', parentId: 'Salaries', isExpanded: true },
+            ...filledYear(5500, 5500, 300.32),
+            ...filledYear(6400, 6400, 300),
         ]
     },
     {
-        rowId: 'Josh Mosbauer',
+        rowId: 'Jacob Sandberg',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Josh Mosbauer', parentId: 'Employees' },
-            ...filledYear() as RowCells[],
-            ...filledYear() as RowCells[]
+            { type: 'group', text: 'Jacob Sandberg', parentId: 'Salaries' },
+            ...filledYear(4500, 4500, 100),
+            ...filledYear(6000, 6000, 50.12),
         ]
     },
     {
-        rowId: 'Materials',
+        rowId: 'Elizabeth Hudson',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Materials', parentId: 'Costs', isExpanded: true },
-            ...emptyYear() as RowCells[],
-            ...emptyYear() as RowCells[],
+            { type: 'group', text: 'Elizabeth Hudson', parentId: 'Salaries' },
+            ...filledYear(5500, 5500, 300),
+            ...filledYear(6400, 6400, 300),
         ]
     },
     {
-        rowId: 'Concrete',
+        rowId: 'Office costs',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Concrete', parentId: 'Materials' },
-            ...filledYear() as RowCells[],
-            ...filledYear() as RowCells[]
+            { type: 'group', text: 'Office costs', parentId: 'Fixed', isExpanded: true },
+            ...emptyYear(),
+            ...emptyYear(),
         ]
     },
     {
-        rowId: 'Wood',
+        rowId: 'Gas',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Wood', parentId: 'Materials' },
-            ...filledYear() as RowCells[],
-            ...filledYear() as RowCells[]
+            { type: 'group', text: 'Gas', parentId: 'Office costs' },
+            ...filledYear(1000, 1200, 10.1),
+            ...filledYear(1050, 1100, 12.02),
         ]
     },
     {
-        rowId: 'Other',
+        rowId: 'Electricity',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Other', parentId: 'Silevis', isExpanded: true },
-            ...emptyYear() as RowCells[],
-            ...emptyYear() as RowCells[],
+            { type: 'group', text: 'Electricity', parentId: 'Office costs' },
+            ...filledYear(90, 110, 1.2),
+            ...filledYear(80, 120, 1.02),
         ]
     },
     {
-        rowId: 'Soft Warriors',
+        rowId: 'Rent',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Soft Warriors', isExpanded: true },
-            ...emptyYear() as RowCells[],
-            ...emptyYear() as RowCells[],
+            { type: 'group', text: 'Electricity', parentId: 'Rent' },
+            ...filledYear(2200, 2200),
+            ...filledYear(2300, 2300),
+        ]
+    },
+    {
+        rowId: 'Insurence',
+        reorderable: true,
+        cells: [
+            { type: 'group', text: 'Insurence', parentId: 'Fixed', isExpanded: true },
+            ...filledYear(1520, 1520),
+            ...filledYear(1530, 1540),
+        ]
+    },
+    {
+        rowId: 'One-time',
+        reorderable: true,
+        cells: [
+            { type: 'group', text: 'One-time', parentId: 'Expenses', isExpanded: true },
+            ...emptyYear(),
+            ...emptyYear(),
+        ]
+    },
+    {
+        rowId: 'Vehicle',
+        reorderable: true,
+        cells: [
+            { type: 'group', text: 'Vehicle', parentId: 'One-time' },
+            generateNonEditableNumberCell(0, 'year'),
+            generateNumberCell(0, 'quarter editable'),
+            generateNumberCell(35000, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'quarter editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(25000, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'quarter editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'quarter editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNonEditableNumberCell(0, 'year'),
+            generateNumberCell(0, 'quarter editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'quarter editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'quarter editable'),
+            generateNumberCell(25000, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'quarter editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+        ]
+    },
+    {
+        rowId: 'Computer',
+        reorderable: true,
+        cells: [
+            { type: 'group', text: 'Computer', parentId: 'One-time' },
+            generateNonEditableNumberCell(0, 'year'),
+            generateNumberCell(0, 'quarter editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(3000, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'quarter editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'quarter editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(3200, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'quarter editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNonEditableNumberCell(0, 'year'),
+            generateNumberCell(0, 'quarter editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'quarter editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(3000, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'quarter editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'quarter editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
+            generateNumberCell(0, 'month editable'),
         ]
     },
 ];
