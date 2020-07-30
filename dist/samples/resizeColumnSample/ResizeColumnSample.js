@@ -13,6 +13,22 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 import * as React from 'react';
 import styled from 'styled-components';
 import { ReactGrid } from '@silevis/reactgrid';
@@ -23,10 +39,10 @@ import { rows as dataRows } from '../../data/rows';
 import './styling.scss';
 var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  min-height: 400px;\n"], ["\n  position: relative;\n  min-height: 400px;\n"])));
 export var ResizeColumnSample = function () {
-    var _a = React.useState(function () { return ({
+    var _a = __read(React.useState(function () { return ({
         columns: dataColumns(false, true),
         rows: dataRows(false),
-    }); }), state = _a[0], setState = _a[1];
+    }); }), 2), state = _a[0], setState = _a[1];
     var handleChanges = function (changes) {
         var newState = __assign({}, state);
         changes.forEach(function (change) {
@@ -47,8 +63,8 @@ export var ResizeColumnSample = function () {
     };
     return (React.createElement(ReactGridContainer, { id: "column-reorder-sample" },
         React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, customCellTemplates: {
-                'rate': new RateCellTemplate,
-                'flag': new FlagCellTemplate
+                'rate': new RateCellTemplate(),
+                'flag': new FlagCellTemplate(),
             }, onCellsChanged: handleChanges, onColumnResized: handleColumnResize, enableColumnSelection: true, enableRowSelection: true, enableFillHandle: true, enableRangeSelection: true })));
 };
 var templateObject_1;

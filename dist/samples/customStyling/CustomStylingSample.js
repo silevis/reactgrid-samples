@@ -1,8 +1,24 @@
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 import * as React from "react";
 import { ReactGrid } from "@silevis/reactgrid";
 import "./styling.scss";
 export var CustomStylingSample = function () {
-    var state = React.useState(function () { return ({
+    var _a = __read(React.useState(function () { return ({
         columns: [
             { columnId: "Name", width: 180 },
             { columnId: "Surname", width: 130 },
@@ -73,7 +89,7 @@ export var CustomStylingSample = function () {
                 ]
             }
         ]
-    }); })[0];
+    }); }), 1), state = _a[0];
     return (React.createElement(React.Fragment, null,
         React.createElement("div", { style: { position: "relative", height: 250 } },
             React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, enableFillHandle: true, enableRangeSelection: true })),

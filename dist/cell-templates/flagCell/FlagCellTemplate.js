@@ -42,7 +42,7 @@ var FlagCellTemplate = (function () {
             }, defaultValue: cell.text, onChange: function (e) { return onCellChanged(_this.getCompatibleCell(__assign(__assign({}, cell), { text: e.currentTarget.value })), false); }, onCopy: function (e) { return e.stopPropagation(); }, onCut: function (e) { return e.stopPropagation(); }, onPaste: function (e) { return e.stopPropagation(); }, onPointerDown: function (e) { return e.stopPropagation(); }, onBlur: function (e) { return onCellChanged(_this.getCompatibleCell(__assign(__assign({}, cell), { text: e.currentTarget.value })), true); }, onKeyDown: function (e) {
                 if (isAlphaNumericKey(e.keyCode) || isNavigationKey(e.keyCode))
                     e.stopPropagation();
-                if (e.keyCode == keyCodes.ESCAPE)
+                if (e.keyCode === keyCodes.ESCAPE)
                     e.currentTarget.value = cell.text;
             } });
     };

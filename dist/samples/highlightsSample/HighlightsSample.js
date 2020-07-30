@@ -1,9 +1,25 @@
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 import * as React from "react";
 import { ReactGrid } from "@silevis/reactgrid";
 import "./styling.scss";
 import '@silevis/reactgrid/styles.css';
 export var HighlightsSample = function () {
-    var _a = React.useState(function () { return ({
+    var _a = __read(React.useState(function () { return ({
         columns: [
             { columnId: "Name", width: 100 },
             { columnId: "Surname", width: 100 }
@@ -35,7 +51,7 @@ export var HighlightsSample = function () {
                 cells: [{ type: "text", text: "" }, { type: "text", text: "" }]
             }
         ]
-    }); }), state = _a[0], setState = _a[1];
+    }); }), 1), state = _a[0];
     var highlights = [
         { columnId: "Name", rowId: 1, borderColor: "#00ff00" },
         { columnId: "Surname", rowId: 2, borderColor: "#0000ff" },

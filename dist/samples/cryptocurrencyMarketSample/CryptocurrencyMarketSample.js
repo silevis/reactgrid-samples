@@ -38,12 +38,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
 };
 import React, { useEffect, useRef, useState } from 'react';
 import { ReactGrid } from '@silevis/reactgrid';
@@ -62,12 +75,12 @@ var fetchCryptocurrencyMarketData = function () { return __awaiter(void 0, void 
                 return [4, promise.json()];
             case 2:
                 currenciesAsJson = _a.sent();
-                newRows = __spreadArrays([
+                newRows = __spread([
                     {
                         rowId: 'header',
                         reorderable: false,
                         height: 25,
-                        cells: __spreadArrays(columns.map(function (c) { return ({ type: 'header', text: c.columnId }); })),
+                        cells: __spread(columns.map(function (c) { return ({ type: 'header', text: c.columnId }); })),
                     }
                 ], currenciesAsJson.map(function (item) {
                     return {
@@ -90,10 +103,10 @@ var fetchCryptocurrencyMarketData = function () { return __awaiter(void 0, void 
     });
 }); };
 export var CryptocurrencyMarketSample = function () {
-    var _a = useState(function () { return ({
-        columns: __spreadArrays(columns),
+    var _a = __read(useState(function () { return ({
+        columns: __spread(columns),
         rows: []
-    }); }), state = _a[0], setState = _a[1];
+    }); }), 2), state = _a[0], setState = _a[1];
     var returnRandomWith = function (numberOfRows) { return Math.floor(Math.random() * numberOfRows + 1); };
     var currentValueRandom = function (apiRows, numberOfRows) {
         var row = apiRows.find(function (_, idx) { return idx === numberOfRows; });
@@ -108,7 +121,7 @@ export var CryptocurrencyMarketSample = function () {
         var changedRowIds = [];
         dataApi.forEach(function (item, idx) {
             if (item.rowId === itemID) {
-                changedRowIds = __spreadArrays(changedRowIds, [idx]);
+                changedRowIds = __spread(changedRowIds, [idx]);
             }
         });
         return changedRowIds;
@@ -116,7 +129,7 @@ export var CryptocurrencyMarketSample = function () {
     var findChangedRows = function (dataState, dataApi) {
         if (!dataState)
             return [];
-        return dataState.filter(function (data, idx) { return idx != 0 && data.cells[3].value !== dataApi[idx].cells[3].value; });
+        return dataState.filter(function (data, idx) { return idx !== 0 && data.cells[3].value !== dataApi[idx].cells[3].value; });
     };
     var useInterval = function (callback, delay) {
         var savedCallback = useRef();
@@ -135,7 +148,7 @@ export var CryptocurrencyMarketSample = function () {
     var renderValue = function () {
         fetchCryptocurrencyMarketData().then(function (res) {
             var dataApi = res;
-            var dataState = __spreadArrays(state.rows);
+            var dataState = __spread(state.rows);
             for (var i = 0; i < Math.floor(dataApi.length / 6); i++) {
                 var changedIdx = returnRandomWith(dataApi.length);
                 dataApi[changedIdx].cells[3].value = currentValueRandom(dataApi, changedIdx);
@@ -154,14 +167,14 @@ export var CryptocurrencyMarketSample = function () {
                     idsToChange.length = 0;
                 });
             }
-            setState({ columns: __spreadArrays(state.columns), rows: dataApi });
+            setState({ columns: __spread(state.columns), rows: dataApi });
         })
             .catch(console.error);
     };
     return (React.createElement(React.Fragment, null,
         React.createElement(ReactGridContainer, { id: "cryptocurrency-market-sample" }, state.rows.length !== 0 ?
             React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, customCellTemplates: {
-                    'cssClass': new CssClassCellTemplate
+                    'cssClass': new CssClassCellTemplate()
                 }, stickyTopRows: 1, enableFillHandle: false, enableRowSelection: true, enableColumnSelection: true, enableRangeSelection: true })
             : React.createElement("span", { className: 'cryptocurrency-market-sample-loader' }, "Loading..."))));
 };

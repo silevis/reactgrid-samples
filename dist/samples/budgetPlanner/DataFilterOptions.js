@@ -9,6 +9,22 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 import React, { useState } from 'react';
 import { DatePicker, DayOfWeek, DefaultButton, mergeStyleSets } from 'office-ui-fabric-react';
 var controlClass = mergeStyleSets({ control: { margin: '0px 20px 0px 0px', width: '300px' } });
@@ -29,7 +45,7 @@ export var DataFilterOptions = function (props) {
         invalidInputErrorMessage: 'Invalid date format.'
     };
     var desc = 'This field is required. One of the support input formats is year dash month dash day.';
-    var _a = useState({ date: { $gte: null, $lte: null } }), valuesFilterOptions = _a[0], setValuesFilterOptions = _a[1];
+    var _a = __read(useState({ date: { $gte: null, $lte: null } }), 2), valuesFilterOptions = _a[0], setValuesFilterOptions = _a[1];
     var _onSelectDateFrom = function (date) {
         setValuesFilterOptions(__assign(__assign({}, valuesFilterOptions), { date: { $gte: date, $lte: valuesFilterOptions.date.$lte } }));
         props.onGetValuesFilterOptions(__assign(__assign({}, valuesFilterOptions), { date: { $gte: date, $lte: valuesFilterOptions.date.$lte } }));

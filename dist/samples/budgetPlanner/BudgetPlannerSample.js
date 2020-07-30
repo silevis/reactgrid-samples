@@ -34,6 +34,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 import React, { useState, useEffect, useCallback } from 'react';
 import BudgetPlannerDisplay from './BudgetPlannerDisplay';
 import DataFilterOptions from './DataFilterOptions';
@@ -41,10 +57,10 @@ import { getDates } from './dates';
 import "./budget-planner.scss";
 import "./budget-planner.scss";
 export var BudgetPlannerSample = function () {
-    var span = useState('month')[0];
-    var _a = useState([]), values = _a[0], setValues = _a[1];
-    var _b = useState([]), variables = _b[0], setVariables = _b[1];
-    var _c = useState([]), dates = _c[0], setDates = _c[1];
+    var _a = __read(useState('month'), 1), span = _a[0];
+    var _b = __read(useState([]), 2), values = _b[0], setValues = _b[1];
+    var _c = __read(useState([]), 2), variables = _c[0], setVariables = _c[1];
+    var _d = __read(useState([]), 2), dates = _d[0], setDates = _d[1];
     var fetchBudgetPlannerData = useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
         var budgetPlannerVariable, dates;
         return __generator(this, function (_a) {

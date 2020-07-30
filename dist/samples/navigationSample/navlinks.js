@@ -1,6 +1,12 @@
-import { StickySample, ColumnReorderSample, ResizeColumnSample, DatagridSample, CryptocurrencyMarketSample, GroupCellSample, ContextMenuSample, GettingStartedSample, FlagCellTemplateSample, CustomStylingSample, HighlightsSample, AdvancedContextMenuHandlingSample, SimpleContextMenuHandlingSample, StickyPanesSample, ColumnsAndRowsReorderSample, ColumnResizingSample, HandlingChangesSample, LimitedHeightByParentSample, NotLimitedHeightByParentSample } from '../../samples';
+import { StickySample, ColumnReorderSample, ResizeColumnSample, DatagridSample, CryptocurrencyMarketSample, GroupCellSample, ContextMenuSample, GettingStartedSample, FlagCellTemplateSample, CustomStylingSample, HighlightsSample, AdvancedContextMenuHandlingSample, SimpleContextMenuHandlingSample, StickyPanesSample, ColumnsAndRowsReorderSample, ColumnResizingSample, HandlingChangesSample, LimitedHeightByParentSample, NotLimitedHeightByParentSample, BPSample, } from '../../samples';
 import { BudgetPlannerSample } from '../budgetPlanner/BudgetPlannerSample';
 export var navLinks = [
+    {
+        name: 'BP Sample',
+        key: '/BP',
+        url: '/BP',
+        component: BPSample,
+    },
     {
         name: 'Group Cell Sample',
         key: '/GroupCellSample',

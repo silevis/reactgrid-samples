@@ -1,0 +1,17 @@
+import { GroupCell, Column, Id } from '@silevis/reactgrid';
+import { BPRow, RowCells, RowPair } from '..';
+import { HorizontalGroupCell } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
+export declare const getGroupCell: (row: BPRow) => GroupCell;
+export declare const getExpandedRows: (rows: BPRow[]) => BPRow[];
+export declare const fillCellMatrixHorizontally: (rows: BPRow[]) => BPRow[];
+export declare const fillCellMatrixVertically: (rows: BPRow[]) => void;
+export declare const collectRowPairs: (rows: BPRow[]) => RowPair[];
+export declare const getDirectChildrenRows: (rows: BPRow[], parentRow: BPRow) => BPRow[];
+export declare const getParentRow: (rows: BPRow[], row: BPRow) => BPRow | undefined;
+export declare const getDataFromRows: (rows: BPRow[]) => BPRow[];
+export declare const createIndents: (rows: BPRow[]) => BPRow[];
+export declare const getDataFromColumns: (columns: Column[]) => Column[];
+export declare const getHorizontalGroupCell: (cells: RowCells[], columnId: Id) => HorizontalGroupCell | undefined;
+export declare const getDirectChildrenColumns: (rows: BPRow[], parentRow: BPRow) => BPRow[];
+export declare const isColumnFullyExpanded: (rows: BPRow[], row: BPRow) => boolean;
+export declare const getExpandedColumns: (rows: BPRow[]) => BPRow[];

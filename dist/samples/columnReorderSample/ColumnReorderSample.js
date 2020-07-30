@@ -13,12 +13,25 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
 };
 import * as React from 'react';
 import styled from 'styled-components';
@@ -30,10 +43,10 @@ import { rows as dataRows } from '../../data/rows';
 import './styling.scss';
 var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  min-height: 400px;\n"], ["\n  position: relative;\n  min-height: 400px;\n"])));
 export var ColumnReorderSample = function () {
-    var _a = React.useState(function () { return ({
+    var _a = __read(React.useState(function () { return ({
         columns: dataColumns(true, false),
         rows: dataRows(true),
-    }); }), state = _a[0], setState = _a[1];
+    }); }), 2), state = _a[0], setState = _a[1];
     var handleChanges = function (changes) {
         var newState = __assign({}, state);
         changes.forEach(function (change) {
@@ -46,10 +59,10 @@ export var ColumnReorderSample = function () {
     };
     var reorderArray = function (arr, idxs, to) {
         var movedElements = arr.filter(function (_, idx) { return idxs.includes(idx); });
-        to = Math.min.apply(Math, idxs) < to ? to += 1 : to -= idxs.filter(function (idx) { return idx < to; }).length;
+        to = Math.min.apply(Math, __spread(idxs)) < to ? to += 1 : to -= idxs.filter(function (idx) { return idx < to; }).length;
         var leftSide = arr.filter(function (_, idx) { return idx < to && !idxs.includes(idx); });
         var rightSide = arr.filter(function (_, idx) { return idx >= to && !idxs.includes(idx); });
-        return __spreadArrays(leftSide, movedElements, rightSide);
+        return __spread(leftSide, movedElements, rightSide);
     };
     var handleCanReorderColumns = function (targetColumnId, columnIds, dropPosition) {
         return true;
@@ -76,8 +89,8 @@ export var ColumnReorderSample = function () {
     };
     return (React.createElement(ReactGridContainer, { id: "column-reorder-sample" },
         React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, customCellTemplates: {
-                'rate': new RateCellTemplate,
-                'flag': new FlagCellTemplate
+                'rate': new RateCellTemplate(),
+                'flag': new FlagCellTemplate(),
             }, onCellsChanged: handleChanges, canReorderColumns: handleCanReorderColumns, canReorderRows: handleCanReorderRows, onColumnsReordered: handleColumnsReordered, onRowsReordered: handleRowsReordered, enableColumnSelection: true, enableRowSelection: true, enableRangeSelection: true })));
 };
 var templateObject_1;

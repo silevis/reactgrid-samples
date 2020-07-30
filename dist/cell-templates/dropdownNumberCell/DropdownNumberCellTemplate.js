@@ -9,6 +9,22 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 import * as React from 'react';
 import { getCellProperty } from '@silevis/reactgrid';
 import './number-dropdown-cell-style.scss';
@@ -18,7 +34,6 @@ var DropdownNumberCellTemplate = (function () {
     DropdownNumberCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {
         var value = getCellProperty(uncertainCell, 'value', 'number');
         var isOpened = getCellProperty(uncertainCell, 'isOpened', 'boolean');
-        var text = value.toString();
         var limitedValue = this.getLimitedValue(value);
         return __assign(__assign({}, uncertainCell), { value: limitedValue, text: limitedValue.toString(), isOpened: isOpened });
     };
@@ -34,7 +49,7 @@ var DropdownNumberCellTemplate = (function () {
         return { cell: cell, enableEditMode: false };
     };
     DropdownNumberCellTemplate.prototype.update = function (cell, cellToMerge) {
-        if (cellToMerge.value !== undefined && cellToMerge.value !== NaN)
+        if (cellToMerge.value !== undefined && !isNaN(cellToMerge.value))
             return this.getCompatibleCell(__assign(__assign({}, cell), { value: cellToMerge.value }));
         var parsed = parseFloat(cellToMerge.text);
         return this.getCompatibleCell(__assign(__assign({}, cell), { value: (parsed > 0 || parsed < 0) ? parsed : 0 }));
@@ -45,11 +60,10 @@ var DropdownNumberCellTemplate = (function () {
     ;
     DropdownNumberCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         var _this = this;
-        var _a = React.useState(false), isOpen = _a[0], setOpen = _a[1];
+        var _a = __read(React.useState(false), 2), isOpen = _a[0], setOpen = _a[1];
         return (React.createElement(React.Fragment, null,
             React.createElement("div", { className: "wrapper" },
-                React.createElement("div", { className: "value" },
-                    React.createElement("span", null, cell.value)),
+                React.createElement("div", { className: "value" }, cell.value),
                 React.createElement("div", { className: "chevron", onClick: function () { setOpen(!isOpen); } },
                     React.createElement("div", { style: { transform: !isOpen ? 'rotate(0deg)' : 'rotate(90deg)', transitionDuration: '200ms' } }, " \u276F"))),
             isOpen &&

@@ -1,11 +1,12 @@
+var height = 25;
 export var headerRow = {
     rowId: 'header',
     reorderable: false,
-    height: 25,
+    height: height,
     cells: [
         { type: 'header', text: "Id" },
         { type: 'header', text: "Branch Name" },
-        { type: 'header', text: "Commit Hash" },
+        { type: 'header', text: "Commit hash" },
         { type: 'header', text: "Added" },
         { type: 'header', text: "Removed" },
         { type: 'header', text: "Author" },
@@ -15,7 +16,7 @@ export var headerRow = {
 export var rows = function (reorderable) { return [
     {
         rowId: 1,
-        height: 25,
+        height: height,
         reorderable: reorderable,
         cells: [
             { type: 'group', text: '1', isExpanded: true, },
@@ -29,7 +30,7 @@ export var rows = function (reorderable) { return [
     },
     {
         rowId: 2,
-        height: 25,
+        height: height,
         reorderable: reorderable,
         cells: [
             { type: 'group', text: '2', isExpanded: true, parentId: 1 },
@@ -43,10 +44,10 @@ export var rows = function (reorderable) { return [
     },
     {
         rowId: 3,
-        height: 25,
+        height: height,
         reorderable: reorderable,
         cells: [
-            { type: 'group', text: '3', isExpanded: true },
+            { type: 'group', text: '3', isExpanded: false },
             { type: 'text', text: 'fix/my-sample' },
             { type: 'text', text: 'u61x66unzgl9xd5gre3bj7g8za8cb7ve4t7otz0e' },
             { type: 'number', value: 280 },
@@ -57,7 +58,7 @@ export var rows = function (reorderable) { return [
     },
     {
         rowId: 4,
-        height: 25,
+        height: height,
         reorderable: reorderable,
         cells: [
             { type: 'group', text: '4', isExpanded: true, parentId: 3 },
@@ -71,7 +72,7 @@ export var rows = function (reorderable) { return [
     },
     {
         rowId: 5,
-        height: 25,
+        height: height,
         reorderable: reorderable,
         cells: [
             { type: 'group', text: '5', isExpanded: true, parentId: 4 },
@@ -85,7 +86,7 @@ export var rows = function (reorderable) { return [
     },
     {
         rowId: 6,
-        height: 25,
+        height: height,
         reorderable: reorderable,
         cells: [
             { type: 'group', text: '6', isExpanded: true, parentId: 4 },
@@ -99,7 +100,7 @@ export var rows = function (reorderable) { return [
     },
     {
         rowId: 7,
-        height: 25,
+        height: height,
         reorderable: reorderable,
         cells: [
             { type: 'group', text: '7', isExpanded: true, },
@@ -113,7 +114,7 @@ export var rows = function (reorderable) { return [
     },
     {
         rowId: 8,
-        height: 25,
+        height: height,
         reorderable: reorderable,
         cells: [
             { type: 'group', text: '8', isExpanded: true, parentId: 7 },
@@ -127,7 +128,7 @@ export var rows = function (reorderable) { return [
     },
     {
         rowId: 9,
-        height: 25,
+        height: height,
         reorderable: reorderable,
         cells: [
             { type: 'group', text: '9', isExpanded: true, parentId: 7 },
@@ -141,7 +142,7 @@ export var rows = function (reorderable) { return [
     },
     {
         rowId: 10,
-        height: 25,
+        height: height,
         reorderable: reorderable,
         cells: [
             { type: 'group', text: '10', isExpanded: true, parentId: 7 },
@@ -155,10 +156,10 @@ export var rows = function (reorderable) { return [
     },
     {
         rowId: 11,
-        height: 25,
+        height: height,
         reorderable: reorderable,
         cells: [
-            { type: 'group', text: '11', isExpanded: true, hasChildrens: true },
+            { type: 'group', text: '11', isExpanded: true },
             { type: 'text', text: 'update/some-feature' },
             { type: 'text', text: 'fvgiizz61ysmiv2gn9por6izio575u557jyxz4xs' },
             { type: 'number', value: 120 },
@@ -169,7 +170,7 @@ export var rows = function (reorderable) { return [
     },
     {
         rowId: 12,
-        height: 25,
+        height: height,
         reorderable: reorderable,
         cells: [
             { type: 'group', text: '12', isExpanded: true, parentId: 11 },
@@ -183,7 +184,7 @@ export var rows = function (reorderable) { return [
     },
     {
         rowId: 13,
-        height: 25,
+        height: height,
         reorderable: reorderable,
         cells: [
             { type: 'group', text: '13', isExpanded: true, parentId: 11 },
@@ -197,7 +198,7 @@ export var rows = function (reorderable) { return [
     },
     {
         rowId: 14,
-        height: 25,
+        height: height,
         reorderable: reorderable,
         cells: [
             { type: 'group', text: '14', isExpanded: true, parentId: 13 },
@@ -211,7 +212,7 @@ export var rows = function (reorderable) { return [
     },
     {
         rowId: 15,
-        height: 25,
+        height: height,
         reorderable: reorderable,
         cells: [
             { type: 'group', text: '15', isExpanded: true, parentId: 13 },
@@ -225,7 +226,7 @@ export var rows = function (reorderable) { return [
     },
     {
         rowId: 16,
-        height: 25,
+        height: height,
         reorderable: reorderable,
         cells: [
             { type: 'group', text: '16', isExpanded: true, parentId: 13 },

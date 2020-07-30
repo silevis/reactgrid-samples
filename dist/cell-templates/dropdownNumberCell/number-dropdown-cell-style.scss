@@ -14,16 +14,18 @@
       padding: 0 5px;
       margin: 0 10px 0 0;
       cursor: pointer;
+      display: flex;
+      align-items: center;
     }
   }
   .dropdown {
     position: absolute;
-    top: calc(100%);
+    top: 100%;
     padding: 0 3px;
     border: 1px solid #bbb;
     border-radius: 0 0 3px 3px;
     background-color: #ffffff;
-    margin-left: -2px;
+    margin-left: -5px;
     z-index: 5;
   }
 

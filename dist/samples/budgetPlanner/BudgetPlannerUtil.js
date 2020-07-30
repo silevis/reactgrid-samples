@@ -1,9 +1,22 @@
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
 };
 import moment from 'moment';
 import { isString, isNumber, isDate } from 'util';
@@ -11,7 +24,7 @@ export var getGroupsOptions = function (variables, disableGroupOptions) {
     if (disableGroupOptions === void 0) { disableGroupOptions = []; }
     var groupOptions = [];
     variables && variables.forEach(function (variable) {
-        groupOptions.push.apply(groupOptions, Object.keys(variable));
+        groupOptions.push.apply(groupOptions, __spread(Object.keys(variable)));
     });
     return filterBlockedGroupsOptions(groupOptions.filter(function (x, i, a) { return a.indexOf(x) === i; }), disableGroupOptions);
 };
@@ -72,23 +85,23 @@ export var getHeaderRows = function (dates, span, row) {
     if (!row)
         row = { rowId: 'header', cells: [] };
     if (row.cells.length === 0) {
-        cells.push({
+        cells.push(({
             type: 'header',
             text: 'Group by',
             className: 'nevy-blue-header',
-        });
-        (_a = row.cells).push.apply(_a, cells);
+        }));
+        (_a = row.cells).push.apply(_a, __spread(cells));
         cells = [];
     }
     dates && dates.forEach(function (date) {
         var cellText = getFormattedDate(date, span);
-        cells.push({
+        cells.push(({
             type: 'header',
             text: cellText,
             className: 'nevy-blue-header',
-        });
+        }));
     });
-    (_b = row.cells).push.apply(_b, cells);
+    (_b = row.cells).push.apply(_b, __spread(cells));
     return row;
 };
 export var getGridRows = function (dates, data, displayFields, rows, parentId) {
@@ -114,10 +127,10 @@ export var getGridRows = function (dates, data, displayFields, rows, parentId) {
                     cells_1.push(createCell(0, 'grey-header'));
                 });
             }
-            (_a = row.cells).push.apply(_a, cells_1);
+            (_a = row.cells).push.apply(_a, __spread(cells_1));
             if (rows)
                 rows.push(row);
-            rows = getGridRows(dates, groupAttribute.children, displayFields, __spreadArrays(rows), rowId);
+            rows = getGridRows(dates, groupAttribute.children, displayFields, __spread(rows), rowId);
         }
         else {
             var row = { rowId: rowId, cells: [] };
@@ -137,7 +150,7 @@ export var getGridRows = function (dates, data, displayFields, rows, parentId) {
             for (var key in groupAttribute.values) {
                 _loop_1(key);
             }
-            (_b = row.cells).push.apply(_b, cells_2);
+            (_b = row.cells).push.apply(_b, __spread(cells_2));
             var parentRow = row;
             var groupRows_1 = [];
             groupAttribute.variables.forEach(function (variable) {
@@ -157,7 +170,7 @@ export var getGridRows = function (dates, data, displayFields, rows, parentId) {
                             cells_3.push(createCell(0));
                         });
                     });
-                    (_a = row_1.cells).push.apply(_a, cells_3);
+                    (_a = row_1.cells).push.apply(_a, __spread(cells_3));
                     groupRows_1.push(row_1);
                 };
                 for (var key in displayFields) {
@@ -166,7 +179,7 @@ export var getGridRows = function (dates, data, displayFields, rows, parentId) {
             });
             if (rows && groupRows_1.length > 0) {
                 rows.push(parentRow);
-                rows.push.apply(rows, groupRows_1);
+                rows.push.apply(rows, __spread(groupRows_1));
             }
         }
     });

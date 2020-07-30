@@ -1,5 +1,5 @@
 export var columns = function (reorderable, resizable) { return [
-    { columnId: 'id', reorderable: reorderable, resizable: resizable, width: 80 },
+    { columnId: 'id', reorderable: reorderable, resizable: resizable, width: 250 },
     { columnId: 'branchName', reorderable: reorderable, resizable: resizable, width: 150 },
     { columnId: 'commitHash', reorderable: reorderable, resizable: resizable, width: 400 },
     { columnId: 'added', reorderable: reorderable, resizable: resizable, width: 100 },

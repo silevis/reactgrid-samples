@@ -9,12 +9,25 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
 };
 import React, { useState, useEffect } from 'react';
 import { getGroupAttributes, getGridRows, getGridColumns, getHeaderRows } from './BudgetPlannerUtil';
@@ -24,9 +37,9 @@ import { initializeIcons, Dropdown } from 'office-ui-fabric-react';
 initializeIcons();
 export var BudgetPlannerDisplay = function (props) {
     var variables = props.variables, dates = props.dates, span = props.span;
-    var _a = useState(["job position", "name", "project"]), groupByItemsFields = _a[0], setGroupByItemsField = _a[1];
-    var _b = useState(), rowsToRender = _b[0], setRowsToRender = _b[1];
-    var _c = useState({}), state = _c[0], setState = _c[1];
+    var _a = __read(useState(["job position", "name", "project"]), 2), groupByItemsFields = _a[0], setGroupByItemsField = _a[1];
+    var _b = __read(useState(), 2), rowsToRender = _b[0], setRowsToRender = _b[1];
+    var _c = __read(useState({}), 2), state = _c[0], setState = _c[1];
     var displayFields = ['value'];
     var groupByItems = Object.keys(variables.reduce(function (result, obj) { return Object.assign(result, obj); }, {})).filter(function (it) { return it !== '_id'; });
     var getGroupCell = function (row) { return row.cells.find(function (cell) { return cell.type === 'group'; }); };
@@ -88,23 +101,25 @@ export var BudgetPlannerDisplay = function (props) {
             }
         });
         if (changes[0].initialCell.type === 'group') {
-            var rowsToRender_1 = __spreadArrays([getHeaderRows(state.dates, span)], getExpandedRows(newState.rows));
+            var rowsToRender_1 = __spread([getHeaderRows(state.dates, span)], getExpandedRows(newState.rows));
             setRowsToRender(rowsToRender_1);
         }
         setState(__assign(__assign({}, state), { rows: createIndents(newState.rows) }));
     };
     var updateTable = function () {
-        var groupAttributes = getGroupAttributes(__spreadArrays(groupByItemsFields), variables, dates, span, []);
+        var groupAttributes = getGroupAttributes(__spread(groupByItemsFields), variables, dates, span, []);
         var columns = getGridColumns(dates, span);
         var data = getVariableModel(groupAttributes, dates, span, variables);
-        var rows = __spreadArrays(getGridRows(dates, data, displayFields));
+        var rows = __spread(getGridRows(dates, data, displayFields));
         rows = createIndents(rows);
-        setRowsToRender(__spreadArrays([getHeaderRows(dates, span)], getExpandedRows(rows)));
+        setRowsToRender(__spread([getHeaderRows(dates, span)], getExpandedRows(rows)));
         setState(__assign(__assign({}, state), { rows: rows, columns: columns, dates: dates }));
     };
     useEffect(function () {
         updateTable();
-    }, [groupByItemsFields, setGroupByItemsField, dates]);
+    }, [groupByItemsFields, setGroupByItemsField, dates,
+        updateTable
+    ]);
     var handleColumnResize = function (ci, width) {
         var newState = __assign({}, state);
         var columnIndex = newState.columns.findIndex(function (el) { return el.columnId === ci; });
@@ -116,7 +131,7 @@ export var BudgetPlannerDisplay = function (props) {
     return (React.createElement(React.Fragment, null,
         React.createElement("h3", null, "Variables Options"),
         React.createElement("div", { className: "budget-planning-header" },
-            React.createElement(Dropdown, { placeholder: "Select options", label: "Group by", selectedKeys: groupByItemsFields, onChange: function (_, item) { return item && setGroupByItemsField(item.selected ? __spreadArrays(groupByItemsFields, [item.key]) : groupByItemsFields.filter(function (key) { return key !== item.key; })); }, multiSelect: true, options: groupByItems.map(function (dropdownOption) { return ({ key: dropdownOption, text: dropdownOption }); }), styles: { dropdown: { width: 300 } } })),
+            React.createElement(Dropdown, { placeholder: "Select options", label: "Group by", selectedKeys: groupByItemsFields, onChange: function (_, item) { return item && setGroupByItemsField(item.selected ? __spread(groupByItemsFields, [item.key]) : groupByItemsFields.filter(function (key) { return key !== item.key; })); }, multiSelect: true, options: groupByItems.map(function (dropdownOption) { return ({ key: dropdownOption, text: dropdownOption }); }), styles: { dropdown: { width: 300 } } })),
         React.createElement("div", { className: "budget-planning-react-grid" }, state.columns && rowsToRender && React.createElement(ReactGrid, { rows: rowsToRender, columns: state.columns, onCellsChanged: handleChanges, onColumnResized: handleColumnResize, enableFillHandle: true, enableRangeSelection: true, stickyLeftColumns: 1, stickyTopRows: 1 }))));
 };
 export default BudgetPlannerDisplay;
