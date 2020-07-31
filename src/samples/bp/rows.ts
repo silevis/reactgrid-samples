@@ -5,11 +5,11 @@ import { NonEditableNumberCell } from './CellTemplates';
 
 const generateMonthHeader = (year: number, quarter: string, month: number): HorizontalGroupCell => {
     const formattedMonth = `${month}`.padStart(2, '0');
-    return { type: 'horizontalGroup', text: `${quarter}-${formattedMonth}`, className: 'month', parentId: `${year}-${quarter}` };
+    return { type: 'horizontalGroup', text: `${formattedMonth}`, className: 'month header', parentId: `${year}-${quarter}` };
 }
 
-const generateQuarterHeader = (year: number, quarter: string, hasChildren: boolean = true, isExpanded: boolean = false): HorizontalGroupCell => {
-    return { type: 'horizontalGroup', text: quarter, className: 'quarter', parentId: `${year}`, hasChildren, isExpanded: Math.random() < 0.5 };
+const generateQuarterHeader = (year: number, quarter: string, hasChildren: boolean = true, isExpanded: boolean = true): HorizontalGroupCell => {
+    return { type: 'horizontalGroup', text: quarter, className: 'quarter header', parentId: `${year}`, hasChildren, isExpanded: true };
 }
 
 const generateQuarter = (year: number, quarter: string, month: number, isExpanded: boolean = true) => {
@@ -23,7 +23,7 @@ const generateQuarter = (year: number, quarter: string, month: number, isExpande
 
 const generateYear = (year: number, hasChildren: boolean = true, isExpanded: boolean = true): RowCells[] => {
     return [
-        { type: 'horizontalGroup', text: `${year}`, className: 'year', parentId: undefined, hasChildren, isExpanded },
+        { type: 'horizontalGroup', text: `${year}`, className: 'year header', parentId: undefined, hasChildren, isExpanded },
         ...generateQuarter(year, 'Q1', 1),
         ...generateQuarter(year, 'Q2', 4),
         ...generateQuarter(year, 'Q3', 7),

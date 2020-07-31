@@ -3,7 +3,6 @@ import {
     keyCodes, CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible, Id, isNavigationKey,
     isAlphaNumericKey, getCellProperty
 } from "@silevis/reactgrid";
-import { getCharFromKeyCode } from './getCharFromKeyCode'; // TODO REMOVE AFTER NEW VERISON UPGRADE
 
 export interface HorizontalGroupCell extends Cell {
     type: 'horizontalGroup';

@@ -1,4 +1,7 @@
+
 .bp-sample {
+
+    $gray-color: #3f3f3f;
     .rg-horizontalGroup-cell {
         justify-content: space-between;
         .chevron {
@@ -26,13 +29,20 @@
         }
     }
     .year {
-        background-color: lighten($color: #0683F9, $amount: 45);
+        &:not(.header) {
+            color: $gray-color;
+        }
     }
     .quarter {
-        background-color: lighten($color: #0683F9, $amount: 40);
+        &:not(.editable):not(.header) {
+            color: $gray-color;
+        }
     }
     .month {
         background-color: #8080801a;
+        &:not(.editable):not(.header) {
+            color: $gray-color;
+        }
     }
     .editable {
         &.quarter {
@@ -44,14 +54,7 @@
     }
     .rg-nonEditableNumber-cell { 
         justify-content: flex-end;
-    }
-    .rg-number-cell {
-        transition: 0.15s;
-        &:hover {
-            // color: white;
-            background-color: lighten($color: #0683F9, $amount: 35);
-            // border: 1px solid red !important;
-        }
+        transition: all 0.1s;
     }
 }
 
