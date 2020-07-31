@@ -5,11 +5,13 @@ export interface HorizontalGroupCell extends Cell {
     text: string;
     isExpanded?: boolean;
     hasChildren?: boolean;
+    columnId?: Id;
     parentId?: Id;
 }
 export declare class HorizontalGroupCellTemplate implements CellTemplate<HorizontalGroupCell> {
     getCompatibleCell(uncertainCell: Uncertain<HorizontalGroupCell>): Compatible<HorizontalGroupCell>;
     update(cell: Compatible<HorizontalGroupCell>, cellToMerge: UncertainCompatible<HorizontalGroupCell>): Compatible<HorizontalGroupCell>;
+    isFocusable: () => boolean;
     handleKeyDown(cell: Compatible<HorizontalGroupCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
         cell: Compatible<HorizontalGroupCell>;
         enableEditMode: boolean;

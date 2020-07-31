@@ -19,7 +19,8 @@ var __spread = (this && this.__spread) || function () {
     return ar;
 };
 var getMonth = function (year, quarter, month) {
-    return { columnId: year + "-" + quarter + "-" + month, width: 100 };
+    var formattedMonth = ("" + month).padStart(2, '0');
+    return { columnId: year + "-" + quarter + "-" + formattedMonth, width: 100 };
 };
 var getQuarter = function (year, quarter) {
     return { columnId: year + "-" + quarter, width: 100 };

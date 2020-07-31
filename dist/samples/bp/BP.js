@@ -33,7 +33,7 @@ import * as React from "react";
 import { ReactGrid } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 import "./styling.scss";
-import { getDataFromRows, createIndents, getExpandedRows, getDataFromColumns, fillCellMatrixHorizontally, fillCellMatrixVertically, getGroupCell, getDirectChildrenRows, getParentRow, } from "./helpersFunctions";
+import { getDataFromRows, createIndents, getExpandedRows, getDataFromColumns, fillCellMatrixHorizontally, fillCellMatrixVertically, getGroupCell, getDirectChildrenRows, getParentRow, extendWithColIds, getExpandedCells, getColumnsIdsxToRender, filterCellsOnRows, } from "./helpersFunctions";
 import { dataRows, topHeaderRow } from "./rows";
 import { dataColumns } from "./columns";
 import { HorizontalGroupCellTemplate } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
@@ -46,7 +46,6 @@ export var BPSample = function () {
         columns = getDataFromColumns(columns);
         rows = getDataFromRows(rows);
         rows = fillCellMatrixHorizontally(rows);
-        console.log(topHeaderRow);
         fillCellMatrixVertically(rows);
         rows = createIndents(rows);
         return {
@@ -55,22 +54,23 @@ export var BPSample = function () {
         };
     }), 2), state = _a[0], setState = _a[1];
     var _b = __read(React.useState(function () {
-        return getExpandedRows(state.rows).map(function (row, idx) {
-            return row;
-        });
-    }), 2), rowsToRender = _b[0], setRowsToRender = _b[1];
+        var extendedTopHeaderRow = extendWithColIds(topHeaderRow, __spread(dataColumns));
+        var expandedCells = getExpandedCells(extendedTopHeaderRow.cells);
+        return state.columns.filter(function (col) { return expandedCells.find(function (expCell) { return expCell.columnId === col.columnId; }); });
+    }), 2), columnsToRender = _b[0], setColumnsToRender = _b[1];
     var _c = __read(React.useState(function () {
-        return state.columns.filter(function (col, idx) {
-            return col;
-        });
-    }), 2), colsToRender = _c[0], setColsToRender = _c[1];
+        var topHeaderRowWithColumnIds = extendWithColIds(topHeaderRow, __spread(dataColumns));
+        var expandedRows = getExpandedRows(state.rows);
+        var idxs = getColumnsIdsxToRender(topHeaderRowWithColumnIds.cells, columnsToRender);
+        return filterCellsOnRows(expandedRows, idxs);
+    }), 2), rowsToRender = _c[0], setRowsToRender = _c[1];
     var handleChanges = function (changes) {
         var newState = __assign({}, state);
         changes.forEach(function (change) {
             var _a, _b;
             var changeRowIdx = newState.rows.findIndex(function (el) { return el.rowId === change.rowId; });
             var changeColumnIdx = newState.columns.findIndex(function (el) { return el.columnId === change.columnId; });
-            if (changeRowIdx === 0 && changeColumnIdx === 0) {
+            if (changeRowIdx === 0 || changeColumnIdx === 0) {
                 newState.rows[changeRowIdx].cells[changeColumnIdx] = __assign(__assign({}, change.newCell), { text: change.initialCell.text });
             }
             else {
@@ -88,8 +88,13 @@ export var BPSample = function () {
         });
         var rows = fillCellMatrixHorizontally(newState.rows);
         fillCellMatrixVertically(rows);
+        var expandedCells = getExpandedCells(topHeaderRow.cells);
+        var columnsToRender = newState.columns.filter(function (col) { return expandedCells.find(function (expandedCell) { return expandedCell.columnId === col.columnId; }); });
+        var idxs = getColumnsIdsxToRender(topHeaderRow.cells, columnsToRender);
+        var expandedRows = getExpandedRows(rows);
+        setColumnsToRender(__spread(columnsToRender));
         setState(__assign(__assign({}, state), { rows: createIndents(rows) }));
-        setRowsToRender(__spread(getExpandedRows(rows)));
+        setRowsToRender(__spread(filterCellsOnRows(expandedRows, idxs)));
     };
     var updateNodeQuarter = function (state, valueToDivide, changeRowIdx, changeColumnIdx) {
         var partialValue = valueToDivide / 3;
@@ -159,12 +164,13 @@ export var BPSample = function () {
         if (!rowsChildren)
             return [];
         rowsChildren.forEach(function (childRow) {
-            acc = __spread(acc, getRowChildren(rows, rowsChildren, childRow));
+            acc.push.apply(acc, __spread(getRowChildren(rows, rowsChildren, childRow)));
         });
         return acc;
     };
-    return (React.createElement(ReactGrid, { rows: rowsToRender, columns: colsToRender, onCellsChanged: handleChanges, stickyTopRows: 1, stickyLeftColumns: 1, customCellTemplates: {
-            horizontalGroup: new HorizontalGroupCellTemplate(),
-            nonEditableNumber: nonEditableNumberCellTemplate,
-        }, onRowsReordered: handleRowsReorder, canReorderRows: handleCanReorderRows, enableRangeSelection: true, enableFillHandle: true, enableRowSelection: true }));
+    return (React.createElement("div", { className: "bp-sample" },
+        React.createElement(ReactGrid, { rows: rowsToRender, columns: columnsToRender, onCellsChanged: handleChanges, stickyTopRows: 1, stickyLeftColumns: 1, customCellTemplates: {
+                horizontalGroup: new HorizontalGroupCellTemplate(),
+                nonEditableNumber: nonEditableNumberCellTemplate,
+            }, onRowsReordered: handleRowsReorder, canReorderRows: handleCanReorderRows, enableRangeSelection: true, enableFillHandle: true, enableRowSelection: true })));
 };

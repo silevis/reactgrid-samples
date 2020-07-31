@@ -13,6 +13,7 @@ import * as React from 'react';
 import { isNavigationKey, isAlphaNumericKey, getCellProperty } from "@silevis/reactgrid";
 var HorizontalGroupCellTemplate = (function () {
     function HorizontalGroupCellTemplate() {
+        this.isFocusable = function () { return false; };
     }
     HorizontalGroupCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {
         var text = getCellProperty(uncertainCell, 'text', 'string');

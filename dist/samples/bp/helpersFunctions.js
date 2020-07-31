@@ -1,3 +1,14 @@
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 export var getGroupCell = function (row) { return row.cells.find(function (cell) { return cell.type === 'group'; }); };
 var hasChildren = function (rows, row) { return rows.some(function (r) { var _a; return ((_a = getGroupCell(r)) === null || _a === void 0 ? void 0 : _a.parentId) === row.rowId; }); };
 var isRowFullyExpanded = function (rows, row) {
@@ -99,13 +110,35 @@ export var createIndents = function (rows) { return rows.map(function (row) {
     }
     return row;
 }); };
+export var isHorizontalGroupCell = function (cell) { return cell.type === 'horizontalGroup'; };
+export var extendWithColIds = function (row, columns) {
+    row.cells.forEach(function (cell, idx) { var _a; return cell.columnId = (_a = columns[idx]) === null || _a === void 0 ? void 0 : _a.columnId; });
+    return row;
+};
 export var getDataFromColumns = function (columns) { return columns.slice(1, columns.length); };
 export var getHorizontalGroupCell = function (cells, columnId) { return cells.find(function (cell) { return cell.type === 'horizontalGroup' && cell.parentId === columnId; }); };
+export var getParentCell = function (cells, cell) { return cells.find(function (c) { return c.columnId === cell.parentId; }); };
 export var getDirectChildrenColumns = function (rows, parentRow) { return rows.filter(function (row) { return !!row.cells.find(function (cell) { return cell.type === 'horizontalGroup' && cell.parentId === parentRow.rowId; }); }); };
-export var isColumnFullyExpanded = function (rows, row) {
+export var isCellFullyExpanded = function (cells, cell) {
+    var parentCell = getParentCell(cells, cell);
+    if (parentCell) {
+        if (!parentCell.isExpanded)
+            return false;
+        return isCellFullyExpanded(cells, parentCell);
+    }
     return true;
 };
-export var getExpandedColumns = function (rows) { return rows.filter(function (row) {
-    var areAllParentsExpanded = isColumnFullyExpanded(rows, row);
+export var getExpandedCells = function (cells) { return cells.filter(function (cell) {
+    var areAllParentsExpanded = isCellFullyExpanded(cells, cell);
     return areAllParentsExpanded !== undefined ? areAllParentsExpanded : true;
+}); };
+export var getColumnsIdsxToRender = function (cells, columnsToRender) {
+    return cells.map(function (thrCell, idx) {
+        return columnsToRender.find(function (colToRender) { return colToRender.columnId === thrCell.columnId; }) ? idx : NaN;
+    })
+        .filter(function (idx) { return !isNaN(idx); });
+};
+export var filterCellsOnRows = function (rows, visibleColsIdxs) { return rows.map(function (row) {
+    var cells = row.cells.filter(function (_, idx) { return visibleColsIdxs.includes(idx); });
+    return __assign(__assign({}, row), { cells: cells });
 }); };

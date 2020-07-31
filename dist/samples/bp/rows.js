@@ -20,25 +20,27 @@ var __spread = (this && this.__spread) || function () {
 };
 var generateMonthHeader = function (year, quarter, month) {
     var formattedMonth = ("" + month).padStart(2, '0');
-    return { type: 'horizontalGroup', text: quarter + "-" + formattedMonth, className: 'month', parentId: year + "-" + quarter };
+    return { type: 'horizontalGroup', text: "" + formattedMonth, className: 'month header', parentId: year + "-" + quarter };
 };
 var generateQuarterHeader = function (year, quarter, hasChildren, isExpanded) {
-    if (hasChildren === void 0) { hasChildren = false; }
-    if (isExpanded === void 0) { isExpanded = false; }
-    return { type: 'horizontalGroup', text: quarter, className: 'quarter', parentId: "" + year, hasChildren: hasChildren, isExpanded: isExpanded };
+    if (hasChildren === void 0) { hasChildren = true; }
+    if (isExpanded === void 0) { isExpanded = true; }
+    return { type: 'horizontalGroup', text: quarter, className: 'quarter header', parentId: "" + year, hasChildren: hasChildren, isExpanded: true };
 };
-var generateQuarter = function (year, quarter, month) {
+var generateQuarter = function (year, quarter, month, isExpanded) {
+    if (isExpanded === void 0) { isExpanded = true; }
     return [
-        generateQuarterHeader(year, quarter),
+        generateQuarterHeader(year, quarter, isExpanded),
         generateMonthHeader(year, quarter, month),
         generateMonthHeader(year, quarter, month + 1),
         generateMonthHeader(year, quarter, month + 2),
     ];
 };
-var generateYear = function (year, hasChildren) {
-    if (hasChildren === void 0) { hasChildren = false; }
+var generateYear = function (year, hasChildren, isExpanded) {
+    if (hasChildren === void 0) { hasChildren = true; }
+    if (isExpanded === void 0) { isExpanded = true; }
     return __spread([
-        { type: 'horizontalGroup', text: "" + year, className: 'year', parentId: undefined, hasChildren: hasChildren }
+        { type: 'horizontalGroup', text: "" + year, className: 'year header', parentId: undefined, hasChildren: hasChildren, isExpanded: isExpanded }
     ], generateQuarter(year, 'Q1', 1), generateQuarter(year, 'Q2', 4), generateQuarter(year, 'Q3', 7), generateQuarter(year, 'Q4', 10));
 };
 export var topHeaderRow = {
@@ -49,12 +51,12 @@ export var topHeaderRow = {
 };
 var generateNumberCell = function (value, className, nanToZero) {
     if (className === void 0) { className = ''; }
-    if (nanToZero === void 0) { nanToZero = false; }
+    if (nanToZero === void 0) { nanToZero = true; }
     return { type: 'number', value: value, className: className, nanToZero: nanToZero };
 };
 var generateNonEditableNumberCell = function (value, className, nanToZero) {
     if (className === void 0) { className = ''; }
-    if (nanToZero === void 0) { nanToZero = false; }
+    if (nanToZero === void 0) { nanToZero = true; }
     return { type: 'nonEditableNumber', value: value, className: className, nanToZero: nanToZero };
 };
 var emptyYear = function () { return [
@@ -184,10 +186,10 @@ export var dataRows = [
         ], filledYear(2200, 2200), filledYear(2300, 2300))
     },
     {
-        rowId: 'Insurence',
+        rowId: 'Insurance',
         reorderable: true,
         cells: __spread([
-            { type: 'group', text: 'Insurence', parentId: 'Fixed', isExpanded: true }
+            { type: 'group', text: 'Insurance', parentId: 'Fixed', isExpanded: true }
         ], filledYear(1520, 1520), filledYear(1530, 1540))
     },
     {
