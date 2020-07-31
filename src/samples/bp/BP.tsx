@@ -1,12 +1,12 @@
 import * as React from "react";
-import { ReactGrid, Row, CellChange, DefaultCellTypes, TextCell, NumberCell, Id, DropPosition } from "@silevis/reactgrid";
+import { ReactGrid, Row, CellChange, DefaultCellTypes, TextCell, NumberCell, Id, DropPosition, MenuOption, SelectionMode } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 import "./styling.scss";
 import {
     getDataFromRows, createIndents, getExpandedRows, getDataFromColumns, fillCellMatrixHorizontally,
     fillCellMatrixVertically, getGroupCell, getDirectChildrenRows, getParentRow, extendWithColIds, getExpandedCells, getColumnsIdsxToRender, filterCellsOnRows,
 } from "./helpersFunctions";
-import { dataRows, topHeaderRow } from "./rows";
+import { dataRows, topHeaderRow, filledYear } from "./rows";
 import { dataColumns, BPColumn } from "./columns";
 import { HorizontalGroupCell, HorizontalGroupCellTemplate } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
 import { reorderArray } from './reorderArray';
@@ -56,7 +56,7 @@ export const BPSample: React.FC = () => {
         changes.forEach(change => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
-            if (changeRowIdx === 0 || changeColumnIdx === 0) { // TODO change go && 
+            if (changeRowIdx === 0) { // TODO change go && 
                 newState.rows[changeRowIdx].cells[changeColumnIdx] = { ...change.newCell, text: (change.initialCell as TextCell).text } as TextCell;
             } else {
                 if ((change.newCell.type === 'number' || change.newCell.type === 'nonEditableNumber')
@@ -158,6 +158,45 @@ export const BPSample: React.FC = () => {
         return acc;
     }
 
+    const handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {
+        if (selectionMode === 'row') {
+            const newState = { ...state };
+            menuOptions = [
+                ...menuOptions,
+                {
+                    id: 'addRow', label: 'Add row', handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode) => {
+                        if (selectedRowIds.length === 1) {
+                            const selectedRowIdx = newState.rows.findIndex(row => row.rowId === selectedRowIds[0]);
+                            const emptyRow: BPRow = {
+                                rowId: Date.now(),
+                                reorderable: true,
+                                cells: [
+                                    { type: 'group', text: '', parentId: selectedRowIds[0], isExpanded: true },
+                                    ...filledYear(0, 0),
+                                    ...filledYear(0, 0)
+                                ]
+                            };
+
+                            // TODO REMOVING NODE
+                            // TODO zmiana node na niedytowany po dodaniu do niego dziecka
+
+                            const newRows = [
+                                ...newState.rows.slice(0, selectedRowIdx + 1),
+                                emptyRow,
+                                ...newState.rows.slice(selectedRowIdx + 1, newState.rows.length),
+                            ];
+                            const expandedRows = getExpandedRows(newRows);
+                            const idxs = getColumnsIdsxToRender(topHeaderRow.cells, columnsToRender);
+                            setState({ ...state, rows: createIndents(newRows) });
+                            setRowsToRender([...filterCellsOnRows(expandedRows, idxs)]);
+                        }
+                    }
+                },
+            ]
+        }
+        return menuOptions;
+    }
+
     return (
         <div className="bp-sample">
             <ReactGrid
@@ -172,6 +211,7 @@ export const BPSample: React.FC = () => {
                 }}
                 onRowsReordered={handleRowsReorder}
                 canReorderRows={handleCanReorderRows}
+                onContextMenu={handleContextMenu}
                 enableRangeSelection
                 enableFillHandle
                 enableRowSelection

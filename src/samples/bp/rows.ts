@@ -74,7 +74,7 @@ const getRandomInt = (min: number, max: number): number => {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
-const filledYear = (min: number = 0, max: number = 10000, bonus: number = 0): RowCells[] => {
+export const filledYear = (min: number = 0, max: number = 10000, bonus: number = 0): RowCells[] => {
     return [
         generateNonEditableNumberCell(0, 'year'),
         generateNumberCell(0, 'quarter editable'),
