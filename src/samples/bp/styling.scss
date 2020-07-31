@@ -39,7 +39,6 @@
         }
     }
     .month {
-        background-color: #8080801a;
         &:not(.editable):not(.header) {
             color: $gray-color;
         }
@@ -56,6 +55,7 @@
         justify-content: flex-end;
         transition: all 0.1s;
     }
+
 }
 
 #bp-sample {
