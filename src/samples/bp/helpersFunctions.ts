@@ -1,6 +1,7 @@
 import { GroupCell, Column, Id, NumberCell } from '@silevis/reactgrid';
 import { BPRow, RowCells, RowPair } from '..';
 import { HorizontalGroupCell } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
+import { BPColumn } from './columns';
 
 export const getGroupCell = (row: BPRow) => row.cells.find((cell: RowCells) => cell.type === 'group') as GroupCell;
 
@@ -115,37 +116,44 @@ export const createIndents = (rows: BPRow[]): BPRow[] => rows.map(row => {
     return row;
 });
 
+export const isHorizontalGroupCell = (cell: RowCells) => cell.type === 'horizontalGroup';
+
 /// COLUMN
 
-/* export const appendColumnIds = (rows: BPRow[], columns: BPColumn[]) => {
-    return rows.map((row, idx) => {
-        rows[idx].cells.forEach((cell, idxx) => {
-            (cell as any).columnId = columns[idxx - 1]?.columnId;
-        })
-        return row;
-    });
-} */
+export const extendWithColIds = (row: BPRow, columns: BPColumn[]) => {
+    row.cells.forEach((cell, idx) => (cell as any).columnId = columns[idx]?.columnId);
+    return row;
+}
 
 export const getDataFromColumns = (columns: Column[]): Column[] => columns.slice(1, columns.length);
 
 export const getHorizontalGroupCell = (cells: RowCells[], columnId: Id) => cells.find((cell: RowCells) => cell.type === 'horizontalGroup' && cell.parentId === columnId) as HorizontalGroupCell | undefined;
 
-// export const hasHorizontalChildren = (columns: Column[], cells: RowCells[]) => cells.some(cl => columns.some(col => col.columnId === cell.parentId));
-
-// export const getParentColumn = (rows: BPRow[], row: BPRow): BPRow | undefined => rows.find(r => r.rowId === getHorizontalGroupCell(row).parentId);
+export const getParentCell = (cells: RowCells[], cell: RowCells): HorizontalGroupCell | undefined => cells.find(c => (c as any).columnId === (cell as any).parentId) as HorizontalGroupCell | undefined;
 
 export const getDirectChildrenColumns = (rows: BPRow[], parentRow: BPRow): BPRow[] => rows.filter(row => !!row.cells.find(cell => cell.type === 'horizontalGroup' && cell.parentId === parentRow.rowId));
 
-export const isColumnFullyExpanded = (rows: BPRow[], row: BPRow): boolean => {
-    // const parentColumn = getParentColumn(rows, row);
-    // if (parentColumn) {
-    //     if (!getHorizontalGroupCell(parentColumn).isExpanded) return false;
-    //     return isColumnFullyExpanded(rows, parentColumn);
-    // }
+export const isCellFullyExpanded = (cells: RowCells[], cell: RowCells): boolean => {
+    const parentCell = getParentCell(cells, cell);
+    if (parentCell) {
+        if (!parentCell.isExpanded) return false;
+        return isCellFullyExpanded(cells, parentCell);
+    }
     return true;
 };
 
-export const getExpandedColumns = (rows: BPRow[]): BPRow[] => rows.filter(row => {
-    const areAllParentsExpanded = isColumnFullyExpanded(rows, row);
+export const getExpandedCells = (cells: RowCells[]): RowCells[] => cells.filter(cell => {
+    const areAllParentsExpanded = isCellFullyExpanded(cells, cell);
     return areAllParentsExpanded !== undefined ? areAllParentsExpanded : true;
+});
+
+export const getColumnsIdsxToRender = (cells: RowCells[], columnsToRender: BPColumn[]) => {
+    return cells.map((thrCell, idx) =>
+        columnsToRender.find(colToRender => colToRender.columnId === (thrCell as HorizontalGroupCell).columnId) ? idx : NaN)
+        .filter(idx => !isNaN(idx));
+}
+
+export const filterCellsOnRows = (rows: BPRow[], visibleColsIdxs: number[]) => rows.map(row => {
+    const cells = row.cells.filter((_, idx) => visibleColsIdxs.includes(idx));
+    return { ...row, cells };
 });

@@ -5,25 +5,25 @@ import { NonEditableNumberCell } from './CellTemplates';
 
 const generateMonthHeader = (year: number, quarter: string, month: number): HorizontalGroupCell => {
     const formattedMonth = `${month}`.padStart(2, '0');
-    return { type: 'horizontalGroup', text: `${quarter}-${formattedMonth}`, className: 'month', parentId: `${year}-${quarter}` };
+    return { type: 'horizontalGroup', text: `${formattedMonth}`, className: 'month header', parentId: `${year}-${quarter}` };
 }
 
-const generateQuarterHeader = (year: number, quarter: string, hasChildren: boolean = false, isExpanded: boolean = false): HorizontalGroupCell => {
-    return { type: 'horizontalGroup', text: quarter, className: 'quarter', parentId: `${year}`, hasChildren, isExpanded };
+const generateQuarterHeader = (year: number, quarter: string, hasChildren: boolean = true, isExpanded: boolean = true): HorizontalGroupCell => {
+    return { type: 'horizontalGroup', text: quarter, className: 'quarter header', parentId: `${year}`, hasChildren, isExpanded: true };
 }
 
-const generateQuarter = (year: number, quarter: string, month: number) => {
+const generateQuarter = (year: number, quarter: string, month: number, isExpanded: boolean = true) => {
     return [
-        generateQuarterHeader(year, quarter),
+        generateQuarterHeader(year, quarter, isExpanded),
         generateMonthHeader(year, quarter, month),
         generateMonthHeader(year, quarter, month + 1),
         generateMonthHeader(year, quarter, month + 2),
     ]
 }
 
-const generateYear = (year: number, hasChildren: boolean = false) => {
+const generateYear = (year: number, hasChildren: boolean = true, isExpanded: boolean = true): RowCells[] => {
     return [
-        { type: 'horizontalGroup', text: `${year}`, className: 'year', parentId: undefined, hasChildren },
+        { type: 'horizontalGroup', text: `${year}`, className: 'year header', parentId: undefined, hasChildren, isExpanded },
         ...generateQuarter(year, 'Q1', 1),
         ...generateQuarter(year, 'Q2', 4),
         ...generateQuarter(year, 'Q3', 7),
@@ -35,16 +35,16 @@ export const topHeaderRow: Row<RowCells> = {
     rowId: 'topHeader',
     cells: [
         { type: 'text', text: 'Organization / Period' },
-        ...generateYear(2020) as RowCells[],
-        ...generateYear(2021) as RowCells[],
+        ...generateYear(2020),
+        ...generateYear(2021),
     ]
 };
 
-const generateNumberCell = (value: number, className: string = '', nanToZero: boolean = false): NumberCell => {
+const generateNumberCell = (value: number, className: string = '', nanToZero: boolean = true): NumberCell => {
     return { type: 'number', value, className, nanToZero }
 }
 
-const generateNonEditableNumberCell = (value: number, className: string = '', nanToZero: boolean = false): NonEditableNumberCell => {
+const generateNonEditableNumberCell = (value: number, className: string = '', nanToZero: boolean = true): NonEditableNumberCell => {
     return { type: 'nonEditableNumber', value, className, nanToZero }
 }
 
@@ -197,10 +197,10 @@ export const dataRows: Row<RowCells>[] = [
         ]
     },
     {
-        rowId: 'Insurence',
+        rowId: 'Insurance',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Insurence', parentId: 'Fixed', isExpanded: true },
+            { type: 'group', text: 'Insurance', parentId: 'Fixed', isExpanded: true },
             ...filledYear(1520, 1520),
             ...filledYear(1530, 1540),
         ]
