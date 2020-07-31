@@ -3,11 +3,12 @@ import { Column } from "@silevis/reactgrid";
 export type BPColumn = Column;
 
 const getMonth = (year: number, quarter: string, month: number) => {
-    return { columnId: `${year}-${quarter}-${month}`, width: 100 }
+    const formattedMonth = `${month}`.padStart(2, '0');
+    return { columnId: `${year}-${quarter}-${formattedMonth}`, width: 100 };
 }
 
 const getQuarter = (year: number, quarter: string) => {
-    return { columnId: `${year}-${quarter}`, width: 100 }
+    return { columnId: `${year}-${quarter}`, width: 100 };
 }
 
 const generateQuarter = (year: number, quarter: string, month: number) => {

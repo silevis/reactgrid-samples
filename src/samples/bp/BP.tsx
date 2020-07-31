@@ -4,8 +4,7 @@ import "@silevis/reactgrid/styles.css";
 import "./styling.scss";
 import {
     getDataFromRows, createIndents, getExpandedRows, getDataFromColumns, fillCellMatrixHorizontally,
-    fillCellMatrixVertically, getGroupCell, getDirectChildrenRows, getParentRow,
-    // appendColumnIds
+    fillCellMatrixVertically, getGroupCell, getDirectChildrenRows, getParentRow, extendWithColIds, getExpandedCells, getColumnsIdsxToRender, filterCellsOnRows,
 } from "./helpersFunctions";
 import { dataRows, topHeaderRow } from "./rows";
 import { dataColumns, BPColumn } from "./columns";
@@ -31,8 +30,6 @@ export const BPSample: React.FC = () => {
         columns = getDataFromColumns(columns);
         rows = getDataFromRows(rows);
         rows = fillCellMatrixHorizontally(rows);
-        // rows = appendColumnIds(rows, columns);
-        console.log(topHeaderRow);
         fillCellMatrixVertically(rows);
         rows = createIndents(rows);
         return {
@@ -41,33 +38,17 @@ export const BPSample: React.FC = () => {
         }
     });
 
-    const [rowsToRender, setRowsToRender] = React.useState<BPRow[]>(() => {
-
-        // const acc: RowCells[] = [];
-        // topHeaderRow.cells.filter(cell => cell.className === 'year').forEach(cell => {
-        //     acc.push(cell);
-        //     topHeaderRow.cells.filter(c => c.className === 'quarter' && (c as HorizontalGroupCell).parentId === (cell as any).text)
-        //         .forEach(ac => {
-        //             acc.push(ac)
-        //             topHeaderRow.cells.filter(ca => ca.className === 'month' && (ca as HorizontalGroupCell).parentId)
-        //                 .forEach(ac => {
-        //                     acc.push(ac)
-        //                 })
-
-        //         })
-        // })
-        // console.log(acc, topHeaderRow.cells);
-        return getExpandedRows(state.rows).map((row, idx) => {
-            return row;
-        })
-
+    const [columnsToRender, setColumnsToRender] = React.useState<BPColumn[]>(() => {
+        const extendedTopHeaderRow = extendWithColIds(topHeaderRow, [...dataColumns]);
+        const expandedCells = getExpandedCells(extendedTopHeaderRow.cells);
+        return state.columns.filter(col => expandedCells.find(expCell => (expCell as HorizontalGroupCell).columnId === col.columnId));
     });
 
-    const [colsToRender, setColsToRender] = React.useState<BPColumn[]>(() => {
-        // console.log(topHeaderRow)
-        return state.columns.filter((col, idx) => {
-            return col;
-        })
+    const [rowsToRender, setRowsToRender] = React.useState<BPRow[]>(() => {
+        const topHeaderRowWithColumnIds = extendWithColIds(topHeaderRow, [...dataColumns]);
+        const expandedRows = getExpandedRows(state.rows);
+        const idxs = getColumnsIdsxToRender(topHeaderRowWithColumnIds.cells, columnsToRender);
+        return filterCellsOnRows(expandedRows, idxs);
     });
 
     const handleChanges = (changes: CellChange<RowCells>[]) => {
@@ -75,7 +56,7 @@ export const BPSample: React.FC = () => {
         changes.forEach(change => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
-            if (changeRowIdx === 0 && changeColumnIdx === 0) {
+            if (changeRowIdx === 0 || changeColumnIdx === 0) { // TODO change go && 
                 newState.rows[changeRowIdx].cells[changeColumnIdx] = { ...change.newCell, text: (change.initialCell as TextCell).text } as TextCell;
             } else {
                 if ((change.newCell.type === 'number' || change.newCell.type === 'nonEditableNumber')
@@ -91,8 +72,13 @@ export const BPSample: React.FC = () => {
         });
         const rows = fillCellMatrixHorizontally(newState.rows);
         fillCellMatrixVertically(rows);
+        const expandedCells = getExpandedCells(topHeaderRow.cells);
+        const columnsToRender = newState.columns.filter(col => expandedCells.find(expandedCell => (expandedCell as HorizontalGroupCell).columnId === col.columnId));
+        const idxs = getColumnsIdsxToRender(topHeaderRow.cells, columnsToRender);
+        const expandedRows = getExpandedRows(rows);
+        setColumnsToRender([...columnsToRender])
         setState({ ...state, rows: createIndents(rows) });
-        setRowsToRender([...getExpandedRows(rows)]);
+        setRowsToRender([...filterCellsOnRows(expandedRows, idxs)]);
     };
 
     const updateNodeQuarter = (state: BPState, valueToDivide: number, changeRowIdx: number, changeColumnIdx: number) => {
@@ -149,7 +135,7 @@ export const BPSample: React.FC = () => {
 
     const handleCanReorderRows = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition): boolean => {
         const newState = { ...state };
-        let rowIdxs = rowIds.map(id => newState.rows.findIndex(row => row.rowId === id));
+        const rowIdxs = rowIds.map(id => newState.rows.findIndex(row => row.rowId === id));
         if (rowIdxs.length === 1 && targetRowId !== topHeaderRow.rowId) {
             const row = newState.rows[rowIdxs[0]];
             const rowChildren = [...new Set(getRowChildren(newState.rows, [], row))];
@@ -167,7 +153,7 @@ export const BPSample: React.FC = () => {
         if (!rowsChildren) return [];
 
         rowsChildren.forEach(childRow => {
-            acc = [...acc, ...getRowChildren(rows, rowsChildren, childRow)];
+            acc.push(...getRowChildren(rows, rowsChildren, childRow));
         });
         return acc;
     }
@@ -176,7 +162,7 @@ export const BPSample: React.FC = () => {
         <div className="bp-sample">
             <ReactGrid
                 rows={rowsToRender}
-                columns={colsToRender}
+                columns={columnsToRender}
                 onCellsChanged={handleChanges}
                 stickyTopRows={1}
                 stickyLeftColumns={1}

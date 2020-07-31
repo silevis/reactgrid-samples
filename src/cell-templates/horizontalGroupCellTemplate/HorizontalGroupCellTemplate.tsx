@@ -10,6 +10,7 @@ export interface HorizontalGroupCell extends Cell {
     text: string;
     isExpanded?: boolean;
     hasChildren?: boolean;
+    columnId?: Id; // helper field
     parentId?: Id;
 }
 
@@ -36,6 +37,8 @@ export class HorizontalGroupCellTemplate implements CellTemplate<HorizontalGroup
     update(cell: Compatible<HorizontalGroupCell>, cellToMerge: UncertainCompatible<HorizontalGroupCell>): Compatible<HorizontalGroupCell> {
         return this.getCompatibleCell({ ...cell, isExpanded: cellToMerge.isExpanded, text: cellToMerge.text })
     }
+
+    isFocusable = () => false;
 
     handleKeyDown(cell: Compatible<HorizontalGroupCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<HorizontalGroupCell>, enableEditMode: boolean } {
         // let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;

@@ -11,7 +11,7 @@
             font-weight: bold;
             margin-right: 1em * 0.1;
             cursor: pointer;
-            transition: 200ms all ease-in-out;
+            transition: 300ms all ease-in-out;
             height: 1em;
             width: 1em;
         }
@@ -19,48 +19,41 @@
             width: 0.5em;
         }
         &.expanded .chevron {
-            transform: rotate(180deg);
+            transform: rotateY(180deg);
         }
         &.collapsed .chevron {
-            transform: rotate(0deg);
+            transform: rotateY(0deg);
         }
     }
-    
     .year {
         background-color: lighten($color: #0683F9, $amount: 45);
     }
-    
     .quarter {
-        background-color: lighten($color: #0683F9, $amount: 35);
+        background-color: lighten($color: #0683F9, $amount: 40);
     }
-    
     .month {
         background-color: #8080801a;
     }
-    
     .editable {
         &.quarter {
             background-color: lighten($color: #0683F9, $amount: 45);
         }
-        
         &.month {
             background-color: lighten($color: #0683F9, $amount: 40);
         }
     }
-    
     .rg-nonEditableNumber-cell { 
         justify-content: flex-end;
     }
-    
     .rg-number-cell {
         transition: 0.15s;
         &:hover {
-            color: white;
-            background-color: lighten($color: #0683F9, $amount: 10);
+            // color: white;
+            background-color: lighten($color: #0683F9, $amount: 35);
+            // border: 1px solid red !important;
         }
     }
 }
-
 
 #bp-sample {
     @import '@silevis/reactgrid/styles.scss';
