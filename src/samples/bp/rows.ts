@@ -48,7 +48,7 @@ const generateNonEditableNumberCell = (value: number, className: string = '', na
     return { type: 'nonEditableNumber', value, className, nanToZero }
 }
 
-const emptyYear = (): RowCells[] => [
+export const emptyYear = (): RowCells[] => [
     generateNonEditableNumberCell(0, 'year'),
     generateNonEditableNumberCell(0, 'quarter'),
     generateNonEditableNumberCell(0, 'month'),
@@ -191,7 +191,7 @@ export const dataRows: Row<RowCells>[] = [
         rowId: 'Rent',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Electricity', parentId: 'Rent' },
+            { type: 'group', text: 'Rent', parentId: 'Office costs' },
             ...filledYear(2200, 2200),
             ...filledYear(2300, 2300),
         ]
