@@ -4,7 +4,7 @@ import "@silevis/reactgrid/styles.css";
 import "./styling.scss";
 import {
     getDataFromRows, createIndents, getExpandedRows, getDataFromColumns, fillCellMatrixHorizontally,
-    fillCellMatrixVertically, getGroupCell, getDirectChildrenRows, getParentRow, extendWithColIds, getExpandedCells, getColumnsIdsxToRender, filterCellsOnRows,
+    fillCellMatrixVertically, getGroupCell, getDirectChildrenRows, getParentRow, extendWithColIds, getExpandedCells, getColumnsIdsxToRender, filterCellsOnRows, resetAggregatedMonthFields,
 } from "./helpersFunctions";
 import { dataRows, topHeaderRow, filledYear, emptyYear } from "./rows";
 import { dataColumns, BPColumn } from "./columns";
@@ -172,7 +172,7 @@ export const BPSample: React.FC = () => {
                                 rowId: Date.now(),
                                 reorderable: true,
                                 cells: [
-                                    { type: 'group', text: `New row`, parentId: selectedRowIds[0] },
+                                    { type: 'group', text: `New row`, parentId: selectedRowIds[0], isExpanded: false },
                                     ...filledYear(0, 0),
                                     ...filledYear(0, 0)
                                 ]
@@ -214,11 +214,12 @@ export const BPSample: React.FC = () => {
                             ];
 
                             const newRows = newState.rows.filter(row => !rowsToRemove.some(rowToRemove => rowToRemove.rowId === row.rowId));
-
+                            newRows.forEach(row => {
+                                resetAggregatedMonthFields(row);
+                            })
                             const expandedRows = getExpandedRows(newRows);
                             const idxs = getColumnsIdsxToRender(topHeaderRow.cells, columnsToRender);
                             const rows = fillCellMatrixHorizontally(newRows);
-                            console.log(rows);
                             fillCellMatrixVertically(rows);
                             setState({ ...state, rows: createIndents(rows) });
                             setRowsToRender([...filterCellsOnRows(expandedRows, idxs)]);
