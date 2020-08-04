@@ -33,8 +33,8 @@ import * as React from "react";
 import { ReactGrid } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 import "./styling.scss";
-import { getDataFromRows, createIndents, getExpandedRows, getDataFromColumns, fillCellMatrixHorizontally, fillCellMatrixVertically, getGroupCell, getDirectChildrenRows, getParentRow, extendWithColIds, getExpandedCells, getColumnsIdsxToRender, filterCellsOnRows, } from "./helpersFunctions";
-import { dataRows, topHeaderRow } from "./rows";
+import { getDataFromRows, createIndents, getExpandedRows, getDataFromColumns, fillCellMatrixHorizontally, fillCellMatrixVertically, getGroupCell, getDirectChildrenRows, getParentRow, extendWithColIds, getExpandedCells, getColumnsIdsxToRender, filterCellsOnRows, resetAggregatedMonthFields, } from "./helpersFunctions";
+import { dataRows, topHeaderRow, filledYear, emptyYear } from "./rows";
 import { dataColumns } from "./columns";
 import { HorizontalGroupCellTemplate } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
 import { reorderArray } from './reorderArray';
@@ -70,7 +70,7 @@ export var BPSample = function () {
             var _a, _b;
             var changeRowIdx = newState.rows.findIndex(function (el) { return el.rowId === change.rowId; });
             var changeColumnIdx = newState.columns.findIndex(function (el) { return el.columnId === change.columnId; });
-            if (changeRowIdx === 0 || changeColumnIdx === 0) {
+            if (changeRowIdx === 0) {
                 newState.rows[changeRowIdx].cells[changeColumnIdx] = __assign(__assign({}, change.newCell), { text: change.initialCell.text });
             }
             else {
@@ -168,9 +168,69 @@ export var BPSample = function () {
         });
         return acc;
     };
+    var handleContextMenu = function (selectedRowIds, selectedColIds, selectionMode, menuOptions) {
+        console.log(selectedRowIds);
+        if (selectionMode === 'row' && selectedRowIds.length === 1 && selectedRowIds[0] !== 'topHeader') {
+            var newState_1 = __assign({}, state);
+            menuOptions = __spread(menuOptions, [
+                {
+                    id: 'addRow', label: 'Add child row',
+                    handler: function (selectedRowIds, selectedColIds, selectionMode) {
+                        if (selectedRowIds.length === 1) {
+                            var selectedRowIdx = newState_1.rows.findIndex(function (row) { return row.rowId === selectedRowIds[0]; });
+                            var selectedRow = newState_1.rows[selectedRowIdx];
+                            var emptyRow = {
+                                rowId: Date.now(),
+                                reorderable: true,
+                                cells: __spread([
+                                    { type: 'group', text: "New row", parentId: selectedRowIds[0], isExpanded: false }
+                                ], filledYear(0, 0), filledYear(0, 0))
+                            };
+                            var changedSelectedRow = __assign(__assign({}, selectedRow), { cells: __spread([
+                                    selectedRow.cells[0]
+                                ], emptyYear(), emptyYear()) });
+                            var newRows = __spread(newState_1.rows.slice(0, selectedRowIdx), [
+                                changedSelectedRow,
+                                emptyRow
+                            ], newState_1.rows.slice(selectedRowIdx + 1, newState_1.rows.length));
+                            var expandedRows = getExpandedRows(newRows);
+                            var idxs = getColumnsIdsxToRender(topHeaderRow.cells, columnsToRender);
+                            var rows = fillCellMatrixHorizontally(newRows);
+                            fillCellMatrixVertically(rows);
+                            setState(__assign(__assign({}, state), { rows: createIndents(rows) }));
+                            setRowsToRender(__spread(filterCellsOnRows(expandedRows, idxs)));
+                        }
+                    }
+                },
+                {
+                    id: 'removeRow', label: 'Remove row',
+                    handler: function (selectedRowIds, selectedColIds, selectionMode) {
+                        if (selectedRowIds.length === 1) {
+                            var selectedRowIdx = newState_1.rows.findIndex(function (row) { return row.rowId === selectedRowIds[0]; });
+                            var selectedRow = newState_1.rows[selectedRowIdx];
+                            var rowsToRemove_1 = __spread([
+                                selectedRow
+                            ], new Set(getRowChildren(state.rows, [], selectedRow)));
+                            var newRows = newState_1.rows.filter(function (row) { return !rowsToRemove_1.some(function (rowToRemove) { return rowToRemove.rowId === row.rowId; }); });
+                            newRows.forEach(function (row) {
+                                resetAggregatedMonthFields(row);
+                            });
+                            var expandedRows = getExpandedRows(newRows);
+                            var idxs = getColumnsIdsxToRender(topHeaderRow.cells, columnsToRender);
+                            var rows = fillCellMatrixHorizontally(newRows);
+                            fillCellMatrixVertically(rows);
+                            setState(__assign(__assign({}, state), { rows: createIndents(rows) }));
+                            setRowsToRender(__spread(filterCellsOnRows(expandedRows, idxs)));
+                        }
+                    }
+                },
+            ]);
+        }
+        return menuOptions;
+    };
     return (React.createElement("div", { className: "bp-sample" },
         React.createElement(ReactGrid, { rows: rowsToRender, columns: columnsToRender, onCellsChanged: handleChanges, stickyTopRows: 1, stickyLeftColumns: 1, customCellTemplates: {
                 horizontalGroup: new HorizontalGroupCellTemplate(),
                 nonEditableNumber: nonEditableNumberCellTemplate,
-            }, onRowsReordered: handleRowsReorder, canReorderRows: handleCanReorderRows, enableRangeSelection: true, enableFillHandle: true, enableRowSelection: true })));
+            }, onRowsReordered: handleRowsReorder, canReorderRows: handleCanReorderRows, onContextMenu: handleContextMenu, enableRangeSelection: true, enableFillHandle: true, enableRowSelection: true })));
 };

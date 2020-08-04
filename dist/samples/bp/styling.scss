@@ -32,10 +32,16 @@
         &:not(.header) {
             color: $gray-color;
         }
+        &.header {
+            background-color: lighten($color: #0683F9, $amount: 35);
+        }
     }
     .quarter {
         &:not(.editable):not(.header) {
             color: $gray-color;
+        }
+        &.header {
+            background-color: lighten($color: #0683F9, $amount: 45);
         }
     }
     .month {

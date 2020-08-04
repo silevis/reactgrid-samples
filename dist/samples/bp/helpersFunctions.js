@@ -41,10 +41,10 @@ export var fillCellMatrixHorizontally = function (rows) { return rows.map(functi
     });
     return row;
 }); };
-var resetAggregatedMonthFields = function (row) {
+export var resetAggregatedMonthFields = function (row) {
     row.cells.forEach(function (cell) {
-        if (cell.type === 'number' || cell.type === 'nonEditableNumber') {
-            cell.value = NaN;
+        if ((cell.type === 'number' || cell.type === 'nonEditableNumber') && cell.className === 'month') {
+            cell.value = 0;
         }
     });
 };

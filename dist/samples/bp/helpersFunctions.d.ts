@@ -5,6 +5,7 @@ import { BPColumn } from './columns';
 export declare const getGroupCell: (row: BPRow) => GroupCell;
 export declare const getExpandedRows: (rows: BPRow[]) => BPRow[];
 export declare const fillCellMatrixHorizontally: (rows: BPRow[]) => BPRow[];
+export declare const resetAggregatedMonthFields: (row: BPRow) => void;
 export declare const fillCellMatrixVertically: (rows: BPRow[]) => void;
 export declare const collectRowPairs: (rows: BPRow[]) => RowPair[];
 export declare const getDirectChildrenRows: (rows: BPRow[], parentRow: BPRow) => BPRow[];

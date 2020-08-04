@@ -59,7 +59,7 @@ var generateNonEditableNumberCell = function (value, className, nanToZero) {
     if (nanToZero === void 0) { nanToZero = true; }
     return { type: 'nonEditableNumber', value: value, className: className, nanToZero: nanToZero };
 };
-var emptyYear = function () { return [
+export var emptyYear = function () { return [
     generateNonEditableNumberCell(0, 'year'),
     generateNonEditableNumberCell(0, 'quarter'),
     generateNonEditableNumberCell(0, 'month'),
@@ -83,7 +83,7 @@ var getRandomInt = function (min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min)) + min;
 };
-var filledYear = function (min, max, bonus) {
+export var filledYear = function (min, max, bonus) {
     if (min === void 0) { min = 0; }
     if (max === void 0) { max = 10000; }
     if (bonus === void 0) { bonus = 0; }
@@ -182,7 +182,7 @@ export var dataRows = [
         rowId: 'Rent',
         reorderable: true,
         cells: __spread([
-            { type: 'group', text: 'Electricity', parentId: 'Rent' }
+            { type: 'group', text: 'Rent', parentId: 'Office costs' }
         ], filledYear(2200, 2200), filledYear(2300, 2300))
     },
     {
