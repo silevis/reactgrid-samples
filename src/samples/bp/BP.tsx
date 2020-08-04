@@ -1,12 +1,12 @@
 import * as React from "react";
-import { ReactGrid, Row, CellChange, DefaultCellTypes, TextCell, NumberCell, Id, DropPosition } from "@silevis/reactgrid";
+import { ReactGrid, Row, CellChange, DefaultCellTypes, TextCell, NumberCell, Id, DropPosition, MenuOption, SelectionMode } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 import "./styling.scss";
 import {
     getDataFromRows, createIndents, getExpandedRows, getDataFromColumns, fillCellMatrixHorizontally,
-    fillCellMatrixVertically, getGroupCell, getDirectChildrenRows, getParentRow, extendWithColIds, getExpandedCells, getColumnsIdsxToRender, filterCellsOnRows,
+    fillCellMatrixVertically, getGroupCell, getDirectChildrenRows, getParentRow, extendWithColIds, getExpandedCells, getColumnsIdsxToRender, filterCellsOnRows, resetAggregatedMonthFields,
 } from "./helpersFunctions";
-import { dataRows, topHeaderRow } from "./rows";
+import { dataRows, topHeaderRow, filledYear, emptyYear } from "./rows";
 import { dataColumns, BPColumn } from "./columns";
 import { HorizontalGroupCell, HorizontalGroupCellTemplate } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
 import { reorderArray } from './reorderArray';
@@ -56,7 +56,7 @@ export const BPSample: React.FC = () => {
         changes.forEach(change => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
-            if (changeRowIdx === 0 || changeColumnIdx === 0) { // TODO change go && 
+            if (changeRowIdx === 0) { // TODO change go && 
                 newState.rows[changeRowIdx].cells[changeColumnIdx] = { ...change.newCell, text: (change.initialCell as TextCell).text } as TextCell;
             } else {
                 if ((change.newCell.type === 'number' || change.newCell.type === 'nonEditableNumber')
@@ -76,7 +76,7 @@ export const BPSample: React.FC = () => {
         const columnsToRender = newState.columns.filter(col => expandedCells.find(expandedCell => (expandedCell as HorizontalGroupCell).columnId === col.columnId));
         const idxs = getColumnsIdsxToRender(topHeaderRow.cells, columnsToRender);
         const expandedRows = getExpandedRows(rows);
-        setColumnsToRender([...columnsToRender])
+        setColumnsToRender([...columnsToRender]);
         setState({ ...state, rows: createIndents(rows) });
         setRowsToRender([...filterCellsOnRows(expandedRows, idxs)]);
     };
@@ -158,6 +158,80 @@ export const BPSample: React.FC = () => {
         return acc;
     }
 
+    const handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {
+        console.log(selectedRowIds);
+        if (selectionMode === 'row' && selectedRowIds.length === 1 && selectedRowIds[0] !== 'topHeader') {
+            const newState = { ...state };
+            menuOptions = [
+                ...menuOptions,
+                {
+                    id: 'addRow', label: 'Add child row', handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode) => {
+                        if (selectedRowIds.length === 1) {
+                            const selectedRowIdx = newState.rows.findIndex(row => row.rowId === selectedRowIds[0]);
+                            const selectedRow = newState.rows[selectedRowIdx];
+                            const emptyRow: BPRow = {
+                                rowId: Date.now(),
+                                reorderable: true,
+                                cells: [
+                                    { type: 'group', text: `New row`, parentId: selectedRowIds[0], isExpanded: false },
+                                    ...filledYear(0, 0),
+                                    ...filledYear(0, 0)
+                                ]
+                            };
+
+                            const changedSelectedRow: BPRow = {
+                                ...selectedRow,
+                                cells: [
+                                    selectedRow.cells[0],
+                                    ...emptyYear(),
+                                    ...emptyYear()
+                                ]
+                            }
+
+                            const newRows = [
+                                ...newState.rows.slice(0, selectedRowIdx),
+                                changedSelectedRow,
+                                emptyRow,
+                                ...newState.rows.slice(selectedRowIdx + 1, newState.rows.length),
+                            ];
+                            const expandedRows = getExpandedRows(newRows);
+                            const idxs = getColumnsIdsxToRender(topHeaderRow.cells, columnsToRender);
+                            const rows = fillCellMatrixHorizontally(newRows);
+                            fillCellMatrixVertically(rows);
+                            setState({ ...state, rows: createIndents(rows) });
+                            setRowsToRender([...filterCellsOnRows(expandedRows, idxs)]);
+                        }
+                    }
+                },
+                {
+                    id: 'removeRow', label: 'Remove row', handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode) => {
+                        if (selectedRowIds.length === 1) {
+                            const selectedRowIdx = newState.rows.findIndex(row => row.rowId === selectedRowIds[0]);
+                            const selectedRow = newState.rows[selectedRowIdx];
+
+                            const rowsToRemove: BPRow[] = [
+                                selectedRow,
+                                ...new Set(getRowChildren(state.rows, [], selectedRow))
+                            ];
+
+                            const newRows = newState.rows.filter(row => !rowsToRemove.some(rowToRemove => rowToRemove.rowId === row.rowId));
+                            newRows.forEach(row => {
+                                resetAggregatedMonthFields(row);
+                            })
+                            const expandedRows = getExpandedRows(newRows);
+                            const idxs = getColumnsIdsxToRender(topHeaderRow.cells, columnsToRender);
+                            const rows = fillCellMatrixHorizontally(newRows);
+                            fillCellMatrixVertically(rows);
+                            setState({ ...state, rows: createIndents(rows) });
+                            setRowsToRender([...filterCellsOnRows(expandedRows, idxs)]);
+                        }
+                    }
+                },
+            ]
+        }
+        return menuOptions;
+    }
+
     return (
         <div className="bp-sample">
             <ReactGrid
@@ -172,6 +246,7 @@ export const BPSample: React.FC = () => {
                 }}
                 onRowsReordered={handleRowsReorder}
                 canReorderRows={handleCanReorderRows}
+                onContextMenu={handleContextMenu}
                 enableRangeSelection
                 enableFillHandle
                 enableRowSelection

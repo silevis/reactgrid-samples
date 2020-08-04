@@ -48,7 +48,7 @@ const generateNonEditableNumberCell = (value: number, className: string = '', na
     return { type: 'nonEditableNumber', value, className, nanToZero }
 }
 
-const emptyYear = (): RowCells[] => [
+export const emptyYear = (): RowCells[] => [
     generateNonEditableNumberCell(0, 'year'),
     generateNonEditableNumberCell(0, 'quarter'),
     generateNonEditableNumberCell(0, 'month'),
@@ -74,7 +74,7 @@ const getRandomInt = (min: number, max: number): number => {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
-const filledYear = (min: number = 0, max: number = 10000, bonus: number = 0): RowCells[] => {
+export const filledYear = (min: number = 0, max: number = 10000, bonus: number = 0): RowCells[] => {
     return [
         generateNonEditableNumberCell(0, 'year'),
         generateNumberCell(0, 'quarter editable'),
@@ -191,7 +191,7 @@ export const dataRows: Row<RowCells>[] = [
         rowId: 'Rent',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Electricity', parentId: 'Rent' },
+            { type: 'group', text: 'Rent', parentId: 'Office costs' },
             ...filledYear(2200, 2200),
             ...filledYear(2300, 2300),
         ]

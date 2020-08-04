@@ -41,10 +41,10 @@ export const fillCellMatrixHorizontally = (rows: BPRow[]): BPRow[] => rows.map(r
     return row;
 });
 
-const resetAggregatedMonthFields = (row: BPRow) => {
+export const resetAggregatedMonthFields = (row: BPRow) => {
     row.cells.forEach(cell => {
-        if (cell.type === 'number' || cell.type === 'nonEditableNumber') {
-            cell.value = NaN;
+        if ((cell.type === 'number' || cell.type === 'nonEditableNumber') && cell.className === 'month') {
+            cell.value = 0;
         }
     });
 };
