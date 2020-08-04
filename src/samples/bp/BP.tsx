@@ -159,7 +159,8 @@ export const BPSample: React.FC = () => {
     }
 
     const handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {
-        if (selectionMode === 'row') {
+        console.log(selectedRowIds);
+        if (selectionMode === 'row' && selectedRowIds.length === 1 && selectedRowIds[0] !== 'topHeader') {
             const newState = { ...state };
             menuOptions = [
                 ...menuOptions,
