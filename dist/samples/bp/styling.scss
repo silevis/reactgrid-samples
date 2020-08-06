@@ -31,31 +31,32 @@
     .year {
         &:not(.header) {
             color: $gray-color;
+            background-color: #eee;
         }
         &.header {
-            background-color: lighten($color: #0683F9, $amount: 35);
+            background-color: lighten($color: #0683F9, $amount: 25);
         }
     }
     .quarter {
         &:not(.editable):not(.header) {
             color: $gray-color;
+            background-color: #eee;
         }
         &.header {
-            background-color: lighten($color: #0683F9, $amount: 45);
+            background-color: lighten($color: #0683F9, $amount: 35);
         }
     }
     .month {
         &:not(.editable):not(.header) {
             color: $gray-color;
+            background-color: #eee;
         }
-    }
-    .editable {
-        &.quarter {
+        &.header {
             background-color: lighten($color: #0683F9, $amount: 45);
         }
-        &.month {
-            background-color: lighten($color: #0683F9, $amount: 40);
-        }
+    }
+    .rg-group-cell, .rg-text-cell {
+        background-color: #f8f8f8;
     }
     .rg-nonEditableNumber-cell { 
         justify-content: flex-end;

@@ -49,15 +49,16 @@ export var topHeaderRow = {
         { type: 'text', text: 'Organization / Period' }
     ], generateYear(2020), generateYear(2021))
 };
+var myNumberFormat = new Intl.NumberFormat('us', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 });
 var generateNumberCell = function (value, className, nanToZero) {
     if (className === void 0) { className = ''; }
     if (nanToZero === void 0) { nanToZero = true; }
-    return { type: 'number', value: value, className: className, nanToZero: nanToZero };
+    return { type: 'number', value: value, className: className, nanToZero: nanToZero, format: myNumberFormat };
 };
 var generateNonEditableNumberCell = function (value, className, nanToZero) {
     if (className === void 0) { className = ''; }
     if (nanToZero === void 0) { nanToZero = true; }
-    return { type: 'nonEditableNumber', value: value, className: className, nanToZero: nanToZero };
+    return { type: 'nonEditableNumber', value: value, className: className, nanToZero: nanToZero, format: myNumberFormat };
 };
 export var emptyYear = function () { return [
     generateNonEditableNumberCell(0, 'year'),

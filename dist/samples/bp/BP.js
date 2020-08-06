@@ -67,7 +67,7 @@ export var BPSample = function () {
     var handleChanges = function (changes) {
         var newState = __assign({}, state);
         changes.forEach(function (change) {
-            var _a, _b;
+            var _a;
             var changeRowIdx = newState.rows.findIndex(function (el) { return el.rowId === change.rowId; });
             var changeColumnIdx = newState.columns.findIndex(function (el) { return el.columnId === change.columnId; });
             if (changeRowIdx === 0) {
@@ -75,7 +75,7 @@ export var BPSample = function () {
             }
             else {
                 if ((change.newCell.type === 'number' || change.newCell.type === 'nonEditableNumber')
-                    && (((_a = change.newCell.className) === null || _a === void 0 ? void 0 : _a.includes('quarter')) || ((_b = change.newCell.className) === null || _b === void 0 ? void 0 : _b.includes('year')))) {
+                    && ((_a = change.newCell.className) === null || _a === void 0 ? void 0 : _a.includes('quarter'))) {
                     var groupCell = getGroupCell(newState.rows[changeRowIdx]);
                     if (!groupCell.hasChildren) {
                         updateNodeQuarter(newState, change.newCell.value, changeRowIdx, changeColumnIdx);
@@ -169,7 +169,6 @@ export var BPSample = function () {
         return acc;
     };
     var handleContextMenu = function (selectedRowIds, selectedColIds, selectionMode, menuOptions) {
-        console.log(selectedRowIds);
         if (selectionMode === 'row' && selectedRowIds.length === 1 && selectedRowIds[0] !== 'topHeader') {
             var newState_1 = __assign({}, state);
             menuOptions = __spread(menuOptions, [
