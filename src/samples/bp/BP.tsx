@@ -1,10 +1,14 @@
 import * as React from "react";
-import { ReactGrid, Row, CellChange, DefaultCellTypes, TextCell, NumberCell, Id, DropPosition, MenuOption, SelectionMode } from "@silevis/reactgrid";
+import {
+    ReactGrid, Row, CellChange, DefaultCellTypes, TextCell, NumberCell, Id, DropPosition, MenuOption,
+    SelectionMode
+} from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 import "./styling.scss";
 import {
     getDataFromRows, createIndents, getExpandedRows, getDataFromColumns, fillCellMatrixHorizontally,
-    fillCellMatrixVertically, getGroupCell, getDirectChildrenRows, getParentRow, extendWithColIds, getExpandedCells, getColumnsIdsxToRender, filterCellsOnRows, resetAggregatedMonthFields,
+    fillCellMatrixVertically, getGroupCell, getDirectChildrenRows, getParentRow, extendWithColIds, getExpandedCells,
+    getColumnsIdsxToRender, filterCellsOnRows, resetAggregatedMonthFields,
 } from "./helpersFunctions";
 import { dataRows, topHeaderRow, filledYear, emptyYear } from "./rows";
 import { dataColumns, BPColumn } from "./columns";
@@ -56,11 +60,11 @@ export const BPSample: React.FC = () => {
         changes.forEach(change => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
-            if (changeRowIdx === 0) { // TODO change go && 
-                newState.rows[changeRowIdx].cells[changeColumnIdx] = { ...change.newCell, text: (change.initialCell as TextCell).text } as TextCell;
+            if (changeRowIdx === 0) {
+                newState.rows[changeRowIdx].cells[changeColumnIdx] = { ...change.newCell, text: (change.initialCell as HorizontalGroupCell).text } as HorizontalGroupCell;
             } else {
                 if ((change.newCell.type === 'number' || change.newCell.type === 'nonEditableNumber')
-                    && (change.newCell.className?.includes('quarter') || change.newCell.className?.includes('year'))) {
+                    && (change.newCell.className?.includes('quarter'))) {
                     const groupCell = getGroupCell(newState.rows[changeRowIdx]);
                     if (!groupCell.hasChildren) {
                         updateNodeQuarter(newState, change.newCell.value, changeRowIdx, changeColumnIdx);
@@ -159,7 +163,6 @@ export const BPSample: React.FC = () => {
     }
 
     const handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {
-        console.log(selectedRowIds);
         if (selectionMode === 'row' && selectedRowIds.length === 1 && selectedRowIds[0] !== 'topHeader') {
             const newState = { ...state };
             menuOptions = [
