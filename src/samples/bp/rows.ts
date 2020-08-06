@@ -40,12 +40,14 @@ export const topHeaderRow: Row<RowCells> = {
     ]
 };
 
+const myNumberFormat = new Intl.NumberFormat('us', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
 const generateNumberCell = (value: number, className: string = '', nanToZero: boolean = true): NumberCell => {
-    return { type: 'number', value, className, nanToZero }
+    return { type: 'number', value, className, nanToZero, format: myNumberFormat };
 }
 
 const generateNonEditableNumberCell = (value: number, className: string = '', nanToZero: boolean = true): NonEditableNumberCell => {
-    return { type: 'nonEditableNumber', value, className, nanToZero }
+    return { type: 'nonEditableNumber', value, className, nanToZero, format: myNumberFormat };
 }
 
 export const emptyYear = (): RowCells[] => [
