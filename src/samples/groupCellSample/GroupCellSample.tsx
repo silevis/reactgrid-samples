@@ -95,51 +95,53 @@ export const GroupCellSample: React.FunctionComponent = () => {
     }
 
     const handleRowsReorder = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
-        /*  const newState = { ...state };
-         let to = newState.rows.findIndex(row => row.rowId === targetRowId);
-         let rowIdxs = rowIds.map(id => state.rows.findIndex(r => r.rowId === id));
- 
-         if (rowIdxs.length === 1) {
-             const row = newState.rows[rowIdxs[0]];
-             rowIdxs = [row, ...new Set(getRowChildren(newState.rows, [], row))].map(item => newState.rows.findIndex(r => r.rowId === item.rowId));
- 
-             const onRow = newState.rows.find(row => row.rowId === targetRowId);
-             if (onRow) {
-                 const movingRowRoot = getGroupCell(row);
-                 if (dropPosition === 'on') {
-                     movingRowRoot.parentId = onRow.rowId;
-                     const onRowIndex = newState.rows.indexOf(onRow);
-                     const rowIndex = newState.rows.indexOf(row);
-                     if (rowIndex >= onRowIndex) {
-                         to += 1;
-                     }
-                 } else {
-                     const parentRow = findParentRow(newState.rows, onRow);
-                     if (dropPosition === 'after') {
-                         movingRowRoot.parentId = onRow.rowId;
-                         console.log('after')
-                     }
-                     if (parentRow) {
-                         movingRowRoot.parentId = parentRow.rowId;
-                         console.log('parentRow')
-                         if (dropPosition === 'after') {
-                             movingRowRoot.parentId = onRow.rowId;
-                         }
-                     } else {
-                         if (dropPosition === 'before') {
-                             console.log('before')
-                             movingRowRoot.parentId = undefined;
-                             movingRowRoot.indent = undefined;
-                         }
-                     }
-                 }
-             }
-         }
- 
-         const reorderedRows = reorderArray(newState.rows, rowIdxs, to);
- 
-         setState({ ...newState, rows: createIndents(reorderedRows) });
-         setRowsToRender([headerRow, ...getExpandedRows(reorderedRows)]); */
+        const newState = { ...state };
+        let to = newState.rows.findIndex(row => row.rowId === targetRowId);
+        let rowIdxs = rowIds.map(id => state.rows.findIndex(r => r.rowId === id));
+
+        if (rowIdxs.length === 1) {
+            const row = newState.rows[rowIdxs[0]];
+            rowIdxs = [row, ...new Set(getRowChildren(newState.rows, [], row))].map(item => newState.rows.findIndex(r => r.rowId === item.rowId));
+
+            const onRow = newState.rows.find(row => row.rowId === targetRowId);
+            if (onRow) {
+                const movingRowRoot = findGroupCell(row);
+                if (movingRowRoot) {
+                    if (dropPosition === 'on') {
+                        movingRowRoot.parentId = onRow.rowId;
+                        const onRowIndex = newState.rows.indexOf(onRow);
+                        const rowIndex = newState.rows.indexOf(row);
+                        if (rowIndex >= onRowIndex) {
+                            to += 1;
+                        }
+                    } else {
+                        const parentRow = findParentRow(newState.rows, onRow);
+                        if (dropPosition === 'after') {
+                            movingRowRoot.parentId = onRow.rowId;
+                            console.log('after')
+                        }
+                        if (parentRow) {
+                            movingRowRoot.parentId = parentRow.rowId;
+                            console.log('parentRow')
+                            if (dropPosition === 'after') {
+                                movingRowRoot.parentId = onRow.rowId;
+                            }
+                        } else {
+                            if (dropPosition === 'before') {
+                                console.log('before')
+                                movingRowRoot.parentId = undefined;
+                                movingRowRoot.indent = undefined;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        const reorderedRows = reorderArray(newState.rows, rowIdxs, to);
+
+        setState({ ...newState, rows: createIndents(reorderedRows) });
+        setRowsToRender([headerRow, ...getExpandedRows(reorderedRows)]);
     }
 
     const getRowChildren = (rows: Row[], acc: Row[], row: Row) => {
