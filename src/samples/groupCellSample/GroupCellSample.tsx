@@ -14,7 +14,7 @@ interface GroupTestGridStateData {
     rows: Row[]
 }
 
-const findParentRow = (rows: Row[], row: Row): Row | undefined => rows.find(r => {
+const findParentRow = (rows: Row[], row: Row) => rows.find(r => {
     const foundGroupCell = findGroupCell(row);
     return foundGroupCell ? r.rowId === foundGroupCell.parentId : false;
 });
@@ -43,7 +43,7 @@ const getExpandedRows = (rows: Row[]): Row[] => rows.filter(row => {
 
 const getDirectChildRows = (rows: Row[], parentRow: Row): Row[] => rows.filter(row => !!row.cells.find(cell => cell.type === 'group' && cell.parentId === parentRow.rowId));
 
-const assignIndentAndHasChildrens = (rows: Row[], parentRow: Row, indent: number = 0) => {
+const assignIndentAndHasChildren = (rows: Row[], parentRow: Row, indent: number = 0) => {
     ++indent;
     getDirectChildRows(rows, parentRow).forEach(row => {
         const foundGroupCell = findGroupCell(row);
@@ -52,16 +52,16 @@ const assignIndentAndHasChildrens = (rows: Row[], parentRow: Row, indent: number
             foundGroupCell.indent = indent;
             foundGroupCell.hasChildren = hasRowChildrens;
         }
-        if (hasRowChildrens) assignIndentAndHasChildrens(rows, row, indent);
+        if (hasRowChildrens) assignIndentAndHasChildren(rows, row, indent);
     });
 };
 
-const createIndents = (rows: Row[]): Row[] => rows.map(row => {
+const buildTree = (rows: Row[]): Row[] => rows.map(row => {
     const foundGroupCell = findGroupCell(row);
     if (foundGroupCell && !foundGroupCell.parentId) {
         const hasRowChildrens = hasChildren(rows, row);
         foundGroupCell.hasChildren = hasRowChildrens;
-        if (hasRowChildrens) assignIndentAndHasChildrens(rows, row);
+        if (hasRowChildrens) assignIndentAndHasChildren(rows, row);
     }
     return row;
 });
@@ -70,7 +70,7 @@ export const GroupCellSample: React.FunctionComponent = () => {
 
     const [state, setState] = useState<GroupTestGridStateData>(() => {
         const columns = [...dataColumns(true, false)];
-        return { columns, rows: createIndents([...dataRows(true)]) }
+        return { columns, rows: buildTree([...dataRows(true)]) }
     });
 
     const [rowsToRender, setRowsToRender] = useState<Row[]>([headerRow, ...getExpandedRows(state.rows)]);
@@ -82,7 +82,7 @@ export const GroupCellSample: React.FunctionComponent = () => {
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         });
-        setState({ ...state, rows: createIndents(newState.rows) });
+        setState({ ...state, rows: buildTree(newState.rows) });
         setRowsToRender([headerRow, ...getExpandedRows(newState.rows)]);
     };
 
@@ -140,7 +140,7 @@ export const GroupCellSample: React.FunctionComponent = () => {
 
         const reorderedRows = reorderArray(newState.rows, rowIdxs, to);
 
-        setState({ ...newState, rows: createIndents(reorderedRows) });
+        setState({ ...newState, rows: buildTree(reorderedRows) });
         setRowsToRender([headerRow, ...getExpandedRows(reorderedRows)]);
     }
 
