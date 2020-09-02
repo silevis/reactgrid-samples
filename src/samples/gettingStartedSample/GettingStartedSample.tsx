@@ -1,10 +1,14 @@
 import * as React from "react";
-import { ReactGrid } from "@silevis/reactgrid";
+import { ReactGrid, Column, Row } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 
+interface IApp {
+    columns: Column[];
+    rows: Row[];
+}
 
 export const GettingStartedSample: React.FunctionComponent = () => {
-    const [state] = React.useState(() => ({
+    const [state] = React.useState<IApp>(() => ({
         columns: [
             { columnId: "Name", width: 100 },
             { columnId: "Surname", width: 100 }

@@ -20,6 +20,7 @@ import {
   LimitedHeightByParentSample,
   NotLimitedHeightByParentSample,
   BPSample,
+  GroupIdSample,
 } from '../../samples';
 import { BudgetPlannerSample } from '../budgetPlanner/BudgetPlannerSample';
 
@@ -39,6 +40,12 @@ export const navLinks: ISampleNavLink[] = [
     key: '/GroupCellSample',
     url: '/GroupCellSample',
     component: GroupCellSample
+  },
+  {
+    name: 'Group Id Sample',
+    key: '/Group IdSample',
+    url: '/Group IdSample',
+    component: GroupIdSample
   },
   {
     name: 'Sticky Sample',

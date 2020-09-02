@@ -26,14 +26,13 @@ export const ContextMenuSample: React.FunctionComponent = () => {
   }))
 
   const handleChanges = (changes: CellChange[]) => {
-    let newState = { ...state };
+    const newState = { ...state };
     changes.forEach((change) => {
       const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
       const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
       newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
     })
     setState(newState);
-    return true;
   }
 
   const handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {

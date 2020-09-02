@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ReactGrid } from "@silevis/reactgrid";
 import "./styling.scss";
-import "@silevis/reactgrid/styles.css";
+import "./node_modules/@silevis/reactgrid/styles.css";
 
 export const StickyPanesSample: React.FunctionComponent = () => {
     const [state] = React.useState(() => ({
