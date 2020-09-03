@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-    keyCodes, CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible, Id, isNavigationKey,
+    CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible, Id, isNavigationKey,
     isAlphaNumericKey, getCellProperty
 } from "@silevis/reactgrid";
 

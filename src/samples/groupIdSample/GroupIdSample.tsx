@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ReactGrid, Column, Row, CellChange } from "@silevis/reactgrid";
+import { ReactGrid, Column, Row, CellChange, MenuOption, SelectionMode, Id } from "@silevis/reactgrid";
 import "./styling.scss";
 import "@silevis/reactgrid/styles.css";
 
@@ -9,7 +9,6 @@ export const GroupIdSample: React.FC = () => {
         { columnId: "Name", width: 200 },
         { columnId: "Surname" },
         { columnId: "Birth Data", width: 100 },
-        { columnId: "Phone", width: 100 },
     ]);
 
     const [rows, setRows] = React.useState<Row[]>(() => [
@@ -19,7 +18,6 @@ export const GroupIdSample: React.FC = () => {
                 { type: "header", text: 'Name' },
                 { type: "header", text: "Surname" },
                 { type: "header", text: "Birth Data" },
-                { type: "header", text: "Phone" },
             ]
         },
         {
@@ -28,7 +26,6 @@ export const GroupIdSample: React.FC = () => {
                 { type: "text", text: "Thomas Anthony", groupId: 'group: A' },
                 { type: "text", text: "Goldman", groupId: 'group: B' },
                 { type: "date", date: new Date("1989-04-01") },
-                { type: "number", value: 293827394 },
             ]
         },
         {
@@ -36,41 +33,72 @@ export const GroupIdSample: React.FC = () => {
             cells: [
                 { type: "text", text: "Susie Evelyn", groupId: 'group: A' },
                 { type: "text", text: "Spencer", groupId: 'group: B' },
-                { type: "date", date: new Date("1967-12-02") },
-                { type: "number", value: 684739283 },
+                { type: "date", date: new Date("1967-11-02") },
             ]
         },
         {
             rowId: 3,
             cells: [
-                { type: "text", text: "Mathew Lawrence" },
-                { type: "text", text: "Joshua", groupId: 'group: B' },
-                { type: "date", date: new Date("1976-12-02") },
-                { type: "number", value: 684739283 },
+                { type: "text", text: "Nancy" },
+                { type: "text", text: "Gibbons", groupId: 'group: C' },
+                { type: "date", date: new Date("1976-02-08") },
             ]
         },
         {
             rowId: 4,
             cells: [
+                { type: "text", text: "Jose" },
+                { type: "text", text: "Bell", groupId: 'group: C' },
+                { type: "date", date: new Date("1966-10-12") },
+            ]
+        },
+        {
+            rowId: 5,
+            cells: [
+                { type: "text", text: "Jim", groupId: 'group: A' },
+                { type: "text", text: "Hurst", groupId: 'group: C' },
+                { type: "date", date: new Date("1976-08-30") },
+            ]
+        },
+        {
+            rowId: 6,
+            cells: [
+                { type: "text", text: "Laura" },
+                { type: "text", text: "Pepper", groupId: 'group: C' },
+                { type: "date", date: new Date("1956-05-01") },
+            ]
+        },
+        {
+            rowId: 7,
+            cells: [
+                { type: "text", text: "Sandra" },
+                { type: "text", text: "Pollock", groupId: 'group: C' },
+                { type: "date", date: new Date("1956-05-01") },
+            ]
+        },
+        {
+            rowId: 8,
+            cells: [
                 { type: "text", text: "" },
                 { type: "text", text: "" },
                 { type: "date", date: undefined },
-                { type: "number", value: NaN },
             ]
         }
     ]);
 
+    const handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {
+        return menuOptions;
+    }
 
     const handleChanges = (changes: CellChange[]) => {
-        const newRows = [...rows];
-        changes.forEach((change) => {
-            const changeRowIdx = rows.findIndex((el) => el.rowId === change.rowId);
-            const changeColumnIdx = columns.findIndex(
-                (el) => el.columnId === change.columnId
-            );
-            newRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+        setRows((prevRows) => {
+            changes.forEach(change => {
+                const changeRowIdx = prevRows.findIndex(el => el.rowId === change.rowId);
+                const changeColumnIdx = columns.findIndex(el => el.columnId === change.columnId);
+                prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+            });
+            return [...prevRows];
         });
-        setRows(newRows);
     };
 
     return (
@@ -78,6 +106,7 @@ export const GroupIdSample: React.FC = () => {
             rows={rows}
             columns={columns}
             onCellsChanged={handleChanges}
+            onContextMenu={handleContextMenu}
             enableFillHandle
             enableRangeSelection
             enableGroupIdRender

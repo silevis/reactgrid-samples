@@ -12,44 +12,42 @@ const ReactGridContainer = styled.div`
   min-height: 400px;
 `;
 
-interface ResizeColumnSample {
-  columns: Column[]
-  rows: Row<DefaultCellTypes | FlagCell | RateCell>[]
-}
-
 export const ResizeColumnSample: React.FunctionComponent = () => {
 
-  const [state, setState] = React.useState<ResizeColumnSample>(() => ({
-    columns: dataColumns(false, true),
-    rows: dataRows(false),
-  }))
+  const [columns, setColumns] = React.useState<Column[]>(() => dataColumns(false, true));
+  const [rows, setRows] = React.useState<Row<DefaultCellTypes | FlagCell | RateCell>[]>(() => [...dataRows(false)]);
+
 
   const handleChanges = (changes: CellChange[]) => {
-    // mothing os buggy there!
-    let newState = { ...state };
-    changes.forEach((change: CellChange) => {
-      const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
-      const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
-      newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
-    })
-    setState(newState);
-    return true;
-  }
+    setRows((prevRows) => {
+      changes.forEach((change) => {
+        const changeRowIdx = prevRows.findIndex(
+          (el) => el.rowId === change.rowId
+        );
+        const changeColumnIdx = columns.findIndex(
+          (el) => el.columnId === change.columnId
+        );
+        prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+      });
+      return [...prevRows];
+    });
+  };
 
   const handleColumnResize = (ci: Id, width: number) => {
-    let newState = { ...state };
-    const columnIndex = newState.columns.findIndex(el => el.columnId === ci);
-    const resizedColumn: Column = newState.columns[columnIndex];
-    const updateColumn: Column = { ...resizedColumn, width };
-    newState.columns[columnIndex] = updateColumn;
-    setState(newState);
+    setColumns((prevColumns) => {
+      const columnIndex = prevColumns.findIndex(el => el.columnId === ci);
+      const resizedColumn = prevColumns[columnIndex];
+      const updatedColumn = { ...resizedColumn, width };
+      prevColumns[columnIndex] = updatedColumn;
+      return [...prevColumns];
+    });
   }
 
   return (
     <ReactGridContainer id="column-reorder-sample">
       <ReactGrid
-        rows={state.rows}
-        columns={state.columns}
+        rows={rows}
+        columns={columns}
         customCellTemplates={{
           'rate': new RateCellTemplate(),
           'flag': new FlagCellTemplate(),
