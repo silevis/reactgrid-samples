@@ -11,48 +11,54 @@ import {
 import "./styling.scss";
 
 export const AdvancedContextMenuHandlingSample = () => {
-    const [state, setState] = React.useState(() => ({
-        columns: [
-            { columnId: "Name", width: 100 },
-            { columnId: "Surname", width: 100 }
-        ] as Column[],
-        rows: [
-            {
-                rowId: 0,
-                cells: [
-                    { type: "header", text: "Name" },
-                    { type: "header", text: "Surname" }
-                ]
-            },
-            {
-                rowId: 1,
-                cells: [
-                    { type: "text", text: "Thomas" },
-                    { type: "text", text: "Goldman" }
-                ]
-            },
-            {
-                rowId: 2,
-                cells: [
-                    { type: "text", text: "Susie" },
-                    { type: "text", text: "Spencer" }
-                ]
-            },
-            {
-                rowId: 3,
-                cells: [{ type: "text", text: "" }, { type: "text", text: "" }]
-            }
-        ] as Row[]
-    }));
+    const [columns, setColumns] = React.useState<Column[]>(() => [
+        { columnId: "Name", width: 100 },
+        { columnId: "Surname", width: 100 }
+    ]);
+    const [rows, setRows] = React.useState<Row[]>(() => [
+        {
+            rowId: 0,
+            cells: [
+                { type: "header", text: "Name" },
+                { type: "header", text: "Surname" }
+            ]
+        },
+        {
+            rowId: 1,
+            cells: [
+                { type: "text", text: "Thomas" },
+                { type: "text", text: "Goldman" }
+            ]
+        },
+        {
+            rowId: 2,
+            cells: [
+                { type: "text", text: "Susie" },
+                { type: "text", text: "Spencer" }
+            ]
+        },
+        {
+            rowId: 3,
+            cells: [
+                { type: "text", text: "" },
+                { type: "text", text: "" }
+            ]
+        }
+    ]);
 
     const handleChanges = (changes: CellChange[]) => {
-        const newState = { ...state };
-        changes.forEach(change => {
-            const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
-            const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
-            newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+        setRows((prevRows) => {
+            changes.forEach((change) => {
+                const changeRowIdx = prevRows.findIndex(
+                    (el) => el.rowId === change.rowId
+                );
+                const changeColumnIdx = columns.findIndex(
+                    (el) => el.columnId === change.columnId
+                );
+                prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+            });
+            return [...prevRows];
         });
-        setState(newState);
     };
 
     const handleContextMenu = (
@@ -67,12 +73,7 @@ export const AdvancedContextMenuHandlingSample = () => {
                 {
                     id: "removeRow",
                     label: "Remove row",
-                    handler: () => {
-                        setState({
-                            ...state,
-                            rows: state.rows.filter(row => !selectedRowIds.includes(row.rowId))
-                        });
-                    }
+                    handler: () => setRows(rows.filter(row => !selectedRowIds.includes(row.rowId)))
                 }
             ];
         }
@@ -83,18 +84,18 @@ export const AdvancedContextMenuHandlingSample = () => {
                     id: "removeColumn",
                     label: "Remove column",
                     handler: () => {
-                        const columns = state.columns.filter(column => !selectedColIds.includes(column.columnId));
-                        const columnsIdxs = state.columns
+                        const cols = columns.filter(column => !selectedColIds.includes(column.columnId));
+                        const columnsIdxs = columns
                             .map((column, idx) => {
-                                if (!columns.includes(column)) return idx;
+                                if (!cols.includes(column)) return idx;
                                 return undefined;
                             })
                             .filter(idx => idx !== undefined);
-                        const rows = state.rows.map(row => ({
+                        setRows(rows.map(row => ({
                             ...row,
                             cells: row.cells.filter((_, idx) => !columnsIdxs.includes(idx))
-                        }));
-                        setState({ ...state, ...columns, ...rows });
+                        })));
+                        setColumns(cols);
                     }
                 }
             ];
@@ -104,8 +105,8 @@ export const AdvancedContextMenuHandlingSample = () => {
 
     return (
         <ReactGrid
-            rows={state.rows}
-            columns={state.columns}
+            rows={rows}
+            columns={columns}
             onCellsChanged={handleChanges}
             onContextMenu={handleContextMenu}
             enableFillHandle

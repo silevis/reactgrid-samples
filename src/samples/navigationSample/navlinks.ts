@@ -20,8 +20,8 @@ import {
   LimitedHeightByParentSample,
   NotLimitedHeightByParentSample,
   BPSample,
+  GroupIdSample,
 } from '../../samples';
-import { BudgetPlannerSample } from '../budgetPlanner/BudgetPlannerSample';
 
 export interface ISampleNavLink extends INavLink {
   component?: any;
@@ -39,6 +39,12 @@ export const navLinks: ISampleNavLink[] = [
     key: '/GroupCellSample',
     url: '/GroupCellSample',
     component: GroupCellSample
+  },
+  {
+    name: 'Group Id Sample',
+    key: '/Group IdSample',
+    url: '/Group IdSample',
+    component: GroupIdSample
   },
   {
     name: 'Sticky Sample',
@@ -147,11 +153,5 @@ export const navLinks: ISampleNavLink[] = [
     key: '/NotLimitedHeightByParentSample',
     url: '/NotLimitedHeightByParentSample',
     component: NotLimitedHeightByParentSample
-  },
-  {
-    name: 'Budget Planner Sample',
-    key: '/BudgetPlannerSample',
-    url: '/BudgetPlannerSample',
-    component: BudgetPlannerSample
   },
 ];

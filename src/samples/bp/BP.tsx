@@ -1,6 +1,6 @@
 import * as React from "react";
 import {
-    ReactGrid, Row, CellChange, DefaultCellTypes, TextCell, NumberCell, Id, DropPosition, MenuOption,
+    ReactGrid, Row, CellChange, DefaultCellTypes, NumberCell, Id, DropPosition, MenuOption,
     SelectionMode
 } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";

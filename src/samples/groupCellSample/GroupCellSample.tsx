@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { columns as dataColumns } from '../../data/group/columns';
 import { rows as dataRows, headerRow } from '../../data/group/rows';
-import { CellChange, Column, GroupCell, ReactGrid, Row, DefaultCellTypes, Id, DropPosition } from '@silevis/reactgrid';
+import { CellChange, Column, GroupCell, ReactGrid, Row, Id, DropPosition } from '@silevis/reactgrid';
 import './styling.scss';
 
 const ReactGridContainer = styled.div`
@@ -14,60 +14,63 @@ interface GroupTestGridStateData {
     rows: Row[]
 }
 
+const findParentRow = (rows: Row[], row: Row) => rows.find(r => {
+    const foundGroupCell = findGroupCell(row);
+    return foundGroupCell ? r.rowId === foundGroupCell.parentId : false;
+});
+
+const findGroupCell = (row: Row) => row.cells.find(cell => cell.type === 'group') as GroupCell | undefined;
+
+const hasChildren = (rows: Row[], row: Row): boolean => rows.some(r => {
+    const foundGroupCell = findGroupCell(r);
+    return foundGroupCell ? foundGroupCell.parentId === row.rowId : false;
+});
+
+const isRowFullyExpanded = (rows: Row[], row: Row): boolean => {
+    const parentRow = findParentRow(rows, row);
+    if (parentRow) {
+        const foundGroupCell = findGroupCell(parentRow);
+        if (foundGroupCell && !foundGroupCell.isExpanded) return false;
+        return isRowFullyExpanded(rows, parentRow);
+    }
+    return true;
+};
+
+const getExpandedRows = (rows: Row[]): Row[] => rows.filter(row => {
+    const areAllParentsExpanded = isRowFullyExpanded(rows, row);
+    return areAllParentsExpanded !== undefined ? areAllParentsExpanded : true;
+});
+
+const getDirectChildRows = (rows: Row[], parentRow: Row): Row[] => rows.filter(row => !!row.cells.find(cell => cell.type === 'group' && cell.parentId === parentRow.rowId));
+
+const assignIndentAndHasChildren = (rows: Row[], parentRow: Row, indent: number = 0) => {
+    ++indent;
+    getDirectChildRows(rows, parentRow).forEach(row => {
+        const foundGroupCell = findGroupCell(row);
+        const hasRowChildrens = hasChildren(rows, row);
+        if (foundGroupCell) {
+            foundGroupCell.indent = indent;
+            foundGroupCell.hasChildren = hasRowChildrens;
+        }
+        if (hasRowChildrens) assignIndentAndHasChildren(rows, row, indent);
+    });
+};
+
+const buildTree = (rows: Row[]): Row[] => rows.map(row => {
+    const foundGroupCell = findGroupCell(row);
+    if (foundGroupCell && !foundGroupCell.parentId) {
+        const hasRowChildrens = hasChildren(rows, row);
+        foundGroupCell.hasChildren = hasRowChildrens;
+        if (hasRowChildrens) assignIndentAndHasChildren(rows, row);
+    }
+    return row;
+});
+
 export const GroupCellSample: React.FunctionComponent = () => {
 
-    const getGroupCell = (row: Row) => row.cells.find((cell: DefaultCellTypes) => cell.type === 'group') as GroupCell;
-
-    const hasChildren = (rows: Row[], row: Row): boolean => rows.some(r => getGroupCell(r).parentId === row.rowId);
-
-    const isRowFullyExpanded = (rows: Row[], row: Row): boolean => {
-        const parentRow = getParentRow(rows, row);
-        if (parentRow) {
-            if (!getGroupCell(parentRow).isExpanded) return false;
-            return isRowFullyExpanded(rows, parentRow);
-        }
-        return true;
-    };
-
-    const getExpandedRows = (rows: Row[]): Row[] => rows.filter(row => {
-        const areAllParentsExpanded = isRowFullyExpanded(rows, row);
-        return areAllParentsExpanded !== undefined ? areAllParentsExpanded : true;
-    });
-
-    const getDirectChildrenRows = (rows: Row[], parentRow: Row): Row[] => rows.filter(row => !!row.cells.find(cell => cell.type === 'group' && cell.parentId === parentRow.rowId));
-
-    const getParentRow = (rows: Row[], row: Row): Row | undefined => rows.find(r => r.rowId === getGroupCell(row).parentId);
-
-    const assignIndentAndHasChildrens = (allRows: Row[], parentRow: Row, indent: number) => {
-        ++indent;
-        getDirectChildrenRows(allRows, parentRow).forEach(row => {
-            const groupCell = getGroupCell(row);
-            groupCell.indent = indent;
-            const hasRowChildrens = hasChildren(allRows, row);
-            groupCell.hasChildren = hasRowChildrens;
-            if (hasRowChildrens) assignIndentAndHasChildrens(allRows, row, indent);
-        });
-    };
-
-    const getDataFromRows = (rows: Row[]): Row[] => rows.filter(row => row.cells.find(cell => cell.type === 'group') !== undefined);
-
-    const createIndents = (rows: Row[]): Row[] => rows.map(row => {
-        const groupCell = getGroupCell(row);
-        if (groupCell.parentId === undefined) {
-            const hasRowChildrens = hasChildren(rows, row);
-            groupCell.hasChildren = hasRowChildrens;
-            // if (hasRowChildrens) assignIndentAndHasChildrens(rows, row, groupCell.indent || 0);
-            if (hasRowChildrens) assignIndentAndHasChildrens(rows, row, 0);
-        }
-        return row;
-    });
-
     const [state, setState] = useState<GroupTestGridStateData>(() => {
-        const columns = dataColumns(true, false);
-        let rows = [...dataRows(true)];
-        rows = getDataFromRows(rows);
-        rows = createIndents(rows);
-        return { columns, rows }
+        const columns = [...dataColumns(true, false)];
+        return { columns, rows: buildTree([...dataRows(true)]) }
     });
 
     const [rowsToRender, setRowsToRender] = useState<Row[]>([headerRow, ...getExpandedRows(state.rows)]);
@@ -79,7 +82,7 @@ export const GroupCellSample: React.FunctionComponent = () => {
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         });
-        setState({ ...state, rows: createIndents(newState.rows) });
+        setState({ ...state, rows: buildTree(newState.rows) });
         setRowsToRender([headerRow, ...getExpandedRows(newState.rows)]);
     };
 
@@ -102,31 +105,33 @@ export const GroupCellSample: React.FunctionComponent = () => {
 
             const onRow = newState.rows.find(row => row.rowId === targetRowId);
             if (onRow) {
-                const movingRowRoot = getGroupCell(row);
-                if (dropPosition === 'on') {
-                    movingRowRoot.parentId = onRow.rowId;
-                    const onRowIndex = newState.rows.indexOf(onRow);
-                    const rowIndex = newState.rows.indexOf(row);
-                    if (rowIndex >= onRowIndex) {
-                        to += 1;
-                    }
-                } else {
-                    const parentRow = getParentRow(newState.rows, onRow);
-                    if (dropPosition === 'after') {
+                const movingRowRoot = findGroupCell(row);
+                if (movingRowRoot) {
+                    if (dropPosition === 'on') {
                         movingRowRoot.parentId = onRow.rowId;
-                        console.log('after')
-                    }
-                    if (parentRow) {
-                        movingRowRoot.parentId = parentRow.rowId;
-                        console.log('parentRow')
-                        if (dropPosition === 'after') {
-                            movingRowRoot.parentId = onRow.rowId;
+                        const onRowIndex = newState.rows.indexOf(onRow);
+                        const rowIndex = newState.rows.indexOf(row);
+                        if (rowIndex >= onRowIndex) {
+                            to += 1;
                         }
                     } else {
-                        if (dropPosition === 'before') {
-                            console.log('before')
-                            movingRowRoot.parentId = undefined;
-                            movingRowRoot.indent = undefined;
+                        const parentRow = findParentRow(newState.rows, onRow);
+                        if (dropPosition === 'after') {
+                            movingRowRoot.parentId = onRow.rowId;
+                            console.log('after')
+                        }
+                        if (parentRow) {
+                            movingRowRoot.parentId = parentRow.rowId;
+                            console.log('parentRow')
+                            if (dropPosition === 'after') {
+                                movingRowRoot.parentId = onRow.rowId;
+                            }
+                        } else {
+                            if (dropPosition === 'before') {
+                                console.log('before')
+                                movingRowRoot.parentId = undefined;
+                                movingRowRoot.indent = undefined;
+                            }
                         }
                     }
                 }
@@ -135,12 +140,12 @@ export const GroupCellSample: React.FunctionComponent = () => {
 
         const reorderedRows = reorderArray(newState.rows, rowIdxs, to);
 
-        setState({ ...newState, rows: createIndents(reorderedRows) });
+        setState({ ...newState, rows: buildTree(reorderedRows) });
         setRowsToRender([headerRow, ...getExpandedRows(reorderedRows)]);
     }
 
     const getRowChildren = (rows: Row[], acc: Row[], row: Row) => {
-        const rowsChildren = getDirectChildrenRows(rows, row);
+        const rowsChildren = getDirectChildRows(rows, row);
         if (!rowsChildren) return [];
 
         rowsChildren.forEach(childRow => {
