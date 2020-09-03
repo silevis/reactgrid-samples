@@ -25,50 +25,56 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
 import * as React from "react";
 import { ReactGrid } from "@silevis/reactgrid";
 import "./styling.scss";
 export var ColumnResizingSample = function () {
-    var _a = __read(React.useState(function () { return ({
-        columns: [
-            { columnId: "Name", resizable: true, width: 100 },
-            { columnId: "Surname", resizable: true, width: 100 }
-        ],
-        rows: [
-            {
-                rowId: 0,
-                cells: [
-                    { type: "header", text: "Name" },
-                    { type: "header", text: "Surname" }
-                ]
-            },
-            {
-                rowId: 1,
-                cells: [
-                    { type: "text", text: "Thomas" },
-                    { type: "text", text: "Goldman" }
-                ]
-            },
-            {
-                rowId: 2,
-                cells: [
-                    { type: "text", text: "Susie" },
-                    { type: "text", text: "Spencer" }
-                ]
-            },
-            {
-                rowId: 3,
-                cells: [{ type: "text", text: "" }, { type: "text", text: "" }]
-            }
-        ]
-    }); }), 2), state = _a[0], setState = _a[1];
+    var _a = __read(React.useState(function () { return [
+        { columnId: "Name", width: 100, resizable: true },
+        { columnId: "Surname", width: 100, resizable: true }
+    ]; }), 2), columns = _a[0], setColumns = _a[1];
+    var _b = __read(React.useState(function () { return [
+        {
+            rowId: 0,
+            cells: [
+                { type: "header", text: "Name" },
+                { type: "header", text: "Surname" }
+            ]
+        },
+        {
+            rowId: 1,
+            cells: [
+                { type: "text", text: "Thomas" },
+                { type: "text", text: "Goldman" }
+            ]
+        },
+        {
+            rowId: 2,
+            cells: [
+                { type: "text", text: "Susie" },
+                { type: "text", text: "Spencer" }
+            ]
+        },
+        {
+            rowId: 3,
+            cells: [
+                { type: "text", text: "" },
+                { type: "text", text: "" }
+            ]
+        }
+    ]; }), 1), rows = _b[0];
     var handleColumnResize = function (ci, width) {
-        var newState = __assign({}, state);
-        var columnIndex = newState.columns.findIndex(function (el) { return el.columnId === ci; });
-        var resizedColumn = newState.columns[columnIndex];
-        var updatedColumn = __assign(__assign({}, resizedColumn), { width: width });
-        newState.columns[columnIndex] = updatedColumn;
-        setState(newState);
+        setColumns(function (prevColumns) {
+            var columnIndex = prevColumns.findIndex(function (el) { return el.columnId === ci; });
+            var resizedColumn = prevColumns[columnIndex];
+            var updatedColumn = __assign(__assign({}, resizedColumn), { width: width });
+            prevColumns[columnIndex] = updatedColumn;
+            return __spread(prevColumns);
+        });
     };
-    return (React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, onColumnResized: handleColumnResize, enableFillHandle: true }));
+    return (React.createElement(ReactGrid, { rows: rows, columns: columns, onColumnResized: handleColumnResize }));
 };

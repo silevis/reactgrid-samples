@@ -1,5 +1,4 @@
-import { StickySample, ColumnReorderSample, ResizeColumnSample, DatagridSample, CryptocurrencyMarketSample, GroupCellSample, ContextMenuSample, GettingStartedSample, FlagCellTemplateSample, CustomStylingSample, HighlightsSample, AdvancedContextMenuHandlingSample, SimpleContextMenuHandlingSample, StickyPanesSample, ColumnsAndRowsReorderSample, ColumnResizingSample, HandlingChangesSample, LimitedHeightByParentSample, NotLimitedHeightByParentSample, BPSample, } from '../../samples';
-import { BudgetPlannerSample } from '../budgetPlanner/BudgetPlannerSample';
+import { StickySample, ColumnReorderSample, ResizeColumnSample, DatagridSample, CryptocurrencyMarketSample, GroupCellSample, ContextMenuSample, GettingStartedSample, FlagCellTemplateSample, CustomStylingSample, HighlightsSample, AdvancedContextMenuHandlingSample, SimpleContextMenuHandlingSample, StickyPanesSample, ColumnsAndRowsReorderSample, ColumnResizingSample, HandlingChangesSample, LimitedHeightByParentSample, NotLimitedHeightByParentSample, BPSample, GroupIdSample, } from '../../samples';
 export var navLinks = [
     {
         name: 'BP Sample',
@@ -12,6 +11,12 @@ export var navLinks = [
         key: '/GroupCellSample',
         url: '/GroupCellSample',
         component: GroupCellSample
+    },
+    {
+        name: 'Group Id Sample',
+        key: '/Group IdSample',
+        url: '/Group IdSample',
+        component: GroupIdSample
     },
     {
         name: 'Sticky Sample',
@@ -120,11 +125,5 @@ export var navLinks = [
         key: '/NotLimitedHeightByParentSample',
         url: '/NotLimitedHeightByParentSample',
         component: NotLimitedHeightByParentSample
-    },
-    {
-        name: 'Budget Planner Sample',
-        key: '/BudgetPlannerSample',
-        url: '/BudgetPlannerSample',
-        component: BudgetPlannerSample
     },
 ];

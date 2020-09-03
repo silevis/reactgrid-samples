@@ -29,6 +29,10 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
 import * as React from 'react';
 import styled from 'styled-components';
 import { ReactGrid } from '@silevis/reactgrid';
@@ -39,30 +43,29 @@ import { rows as dataRows } from '../../data/rows';
 import './styling.scss';
 var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  position: relative;\n  min-height: 400px;\n"], ["\n  position: relative;\n  min-height: 400px;\n"])));
 export var ResizeColumnSample = function () {
-    var _a = __read(React.useState(function () { return ({
-        columns: dataColumns(false, true),
-        rows: dataRows(false),
-    }); }), 2), state = _a[0], setState = _a[1];
+    var _a = __read(React.useState(function () { return dataColumns(false, true); }), 2), columns = _a[0], setColumns = _a[1];
+    var _b = __read(React.useState(function () { return __spread(dataRows(false)); }), 2), rows = _b[0], setRows = _b[1];
     var handleChanges = function (changes) {
-        var newState = __assign({}, state);
-        changes.forEach(function (change) {
-            var changeRowIdx = newState.rows.findIndex(function (el) { return el.rowId === change.rowId; });
-            var changeColumnIdx = newState.columns.findIndex(function (el) { return el.columnId === change.columnId; });
-            newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+        setRows(function (prevRows) {
+            changes.forEach(function (change) {
+                var changeRowIdx = prevRows.findIndex(function (el) { return el.rowId === change.rowId; });
+                var changeColumnIdx = columns.findIndex(function (el) { return el.columnId === change.columnId; });
+                prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+            });
+            return __spread(prevRows);
         });
-        setState(newState);
-        return true;
     };
     var handleColumnResize = function (ci, width) {
-        var newState = __assign({}, state);
-        var columnIndex = newState.columns.findIndex(function (el) { return el.columnId === ci; });
-        var resizedColumn = newState.columns[columnIndex];
-        var updateColumn = __assign(__assign({}, resizedColumn), { width: width });
-        newState.columns[columnIndex] = updateColumn;
-        setState(newState);
+        setColumns(function (prevColumns) {
+            var columnIndex = prevColumns.findIndex(function (el) { return el.columnId === ci; });
+            var resizedColumn = prevColumns[columnIndex];
+            var updatedColumn = __assign(__assign({}, resizedColumn), { width: width });
+            prevColumns[columnIndex] = updatedColumn;
+            return __spread(prevColumns);
+        });
     };
     return (React.createElement(ReactGridContainer, { id: "column-reorder-sample" },
-        React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, customCellTemplates: {
+        React.createElement(ReactGrid, { rows: rows, columns: columns, customCellTemplates: {
                 'rate': new RateCellTemplate(),
                 'flag': new FlagCellTemplate(),
             }, onCellsChanged: handleChanges, onColumnResized: handleColumnResize, enableColumnSelection: true, enableRowSelection: true, enableFillHandle: true, enableRangeSelection: true })));

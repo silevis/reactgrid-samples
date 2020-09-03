@@ -40,52 +40,58 @@ import { rows as dataRows, headerRow } from '../../data/group/rows';
 import { ReactGrid } from '@silevis/reactgrid';
 import './styling.scss';
 var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  min-height: 400px;\n"], ["\n  min-height: 400px;\n"])));
+var findParentRow = function (rows, row) { return rows.find(function (r) {
+    var foundGroupCell = findGroupCell(row);
+    return foundGroupCell ? r.rowId === foundGroupCell.parentId : false;
+}); };
+var findGroupCell = function (row) { return row.cells.find(function (cell) { return cell.type === 'group'; }); };
+var hasChildren = function (rows, row) { return rows.some(function (r) {
+    var foundGroupCell = findGroupCell(r);
+    return foundGroupCell ? foundGroupCell.parentId === row.rowId : false;
+}); };
+var isRowFullyExpanded = function (rows, row) {
+    var parentRow = findParentRow(rows, row);
+    if (parentRow) {
+        var foundGroupCell = findGroupCell(parentRow);
+        if (foundGroupCell && !foundGroupCell.isExpanded)
+            return false;
+        return isRowFullyExpanded(rows, parentRow);
+    }
+    return true;
+};
+var getExpandedRows = function (rows) { return rows.filter(function (row) {
+    var areAllParentsExpanded = isRowFullyExpanded(rows, row);
+    return areAllParentsExpanded !== undefined ? areAllParentsExpanded : true;
+}); };
+var getDirectChildRows = function (rows, parentRow) { return rows.filter(function (row) { return !!row.cells.find(function (cell) { return cell.type === 'group' && cell.parentId === parentRow.rowId; }); }); };
+var assignIndentAndHasChildren = function (rows, parentRow, indent) {
+    if (indent === void 0) { indent = 0; }
+    ++indent;
+    getDirectChildRows(rows, parentRow).forEach(function (row) {
+        var foundGroupCell = findGroupCell(row);
+        var hasRowChildrens = hasChildren(rows, row);
+        if (foundGroupCell) {
+            foundGroupCell.indent = indent;
+            foundGroupCell.hasChildren = hasRowChildrens;
+        }
+        if (hasRowChildrens)
+            assignIndentAndHasChildren(rows, row, indent);
+    });
+};
+var buildTree = function (rows) { return rows.map(function (row) {
+    var foundGroupCell = findGroupCell(row);
+    if (foundGroupCell && !foundGroupCell.parentId) {
+        var hasRowChildrens = hasChildren(rows, row);
+        foundGroupCell.hasChildren = hasRowChildrens;
+        if (hasRowChildrens)
+            assignIndentAndHasChildren(rows, row);
+    }
+    return row;
+}); };
 export var GroupCellSample = function () {
-    var getGroupCell = function (row) { return row.cells.find(function (cell) { return cell.type === 'group'; }); };
-    var hasChildren = function (rows, row) { return rows.some(function (r) { return getGroupCell(r).parentId === row.rowId; }); };
-    var isRowFullyExpanded = function (rows, row) {
-        var parentRow = getParentRow(rows, row);
-        if (parentRow) {
-            if (!getGroupCell(parentRow).isExpanded)
-                return false;
-            return isRowFullyExpanded(rows, parentRow);
-        }
-        return true;
-    };
-    var getExpandedRows = function (rows) { return rows.filter(function (row) {
-        var areAllParentsExpanded = isRowFullyExpanded(rows, row);
-        return areAllParentsExpanded !== undefined ? areAllParentsExpanded : true;
-    }); };
-    var getDirectChildrenRows = function (rows, parentRow) { return rows.filter(function (row) { return !!row.cells.find(function (cell) { return cell.type === 'group' && cell.parentId === parentRow.rowId; }); }); };
-    var getParentRow = function (rows, row) { return rows.find(function (r) { return r.rowId === getGroupCell(row).parentId; }); };
-    var assignIndentAndHasChildrens = function (allRows, parentRow, indent) {
-        ++indent;
-        getDirectChildrenRows(allRows, parentRow).forEach(function (row) {
-            var groupCell = getGroupCell(row);
-            groupCell.indent = indent;
-            var hasRowChildrens = hasChildren(allRows, row);
-            groupCell.hasChildren = hasRowChildrens;
-            if (hasRowChildrens)
-                assignIndentAndHasChildrens(allRows, row, indent);
-        });
-    };
-    var getDataFromRows = function (rows) { return rows.filter(function (row) { return row.cells.find(function (cell) { return cell.type === 'group'; }) !== undefined; }); };
-    var createIndents = function (rows) { return rows.map(function (row) {
-        var groupCell = getGroupCell(row);
-        if (groupCell.parentId === undefined) {
-            var hasRowChildrens = hasChildren(rows, row);
-            groupCell.hasChildren = hasRowChildrens;
-            if (hasRowChildrens)
-                assignIndentAndHasChildrens(rows, row, 0);
-        }
-        return row;
-    }); };
     var _a = __read(useState(function () {
-        var columns = dataColumns(true, false);
-        var rows = __spread(dataRows(true));
-        rows = getDataFromRows(rows);
-        rows = createIndents(rows);
-        return { columns: columns, rows: rows };
+        var columns = __spread(dataColumns(true, false));
+        return { columns: columns, rows: buildTree(__spread(dataRows(true))) };
     }), 2), state = _a[0], setState = _a[1];
     var _b = __read(useState(__spread([headerRow], getExpandedRows(state.rows))), 2), rowsToRender = _b[0], setRowsToRender = _b[1];
     var handleChanges = function (changes) {
@@ -95,7 +101,7 @@ export var GroupCellSample = function () {
             var changeColumnIdx = newState.columns.findIndex(function (el) { return el.columnId === change.columnId; });
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         });
-        setState(__assign(__assign({}, state), { rows: createIndents(newState.rows) }));
+        setState(__assign(__assign({}, state), { rows: buildTree(newState.rows) }));
         setRowsToRender(__spread([headerRow], getExpandedRows(newState.rows)));
     };
     var reorderArray = function (arr, idxs, to) {
@@ -114,44 +120,46 @@ export var GroupCellSample = function () {
             rowIdxs = __spread([row], new Set(getRowChildren(newState.rows, [], row))).map(function (item) { return newState.rows.findIndex(function (r) { return r.rowId === item.rowId; }); });
             var onRow = newState.rows.find(function (row) { return row.rowId === targetRowId; });
             if (onRow) {
-                var movingRowRoot = getGroupCell(row);
-                if (dropPosition === 'on') {
-                    movingRowRoot.parentId = onRow.rowId;
-                    var onRowIndex = newState.rows.indexOf(onRow);
-                    var rowIndex = newState.rows.indexOf(row);
-                    if (rowIndex >= onRowIndex) {
-                        to += 1;
-                    }
-                }
-                else {
-                    var parentRow = getParentRow(newState.rows, onRow);
-                    if (dropPosition === 'after') {
+                var movingRowRoot = findGroupCell(row);
+                if (movingRowRoot) {
+                    if (dropPosition === 'on') {
                         movingRowRoot.parentId = onRow.rowId;
-                        console.log('after');
-                    }
-                    if (parentRow) {
-                        movingRowRoot.parentId = parentRow.rowId;
-                        console.log('parentRow');
-                        if (dropPosition === 'after') {
-                            movingRowRoot.parentId = onRow.rowId;
+                        var onRowIndex = newState.rows.indexOf(onRow);
+                        var rowIndex = newState.rows.indexOf(row);
+                        if (rowIndex >= onRowIndex) {
+                            to += 1;
                         }
                     }
                     else {
-                        if (dropPosition === 'before') {
-                            console.log('before');
-                            movingRowRoot.parentId = undefined;
-                            movingRowRoot.indent = undefined;
+                        var parentRow = findParentRow(newState.rows, onRow);
+                        if (dropPosition === 'after') {
+                            movingRowRoot.parentId = onRow.rowId;
+                            console.log('after');
+                        }
+                        if (parentRow) {
+                            movingRowRoot.parentId = parentRow.rowId;
+                            console.log('parentRow');
+                            if (dropPosition === 'after') {
+                                movingRowRoot.parentId = onRow.rowId;
+                            }
+                        }
+                        else {
+                            if (dropPosition === 'before') {
+                                console.log('before');
+                                movingRowRoot.parentId = undefined;
+                                movingRowRoot.indent = undefined;
+                            }
                         }
                     }
                 }
             }
         }
         var reorderedRows = reorderArray(newState.rows, rowIdxs, to);
-        setState(__assign(__assign({}, newState), { rows: createIndents(reorderedRows) }));
+        setState(__assign(__assign({}, newState), { rows: buildTree(reorderedRows) }));
         setRowsToRender(__spread([headerRow], getExpandedRows(reorderedRows)));
     };
     var getRowChildren = function (rows, acc, row) {
-        var rowsChildren = getDirectChildrenRows(rows, row);
+        var rowsChildren = getDirectChildRows(rows, row);
         if (!rowsChildren)
             return [];
         rowsChildren.forEach(function (childRow) {

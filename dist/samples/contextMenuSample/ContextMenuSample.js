@@ -56,7 +56,6 @@ export var ContextMenuSample = function () {
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         });
         setState(newState);
-        return true;
     };
     var handleContextMenu = function (selectedRowIds, selectedColIds, selectionMode, menuOptions) {
         if (selectionMode === 'row') {

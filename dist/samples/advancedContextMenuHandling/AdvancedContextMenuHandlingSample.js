@@ -33,47 +33,49 @@ import * as React from "react";
 import { ReactGrid, } from "@silevis/reactgrid";
 import "./styling.scss";
 export var AdvancedContextMenuHandlingSample = function () {
-    var _a = __read(React.useState(function () { return ({
-        columns: [
-            { columnId: "Name", width: 100 },
-            { columnId: "Surname", width: 100 }
-        ],
-        rows: [
-            {
-                rowId: 0,
-                cells: [
-                    { type: "header", text: "Name" },
-                    { type: "header", text: "Surname" }
-                ]
-            },
-            {
-                rowId: 1,
-                cells: [
-                    { type: "text", text: "Thomas" },
-                    { type: "text", text: "Goldman" }
-                ]
-            },
-            {
-                rowId: 2,
-                cells: [
-                    { type: "text", text: "Susie" },
-                    { type: "text", text: "Spencer" }
-                ]
-            },
-            {
-                rowId: 3,
-                cells: [{ type: "text", text: "" }, { type: "text", text: "" }]
-            }
-        ]
-    }); }), 2), state = _a[0], setState = _a[1];
+    var _a = __read(React.useState(function () { return [
+        { columnId: "Name", width: 100 },
+        { columnId: "Surname", width: 100 }
+    ]; }), 2), columns = _a[0], setColumns = _a[1];
+    var _b = __read(React.useState(function () { return [
+        {
+            rowId: 0,
+            cells: [
+                { type: "header", text: "Name" },
+                { type: "header", text: "Surname" }
+            ]
+        },
+        {
+            rowId: 1,
+            cells: [
+                { type: "text", text: "Thomas" },
+                { type: "text", text: "Goldman" }
+            ]
+        },
+        {
+            rowId: 2,
+            cells: [
+                { type: "text", text: "Susie" },
+                { type: "text", text: "Spencer" }
+            ]
+        },
+        {
+            rowId: 3,
+            cells: [
+                { type: "text", text: "" },
+                { type: "text", text: "" }
+            ]
+        }
+    ]; }), 2), rows = _b[0], setRows = _b[1];
     var handleChanges = function (changes) {
-        var newState = __assign({}, state);
-        changes.forEach(function (change) {
-            var changeRowIdx = newState.rows.findIndex(function (el) { return el.rowId === change.rowId; });
-            var changeColumnIdx = newState.columns.findIndex(function (el) { return el.columnId === change.columnId; });
-            newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+        setRows(function (prevRows) {
+            changes.forEach(function (change) {
+                var changeRowIdx = prevRows.findIndex(function (el) { return el.rowId === change.rowId; });
+                var changeColumnIdx = columns.findIndex(function (el) { return el.columnId === change.columnId; });
+                prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+            });
+            return __spread(prevRows);
         });
-        setState(newState);
     };
     var handleContextMenu = function (selectedRowIds, selectedColIds, selectionMode, menuOptions) {
         if (selectionMode === "row") {
@@ -81,9 +83,7 @@ export var AdvancedContextMenuHandlingSample = function () {
                 {
                     id: "removeRow",
                     label: "Remove row",
-                    handler: function () {
-                        setState(__assign(__assign({}, state), { rows: state.rows.filter(function (row) { return !selectedRowIds.includes(row.rowId); }) }));
-                    }
+                    handler: function () { return setRows(rows.filter(function (row) { return !selectedRowIds.includes(row.rowId); })); }
                 }
             ]);
         }
@@ -93,21 +93,21 @@ export var AdvancedContextMenuHandlingSample = function () {
                     id: "removeColumn",
                     label: "Remove column",
                     handler: function () {
-                        var columns = state.columns.filter(function (column) { return !selectedColIds.includes(column.columnId); });
-                        var columnsIdxs = state.columns
+                        var cols = columns.filter(function (column) { return !selectedColIds.includes(column.columnId); });
+                        var columnsIdxs = columns
                             .map(function (column, idx) {
-                            if (!columns.includes(column))
+                            if (!cols.includes(column))
                                 return idx;
                             return undefined;
                         })
                             .filter(function (idx) { return idx !== undefined; });
-                        var rows = state.rows.map(function (row) { return (__assign(__assign({}, row), { cells: row.cells.filter(function (_, idx) { return !columnsIdxs.includes(idx); }) })); });
-                        setState(__assign(__assign(__assign({}, state), columns), rows));
+                        setRows(rows.map(function (row) { return (__assign(__assign({}, row), { cells: row.cells.filter(function (_, idx) { return !columnsIdxs.includes(idx); }) })); }));
+                        setColumns(cols);
                     }
                 }
             ]);
         }
         return menuOptions;
     };
-    return (React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, onCellsChanged: handleChanges, onContextMenu: handleContextMenu, enableFillHandle: true, enableRangeSelection: true, enableColumnSelection: true, enableRowSelection: true }));
+    return (React.createElement(ReactGrid, { rows: rows, columns: columns, onCellsChanged: handleChanges, onContextMenu: handleContextMenu, enableFillHandle: true, enableRangeSelection: true, enableColumnSelection: true, enableRowSelection: true }));
 };
