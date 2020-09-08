@@ -220,4 +220,4 @@ export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | Ra
       { type: 'rate', value: 5 }
     ]
   },
-]
+];

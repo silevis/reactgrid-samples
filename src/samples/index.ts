@@ -6,7 +6,7 @@ export * from './datagridSample/DatagridSample';
 export * from './resizeColumnSample/ResizeColumnSample';
 export * from './columnReorderSample/ColumnReorderSample';
 export * from './cryptocurrencyMarketSample/CryptocurrencyMarketSample';
-export * from './groupCellSample/GroupCellSample';
+export * from './chevronCellSample/ChevronCellSample';
 export * from './contextMenuSample/ContextMenuSample';
 export * from './gettingStartedSample/GettingStartedSample';
 export * from './newCellTemplateSample/FlagCellTemplateSample';

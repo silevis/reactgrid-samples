@@ -5,7 +5,7 @@ import {
   ResizeColumnSample,
   DatagridSample,
   CryptocurrencyMarketSample,
-  GroupCellSample,
+  ChevronCellSample,
   ContextMenuSample,
   GettingStartedSample,
   FlagCellTemplateSample,
@@ -35,10 +35,10 @@ export const navLinks: ISampleNavLink[] = [
     component: BPSample,
   },
   {
-    name: 'Group Cell Sample',
-    key: '/GroupCellSample',
-    url: '/GroupCellSample',
-    component: GroupCellSample
+    name: 'Chevron Cell Sample',
+    key: '/ChevronCellSample',
+    url: '/ChevronCellSample',
+    component: ChevronCellSample
   },
   {
     name: 'Group Id Sample',

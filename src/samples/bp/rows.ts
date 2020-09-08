@@ -1,15 +1,15 @@
 import { Row, NumberCell } from "@silevis/reactgrid";
 import { RowCells } from './BP';
-import { HorizontalGroupCell } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
+import { HorizontalChevronCell } from '../../cell-templates/horizontalChevronCellTemplate/HorizontalChevronCellTemplate';
 import { NonEditableNumberCell } from './CellTemplates';
 
-const generateMonthHeader = (year: number, quarter: string, month: number): HorizontalGroupCell => {
+const generateMonthHeader = (year: number, quarter: string, month: number): HorizontalChevronCell => {
     const formattedMonth = `${month}`.padStart(2, '0');
-    return { type: 'horizontalGroup', text: `${formattedMonth}`, className: 'month header', parentId: `${year}-${quarter}` };
+    return { type: 'horizontalChevron', text: `${formattedMonth}`, className: 'month header', parentId: `${year}-${quarter}` };
 }
 
-const generateQuarterHeader = (year: number, quarter: string, hasChildren: boolean = true, isExpanded: boolean = true): HorizontalGroupCell => {
-    return { type: 'horizontalGroup', text: quarter, className: 'quarter header', parentId: `${year}`, hasChildren, isExpanded: true };
+const generateQuarterHeader = (year: number, quarter: string, hasChildren: boolean = true, isExpanded: boolean = true): HorizontalChevronCell => {
+    return { type: 'horizontalChevron', text: quarter, className: 'quarter header', parentId: `${year}`, hasChildren, isExpanded: true };
 }
 
 const generateQuarter = (year: number, quarter: string, month: number, isExpanded: boolean = true) => {
@@ -23,7 +23,7 @@ const generateQuarter = (year: number, quarter: string, month: number, isExpande
 
 const generateYear = (year: number, hasChildren: boolean = true, isExpanded: boolean = true): RowCells[] => {
     return [
-        { type: 'horizontalGroup', text: `${year}`, className: 'year header', parentId: undefined, hasChildren, isExpanded },
+        { type: 'horizontalChevron', text: `${year}`, className: 'year header', parentId: undefined, hasChildren, isExpanded },
         ...generateQuarter(year, 'Q1', 1),
         ...generateQuarter(year, 'Q2', 4),
         ...generateQuarter(year, 'Q3', 7),
@@ -103,7 +103,7 @@ export const dataRows: Row<RowCells>[] = [
         rowId: 'Silevis',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Silevis organization', parentId: undefined, isExpanded: true },
+            { type: 'chevron', text: 'Silevis organization', parentId: undefined, isExpanded: true },
             ...emptyYear(),
             ...emptyYear(),
         ]
@@ -112,7 +112,7 @@ export const dataRows: Row<RowCells>[] = [
         rowId: 'Expenses',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Expenses', parentId: 'Silevis', isExpanded: true },
+            { type: 'chevron', text: 'Expenses', parentId: 'Silevis', isExpanded: true },
             ...emptyYear(),
             ...emptyYear(),
         ]
@@ -121,7 +121,7 @@ export const dataRows: Row<RowCells>[] = [
         rowId: 'Fixed',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Fixed', parentId: 'Expenses', isExpanded: true },
+            { type: 'chevron', text: 'Fixed', parentId: 'Expenses', isExpanded: true },
             ...emptyYear(),
             ...emptyYear(),
         ]
@@ -130,7 +130,7 @@ export const dataRows: Row<RowCells>[] = [
         rowId: 'Salaries',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Salaries', parentId: 'Fixed', isExpanded: true },
+            { type: 'chevron', text: 'Salaries', parentId: 'Fixed', isExpanded: true },
             ...emptyYear(),
             ...emptyYear(),
         ]
@@ -139,7 +139,7 @@ export const dataRows: Row<RowCells>[] = [
         rowId: 'Serge Gainsbourg',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Serge Gainsbourg', parentId: 'Salaries', isExpanded: true },
+            { type: 'chevron', text: 'Serge Gainsbourg', parentId: 'Salaries', isExpanded: true },
             ...filledYear(5500, 5500, 300.32),
             ...filledYear(6400, 6400, 300),
         ]
@@ -148,7 +148,7 @@ export const dataRows: Row<RowCells>[] = [
         rowId: 'Jacob Sandberg',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Jacob Sandberg', parentId: 'Salaries' },
+            { type: 'chevron', text: 'Jacob Sandberg', parentId: 'Salaries' },
             ...filledYear(4500, 4500, 100),
             ...filledYear(6000, 6000, 50.12),
         ]
@@ -157,7 +157,7 @@ export const dataRows: Row<RowCells>[] = [
         rowId: 'Elizabeth Hudson',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Elizabeth Hudson', parentId: 'Salaries' },
+            { type: 'chevron', text: 'Elizabeth Hudson', parentId: 'Salaries' },
             ...filledYear(5500, 5500, 300),
             ...filledYear(6400, 6400, 300),
         ]
@@ -166,7 +166,7 @@ export const dataRows: Row<RowCells>[] = [
         rowId: 'Office costs',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Office costs', parentId: 'Fixed', isExpanded: true },
+            { type: 'chevron', text: 'Office costs', parentId: 'Fixed', isExpanded: true },
             ...emptyYear(),
             ...emptyYear(),
         ]
@@ -175,7 +175,7 @@ export const dataRows: Row<RowCells>[] = [
         rowId: 'Gas',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Gas', parentId: 'Office costs' },
+            { type: 'chevron', text: 'Gas', parentId: 'Office costs' },
             ...filledYear(1000, 1200, 10.1),
             ...filledYear(1050, 1100, 12.02),
         ]
@@ -184,7 +184,7 @@ export const dataRows: Row<RowCells>[] = [
         rowId: 'Electricity',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Electricity', parentId: 'Office costs' },
+            { type: 'chevron', text: 'Electricity', parentId: 'Office costs' },
             ...filledYear(90, 110, 1.2),
             ...filledYear(80, 120, 1.02),
         ]
@@ -193,7 +193,7 @@ export const dataRows: Row<RowCells>[] = [
         rowId: 'Rent',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Rent', parentId: 'Office costs' },
+            { type: 'chevron', text: 'Rent', parentId: 'Office costs' },
             ...filledYear(2200, 2200),
             ...filledYear(2300, 2300),
         ]
@@ -202,7 +202,7 @@ export const dataRows: Row<RowCells>[] = [
         rowId: 'Insurance',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Insurance', parentId: 'Fixed', isExpanded: true },
+            { type: 'chevron', text: 'Insurance', parentId: 'Fixed', isExpanded: true },
             ...filledYear(1520, 1520),
             ...filledYear(1530, 1540),
         ]
@@ -211,7 +211,7 @@ export const dataRows: Row<RowCells>[] = [
         rowId: 'One-time',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'One-time', parentId: 'Expenses', isExpanded: true },
+            { type: 'chevron', text: 'One-time', parentId: 'Expenses', isExpanded: true },
             ...emptyYear(),
             ...emptyYear(),
         ]
@@ -220,7 +220,7 @@ export const dataRows: Row<RowCells>[] = [
         rowId: 'Vehicle',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Vehicle', parentId: 'One-time' },
+            { type: 'chevron', text: 'Vehicle', parentId: 'One-time' },
             generateNonEditableNumberCell(0, 'year'),
             generateNumberCell(0, 'quarter editable'),
             generateNumberCell(35000, 'month editable'),
@@ -261,7 +261,7 @@ export const dataRows: Row<RowCells>[] = [
         rowId: 'Computer',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Computer', parentId: 'One-time' },
+            { type: 'chevron', text: 'Computer', parentId: 'One-time' },
             generateNonEditableNumberCell(0, 'year'),
             generateNumberCell(0, 'quarter editable'),
             generateNumberCell(0, 'month editable'),

@@ -23,7 +23,7 @@ export const rows = (reorderable: boolean): Row[] => [
     height,
     reorderable,
     cells: [
-      { type: 'group', text: '1', isExpanded: true, },
+      { type: 'chevron', text: '1', isExpanded: true, },
       { type: 'text', text: 'fix/some-feature' },
       { type: 'text', text: 'e989109363ec42610966f85fe9b065e6017058f7' },
       { type: 'number', value: 890 },
@@ -37,7 +37,7 @@ export const rows = (reorderable: boolean): Row[] => [
     height,
     reorderable,
     cells: [
-      { type: 'group', text: '2', isExpanded: true, parentId: 1 },
+      { type: 'chevron', text: '2', isExpanded: true, parentId: 1 },
       { type: 'text', text: 'fix/some-feature' },
       { type: 'text', text: 'ey5seefv1o8soch1q50ztl30bzhubtb1xg6oklup' },
       { type: 'number', value: 310 },
@@ -51,7 +51,7 @@ export const rows = (reorderable: boolean): Row[] => [
     height,
     reorderable,
     cells: [
-      { type: 'group', text: '3', isExpanded: false },
+      { type: 'chevron', text: '3', isExpanded: false },
       { type: 'text', text: 'fix/my-sample' },
       { type: 'text', text: 'u61x66unzgl9xd5gre3bj7g8za8cb7ve4t7otz0e' },
       { type: 'number', value: 280 },
@@ -65,7 +65,7 @@ export const rows = (reorderable: boolean): Row[] => [
     height,
     reorderable,
     cells: [
-      { type: 'group', text: '4', isExpanded: true, parentId: 3 },
+      { type: 'chevron', text: '4', isExpanded: true, parentId: 3 },
       { type: 'text', text: 'fix/my-sample' },
       { type: 'text', text: 'v2dwm51y0k874x596axt4uz1if5qcv7etavg76va' },
       { type: 'number', value: 400 },
@@ -79,7 +79,7 @@ export const rows = (reorderable: boolean): Row[] => [
     height,
     reorderable,
     cells: [
-      { type: 'group', text: '5', isExpanded: true, parentId: 4 },
+      { type: 'chevron', text: '5', isExpanded: true, parentId: 4 },
       { type: 'text', text: 'fix/my-sample' },
       { type: 'text', text: 'jqk6nn3wktt2nwituttafuvpv7hlzo2grelvs7vo' },
       { type: 'number', value: 150 },
@@ -93,7 +93,7 @@ export const rows = (reorderable: boolean): Row[] => [
     height,
     reorderable,
     cells: [
-      { type: 'group', text: '6', isExpanded: true, parentId: 4 },
+      { type: 'chevron', text: '6', isExpanded: true, parentId: 4 },
       { type: 'text', text: 'fix/my-sample' },
       { type: 'text', text: 'ppsqily4doxz27uw6tznvc3qfvfhc37500k59jw9' },
       { type: 'number', value: 400 },
@@ -107,7 +107,7 @@ export const rows = (reorderable: boolean): Row[] => [
     height,
     reorderable,
     cells: [
-      { type: 'group', text: '7', isExpanded: true, },
+      { type: 'chevron', text: '7', isExpanded: true, },
       { type: 'text', text: 'fix/other-feature' },
       { type: 'text', text: 'uc75daha01rnk3dfcghvkgav13igsb87b0w1jzft' },
       { type: 'number', value: 600 },
@@ -121,7 +121,7 @@ export const rows = (reorderable: boolean): Row[] => [
     height,
     reorderable,
     cells: [
-      { type: 'group', text: '8', isExpanded: true, parentId: 7 },
+      { type: 'chevron', text: '8', isExpanded: true, parentId: 7 },
       { type: 'text', text: 'fix/other-feature' },
       { type: 'text', text: 'bmwz5y30ypjgixzh3aic3vpjlnh1q1hrie2pv5mg' },
       { type: 'number', value: 800 },
@@ -135,7 +135,7 @@ export const rows = (reorderable: boolean): Row[] => [
     height,
     reorderable,
     cells: [
-      { type: 'group', text: '9', isExpanded: true, parentId: 7 },
+      { type: 'chevron', text: '9', isExpanded: true, parentId: 7 },
       { type: 'text', text: 'fix/other-feature' },
       { type: 'text', text: 'rc3hmvkwh4to6iq8mo68ju9vyx2zcmqbgn73zrw9' },
       { type: 'number', value: 220 },
@@ -149,7 +149,7 @@ export const rows = (reorderable: boolean): Row[] => [
     height,
     reorderable,
     cells: [
-      { type: 'group', text: '10', isExpanded: true, parentId: 7 },
+      { type: 'chevron', text: '10', isExpanded: true, parentId: 7 },
       { type: 'text', text: 'fix/other-feature' },
       { type: 'text', text: '1ooxkvmvwotxicvawyh0wb1ur8jtin12egyayee8' },
       { type: 'number', value: 190 },
@@ -163,7 +163,7 @@ export const rows = (reorderable: boolean): Row[] => [
     height,
     reorderable,
     cells: [
-      { type: 'group', text: '11', isExpanded: true },
+      { type: 'chevron', text: '11', isExpanded: true },
       { type: 'text', text: 'update/some-feature' },
       { type: 'text', text: 'fvgiizz61ysmiv2gn9por6izio575u557jyxz4xs' },
       { type: 'number', value: 120 },
@@ -177,7 +177,7 @@ export const rows = (reorderable: boolean): Row[] => [
     height,
     reorderable,
     cells: [
-      { type: 'group', text: '12', isExpanded: true, parentId: 11 },
+      { type: 'chevron', text: '12', isExpanded: true, parentId: 11 },
       { type: 'text', text: 'update/some-feature' },
       { type: 'text', text: 'rbicj7u5qxvkpqv2ti2bkthlw4yg1by4ht4c1wom' },
       { type: 'number', value: 400 },
@@ -191,7 +191,7 @@ export const rows = (reorderable: boolean): Row[] => [
     height,
     reorderable,
     cells: [
-      { type: 'group', text: '13', isExpanded: true, parentId: 11 },
+      { type: 'chevron', text: '13', isExpanded: true, parentId: 11 },
       { type: 'text', text: 'update/some-feature' },
       { type: 'text', text: 'cunj4bkbl2gow91atjtfcwko1zmqp6813l8x626v' },
       { type: 'number', value: 15 },
@@ -205,7 +205,7 @@ export const rows = (reorderable: boolean): Row[] => [
     height,
     reorderable,
     cells: [
-      { type: 'group', text: '14', isExpanded: true, parentId: 13 },
+      { type: 'chevron', text: '14', isExpanded: true, parentId: 13 },
       { type: 'text', text: 'update/some-feature' },
       { type: 'text', text: 'iwpnwef8mtzsjyu1srihdwispyrjxvb5197ey6cz' },
       { type: 'number', value: 800 },
@@ -219,7 +219,7 @@ export const rows = (reorderable: boolean): Row[] => [
     height,
     reorderable,
     cells: [
-      { type: 'group', text: '15', isExpanded: true, parentId: 13 },
+      { type: 'chevron', text: '15', isExpanded: true, parentId: 13 },
       { type: 'text', text: 'update/some-feature' },
       { type: 'text', text: '6wawna3wf02eggw27v8kgyclhla2c82apmdemay4' },
       { type: 'number', value: 200 },
@@ -233,7 +233,7 @@ export const rows = (reorderable: boolean): Row[] => [
     height,
     reorderable,
     cells: [
-      { type: 'group', text: '16', isExpanded: true, parentId: 13 },
+      { type: 'chevron', text: '16', isExpanded: true, parentId: 13 },
       { type: 'text', text: 'update/some-feature' },
       { type: 'text', text: 'iwpnwef8mtzsjyu1srihdwispyrjxvb5197ey6cz' },
       { type: 'number', value: 100 },

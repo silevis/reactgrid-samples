@@ -1,16 +1,16 @@
-import { GroupCell, Column, Id, NumberCell } from '@silevis/reactgrid';
+import { ChevronCell, Column, Id, NumberCell } from '@silevis/reactgrid';
 import { BPRow, RowCells, RowPair } from '..';
-import { HorizontalGroupCell } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
+import { HorizontalChevronCell } from '../../cell-templates/horizontalChevronCellTemplate/HorizontalChevronCellTemplate';
 import { BPColumn } from './columns';
 
-export const getGroupCell = (row: BPRow) => row.cells.find((cell: RowCells) => cell.type === 'group') as GroupCell;
+export const getChevronCell = (row: BPRow) => row.cells.find((cell: RowCells) => cell.type === 'chevron') as ChevronCell;
 
-const hasChildren = (rows: BPRow[], row: BPRow): boolean => rows.some(r => getGroupCell(r)?.parentId === row.rowId);
+const hasChildren = (rows: BPRow[], row: BPRow): boolean => rows.some(r => getChevronCell(r)?.parentId === row.rowId);
 
 const isRowFullyExpanded = (rows: BPRow[], row: BPRow): boolean => {
     const parentRow = getParentRow(rows, row);
     if (parentRow) {
-        if (!getGroupCell(parentRow).isExpanded) return false;
+        if (!getChevronCell(parentRow).isExpanded) return false;
         return isRowFullyExpanded(rows, parentRow);
     }
     return true;
@@ -66,8 +66,8 @@ export const fillCellMatrixVertically = (rows: BPRow[]) => {
 export const collectRowPairs = (rows: BPRow[]) => {
     const acc: RowPair[] = [];
     rows.forEach(row => {
-        const groupCell = getGroupCell(row);
-        if (groupCell && groupCell.parentId === undefined) {
+        const chevronCell = getChevronCell(row);
+        if (chevronCell && chevronCell.parentId === undefined) {
             const hasRowChildrens = hasChildren(rows, row);
             if (hasRowChildrens) {
                 collectRowPairsOnChildren(rows, row, acc);
@@ -89,34 +89,34 @@ const collectRowPairsOnChildren = (allRows: BPRow[], parentRow: BPRow, acc: RowP
     });
 };
 
-export const getDirectChildrenRows = (rows: BPRow[], parentRow: BPRow): BPRow[] => rows.filter(row => !!row.cells.find(cell => cell.type === 'group' && cell.parentId === parentRow.rowId));
+export const getDirectChildrenRows = (rows: BPRow[], parentRow: BPRow): BPRow[] => rows.filter(row => !!row.cells.find(cell => cell.type === 'chevron' && cell.parentId === parentRow.rowId));
 
-export const getParentRow = (rows: BPRow[], row: BPRow): BPRow | undefined => rows.find(r => r.rowId === getGroupCell(row)?.parentId);
+export const getParentRow = (rows: BPRow[], row: BPRow): BPRow | undefined => rows.find(r => r.rowId === getChevronCell(row)?.parentId);
 
 const assignIndentAndHasChildrens = (allRows: BPRow[], parentRow: BPRow, indent: number) => {
     ++indent;
     getDirectChildrenRows(allRows, parentRow).forEach(row => {
-        const groupCell = getGroupCell(row);
-        groupCell.indent = indent;
+        const chevronCell = getChevronCell(row);
+        chevronCell.indent = indent;
         const hasRowChildrens = hasChildren(allRows, row);
-        groupCell.hasChildren = hasRowChildrens;
+        chevronCell.hasChildren = hasRowChildrens;
         if (hasRowChildrens) assignIndentAndHasChildrens(allRows, row, indent);
     });
 };
 
-export const getDataFromRows = (rows: BPRow[]): BPRow[] => rows.filter(row => row.cells.find(cell => cell.type === 'group') !== undefined);
+export const getDataFromRows = (rows: BPRow[]): BPRow[] => rows.filter(row => row.cells.find(cell => cell.type === 'chevron') !== undefined);
 
 export const createIndents = (rows: BPRow[]): BPRow[] => rows.map(row => {
-    const groupCell = getGroupCell(row);
-    if (groupCell && groupCell.parentId === undefined) {
+    const chevronCell = getChevronCell(row);
+    if (chevronCell && chevronCell.parentId === undefined) {
         const hasRowChildrens = hasChildren(rows, row);
-        groupCell.hasChildren = hasRowChildrens;
+        chevronCell.hasChildren = hasRowChildrens;
         if (hasRowChildrens) assignIndentAndHasChildrens(rows, row, 0);
     }
     return row;
 });
 
-export const isHorizontalGroupCell = (cell: RowCells) => cell.type === 'horizontalGroup';
+export const isHorizontalChevronCell = (cell: RowCells) => cell.type === 'horizontalChevron';
 
 /// COLUMN
 
@@ -127,11 +127,11 @@ export const extendWithColIds = (row: BPRow, columns: BPColumn[]) => {
 
 export const getDataFromColumns = (columns: Column[]): Column[] => columns.slice(1, columns.length);
 
-export const getHorizontalGroupCell = (cells: RowCells[], columnId: Id) => cells.find((cell: RowCells) => cell.type === 'horizontalGroup' && cell.parentId === columnId) as HorizontalGroupCell | undefined;
+export const getHorizontalChevronCell = (cells: RowCells[], columnId: Id) => cells.find((cell: RowCells) => cell.type === 'horizontalChevron' && cell.parentId === columnId) as HorizontalChevronCell | undefined;
 
-export const getParentCell = (cells: RowCells[], cell: RowCells): HorizontalGroupCell | undefined => cells.find(c => (c as any).columnId === (cell as any).parentId) as HorizontalGroupCell | undefined;
+export const getParentCell = (cells: RowCells[], cell: RowCells): HorizontalChevronCell | undefined => cells.find(c => (c as any).columnId === (cell as any).parentId) as HorizontalChevronCell | undefined;
 
-export const getDirectChildrenColumns = (rows: BPRow[], parentRow: BPRow): BPRow[] => rows.filter(row => !!row.cells.find(cell => cell.type === 'horizontalGroup' && cell.parentId === parentRow.rowId));
+export const getDirectChildrenColumns = (rows: BPRow[], parentRow: BPRow): BPRow[] => rows.filter(row => !!row.cells.find(cell => cell.type === 'horizontalChevron' && cell.parentId === parentRow.rowId));
 
 export const isCellFullyExpanded = (cells: RowCells[], cell: RowCells): boolean => {
     const parentCell = getParentCell(cells, cell);
@@ -149,7 +149,7 @@ export const getExpandedCells = (cells: RowCells[]): RowCells[] => cells.filter(
 
 export const getColumnsIdsxToRender = (cells: RowCells[], columnsToRender: BPColumn[]) => {
     return cells.map((thrCell, idx) =>
-        columnsToRender.find(colToRender => colToRender.columnId === (thrCell as HorizontalGroupCell).columnId) ? idx : NaN)
+        columnsToRender.find(colToRender => colToRender.columnId === (thrCell as HorizontalChevronCell).columnId) ? idx : NaN)
         .filter(idx => !isNaN(idx));
 }
 

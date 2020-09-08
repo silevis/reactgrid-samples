@@ -23,7 +23,7 @@ export const LimitedHeightByParentSample: React.FunctionComponent = () => {
             height: 150,
             overflow: 'auto'
         }}>
-            <h1>Content inside</h1> Example Content
+            <h1>Scroll me</h1> Example Content
             <ReactGrid
                 rows={state.rows}
                 columns={state.columns}
