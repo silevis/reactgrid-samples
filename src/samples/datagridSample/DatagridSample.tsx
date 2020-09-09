@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { ReactGrid, DefaultCellTypes, CellChange, Id, DropPosition, MenuOption, SelectionMode } from '@silevis/reactgrid';
+import {
+  ReactGrid, DefaultCellTypes, CellChange, Id, DropPosition, Column, Row, Highlight,
+  MenuOption, SelectionMode,
+} from '@silevis/reactgrid';
 import { DropdownNumberCellTemplate, DropdownNumberCell } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
 import { FlagCellTemplate, FlagCell } from '../../cell-templates/flagCell/FlagCellTemplate';
 import { columns as crmColumns } from '../../data/crm/columns';
 import { rows as crmRows } from '../../data/crm/rows';
 import './styling.scss';
-import { VirtualEnv, IDatagridState } from './VirtualEnv';
+import { VirtualEnv } from './VirtualEnv';
 import { VirtualUser } from './VirtualUser';
 import useInterval from '@use-it/interval';
 
@@ -15,29 +18,25 @@ const ReactGridContainer = styled.div`
   overflow: scroll;
 `;
 
+export type DataGridSampleRow = Row<DefaultCellTypes | FlagCell | DropdownNumberCell>;
+
 export type VirtualEnvCellChange = CellChange<DefaultCellTypes | FlagCell | DropdownNumberCell>;
 
 export const DatagridSample: React.FC = () => {
 
-  const [state, setState] = useState<IDatagridState>(() => ({
-    columns: [...crmColumns(true, false)],
-    rows: [...crmRows(true)],
-    stickyTopRows: 1,
-    stickyLeftColumns: 2,
-    highlights: []
-  }));
-
-  const handleChanges = (changes: VirtualEnvCellChange[]) => {
-    const newState = { ...state };
-    changes.forEach(change => {
-      const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
-      const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
-      newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
-    })
-    setState(newState);
-  }
-
+  const [columns, setColumns] = React.useState<Column[]>(() => [...crmColumns(true, false)]);
+  const [rows, setRows] = React.useState<DataGridSampleRow[]>(() => [...crmRows(true)]);
+  const [highlights, setHighlights] = React.useState<Highlight[]>(() => []);
   const [virtualEnv] = useState(() => new VirtualEnv());
+
+  const handleChanges = (changes: CellChange[]) => setRows((prevRows) => {
+    changes.forEach(change => {
+      const changeRowIdx = prevRows.findIndex(el => el.rowId === change.rowId);
+      const changeColumnIdx = columns.findIndex(el => el.columnId === change.columnId);
+      prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+    });
+    return [...prevRows];
+  });
 
   useEffect(() => {
     virtualEnv
@@ -46,7 +45,13 @@ export const DatagridSample: React.FC = () => {
       .addUser(new VirtualUser('red', 10, 12))
       .addUser(new VirtualUser('orange', 0, 18))
 
-    setState(st => virtualEnv.updateView(st));
+    const states = virtualEnv.updateView(columns, rows, highlights);
+
+    states.forEach(({ rows: r, highlights: h }, idx) => {
+      setRows(r);
+      setHighlights(h);
+    });
+
   }, [virtualEnv]);
 
   const handleCanReorderColumns = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition): boolean => {
@@ -56,17 +61,20 @@ export const DatagridSample: React.FC = () => {
   }
 
   const handleColumnsReorder = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
-    const to = state.columns.findIndex(column => column.columnId === targetColumnId);
-    const columnIdxs = columnIds.map((id: Id, idx: number) => state.columns.findIndex(c => c.columnId === id));
-    setState({
-      ...state,
-      columns: reorderArray(state.columns, columnIdxs, to),
-      rows: state.rows.map(row => ({ ...row, cells: reorderArray(row.cells, columnIdxs, to) })),
-    });
+    const to = columns.findIndex((column: Column) => column.columnId === targetColumnId);
+    const columnIdxs = columnIds.map((id: Id, idx: number) => columns.findIndex((c: Column) => c.columnId === id));
+    setRows(rows.map(row => ({ ...row, cells: reorderArray(row.cells, columnIdxs, to) })));
+    setColumns(reorderArray(columns, columnIdxs, to));
   }
 
   useInterval(() => {
-    setState(virtualEnv.updateView(state))
+
+    const states = virtualEnv.updateView(columns, rows, highlights);
+
+    states.forEach(({ rows: r, highlights: h }, idx) => {
+      setRows(r);
+      setHighlights(h);
+    });
   }, 250);
 
   const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
@@ -78,37 +86,39 @@ export const DatagridSample: React.FC = () => {
   }
 
   const handleRowsReorder = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
-    const newState = { ...state };
-    const to = state.rows.findIndex(row => row.rowId === targetRowId);
-    const ids = rowIds.map(id => state.rows.findIndex(r => r.rowId === id));
-    setState({ ...newState, rows: reorderArray(state.rows, ids, to) });
+    setRows((prevRows) => {
+      const to = rows.findIndex(row => row.rowId === targetRowId);
+      const columnIdxs = rowIds.map(id => rows.findIndex(r => r.rowId === id));
+      return reorderArray(prevRows, columnIdxs, to);
+    });
   }
 
   const handleCanReorderRows = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition): boolean => {
-    const rowIndex = state.rows.findIndex(row => row.rowId === targetRowId);
+    const rowIndex = rows.findIndex(row => row.rowId === targetRowId);
     const rowInside = rowIds.includes(targetRowId);
     if (rowIndex === 0 || rowInside) return false;
     return true;
   }
 
   const handleColumnResize = (columnId: Id, width: number, selectedColIds: Id[]) => {
-    const newState = { ...state };
+    // MULTI COLUMN RESIZE
+    setColumns((prevColumns) => {
+      const setColumnWidth = (columnIndex: number) => {
+        const resizedColumn = prevColumns[columnIndex];
+        prevColumns[columnIndex] = { ...resizedColumn, width };
+      }
 
-    const setColumnWidth = (columnIndex: number) => {
-      const resizedColumn = newState.columns[columnIndex];
-      newState.columns[columnIndex] = { ...resizedColumn, width };
-    }
-
-    if (selectedColIds.includes(columnId)) {
-      const stateColumnIndexes = newState.columns
-        .filter(col => selectedColIds.includes(col.columnId))
-        .map(col => newState.columns.findIndex(el => el.columnId === col.columnId));
-      stateColumnIndexes.forEach(setColumnWidth);
-    } else {
-      const columnIndex = newState.columns.findIndex(col => col.columnId === columnId);
-      setColumnWidth(columnIndex);
-    }
-    setState(newState);
+      if (selectedColIds.includes(columnId)) {
+        const stateColumnIndexes = prevColumns
+          .filter(col => selectedColIds.includes(col.columnId))
+          .map(col => prevColumns.findIndex(el => el.columnId === col.columnId));
+        stateColumnIndexes.forEach(setColumnWidth);
+      } else {
+        const columnIndex = prevColumns.findIndex(col => col.columnId === columnId);
+        setColumnWidth(columnIndex);
+      }
+      return [...prevColumns];
+    });
   }
 
   const handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {
@@ -117,8 +127,8 @@ export const DatagridSample: React.FC = () => {
         ...menuOptions,
         {
           id: 'removeRow', label: 'Remove row', handler: () => {
-            const highlights = state.highlights.filter(h => !selectedRowIds.includes(h.rowId));
-            setState({ ...state, rows: state.rows.filter(row => !selectedRowIds.includes(row.rowId)), highlights });
+            setHighlights(high => high.filter(h => !selectedRowIds.includes(h.rowId)));
+            setRows((r => rows.filter(row => !selectedRowIds.includes(row.rowId))));
           }
         },
       ]
@@ -128,14 +138,16 @@ export const DatagridSample: React.FC = () => {
         ...menuOptions,
         {
           id: 'removeColumn', label: 'Remove column', handler: () => {
-            const columns = state.columns.filter(column => !selectedColIds.includes(column.columnId));
-            const columnsIdxs = state.columns.map((column, idx) => {
-              if (!columns.includes(column)) return idx;
+            const c = columns.filter(column => !selectedColIds.includes(column.columnId));
+            const columnsIdxs = columns.map((column, idx) => {
+              if (!c.includes(column)) return idx;
               return undefined;
             }).filter(idx => idx !== undefined);
-            const rows = state.rows.map(row => ({ ...row, cells: row.cells.filter((_, idx) => !columnsIdxs.includes(idx)) }));
-            const highlights = state.highlights.filter(h => !selectedColIds.includes(h.columnId));
-            setState({ ...state, columns, rows, highlights });
+            const r = rows.map(row => ({ ...row, cells: row.cells.filter((_, idx) => !columnsIdxs.includes(idx)) }));
+            const h = highlights.filter(h => !selectedColIds.includes(h.columnId));
+            setColumns(c);
+            setRows(r);
+            setHighlights(h);
           }
         },
       ]
@@ -146,15 +158,15 @@ export const DatagridSample: React.FC = () => {
   return (
     <ReactGridContainer id="multiuser-sample">
       <ReactGrid
-        rows={state.rows}
-        columns={state.columns}
+        rows={rows}
+        columns={columns}
         customCellTemplates={{
           'flag': new FlagCellTemplate(),
           'dropdownNumber': new DropdownNumberCellTemplate(),
         }}
-        highlights={state.highlights}
-        stickyTopRows={state.stickyTopRows}
-        stickyLeftColumns={state.stickyLeftColumns}
+        highlights={highlights}
+        stickyTopRows={1}
+        stickyLeftColumns={2}
         onCellsChanged={handleChanges}
         canReorderRows={handleCanReorderRows}
         onRowsReordered={handleRowsReorder}

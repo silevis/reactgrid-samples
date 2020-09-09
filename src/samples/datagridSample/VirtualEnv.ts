@@ -1,12 +1,11 @@
-import { Column, Highlight, } from '@silevis/reactgrid';
-import { rows } from '../../data/crm/rows';
+import { Column, Highlight, Row, DefaultCellTypes } from '@silevis/reactgrid';
 import { VirtualUser } from './VirtualUser';
+import { DropdownNumberCell } from '../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate';
+import { FlagCell } from '../../cell-templates/flagCell/FlagCellTemplate';
+import { DataGridSampleRow } from '..';
 
 export interface IDatagridState {
-    columns: Column[],
-    rows: ReturnType<typeof rows>,
-    stickyTopRows?: number,
-    stickyLeftColumns?: number,
+    rows: Row<DefaultCellTypes | FlagCell | DropdownNumberCell>[],
     highlights: Highlight[]
 }
 
@@ -19,9 +18,9 @@ export class VirtualEnv {
         return this;
     }
 
-    updateView = (state: IDatagridState) => {
-        let modifiedState = { ...state };
-        this.virtualUsers.forEach(virtualUser => modifiedState = virtualUser.makeChanges(modifiedState));
+    updateView = (columns: Column[], rows: DataGridSampleRow[], highlights: Highlight[]) => {
+        let modifiedState: IDatagridState[] = new Array(this.virtualUsers.length).fill({ columns, rows, highlights });
+        this.virtualUsers.forEach((virtualUser, idx) => modifiedState[idx] = virtualUser.makeChanges(columns, rows, highlights));
         return modifiedState;
     }
 }

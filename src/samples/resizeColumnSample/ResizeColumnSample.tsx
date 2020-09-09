@@ -15,7 +15,7 @@ const ReactGridContainer = styled.div`
 export const ResizeColumnSample: React.FunctionComponent = () => {
 
   const [columns, setColumns] = React.useState<Column[]>(() => dataColumns(false, true));
-  const [rows, setRows] = React.useState<Row<DefaultCellTypes | FlagCell | RateCell>[]>(() => [...dataRows(false)]);
+  const [rows, setRows] = React.useState<Row<DefaultCellTypes | FlagCell | RateCell>[]>(() => dataRows(false));
 
 
   const handleChanges = (changes: CellChange[]) => {

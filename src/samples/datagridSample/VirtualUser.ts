@@ -1,5 +1,7 @@
 import { IDatagridState } from './VirtualEnv';
 import { DatagridDataGenerator } from './DatagridDataGenerator';
+import { DataGridSampleRow } from '..';
+import { Column, Highlight } from '@silevis/reactgrid';
 
 
 export class VirtualUser {
@@ -10,92 +12,80 @@ export class VirtualUser {
     this.highlightRowIdx = highlightRowIdx;
   }
 
-  private count: number = 0;
   private currectLetterCount = -1;
   private drawData: string = '';
   private dataGen = new DatagridDataGenerator();
 
-  getHighlightedCell(state: IDatagridState) {
-    return this.getHighlightedRow(state).cells[this.highlightColumnIdx];
+  getHighlightedCell(rows: DataGridSampleRow[]) {
+    return this.getHighlightedRow(rows).cells[this.highlightColumnIdx];
   }
 
-  getHighlightedColumn(state: IDatagridState) {
-    return state.columns[this.highlightColumnIdx];
+  getHighlightedColumn(columns: Column[]) {
+    return columns[this.highlightColumnIdx];
   }
 
-  getHighlightedRow(state: IDatagridState) {
-    return state.rows[this.highlightRowIdx];
+  getHighlightedRow(rows: DataGridSampleRow[]) {
+    return rows[this.highlightRowIdx];
   }
 
-  drawHighlight(state: IDatagridState) {
+  drawHighlight(columns: Column[], rows: DataGridSampleRow[]) {
     const moveFactor = 2;
-    this.highlightColumnIdx = DatagridDataGenerator.getRandomInt(Math.max(0, this.highlightColumnIdx - moveFactor), Math.min(this.highlightColumnIdx + moveFactor, state.columns.length));
-    this.highlightRowIdx = DatagridDataGenerator.getRandomInt(Math.max(1, this.highlightRowIdx - moveFactor), Math.min(this.highlightRowIdx + moveFactor, state.rows.length));
+    this.highlightColumnIdx = DatagridDataGenerator.getRandomInt(Math.max(0, this.highlightColumnIdx - moveFactor), Math.min(this.highlightColumnIdx + moveFactor, columns.length));
+    this.highlightRowIdx = DatagridDataGenerator.getRandomInt(Math.max(1, this.highlightRowIdx - moveFactor), Math.min(this.highlightRowIdx + moveFactor, rows.length));
   }
 
-  updateHighlightsState(state: IDatagridState): IDatagridState {
-    const highlightLocations = [...state.highlights].filter(highlight => highlight.borderColor !== this.borderColor);
+  updateHighlightsState(columns: Column[], rows: DataGridSampleRow[], highlights: Highlight[]): Highlight[] {
+    const highlightLocations = [...highlights].filter(highlight => highlight.borderColor !== this.borderColor);
 
-    if (state.rows.length > 0 && this.getHighlightedColumn(state)) {
+    const highlightRow = this.getHighlightedRow(rows);
+    const highlightColumn = this.getHighlightedColumn(columns);
+    if (rows.length > 0 && highlightColumn && highlightRow) {
       const highlight = {
-        columnId: this.getHighlightedColumn(state).columnId,
-        rowId: this.getHighlightedRow(state).rowId,
+        columnId: highlightColumn.columnId,
+        rowId: highlightRow.rowId,
         borderColor: this.borderColor
       };
-      return { ...state, highlights: [...highlightLocations, highlight] };
+      return [...highlightLocations, highlight];
     }
-    return { ...state }
+    return [...highlights];
   }
 
-  makeChanges(state: IDatagridState): IDatagridState {
+  makeChanges(columns: Column[], rows: DataGridSampleRow[], highlights: Highlight[]): IDatagridState {
 
     if (this.currectLetterCount === -1) {
-      this.drawData = this.dataGen.getDataAttrByKey(this.getHighlightedColumn(state).columnId) as string;
-      this.drawHighlight(state);
-      state = this.updateHighlightsState(state);
+      this.drawData = this.dataGen.getDataAttrByKey(this.getHighlightedColumn(columns).columnId) as string;
+      this.drawHighlight(columns, rows);
+      highlights = this.updateHighlightsState(columns, rows, highlights);
     }
 
     this.currectLetterCount += 1;
 
-    state = this.updateHighlightsState(state);
+    highlights = this.updateHighlightsState(columns, rows, highlights);
 
     if (this.drawData && this.drawData.length < this.currectLetterCount) {
       this.currectLetterCount = 0;
-      this.drawHighlight(state);
-      this.drawData = this.dataGen.getDataAttrByKey(this.getHighlightedColumn(state).columnId) as string;
+      this.drawHighlight(columns, rows);
+      this.drawData = this.dataGen.getDataAttrByKey(this.getHighlightedColumn(columns).columnId) as string;
     }
-
-    const removeChars = DatagridDataGenerator.getRandomInt(0, 1);
 
     for (let i = 0; i < this.currectLetterCount; i++) {
-
-      if (removeChars) {
-        // this.currectLetterCount -= removeChars;
-        break;
-      }
-
-      state = {
-        ...state,
-        rows: state.rows.map((row, rIdx) => {
-          if (rIdx === this.highlightRowIdx) {
-            return {
-              ...row,
-              cells: row.cells.map((cell, cIdx) => {
-                if (cIdx === this.highlightColumnIdx) {
-                  return { ...cell, text: this.drawData.slice(0, this.currectLetterCount), value: parseInt(this.drawData.slice(0, this.currectLetterCount), 10) };
-                }
-                return cell;
-              })
-            }
+      rows = rows.map((row, rIdx) => {
+        if (rIdx === this.highlightRowIdx) {
+          return {
+            ...row,
+            cells: row.cells.map((cell, cIdx) => {
+              if (cIdx === this.highlightColumnIdx) {
+                return { ...cell, text: this.drawData.slice(0, this.currectLetterCount), value: parseInt(this.drawData.slice(0, this.currectLetterCount), 10) };
+              }
+              return cell;
+            })
           }
-          return row;
-        })
-      }
-
+        }
+        return row;
+      });
     }
 
-    this.count++;
-    return state;
+    return { rows, highlights };
   }
 
 }
