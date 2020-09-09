@@ -1,36 +1,36 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { columns as dataColumns } from '../../data/group/columns';
-import { rows as dataRows, headerRow } from '../../data/group/rows';
-import { CellChange, Column, GroupCell, ReactGrid, Row, Id, DropPosition } from '@silevis/reactgrid';
+import { columns as dataColumns } from '../../data/chevron/columns';
+import { rows as dataRows, headerRow } from '../../data/chevron/rows';
+import { CellChange, Column, ChevronCell, ReactGrid, Row, Id, DropPosition } from '@silevis/reactgrid';
 import './styling.scss';
 
 const ReactGridContainer = styled.div`
   min-height: 400px;
 `;
 
-interface GroupTestGridStateData {
+interface ChevronTestGridStateData {
     columns: Column[]
     rows: Row[]
 }
 
 const findParentRow = (rows: Row[], row: Row) => rows.find(r => {
-    const foundGroupCell = findGroupCell(row);
-    return foundGroupCell ? r.rowId === foundGroupCell.parentId : false;
+    const foundChevronCell = findChevronCell(row);
+    return foundChevronCell ? r.rowId === foundChevronCell.parentId : false;
 });
 
-const findGroupCell = (row: Row) => row.cells.find(cell => cell.type === 'group') as GroupCell | undefined;
+const findChevronCell = (row: Row) => row.cells.find(cell => cell.type === 'chevron') as ChevronCell | undefined;
 
 const hasChildren = (rows: Row[], row: Row): boolean => rows.some(r => {
-    const foundGroupCell = findGroupCell(r);
-    return foundGroupCell ? foundGroupCell.parentId === row.rowId : false;
+    const foundChevronCell = findChevronCell(r);
+    return foundChevronCell ? foundChevronCell.parentId === row.rowId : false;
 });
 
 const isRowFullyExpanded = (rows: Row[], row: Row): boolean => {
     const parentRow = findParentRow(rows, row);
     if (parentRow) {
-        const foundGroupCell = findGroupCell(parentRow);
-        if (foundGroupCell && !foundGroupCell.isExpanded) return false;
+        const foundChevronCell = findChevronCell(parentRow);
+        if (foundChevronCell && !foundChevronCell.isExpanded) return false;
         return isRowFullyExpanded(rows, parentRow);
     }
     return true;
@@ -41,34 +41,34 @@ const getExpandedRows = (rows: Row[]): Row[] => rows.filter(row => {
     return areAllParentsExpanded !== undefined ? areAllParentsExpanded : true;
 });
 
-const getDirectChildRows = (rows: Row[], parentRow: Row): Row[] => rows.filter(row => !!row.cells.find(cell => cell.type === 'group' && cell.parentId === parentRow.rowId));
+const getDirectChildRows = (rows: Row[], parentRow: Row): Row[] => rows.filter(row => !!row.cells.find(cell => cell.type === 'chevron' && cell.parentId === parentRow.rowId));
 
 const assignIndentAndHasChildren = (rows: Row[], parentRow: Row, indent: number = 0) => {
     ++indent;
     getDirectChildRows(rows, parentRow).forEach(row => {
-        const foundGroupCell = findGroupCell(row);
+        const foundChevronCell = findChevronCell(row);
         const hasRowChildrens = hasChildren(rows, row);
-        if (foundGroupCell) {
-            foundGroupCell.indent = indent;
-            foundGroupCell.hasChildren = hasRowChildrens;
+        if (foundChevronCell) {
+            foundChevronCell.indent = indent;
+            foundChevronCell.hasChildren = hasRowChildrens;
         }
         if (hasRowChildrens) assignIndentAndHasChildren(rows, row, indent);
     });
 };
 
 const buildTree = (rows: Row[]): Row[] => rows.map(row => {
-    const foundGroupCell = findGroupCell(row);
-    if (foundGroupCell && !foundGroupCell.parentId) {
+    const foundChevronCell = findChevronCell(row);
+    if (foundChevronCell && !foundChevronCell.parentId) {
         const hasRowChildrens = hasChildren(rows, row);
-        foundGroupCell.hasChildren = hasRowChildrens;
+        foundChevronCell.hasChildren = hasRowChildrens;
         if (hasRowChildrens) assignIndentAndHasChildren(rows, row);
     }
     return row;
 });
 
-export const GroupCellSample: React.FunctionComponent = () => {
+export const ChevronCellSample: React.FunctionComponent = () => {
 
-    const [state, setState] = useState<GroupTestGridStateData>(() => {
+    const [state, setState] = useState<ChevronTestGridStateData>(() => {
         const columns = [...dataColumns(true, false)];
         return { columns, rows: buildTree([...dataRows(true)]) }
     });
@@ -105,7 +105,7 @@ export const GroupCellSample: React.FunctionComponent = () => {
 
             const onRow = newState.rows.find(row => row.rowId === targetRowId);
             if (onRow) {
-                const movingRowRoot = findGroupCell(row);
+                const movingRowRoot = findChevronCell(row);
                 if (movingRowRoot) {
                     if (dropPosition === 'on') {
                         movingRowRoot.parentId = onRow.rowId;
@@ -170,7 +170,7 @@ export const GroupCellSample: React.FunctionComponent = () => {
     }
 
     return (
-        <ReactGridContainer id="group-cell-sample">
+        <ReactGridContainer id="chevron-cell-sample">
             <ReactGrid
                 rows={rowsToRender}
                 columns={state.columns}

@@ -46,7 +46,7 @@ export const DatagridSample: React.FC = () => {
       .addUser(new VirtualUser('red', 10, 12))
       .addUser(new VirtualUser('orange', 0, 18))
 
-    setState(virtualEnv.updateView(state));
+    setState(st => virtualEnv.updateView(st));
   }, [virtualEnv]);
 
   const handleCanReorderColumns = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition): boolean => {

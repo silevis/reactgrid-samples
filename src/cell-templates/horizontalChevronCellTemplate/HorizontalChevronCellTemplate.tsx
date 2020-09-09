@@ -4,8 +4,8 @@ import {
     isAlphaNumericKey, getCellProperty
 } from "@silevis/reactgrid";
 
-export interface HorizontalGroupCell extends Cell {
-    type: 'horizontalGroup';
+export interface HorizontalChevronCell extends Cell {
+    type: 'horizontalChevron';
     text: string;
     isExpanded?: boolean;
     hasChildren?: boolean;
@@ -13,9 +13,9 @@ export interface HorizontalGroupCell extends Cell {
     parentId?: Id;
 }
 
-export class HorizontalGroupCellTemplate implements CellTemplate<HorizontalGroupCell> {
+export class HorizontalChevronCellTemplate implements CellTemplate<HorizontalChevronCell> {
 
-    getCompatibleCell(uncertainCell: Uncertain<HorizontalGroupCell>): Compatible<HorizontalGroupCell> {
+    getCompatibleCell(uncertainCell: Uncertain<HorizontalChevronCell>): Compatible<HorizontalChevronCell> {
         const text = getCellProperty(uncertainCell, 'text', 'string');
         let isExpanded = false;
         try {
@@ -33,13 +33,13 @@ export class HorizontalGroupCellTemplate implements CellTemplate<HorizontalGroup
         return { ...uncertainCell, text, value, isExpanded, hasChildren };
     }
 
-    update(cell: Compatible<HorizontalGroupCell>, cellToMerge: UncertainCompatible<HorizontalGroupCell>): Compatible<HorizontalGroupCell> {
+    update(cell: Compatible<HorizontalChevronCell>, cellToMerge: UncertainCompatible<HorizontalChevronCell>): Compatible<HorizontalChevronCell> {
         return this.getCompatibleCell({ ...cell, isExpanded: cellToMerge.isExpanded, text: cellToMerge.text })
     }
 
     isFocusable = () => false;
 
-    handleKeyDown(cell: Compatible<HorizontalGroupCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<HorizontalGroupCell>, enableEditMode: boolean } {
+    handleKeyDown(cell: Compatible<HorizontalChevronCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<HorizontalChevronCell>, enableEditMode: boolean } {
         // let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
         const cellCopy = { ...cell };
         // const char = getCharFromKeyCode(keyCode, shift);
@@ -52,13 +52,13 @@ export class HorizontalGroupCellTemplate implements CellTemplate<HorizontalGroup
         return { cell: cellCopy, enableEditMode: false }; // FORCED DISABLED EDIT MODE
     }
 
-    getClassName(cell: Compatible<HorizontalGroupCell>, isInEditMode: boolean) {
+    getClassName(cell: Compatible<HorizontalChevronCell>, isInEditMode: boolean) {
         const isExpanded = cell.hasChildren ? cell.isExpanded ? 'expanded' : 'collapsed' : '';
         const className = cell.className || '';
         return `${isExpanded} ${className}`;
     }
 
-    render(cell: Compatible<HorizontalGroupCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<HorizontalGroupCell>, commit: boolean) => void): React.ReactNode {
+    render(cell: Compatible<HorizontalChevronCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<HorizontalChevronCell>, commit: boolean) => void): React.ReactNode {
         return (
             !isInEditMode ?
                 <>

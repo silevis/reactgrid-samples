@@ -7,17 +7,17 @@ import "@silevis/reactgrid/styles.css";
 import "./styling.scss";
 import {
     getDataFromRows, createIndents, getExpandedRows, getDataFromColumns, fillCellMatrixHorizontally,
-    fillCellMatrixVertically, getGroupCell, getDirectChildrenRows, getParentRow, extendWithColIds, getExpandedCells,
+    fillCellMatrixVertically, getChevronCell, getDirectChildrenRows, getParentRow, extendWithColIds, getExpandedCells,
     getColumnsIdsxToRender, filterCellsOnRows, resetAggregatedMonthFields,
 } from "./helpersFunctions";
 import { dataRows, topHeaderRow, filledYear, emptyYear } from "./rows";
 import { dataColumns, BPColumn } from "./columns";
-import { HorizontalGroupCell, HorizontalGroupCellTemplate } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
+import { HorizontalChevronCell, HorizontalChevronCellTemplate } from '../../cell-templates/horizontalChevronCellTemplate/HorizontalChevronCellTemplate';
 import { reorderArray } from './reorderArray';
 import { nonEditableNumberCellTemplate, NonEditableNumberCell } from './CellTemplates';
 
 
-export type RowCells = DefaultCellTypes | HorizontalGroupCell | NonEditableNumberCell;
+export type RowCells = DefaultCellTypes | HorizontalChevronCell | NonEditableNumberCell;
 export type BPRow = Row<RowCells>;
 
 export type RowPair = { from: BPRow, to: BPRow };
@@ -45,7 +45,7 @@ export const BPSample: React.FC = () => {
     const [columnsToRender, setColumnsToRender] = React.useState<BPColumn[]>(() => {
         const extendedTopHeaderRow = extendWithColIds(topHeaderRow, [...dataColumns]);
         const expandedCells = getExpandedCells(extendedTopHeaderRow.cells);
-        return state.columns.filter(col => expandedCells.find(expCell => (expCell as HorizontalGroupCell).columnId === col.columnId));
+        return state.columns.filter(col => expandedCells.find(expCell => (expCell as HorizontalChevronCell).columnId === col.columnId));
     });
 
     const [rowsToRender, setRowsToRender] = React.useState<BPRow[]>(() => {
@@ -61,12 +61,12 @@ export const BPSample: React.FC = () => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
             if (changeRowIdx === 0) {
-                newState.rows[changeRowIdx].cells[changeColumnIdx] = { ...change.newCell, text: (change.initialCell as HorizontalGroupCell).text } as HorizontalGroupCell;
+                newState.rows[changeRowIdx].cells[changeColumnIdx] = { ...change.newCell, text: (change.previousCell as HorizontalChevronCell).text } as HorizontalChevronCell;
             } else {
                 if ((change.newCell.type === 'number' || change.newCell.type === 'nonEditableNumber')
                     && (change.newCell.className?.includes('quarter'))) {
-                    const groupCell = getGroupCell(newState.rows[changeRowIdx]);
-                    if (!groupCell.hasChildren) {
+                    const chevronCell = getChevronCell(newState.rows[changeRowIdx]);
+                    if (!chevronCell.hasChildren) {
                         updateNodeQuarter(newState, change.newCell.value, changeRowIdx, changeColumnIdx);
                     }
                 } else {
@@ -77,7 +77,7 @@ export const BPSample: React.FC = () => {
         const rows = fillCellMatrixHorizontally(newState.rows);
         fillCellMatrixVertically(rows);
         const expandedCells = getExpandedCells(topHeaderRow.cells);
-        const columnsToRender = newState.columns.filter(col => expandedCells.find(expandedCell => (expandedCell as HorizontalGroupCell).columnId === col.columnId));
+        const columnsToRender = newState.columns.filter(col => expandedCells.find(expandedCell => (expandedCell as HorizontalChevronCell).columnId === col.columnId));
         const idxs = getColumnsIdsxToRender(topHeaderRow.cells, columnsToRender);
         const expandedRows = getExpandedRows(rows);
         setColumnsToRender([...columnsToRender]);
@@ -103,7 +103,7 @@ export const BPSample: React.FC = () => {
 
             const onRow = newState.rows.find(row => row.rowId === targetRowId);
             if (onRow) {
-                const movingRowRoot = getGroupCell(row);
+                const movingRowRoot = getChevronCell(row);
                 if (dropPosition === 'on') {
                     movingRowRoot.parentId = onRow.rowId;
                     const onRowIndex = newState.rows.indexOf(onRow);
@@ -176,7 +176,7 @@ export const BPSample: React.FC = () => {
                                 rowId: Date.now(),
                                 reorderable: true,
                                 cells: [
-                                    { type: 'group', text: `New row`, parentId: selectedRowIds[0], isExpanded: false },
+                                    { type: 'chevron', text: `New row`, parentId: selectedRowIds[0], isExpanded: false },
                                     ...filledYear(0, 0),
                                     ...filledYear(0, 0)
                                 ]
@@ -244,7 +244,7 @@ export const BPSample: React.FC = () => {
                 stickyTopRows={1}
                 stickyLeftColumns={1}
                 customCellTemplates={{
-                    horizontalGroup: new HorizontalGroupCellTemplate(),
+                    horizontalChevron: new HorizontalChevronCellTemplate(),
                     nonEditableNumber: nonEditableNumberCellTemplate,
                 }}
                 onRowsReordered={handleRowsReorder}
