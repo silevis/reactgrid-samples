@@ -1,8 +1,8 @@
-import { GroupCell, Column, Id } from '@silevis/reactgrid';
+import { ChevronCell, Column, Id } from '@silevis/reactgrid';
 import { BPRow, RowCells, RowPair } from '..';
-import { HorizontalGroupCell } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
+import { HorizontalChevronCell } from '../../cell-templates/horizontalChevronCellTemplate/HorizontalChevronCellTemplate';
 import { BPColumn } from './columns';
-export declare const getGroupCell: (row: BPRow) => GroupCell;
+export declare const getChevronCell: (row: BPRow) => ChevronCell;
 export declare const getExpandedRows: (rows: BPRow[]) => BPRow[];
 export declare const fillCellMatrixHorizontally: (rows: BPRow[]) => BPRow[];
 export declare const resetAggregatedMonthFields: (row: BPRow) => void;
@@ -12,11 +12,11 @@ export declare const getDirectChildrenRows: (rows: BPRow[], parentRow: BPRow) =>
 export declare const getParentRow: (rows: BPRow[], row: BPRow) => BPRow | undefined;
 export declare const getDataFromRows: (rows: BPRow[]) => BPRow[];
 export declare const createIndents: (rows: BPRow[]) => BPRow[];
-export declare const isHorizontalGroupCell: (cell: RowCells) => boolean;
+export declare const isHorizontalChevronCell: (cell: RowCells) => boolean;
 export declare const extendWithColIds: (row: BPRow, columns: BPColumn[]) => BPRow;
 export declare const getDataFromColumns: (columns: Column[]) => Column[];
-export declare const getHorizontalGroupCell: (cells: RowCells[], columnId: Id) => HorizontalGroupCell | undefined;
-export declare const getParentCell: (cells: RowCells[], cell: RowCells) => HorizontalGroupCell | undefined;
+export declare const getHorizontalChevronCell: (cells: RowCells[], columnId: Id) => HorizontalChevronCell | undefined;
+export declare const getParentCell: (cells: RowCells[], cell: RowCells) => HorizontalChevronCell | undefined;
 export declare const getDirectChildrenColumns: (rows: BPRow[], parentRow: BPRow) => BPRow[];
 export declare const isCellFullyExpanded: (cells: RowCells[], cell: RowCells) => boolean;
 export declare const getExpandedCells: (cells: RowCells[]) => RowCells[];

@@ -69,7 +69,7 @@ export var DatagridSample = function () {
             .addUser(new VirtualUser('mediumpurple', 0, 0))
             .addUser(new VirtualUser('red', 10, 12))
             .addUser(new VirtualUser('orange', 0, 18));
-        setState(virtualEnv.updateView(state));
+        setState(function (st) { return virtualEnv.updateView(st); });
     }, [virtualEnv]);
     var handleCanReorderColumns = function (targetColumnId, columnIds, dropPosition) {
         var columnInside = columnIds.includes(targetColumnId);

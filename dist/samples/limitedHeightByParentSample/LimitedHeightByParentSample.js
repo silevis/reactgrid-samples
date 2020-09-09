@@ -29,7 +29,7 @@ export var LimitedHeightByParentSample = function () {
             height: 150,
             overflow: 'auto'
         } },
-        React.createElement("h1", null, "Content inside"),
+        React.createElement("h1", null, "Scroll me"),
         " Example Content",
         React.createElement(ReactGrid, { rows: state.rows, columns: state.columns, customCellTemplates: {
                 'rate': new RateCellTemplate(),

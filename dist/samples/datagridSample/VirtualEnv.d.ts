@@ -13,7 +13,7 @@ export declare class VirtualEnv {
     addUser(virtualUser: VirtualUser): VirtualEnv;
     updateView: (state: IDatagridState) => {
         columns: Column[];
-        rows: import("@silevis/reactgrid").Row<import("@silevis/reactgrid/lib").CheckboxCell | import("@silevis/reactgrid/lib").DateCell | import("@silevis/reactgrid/lib").EmailCell | import("@silevis/reactgrid/lib").GroupCell | import("@silevis/reactgrid/lib").HeaderCell | import("@silevis/reactgrid/lib").NumberCell | import("@silevis/reactgrid/lib").TextCell | import("@silevis/reactgrid/lib").TimeCell | import("../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate").DropdownNumberCell | import("../../cell-templates/flagCell/FlagCellTemplate").FlagCell>[];
+        rows: import("@silevis/reactgrid").Row<import("@silevis/reactgrid/lib").CheckboxCell | import("@silevis/reactgrid/lib").DateCell | import("@silevis/reactgrid/lib").EmailCell | import("@silevis/reactgrid/lib").ChevronCell | import("@silevis/reactgrid/lib").HeaderCell | import("@silevis/reactgrid/lib").NumberCell | import("@silevis/reactgrid/lib").TextCell | import("@silevis/reactgrid/lib").TimeCell | import("../../cell-templates/dropdownNumberCell/DropdownNumberCellTemplate").DropdownNumberCell | import("../../cell-templates/flagCell/FlagCellTemplate").FlagCell>[];
         stickyTopRows?: number | undefined;
         stickyLeftColumns?: number | undefined;
         highlights: Highlight[];

@@ -20,12 +20,12 @@ var __spread = (this && this.__spread) || function () {
 };
 var generateMonthHeader = function (year, quarter, month) {
     var formattedMonth = ("" + month).padStart(2, '0');
-    return { type: 'horizontalGroup', text: "" + formattedMonth, className: 'month header', parentId: year + "-" + quarter };
+    return { type: 'horizontalChevron', text: "" + formattedMonth, className: 'month header', parentId: year + "-" + quarter };
 };
 var generateQuarterHeader = function (year, quarter, hasChildren, isExpanded) {
     if (hasChildren === void 0) { hasChildren = true; }
     if (isExpanded === void 0) { isExpanded = true; }
-    return { type: 'horizontalGroup', text: quarter, className: 'quarter header', parentId: "" + year, hasChildren: hasChildren, isExpanded: true };
+    return { type: 'horizontalChevron', text: quarter, className: 'quarter header', parentId: "" + year, hasChildren: hasChildren, isExpanded: true };
 };
 var generateQuarter = function (year, quarter, month, isExpanded) {
     if (isExpanded === void 0) { isExpanded = true; }
@@ -40,7 +40,7 @@ var generateYear = function (year, hasChildren, isExpanded) {
     if (hasChildren === void 0) { hasChildren = true; }
     if (isExpanded === void 0) { isExpanded = true; }
     return __spread([
-        { type: 'horizontalGroup', text: "" + year, className: 'year header', parentId: undefined, hasChildren: hasChildren, isExpanded: isExpanded }
+        { type: 'horizontalChevron', text: "" + year, className: 'year header', parentId: undefined, hasChildren: hasChildren, isExpanded: isExpanded }
     ], generateQuarter(year, 'Q1', 1), generateQuarter(year, 'Q2', 4), generateQuarter(year, 'Q3', 7), generateQuarter(year, 'Q4', 10));
 };
 export var topHeaderRow = {
@@ -113,98 +113,98 @@ export var dataRows = [
         rowId: 'Silevis',
         reorderable: true,
         cells: __spread([
-            { type: 'group', text: 'Silevis organization', parentId: undefined, isExpanded: true }
+            { type: 'chevron', text: 'Silevis organization', parentId: undefined, isExpanded: true }
         ], emptyYear(), emptyYear())
     },
     {
         rowId: 'Expenses',
         reorderable: true,
         cells: __spread([
-            { type: 'group', text: 'Expenses', parentId: 'Silevis', isExpanded: true }
+            { type: 'chevron', text: 'Expenses', parentId: 'Silevis', isExpanded: true }
         ], emptyYear(), emptyYear())
     },
     {
         rowId: 'Fixed',
         reorderable: true,
         cells: __spread([
-            { type: 'group', text: 'Fixed', parentId: 'Expenses', isExpanded: true }
+            { type: 'chevron', text: 'Fixed', parentId: 'Expenses', isExpanded: true }
         ], emptyYear(), emptyYear())
     },
     {
         rowId: 'Salaries',
         reorderable: true,
         cells: __spread([
-            { type: 'group', text: 'Salaries', parentId: 'Fixed', isExpanded: true }
+            { type: 'chevron', text: 'Salaries', parentId: 'Fixed', isExpanded: true }
         ], emptyYear(), emptyYear())
     },
     {
         rowId: 'Serge Gainsbourg',
         reorderable: true,
         cells: __spread([
-            { type: 'group', text: 'Serge Gainsbourg', parentId: 'Salaries', isExpanded: true }
+            { type: 'chevron', text: 'Serge Gainsbourg', parentId: 'Salaries', isExpanded: true }
         ], filledYear(5500, 5500, 300.32), filledYear(6400, 6400, 300))
     },
     {
         rowId: 'Jacob Sandberg',
         reorderable: true,
         cells: __spread([
-            { type: 'group', text: 'Jacob Sandberg', parentId: 'Salaries' }
+            { type: 'chevron', text: 'Jacob Sandberg', parentId: 'Salaries' }
         ], filledYear(4500, 4500, 100), filledYear(6000, 6000, 50.12))
     },
     {
         rowId: 'Elizabeth Hudson',
         reorderable: true,
         cells: __spread([
-            { type: 'group', text: 'Elizabeth Hudson', parentId: 'Salaries' }
+            { type: 'chevron', text: 'Elizabeth Hudson', parentId: 'Salaries' }
         ], filledYear(5500, 5500, 300), filledYear(6400, 6400, 300))
     },
     {
         rowId: 'Office costs',
         reorderable: true,
         cells: __spread([
-            { type: 'group', text: 'Office costs', parentId: 'Fixed', isExpanded: true }
+            { type: 'chevron', text: 'Office costs', parentId: 'Fixed', isExpanded: true }
         ], emptyYear(), emptyYear())
     },
     {
         rowId: 'Gas',
         reorderable: true,
         cells: __spread([
-            { type: 'group', text: 'Gas', parentId: 'Office costs' }
+            { type: 'chevron', text: 'Gas', parentId: 'Office costs' }
         ], filledYear(1000, 1200, 10.1), filledYear(1050, 1100, 12.02))
     },
     {
         rowId: 'Electricity',
         reorderable: true,
         cells: __spread([
-            { type: 'group', text: 'Electricity', parentId: 'Office costs' }
+            { type: 'chevron', text: 'Electricity', parentId: 'Office costs' }
         ], filledYear(90, 110, 1.2), filledYear(80, 120, 1.02))
     },
     {
         rowId: 'Rent',
         reorderable: true,
         cells: __spread([
-            { type: 'group', text: 'Rent', parentId: 'Office costs' }
+            { type: 'chevron', text: 'Rent', parentId: 'Office costs' }
         ], filledYear(2200, 2200), filledYear(2300, 2300))
     },
     {
         rowId: 'Insurance',
         reorderable: true,
         cells: __spread([
-            { type: 'group', text: 'Insurance', parentId: 'Fixed', isExpanded: true }
+            { type: 'chevron', text: 'Insurance', parentId: 'Fixed', isExpanded: true }
         ], filledYear(1520, 1520), filledYear(1530, 1540))
     },
     {
         rowId: 'One-time',
         reorderable: true,
         cells: __spread([
-            { type: 'group', text: 'One-time', parentId: 'Expenses', isExpanded: true }
+            { type: 'chevron', text: 'One-time', parentId: 'Expenses', isExpanded: true }
         ], emptyYear(), emptyYear())
     },
     {
         rowId: 'Vehicle',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Vehicle', parentId: 'One-time' },
+            { type: 'chevron', text: 'Vehicle', parentId: 'One-time' },
             generateNonEditableNumberCell(0, 'year'),
             generateNumberCell(0, 'quarter editable'),
             generateNumberCell(35000, 'month editable'),
@@ -245,7 +245,7 @@ export var dataRows = [
         rowId: 'Computer',
         reorderable: true,
         cells: [
-            { type: 'group', text: 'Computer', parentId: 'One-time' },
+            { type: 'chevron', text: 'Computer', parentId: 'One-time' },
             generateNonEditableNumberCell(0, 'year'),
             generateNumberCell(0, 'quarter editable'),
             generateNumberCell(0, 'month editable'),

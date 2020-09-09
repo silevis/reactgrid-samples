@@ -1,4 +1,4 @@
-import { StickySample, ColumnReorderSample, ResizeColumnSample, DatagridSample, CryptocurrencyMarketSample, GroupCellSample, ContextMenuSample, GettingStartedSample, FlagCellTemplateSample, CustomStylingSample, HighlightsSample, AdvancedContextMenuHandlingSample, SimpleContextMenuHandlingSample, StickyPanesSample, ColumnsAndRowsReorderSample, ColumnResizingSample, HandlingChangesSample, LimitedHeightByParentSample, NotLimitedHeightByParentSample, BPSample, GroupIdSample, } from '../../samples';
+import { StickySample, ColumnReorderSample, ResizeColumnSample, DatagridSample, CryptocurrencyMarketSample, ChevronCellSample, ContextMenuSample, GettingStartedSample, FlagCellTemplateSample, CustomStylingSample, HighlightsSample, AdvancedContextMenuHandlingSample, SimpleContextMenuHandlingSample, StickyPanesSample, ColumnsAndRowsReorderSample, ColumnResizingSample, HandlingChangesSample, LimitedHeightByParentSample, NotLimitedHeightByParentSample, BPSample, GroupIdSample, } from '../../samples';
 export var navLinks = [
     {
         name: 'BP Sample',
@@ -7,10 +7,10 @@ export var navLinks = [
         component: BPSample,
     },
     {
-        name: 'Group Cell Sample',
-        key: '/GroupCellSample',
-        url: '/GroupCellSample',
-        component: GroupCellSample
+        name: 'Chevron Cell Sample',
+        key: '/ChevronCellSample',
+        url: '/ChevronCellSample',
+        component: ChevronCellSample
     },
     {
         name: 'Group Id Sample',

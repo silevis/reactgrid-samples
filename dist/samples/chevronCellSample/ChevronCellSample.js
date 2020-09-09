@@ -35,25 +35,25 @@ var __spread = (this && this.__spread) || function () {
 };
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { columns as dataColumns } from '../../data/group/columns';
-import { rows as dataRows, headerRow } from '../../data/group/rows';
+import { columns as dataColumns } from '../../data/chevron/columns';
+import { rows as dataRows, headerRow } from '../../data/chevron/rows';
 import { ReactGrid } from '@silevis/reactgrid';
 import './styling.scss';
 var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  min-height: 400px;\n"], ["\n  min-height: 400px;\n"])));
 var findParentRow = function (rows, row) { return rows.find(function (r) {
-    var foundGroupCell = findGroupCell(row);
-    return foundGroupCell ? r.rowId === foundGroupCell.parentId : false;
+    var foundChevronCell = findChevronCell(row);
+    return foundChevronCell ? r.rowId === foundChevronCell.parentId : false;
 }); };
-var findGroupCell = function (row) { return row.cells.find(function (cell) { return cell.type === 'group'; }); };
+var findChevronCell = function (row) { return row.cells.find(function (cell) { return cell.type === 'chevron'; }); };
 var hasChildren = function (rows, row) { return rows.some(function (r) {
-    var foundGroupCell = findGroupCell(r);
-    return foundGroupCell ? foundGroupCell.parentId === row.rowId : false;
+    var foundChevronCell = findChevronCell(r);
+    return foundChevronCell ? foundChevronCell.parentId === row.rowId : false;
 }); };
 var isRowFullyExpanded = function (rows, row) {
     var parentRow = findParentRow(rows, row);
     if (parentRow) {
-        var foundGroupCell = findGroupCell(parentRow);
-        if (foundGroupCell && !foundGroupCell.isExpanded)
+        var foundChevronCell = findChevronCell(parentRow);
+        if (foundChevronCell && !foundChevronCell.isExpanded)
             return false;
         return isRowFullyExpanded(rows, parentRow);
     }
@@ -63,32 +63,32 @@ var getExpandedRows = function (rows) { return rows.filter(function (row) {
     var areAllParentsExpanded = isRowFullyExpanded(rows, row);
     return areAllParentsExpanded !== undefined ? areAllParentsExpanded : true;
 }); };
-var getDirectChildRows = function (rows, parentRow) { return rows.filter(function (row) { return !!row.cells.find(function (cell) { return cell.type === 'group' && cell.parentId === parentRow.rowId; }); }); };
+var getDirectChildRows = function (rows, parentRow) { return rows.filter(function (row) { return !!row.cells.find(function (cell) { return cell.type === 'chevron' && cell.parentId === parentRow.rowId; }); }); };
 var assignIndentAndHasChildren = function (rows, parentRow, indent) {
     if (indent === void 0) { indent = 0; }
     ++indent;
     getDirectChildRows(rows, parentRow).forEach(function (row) {
-        var foundGroupCell = findGroupCell(row);
+        var foundChevronCell = findChevronCell(row);
         var hasRowChildrens = hasChildren(rows, row);
-        if (foundGroupCell) {
-            foundGroupCell.indent = indent;
-            foundGroupCell.hasChildren = hasRowChildrens;
+        if (foundChevronCell) {
+            foundChevronCell.indent = indent;
+            foundChevronCell.hasChildren = hasRowChildrens;
         }
         if (hasRowChildrens)
             assignIndentAndHasChildren(rows, row, indent);
     });
 };
 var buildTree = function (rows) { return rows.map(function (row) {
-    var foundGroupCell = findGroupCell(row);
-    if (foundGroupCell && !foundGroupCell.parentId) {
+    var foundChevronCell = findChevronCell(row);
+    if (foundChevronCell && !foundChevronCell.parentId) {
         var hasRowChildrens = hasChildren(rows, row);
-        foundGroupCell.hasChildren = hasRowChildrens;
+        foundChevronCell.hasChildren = hasRowChildrens;
         if (hasRowChildrens)
             assignIndentAndHasChildren(rows, row);
     }
     return row;
 }); };
-export var GroupCellSample = function () {
+export var ChevronCellSample = function () {
     var _a = __read(useState(function () {
         var columns = __spread(dataColumns(true, false));
         return { columns: columns, rows: buildTree(__spread(dataRows(true))) };
@@ -120,7 +120,7 @@ export var GroupCellSample = function () {
             rowIdxs = __spread([row], new Set(getRowChildren(newState.rows, [], row))).map(function (item) { return newState.rows.findIndex(function (r) { return r.rowId === item.rowId; }); });
             var onRow = newState.rows.find(function (row) { return row.rowId === targetRowId; });
             if (onRow) {
-                var movingRowRoot = findGroupCell(row);
+                var movingRowRoot = findChevronCell(row);
                 if (movingRowRoot) {
                     if (dropPosition === 'on') {
                         movingRowRoot.parentId = onRow.rowId;
@@ -182,7 +182,7 @@ export var GroupCellSample = function () {
         }
         return true;
     };
-    return (React.createElement(ReactGridContainer, { id: "group-cell-sample" },
+    return (React.createElement(ReactGridContainer, { id: "chevron-cell-sample" },
         React.createElement(ReactGrid, { rows: rowsToRender, columns: state.columns, onCellsChanged: handleChanges, onRowsReordered: handleRowsReorder, canReorderRows: handleCanReorderRows, stickyLeftColumns: 1, stickyTopRows: 1, enableRowSelection: true, enableColumnSelection: true, enableFillHandle: true, enableRangeSelection: true })));
 };
 var templateObject_1;

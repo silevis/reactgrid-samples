@@ -11,11 +11,11 @@ var __assign = (this && this.__assign) || function () {
 };
 import * as React from 'react';
 import { isNavigationKey, isAlphaNumericKey, getCellProperty } from "@silevis/reactgrid";
-var HorizontalGroupCellTemplate = (function () {
-    function HorizontalGroupCellTemplate() {
+var HorizontalChevronCellTemplate = (function () {
+    function HorizontalChevronCellTemplate() {
         this.isFocusable = function () { return false; };
     }
-    HorizontalGroupCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {
+    HorizontalChevronCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {
         var text = getCellProperty(uncertainCell, 'text', 'string');
         var isExpanded = false;
         try {
@@ -34,19 +34,19 @@ var HorizontalGroupCellTemplate = (function () {
         var value = parseFloat(text);
         return __assign(__assign({}, uncertainCell), { text: text, value: value, isExpanded: isExpanded, hasChildren: hasChildren });
     };
-    HorizontalGroupCellTemplate.prototype.update = function (cell, cellToMerge) {
+    HorizontalChevronCellTemplate.prototype.update = function (cell, cellToMerge) {
         return this.getCompatibleCell(__assign(__assign({}, cell), { isExpanded: cellToMerge.isExpanded, text: cellToMerge.text }));
     };
-    HorizontalGroupCellTemplate.prototype.handleKeyDown = function (cell, keyCode, ctrl, shift, alt) {
+    HorizontalChevronCellTemplate.prototype.handleKeyDown = function (cell, keyCode, ctrl, shift, alt) {
         var cellCopy = __assign({}, cell);
         return { cell: cellCopy, enableEditMode: false };
     };
-    HorizontalGroupCellTemplate.prototype.getClassName = function (cell, isInEditMode) {
+    HorizontalChevronCellTemplate.prototype.getClassName = function (cell, isInEditMode) {
         var isExpanded = cell.hasChildren ? cell.isExpanded ? 'expanded' : 'collapsed' : '';
         var className = cell.className || '';
         return isExpanded + " " + className;
     };
-    HorizontalGroupCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
+    HorizontalChevronCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         var _this = this;
         return (!isInEditMode ?
             React.createElement(React.Fragment, null,
@@ -70,6 +70,6 @@ var HorizontalGroupCellTemplate = (function () {
                             e.stopPropagation();
                     } }));
     };
-    return HorizontalGroupCellTemplate;
+    return HorizontalChevronCellTemplate;
 }());
-export { HorizontalGroupCellTemplate };
+export { HorizontalChevronCellTemplate };

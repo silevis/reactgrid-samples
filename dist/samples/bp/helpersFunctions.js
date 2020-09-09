@@ -9,12 +9,12 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-export var getGroupCell = function (row) { return row.cells.find(function (cell) { return cell.type === 'group'; }); };
-var hasChildren = function (rows, row) { return rows.some(function (r) { var _a; return ((_a = getGroupCell(r)) === null || _a === void 0 ? void 0 : _a.parentId) === row.rowId; }); };
+export var getChevronCell = function (row) { return row.cells.find(function (cell) { return cell.type === 'chevron'; }); };
+var hasChildren = function (rows, row) { return rows.some(function (r) { var _a; return ((_a = getChevronCell(r)) === null || _a === void 0 ? void 0 : _a.parentId) === row.rowId; }); };
 var isRowFullyExpanded = function (rows, row) {
     var parentRow = getParentRow(rows, row);
     if (parentRow) {
-        if (!getGroupCell(parentRow).isExpanded)
+        if (!getChevronCell(parentRow).isExpanded)
             return false;
         return isRowFullyExpanded(rows, parentRow);
     }
@@ -64,8 +64,8 @@ export var fillCellMatrixVertically = function (rows) {
 export var collectRowPairs = function (rows) {
     var acc = [];
     rows.forEach(function (row) {
-        var groupCell = getGroupCell(row);
-        if (groupCell && groupCell.parentId === undefined) {
+        var chevronCell = getChevronCell(row);
+        if (chevronCell && chevronCell.parentId === undefined) {
             var hasRowChildrens = hasChildren(rows, row);
             if (hasRowChildrens) {
                 collectRowPairsOnChildren(rows, row, acc);
@@ -86,39 +86,39 @@ var collectRowPairsOnChildren = function (allRows, parentRow, acc) {
         acc.push({ from: row, to: parentRow });
     });
 };
-export var getDirectChildrenRows = function (rows, parentRow) { return rows.filter(function (row) { return !!row.cells.find(function (cell) { return cell.type === 'group' && cell.parentId === parentRow.rowId; }); }); };
-export var getParentRow = function (rows, row) { return rows.find(function (r) { var _a; return r.rowId === ((_a = getGroupCell(row)) === null || _a === void 0 ? void 0 : _a.parentId); }); };
+export var getDirectChildrenRows = function (rows, parentRow) { return rows.filter(function (row) { return !!row.cells.find(function (cell) { return cell.type === 'chevron' && cell.parentId === parentRow.rowId; }); }); };
+export var getParentRow = function (rows, row) { return rows.find(function (r) { var _a; return r.rowId === ((_a = getChevronCell(row)) === null || _a === void 0 ? void 0 : _a.parentId); }); };
 var assignIndentAndHasChildrens = function (allRows, parentRow, indent) {
     ++indent;
     getDirectChildrenRows(allRows, parentRow).forEach(function (row) {
-        var groupCell = getGroupCell(row);
-        groupCell.indent = indent;
+        var chevronCell = getChevronCell(row);
+        chevronCell.indent = indent;
         var hasRowChildrens = hasChildren(allRows, row);
-        groupCell.hasChildren = hasRowChildrens;
+        chevronCell.hasChildren = hasRowChildrens;
         if (hasRowChildrens)
             assignIndentAndHasChildrens(allRows, row, indent);
     });
 };
-export var getDataFromRows = function (rows) { return rows.filter(function (row) { return row.cells.find(function (cell) { return cell.type === 'group'; }) !== undefined; }); };
+export var getDataFromRows = function (rows) { return rows.filter(function (row) { return row.cells.find(function (cell) { return cell.type === 'chevron'; }) !== undefined; }); };
 export var createIndents = function (rows) { return rows.map(function (row) {
-    var groupCell = getGroupCell(row);
-    if (groupCell && groupCell.parentId === undefined) {
+    var chevronCell = getChevronCell(row);
+    if (chevronCell && chevronCell.parentId === undefined) {
         var hasRowChildrens = hasChildren(rows, row);
-        groupCell.hasChildren = hasRowChildrens;
+        chevronCell.hasChildren = hasRowChildrens;
         if (hasRowChildrens)
             assignIndentAndHasChildrens(rows, row, 0);
     }
     return row;
 }); };
-export var isHorizontalGroupCell = function (cell) { return cell.type === 'horizontalGroup'; };
+export var isHorizontalChevronCell = function (cell) { return cell.type === 'horizontalChevron'; };
 export var extendWithColIds = function (row, columns) {
     row.cells.forEach(function (cell, idx) { var _a; return cell.columnId = (_a = columns[idx]) === null || _a === void 0 ? void 0 : _a.columnId; });
     return row;
 };
 export var getDataFromColumns = function (columns) { return columns.slice(1, columns.length); };
-export var getHorizontalGroupCell = function (cells, columnId) { return cells.find(function (cell) { return cell.type === 'horizontalGroup' && cell.parentId === columnId; }); };
+export var getHorizontalChevronCell = function (cells, columnId) { return cells.find(function (cell) { return cell.type === 'horizontalChevron' && cell.parentId === columnId; }); };
 export var getParentCell = function (cells, cell) { return cells.find(function (c) { return c.columnId === cell.parentId; }); };
-export var getDirectChildrenColumns = function (rows, parentRow) { return rows.filter(function (row) { return !!row.cells.find(function (cell) { return cell.type === 'horizontalGroup' && cell.parentId === parentRow.rowId; }); }); };
+export var getDirectChildrenColumns = function (rows, parentRow) { return rows.filter(function (row) { return !!row.cells.find(function (cell) { return cell.type === 'horizontalChevron' && cell.parentId === parentRow.rowId; }); }); };
 export var isCellFullyExpanded = function (cells, cell) {
     var parentCell = getParentCell(cells, cell);
     if (parentCell) {

@@ -33,10 +33,10 @@ import * as React from "react";
 import { ReactGrid } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 import "./styling.scss";
-import { getDataFromRows, createIndents, getExpandedRows, getDataFromColumns, fillCellMatrixHorizontally, fillCellMatrixVertically, getGroupCell, getDirectChildrenRows, getParentRow, extendWithColIds, getExpandedCells, getColumnsIdsxToRender, filterCellsOnRows, resetAggregatedMonthFields, } from "./helpersFunctions";
+import { getDataFromRows, createIndents, getExpandedRows, getDataFromColumns, fillCellMatrixHorizontally, fillCellMatrixVertically, getChevronCell, getDirectChildrenRows, getParentRow, extendWithColIds, getExpandedCells, getColumnsIdsxToRender, filterCellsOnRows, resetAggregatedMonthFields, } from "./helpersFunctions";
 import { dataRows, topHeaderRow, filledYear, emptyYear } from "./rows";
 import { dataColumns } from "./columns";
-import { HorizontalGroupCellTemplate } from '../../cell-templates/horizontalGroupCellTemplate/HorizontalGroupCellTemplate';
+import { HorizontalChevronCellTemplate } from '../../cell-templates/horizontalChevronCellTemplate/HorizontalChevronCellTemplate';
 import { reorderArray } from './reorderArray';
 import { nonEditableNumberCellTemplate } from './CellTemplates';
 export var BPSample = function () {
@@ -71,13 +71,13 @@ export var BPSample = function () {
             var changeRowIdx = newState.rows.findIndex(function (el) { return el.rowId === change.rowId; });
             var changeColumnIdx = newState.columns.findIndex(function (el) { return el.columnId === change.columnId; });
             if (changeRowIdx === 0) {
-                newState.rows[changeRowIdx].cells[changeColumnIdx] = __assign(__assign({}, change.newCell), { text: change.initialCell.text });
+                newState.rows[changeRowIdx].cells[changeColumnIdx] = __assign(__assign({}, change.newCell), { text: change.previousCell.text });
             }
             else {
                 if ((change.newCell.type === 'number' || change.newCell.type === 'nonEditableNumber')
                     && ((_a = change.newCell.className) === null || _a === void 0 ? void 0 : _a.includes('quarter'))) {
-                    var groupCell = getGroupCell(newState.rows[changeRowIdx]);
-                    if (!groupCell.hasChildren) {
+                    var chevronCell = getChevronCell(newState.rows[changeRowIdx]);
+                    if (!chevronCell.hasChildren) {
                         updateNodeQuarter(newState, change.newCell.value, changeRowIdx, changeColumnIdx);
                     }
                 }
@@ -111,7 +111,7 @@ export var BPSample = function () {
             rowIdxs = __spread([row], new Set(getRowChildren(newState.rows, [], row))).map(function (item) { return newState.rows.findIndex(function (r) { return r.rowId === item.rowId; }); });
             var onRow = newState.rows.find(function (row) { return row.rowId === targetRowId; });
             if (onRow) {
-                var movingRowRoot = getGroupCell(row);
+                var movingRowRoot = getChevronCell(row);
                 if (dropPosition === 'on') {
                     movingRowRoot.parentId = onRow.rowId;
                     var onRowIndex = newState.rows.indexOf(onRow);
@@ -182,7 +182,7 @@ export var BPSample = function () {
                                 rowId: Date.now(),
                                 reorderable: true,
                                 cells: __spread([
-                                    { type: 'group', text: "New row", parentId: selectedRowIds[0], isExpanded: false }
+                                    { type: 'chevron', text: "New row", parentId: selectedRowIds[0], isExpanded: false }
                                 ], filledYear(0, 0), filledYear(0, 0))
                             };
                             var changedSelectedRow = __assign(__assign({}, selectedRow), { cells: __spread([
@@ -229,7 +229,7 @@ export var BPSample = function () {
     };
     return (React.createElement("div", { className: "bp-sample" },
         React.createElement(ReactGrid, { rows: rowsToRender, columns: columnsToRender, onCellsChanged: handleChanges, stickyTopRows: 1, stickyLeftColumns: 1, customCellTemplates: {
-                horizontalGroup: new HorizontalGroupCellTemplate(),
+                horizontalChevron: new HorizontalChevronCellTemplate(),
                 nonEditableNumber: nonEditableNumberCellTemplate,
             }, onRowsReordered: handleRowsReorder, canReorderRows: handleCanReorderRows, onContextMenu: handleContextMenu, enableRangeSelection: true, enableFillHandle: true, enableRowSelection: true })));
 };
