@@ -22,6 +22,7 @@ import {
   BPSample,
   GroupIdSample,
 } from '../../samples';
+import { ExcercisesDataSample } from '../excercisesDataSample/ExcercisesDataSample';
 
 export interface ISampleNavLink extends INavLink {
   component?: any;
@@ -153,5 +154,11 @@ export const navLinks: ISampleNavLink[] = [
     key: '/NotLimitedHeightByParentSample',
     url: '/NotLimitedHeightByParentSample',
     component: NotLimitedHeightByParentSample
+  },
+  {
+    name: 'Excercises & Athletes Data Sample',
+    key: '/ExcercisesDataSample',
+    url: '/ExcercisesDataSample',
+    component: ExcercisesDataSample
   },
 ];
