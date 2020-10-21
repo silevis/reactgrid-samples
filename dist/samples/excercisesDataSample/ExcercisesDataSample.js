@@ -42,8 +42,8 @@ export var ExcercisesDataSample = function () {
     var _b = __read(useState(initialExcercises), 2), excercises = _b[0], setExcercises = _b[1];
     var _c = __read(useState(initialResults), 2), results = _c[0], setResults = _c[1];
     var columns = __spread([
-        { columnId: 'excercise', width: 270 }
-    ], athletes.map(function (athlete) { return ({ columnId: athlete.id, width: 190 }); }));
+        { columnId: 'excercise', width: 240 }
+    ], athletes.map(function (athlete) { return ({ columnId: athlete.id, width: 150 }); }));
     var athletesRow = getAthletesRow(athletes);
     var rows = excercises.flatMap(function (excercise) {
         return getExcerciseRows(excercise, athletes, results.filter(function (result) { return result.excerciseId === excercise.id; }));
