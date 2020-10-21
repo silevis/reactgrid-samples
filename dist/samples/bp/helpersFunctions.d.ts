@@ -23,7 +23,7 @@ export declare const getExpandedCells: (cells: RowCells[]) => RowCells[];
 export declare const getColumnsIdsxToRender: (cells: RowCells[], columnsToRender: BPColumn[]) => number[];
 export declare const filterCellsOnRows: (rows: BPRow[], visibleColsIdxs: number[]) => {
     cells: RowCells[];
-    rowId: import("@silevis/reactgrid/lib").Id;
+    rowId: import("@silevis/reactgrid/core").Id;
     height?: number | undefined;
     reorderable?: boolean | undefined;
 }[];

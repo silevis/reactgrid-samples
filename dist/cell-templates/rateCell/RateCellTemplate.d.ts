@@ -11,7 +11,7 @@ export declare class RateCellTemplate implements CellTemplate<RateCell> {
     getCompatibleCell(uncertainCell: Uncertain<RateCell>): Compatible<RateCell>;
     textToCellData(cellvalue: number): number;
     handleKeyDown(cell: Compatible<RateCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
-        cell: import("@silevis/reactgrid/lib").Compatible<RateCell>;
+        cell: import("@silevis/reactgrid/core").Compatible<RateCell>;
         enableEditMode: boolean;
     };
     update(cell: Compatible<RateCell>, cellToMerge: UncertainCompatible<RateCell>): Compatible<RateCell>;

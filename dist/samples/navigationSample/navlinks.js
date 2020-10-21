@@ -1,4 +1,5 @@
 import { StickySample, ColumnReorderSample, ResizeColumnSample, DatagridSample, CryptocurrencyMarketSample, ChevronCellSample, ContextMenuSample, GettingStartedSample, FlagCellTemplateSample, CustomStylingSample, HighlightsSample, AdvancedContextMenuHandlingSample, SimpleContextMenuHandlingSample, StickyPanesSample, ColumnsAndRowsReorderSample, ColumnResizingSample, HandlingChangesSample, LimitedHeightByParentSample, NotLimitedHeightByParentSample, BPSample, GroupIdSample, } from '../../samples';
+import { ExcercisesDataSample } from '../excercisesDataSample/ExcercisesDataSample';
 export var navLinks = [
     {
         name: 'BP Sample',
@@ -125,5 +126,11 @@ export var navLinks = [
         key: '/NotLimitedHeightByParentSample',
         url: '/NotLimitedHeightByParentSample',
         component: NotLimitedHeightByParentSample
+    },
+    {
+        name: 'Excercises & Athletes Data Sample',
+        key: '/ExcercisesDataSample',
+        url: '/ExcercisesDataSample',
+        component: ExcercisesDataSample
     },
 ];

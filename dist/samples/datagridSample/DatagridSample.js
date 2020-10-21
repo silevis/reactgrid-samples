@@ -47,7 +47,7 @@ import useInterval from '@use-it/interval';
 var ReactGridContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  overflow: scroll;\n"], ["\n  overflow: scroll;\n"])));
 export var DatagridSample = function () {
     var _a = __read(useState(function () { return ({
-        columns: __spread(crmColumns(true, false)),
+        columns: __spread(crmColumns(true, true)),
         rows: __spread(crmRows(true)),
         stickyTopRows: 1,
         stickyLeftColumns: 2,
