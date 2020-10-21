@@ -23,7 +23,7 @@ import { getDisabledCell } from "../../cell-templates/disabledCellTemplate/Disab
 var style = noBorderCellStyle;
 export var getAthletesRow = function (athletes) { return ({
     rowId: 'athletes',
-    height: 40,
+    height: 30,
     cells: __spread([
         getDisabledCell('', style)
     ], athletes.map(function (athlete) { return getDisabledCell(athlete.surname + ", " + athlete.name, {}, 'bold-text align-right'); }))

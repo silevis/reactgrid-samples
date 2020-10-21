@@ -39,7 +39,7 @@ export var getExcerciseRows = function (excercise, athletes, results) {
     var headerRowStyle = __assign(__assign({}, excercise.hidden ? lastRowStyle : style), { color: '#404040' });
     var headerRow = {
         rowId: excercise.id,
-        height: 40,
+        height: 25,
         cells: __spread([
             { type: 'chevron', text: excercise.name, isExpanded: !excercise.hidden, className: 'bold-text', style: headerRowStyle, hasChildren: true }
         ], athletes.map(function (athlete) {
@@ -58,7 +58,7 @@ export var getExcerciseRows = function (excercise, athletes, results) {
         var rowStyle = idx === excerciseParams.length - 1 ? lastRowStyle : style;
         return ({
             rowId: param.id,
-            height: 40,
+            height: 25,
             cells: __spread([
                 getDisabledCell(param.name, rowStyle)
             ], athletes.map(function (athlete) {

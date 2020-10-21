@@ -1,12 +1,12 @@
 export var initialAthletes = [
-    { id: "1", name: "Mariusz", surname: "Pudzianowski" },
-    { id: "2", name: "Jacques", surname: "Bloom" },
-    { id: "3", name: "Frank", surname: "Tenpenny" },
-    { id: "4", name: "Thomas", surname: "Flower" },
-    { id: "5", name: "Mark", surname: "Gerber" },
-    { id: "6", name: "Vincent", surname: "Aboubakar" },
-    { id: "7", name: "Bigoslav", surname: "Gniodziecky" },
-    { id: "8", name: "Marylin", surname: "Werner" },
+    { id: "1", name: "Ansh", surname: "Delgado" },
+    { id: "2", name: "Kim", surname: "Conley" },
+    { id: "3", name: "Honor", surname: "Gallegos" },
+    { id: "4", name: "Wiktor", surname: "Simon" },
+    { id: "5", name: "Dolcie", surname: "Jennings" },
+    { id: "6", name: "Abu", surname: "Fuller" },
+    { id: "7", name: "Fathima", surname: "Johnston" },
+    { id: "8", name: "Kain", surname: "Werner" },
 ];
 export var initialExcercises = [
     {
