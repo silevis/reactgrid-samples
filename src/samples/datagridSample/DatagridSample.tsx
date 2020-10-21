@@ -20,7 +20,7 @@ export type VirtualEnvCellChange = CellChange<DefaultCellTypes | FlagCell | Drop
 export const DatagridSample: React.FC = () => {
 
   const [state, setState] = useState<IDatagridState>(() => ({
-    columns: [...crmColumns(true, false)],
+    columns: [...crmColumns(true, true)],
     rows: [...crmRows(true)],
     stickyTopRows: 1,
     stickyLeftColumns: 2,
