@@ -1,42 +1,47 @@
 import * as React from "react";
-import { ReactGrid, Id, Column, Row } from "@silevis/reactgrid";
+import { ReactGrid, Column, Row, Id } from "@silevis/reactgrid";
 import "./styling.scss";
 
+interface Person {
+    name: string;
+    surname: string;
+}
+
+const getPeople = (): Person[] => [
+    { name: "Thomas", surname: "Goldman" },
+    { name: "Susie", surname: "Quattro" },
+    { name: "", surname: "" }
+];
+
+const getColumns = (): Column[] => [
+    { columnId: "name", width: 150, resizable: true },
+    { columnId: "surname", width: 150, resizable: true }
+];
+
+const headerRow: Row = {
+    rowId: "header",
+    cells: [
+        { type: "header", text: "Name" },
+        { type: "header", text: "Surname" }
+    ]
+};
+
+const getRows = (people: Person[]): Row[] => [
+    headerRow,
+    ...people.map<Row>((person, idx) => ({
+        rowId: idx,
+        cells: [
+            { type: "text", text: person.name },
+            { type: "text", text: person.surname }
+        ]
+    }))
+];
+
 export const ColumnResizingSample: React.FunctionComponent = () => {
-    const [columns, setColumns] = React.useState<Column[]>(() => [
-        { columnId: "Name", width: 100, resizable: true },
-        { columnId: "Surname", width: 100, resizable: true }
-    ]);
-    const [rows] = React.useState<Row[]>(() => [
-        {
-            rowId: 0,
-            cells: [
-                { type: "header", text: "Name" },
-                { type: "header", text: "Surname" }
-            ]
-        },
-        {
-            rowId: 1,
-            cells: [
-                { type: "text", text: "Thomas" },
-                { type: "text", text: "Goldman" }
-            ]
-        },
-        {
-            rowId: 2,
-            cells: [
-                { type: "text", text: "Susie" },
-                { type: "text", text: "Spencer" }
-            ]
-        },
-        {
-            rowId: 3,
-            cells: [
-                { type: "text", text: "" },
-                { type: "text", text: "" }
-            ]
-        }
-    ]);
+    const [people] = React.useState<Person[]>(getPeople());
+    const [columns, setColumns] = React.useState<Column[]>(getColumns());
+
+    const rows = getRows(people);
 
     const handleColumnResize = (ci: Id, width: number) => {
         setColumns((prevColumns) => {
@@ -48,11 +53,5 @@ export const ColumnResizingSample: React.FunctionComponent = () => {
         });
     }
 
-    return (
-        <ReactGrid
-            rows={rows}
-            columns={columns}
-            onColumnResized={handleColumnResize}
-        />
-    );
+    return <ReactGrid rows={rows} columns={columns} onColumnResized={handleColumnResize} />;
 }
