@@ -86,6 +86,9 @@ export var BPSample = function () {
                 }
             }
         });
+        newState.rows.forEach(function (row) {
+            resetAggregatedMonthFields(row);
+        });
         var rows = fillCellMatrixHorizontally(newState.rows);
         fillCellMatrixVertically(rows);
         var expandedCells = getExpandedCells(topHeaderRow.cells);
