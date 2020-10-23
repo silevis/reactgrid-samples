@@ -74,6 +74,9 @@ export const BPSample: React.FC = () => {
                 }
             }
         });
+        newState.rows.forEach(row => {
+            resetAggregatedMonthFields(row);
+        })
         const rows = fillCellMatrixHorizontally(newState.rows);
         fillCellMatrixVertically(rows);
         const expandedCells = getExpandedCells(topHeaderRow.cells);
