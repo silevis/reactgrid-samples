@@ -37,7 +37,7 @@ const getRows = (people: Person[]): Row[] => [
     }))
 ];
 
-export const ColumnResizingSample: React.FunctionComponent = () => {
+export function ColumnResizingSample() {
     const [people] = React.useState<Person[]>(getPeople());
     const [columns, setColumns] = React.useState<Column[]>(getColumns());
 
