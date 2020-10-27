@@ -5,14 +5,15 @@ import { Id } from '@silevis/reactgrid/lib';
 
 
 interface Person {
+    id: number;
     name: string;
     surname: string;
 }
 
 const getPeople = (): Person[] => [
-    { name: "Thomas", surname: "Goldman" },
-    { name: "Susie", surname: "Quattro" },
-    { name: "", surname: "" }
+    { id: 1, name: "Thomas", surname: "Goldman" },
+    { id: 2, name: "Susie", surname: "Quattro" },
+    { id: 3, name: "", surname: "" }
 ];
 
 declare module "@silevis/reactgrid" {
@@ -47,7 +48,8 @@ const getRows = (people: Person[], columnsOrder: ColumnId[]): Row[] => {
             ]
         },
         ...people.map<Row>((person, idx) => ({
-            rowId: idx,
+            rowId: person.id,
+            reorderable: true,
             cells: [
                 { type: "text", text: person[columnsOrder[0]] },
                 { type: "text", text: person[columnsOrder[1]] }
@@ -57,15 +59,19 @@ const getRows = (people: Person[], columnsOrder: ColumnId[]): Row[] => {
 };
 
 const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
-    const movedElements: T[] = arr.filter((_: T, idx: number) => idxs.includes(idx));
-    to = Math.min(...idxs) < to ? to += 1 : to -= idxs.filter(idx => idx < to).length;
-    const leftSide: T[] = arr.filter((_: T, idx: number) => idx < to && !idxs.includes(idx));
-    const rightSide: T[] = arr.filter((_: T, idx: number) => idx >= to && !idxs.includes(idx));
+    const movedElements = arr.filter((_, idx) => idxs.includes(idx));
+    const targetIdx = Math.min(...idxs) < to ? to += 1 : to -= idxs.filter(idx => idx < to).length;
+    const leftSide = arr.filter((_, idx) => idx < targetIdx && !idxs.includes(idx));
+    const rightSide = arr.filter((_, idx) => idx >= targetIdx && !idxs.includes(idx));
     return [...leftSide, ...movedElements, ...rightSide];
 }
 
+const handleCanReorderRows = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition): boolean => {
+    return targetRowId !== 'header';
+}
+
 export const ColumnsAndRowsReorderSample = () => {
-    const [people] = React.useState<Person[]>(getPeople());
+    const [people, setPeople] = React.useState<Person[]>(getPeople());
     const [columns, setColumns] = React.useState<Column[]>(getColumns());
 
     const rows = getRows(people, columns.map(c => c.columnId));
@@ -76,11 +82,20 @@ export const ColumnsAndRowsReorderSample = () => {
         setColumns(prevColumns => reorderArray(prevColumns, columnIdxs, to));
     }
 
+    const handleRowsReorder = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
+        setPeople((prevPeople) => {
+            const to = people.findIndex(person => person.id === targetRowId);
+            const rowsIds = rowIds.map((id) => people.findIndex(person => person.id === id));
+            return [...reorderArray(prevPeople, rowsIds, to)];
+        });
+    }
+
     return <ReactGrid
         rows={rows}
         columns={columns}
         onColumnsReordered={handleColumnsReorder}
-        // onRowsReordered={handleRowsReorder}
+        onRowsReordered={handleRowsReorder}
+        canReorderRows={handleCanReorderRows}
         enableRowSelection
         enableColumnSelection
     />;
