@@ -9,7 +9,7 @@ const style = noBorderCellStyle;
 
 export const getAthletesRow = (athletes: Athlete[]): Row<SampleCellTypes> => ({
     rowId: 'athletes',
-    height: 40,
+    height: 35,
     cells: [
         getDisabledCell('', style),
         ...athletes.map((athlete): DisabledCell => getDisabledCell(`${athlete.surname}, ${athlete.name}`, {}, 'bold-text align-right'))
