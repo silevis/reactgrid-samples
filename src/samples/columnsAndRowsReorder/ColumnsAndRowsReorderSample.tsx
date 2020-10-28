@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ReactGrid, Column, Row, DropPosition } from "@silevis/reactgrid";
+import { ReactGrid, Column, Row } from "@silevis/reactgrid";
 import "./styling.scss";
 import { Id } from '@silevis/reactgrid/lib';
 
@@ -16,11 +16,6 @@ const getPeople = (): Person[] => [
     { id: 3, name: "", surname: "" }
 ];
 
-declare module "@silevis/reactgrid" {
-    interface Column {
-        columnId: ColumnId;
-    }
-}
 interface ColumnMap {
     name: 'Name';
     surname: 'Surname';
@@ -66,7 +61,7 @@ const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
     return [...leftSide, ...movedElements, ...rightSide];
 }
 
-const handleCanReorderRows = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition): boolean => {
+const handleCanReorderRows = (targetRowId: Id, rowIds: Id[]): boolean => {
     return targetRowId !== 'header';
 }
 
@@ -74,19 +69,19 @@ export const ColumnsAndRowsReorderSample = () => {
     const [people, setPeople] = React.useState<Person[]>(getPeople());
     const [columns, setColumns] = React.useState<Column[]>(getColumns());
 
-    const rows = getRows(people, columns.map(c => c.columnId));
+    const rows = getRows(people, columns.map(c => c.columnId as ColumnId));
 
-    const handleColumnsReorder = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
+    const handleColumnsReorder = (targetColumnId: Id, columnIds: Id[]) => {
         const to = columns.findIndex((column) => column.columnId === targetColumnId);
         const columnIdxs = columnIds.map((columnId) => columns.findIndex((c) => c.columnId === columnId));
         setColumns(prevColumns => reorderArray(prevColumns, columnIdxs, to));
     }
 
-    const handleRowsReorder = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
+    const handleRowsReorder = (targetRowId: Id, rowIds: Id[]) => {
         setPeople((prevPeople) => {
             const to = people.findIndex(person => person.id === targetRowId);
             const rowsIds = rowIds.map((id) => people.findIndex(person => person.id === id));
-            return [...reorderArray(prevPeople, rowsIds, to)];
+            return reorderArray(prevPeople, rowsIds, to);
         });
     }
 
