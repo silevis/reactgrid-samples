@@ -61,7 +61,7 @@ export const WorkhoursGrid: React.FC<GridProps> = ({ rowHeight, color }) => {
 
     const addBlankLog = () => setWorkLogs(logs => [...logs, { id: logs.length, hours: 0, employee: '', description: '', project: '' }])
 
-    return <div ref={ref} style={{ height: '600px', overflow: 'auto' }}>
+    return <div ref={ref} style={{ height: '400px', overflow: 'auto' }}>
         <ReactGrid
             customCellTemplates={{
                 'dropdown': DropdownCellTemplate,
