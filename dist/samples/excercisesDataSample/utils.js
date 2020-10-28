@@ -10,14 +10,22 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 export var noBorder = {
-    color: 'rgba(0,0,0,0)'
+    color: 'rgba(0,0,0,0)',
 };
 export var noBorderCellStyle = {
     border: {
         left: noBorder,
         top: noBorder,
         right: noBorder,
-    }
+    },
+};
+export var excersisesStyle = {
+    border: {
+        left: noBorder,
+        top: noBorder,
+        right: noBorder,
+    },
+    paddingLeft: "20px"
 };
 export var addColorToEvenColumns = function (row) { return (__assign(__assign({}, row), { cells: row.cells.map(function (cell, idx) { return idx % 2 === 0 && idx > 1
         ? __assign(__assign({}, cell), { style: __assign(__assign({}, cell.style), { background: 'rgba(0,0,0,0.05)' }) }) : cell; }) })); };

@@ -32,41 +32,35 @@ var __spread = (this && this.__spread) || function () {
 import * as React from "react";
 import { ReactGrid } from "@silevis/reactgrid";
 import "./styling.scss";
-export var ColumnResizingSample = function () {
-    var _a = __read(React.useState(function () { return [
-        { columnId: "Name", width: 100, resizable: true },
-        { columnId: "Surname", width: 100, resizable: true }
-    ]; }), 2), columns = _a[0], setColumns = _a[1];
-    var _b = __read(React.useState(function () { return [
-        {
-            rowId: 0,
-            cells: [
-                { type: "header", text: "Name" },
-                { type: "header", text: "Surname" }
-            ]
-        },
-        {
-            rowId: 1,
-            cells: [
-                { type: "text", text: "Thomas" },
-                { type: "text", text: "Goldman" }
-            ]
-        },
-        {
-            rowId: 2,
-            cells: [
-                { type: "text", text: "Susie" },
-                { type: "text", text: "Spencer" }
-            ]
-        },
-        {
-            rowId: 3,
-            cells: [
-                { type: "text", text: "" },
-                { type: "text", text: "" }
-            ]
-        }
-    ]; }), 1), rows = _b[0];
+var getPeople = function () { return [
+    { name: "Thomas", surname: "Goldman" },
+    { name: "Susie", surname: "Quattro" },
+    { name: "", surname: "" }
+]; };
+var getColumns = function () { return [
+    { columnId: "name", width: 150, resizable: true },
+    { columnId: "surname", width: 150, resizable: true }
+]; };
+var headerRow = {
+    rowId: "header",
+    cells: [
+        { type: "header", text: "Name" },
+        { type: "header", text: "Surname" }
+    ]
+};
+var getRows = function (people) { return __spread([
+    headerRow
+], people.map(function (person, idx) { return ({
+    rowId: idx,
+    cells: [
+        { type: "text", text: person.name },
+        { type: "text", text: person.surname }
+    ]
+}); })); };
+export function ColumnResizingSample() {
+    var _a = __read(React.useState(getPeople()), 1), people = _a[0];
+    var _b = __read(React.useState(getColumns()), 2), columns = _b[0], setColumns = _b[1];
+    var rows = getRows(people);
     var handleColumnResize = function (ci, width) {
         setColumns(function (prevColumns) {
             var columnIndex = prevColumns.findIndex(function (el) { return el.columnId === ci; });
@@ -76,5 +70,5 @@ export var ColumnResizingSample = function () {
             return __spread(prevColumns);
         });
     };
-    return (React.createElement(ReactGrid, { rows: rows, columns: columns, onColumnResized: handleColumnResize }));
-};
+    return React.createElement(ReactGrid, { rows: rows, columns: columns, onColumnResized: handleColumnResize });
+}

@@ -1,4 +1,4 @@
-import { StickySample, ColumnReorderSample, ResizeColumnSample, DatagridSample, CryptocurrencyMarketSample, ChevronCellSample, ContextMenuSample, GettingStartedSample, FlagCellTemplateSample, CustomStylingSample, HighlightsSample, AdvancedContextMenuHandlingSample, SimpleContextMenuHandlingSample, StickyPanesSample, ColumnsAndRowsReorderSample, ColumnResizingSample, HandlingChangesSample, LimitedHeightByParentSample, NotLimitedHeightByParentSample, BPSample, GroupIdSample, } from '../../samples';
+import { StickySample, ColumnReorderSample, ResizeColumnSample, DatagridSample, CryptocurrencyMarketSample, ChevronCellSample, ContextMenuSample, GettingStartedSample, FlagCellTemplateSample, CustomStylingSample, HighlightsSample, AdvancedContextMenuHandlingSample, SimpleContextMenuHandlingSample, StickyPanesSample, ColumnsAndRowsReorderSample, ColumnResizingSample, HandlingChangesSample, LimitedHeightByParentSample, NotLimitedHeightByParentSample, BPSample, GroupIdSample, WorkhoursSample, } from '../../samples';
 import { ExcercisesDataSample } from '../excercisesDataSample/ExcercisesDataSample';
 export var navLinks = [
     {
@@ -132,5 +132,11 @@ export var navLinks = [
         key: '/ExcercisesDataSample',
         url: '/ExcercisesDataSample',
         component: ExcercisesDataSample
+    },
+    {
+        name: 'Workhours Sample',
+        key: '/WorkhoursSample',
+        url: '/WorkhoursSample',
+        component: WorkhoursSample
     },
 ];

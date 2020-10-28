@@ -29,13 +29,13 @@ var __spread = (this && this.__spread) || function () {
     for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
     return ar;
 };
-import { noBorderCellStyle } from "./utils";
+import { excersisesStyle, noBorderCellStyle } from "./utils";
 import { getDisabledCell } from "../../cell-templates/disabledCellTemplate/DisabledCellTemplate";
 import { parameters } from "../../data/excercisesData/initialValues";
 export var getExcerciseRows = function (excercise, athletes, results) {
     var style = noBorderCellStyle;
     var headerBorder = { color: 'rgba(0,0,0,0.4)', width: '1px' };
-    var lastRowStyle = __assign(__assign({}, style), { border: __assign(__assign({}, style.border), { bottom: headerBorder }) });
+    var lastRowStyle = __assign(__assign({}, style), { border: __assign(__assign({}, style.border), { bottom: headerBorder }), paddingLeft: "20px" });
     var headerRowStyle = __assign(__assign({}, excercise.hidden ? lastRowStyle : style), { color: '#404040' });
     var headerRow = {
         rowId: excercise.id,
@@ -54,8 +54,9 @@ export var getExcerciseRows = function (excercise, athletes, results) {
         }))
     };
     var excerciseParams = parameters.filter(function (param) { return param.excerciseId === excercise.id; });
+    var styleExcersises = excersisesStyle;
     var rows = excerciseParams.map(function (param, idx) {
-        var rowStyle = idx === excerciseParams.length - 1 ? lastRowStyle : style;
+        var rowStyle = idx === excerciseParams.length - 1 ? lastRowStyle : styleExcersises;
         return ({
             rowId: param.id,
             height: 30,
