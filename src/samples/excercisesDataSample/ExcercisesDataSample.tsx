@@ -17,7 +17,7 @@ export const ExcercisesDataSample: React.FC = () => {
     const [results, setResults] = useState<Result[]>(initialResults);
 
     const columns: Column[] = [
-        { columnId: 'excercise', width: 240 },
+        { columnId: 'excercise', width: 290 },
         ...athletes.map(athlete => ({ columnId: athlete.id, width: 150 }))
     ]
 
