@@ -82,7 +82,7 @@ export var WorkhoursGrid = function (_a) {
         });
     };
     var addBlankLog = function () { return setWorkLogs(function (logs) { return __spread(logs, [{ id: logs.length, hours: 0, employee: '', description: '', project: '' }]); }); };
-    return React.createElement("div", { ref: ref, style: { height: '600px', overflow: 'auto' } },
+    return React.createElement("div", { ref: ref, style: { height: '400px', overflow: 'auto' } },
         React.createElement(ReactGrid, { customCellTemplates: {
                 'dropdown': DropdownCellTemplate,
                 'button': ButtonCellTemplate,
