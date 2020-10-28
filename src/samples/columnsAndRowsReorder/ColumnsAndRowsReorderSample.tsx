@@ -1,78 +1,97 @@
 import * as React from "react";
-import { ReactGrid, Id, DropPosition, Column, Row } from "@silevis/reactgrid";
+import { ReactGrid, Column, Row } from "@silevis/reactgrid";
 import "./styling.scss";
+import { Id } from '@silevis/reactgrid/lib';
+
+
+interface Person {
+    id: number;
+    name: string;
+    surname: string;
+}
+
+const getPeople = (): Person[] => [
+    { id: 1, name: "Thomas", surname: "Goldman" },
+    { id: 2, name: "Susie", surname: "Quattro" },
+    { id: 3, name: "", surname: "" }
+];
+
+interface ColumnMap {
+    name: 'Name';
+    surname: 'Surname';
+}
+
+const columnMap: ColumnMap = {
+    name: 'Name',
+    surname: 'Surname'
+};
+
+type ColumnId = keyof ColumnMap;
+
+const getColumns = (): Column[] => [
+    { columnId: 'name', width: 150, reorderable: true },
+    { columnId: 'surname', width: 200, reorderable: true }
+];
+
+const getRows = (people: Person[], columnsOrder: ColumnId[]): Row[] => {
+    return [
+        {
+            rowId: "header",
+            cells: [
+                { type: "header", text: columnMap[columnsOrder[0]] },
+                { type: "header", text: columnMap[columnsOrder[1]] }
+            ]
+        },
+        ...people.map<Row>((person, idx) => ({
+            rowId: person.id,
+            reorderable: true,
+            cells: [
+                { type: "text", text: person[columnsOrder[0]] },
+                { type: "text", text: person[columnsOrder[1]] }
+            ]
+        }))
+    ]
+};
+
+const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
+    const movedElements = arr.filter((_, idx) => idxs.includes(idx));
+    const targetIdx = Math.min(...idxs) < to ? to += 1 : to -= idxs.filter(idx => idx < to).length;
+    const leftSide = arr.filter((_, idx) => idx < targetIdx && !idxs.includes(idx));
+    const rightSide = arr.filter((_, idx) => idx >= targetIdx && !idxs.includes(idx));
+    return [...leftSide, ...movedElements, ...rightSide];
+}
+
+const handleCanReorderRows = (targetRowId: Id, rowIds: Id[]): boolean => {
+    return targetRowId !== 'header';
+}
 
 export const ColumnsAndRowsReorderSample = () => {
-    const [columns, setColumns] = React.useState<Column[]>(() => [
-        { columnId: "Name", width: 100, reorderable: true },
-        { columnId: "Surname", width: 100, reorderable: true }
-    ]);
-    const [rows, setRows] = React.useState<Row[]>(() => [
-        {
-            rowId: 0,
-            reorderable: true,
-            cells: [
-                { type: "header", text: "Name" },
-                { type: "header", text: "Surname" }
-            ]
-        },
-        {
-            rowId: 1,
-            reorderable: true,
-            cells: [
-                { type: "text", text: "Thomas" },
-                { type: "text", text: "Goldman" }
-            ]
-        },
-        {
-            rowId: 2,
-            reorderable: true,
-            cells: [
-                { type: "text", text: "Susie" },
-                { type: "text", text: "Spencer" }
-            ]
-        },
-        {
-            rowId: 3,
-            reorderable: true,
-            cells: [
-                { type: "text", text: "" },
-                { type: "text", text: "" }
-            ]
-        }
-    ]);
+    const [people, setPeople] = React.useState<Person[]>(getPeople());
+    const [columns, setColumns] = React.useState<Column[]>(getColumns());
 
-    const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
-        const movedElements: T[] = arr.filter((_: T, idx: number) => idxs.includes(idx));
-        to = Math.min(...idxs) < to ? to += 1 : to -= idxs.filter(idx => idx < to).length;
-        const leftSide: T[] = arr.filter((_: T, idx: number) => idx < to && !idxs.includes(idx));
-        const rightSide: T[] = arr.filter((_: T, idx: number) => idx >= to && !idxs.includes(idx));
-        return [...leftSide, ...movedElements, ...rightSide];
+    const rows = getRows(people, columns.map(c => c.columnId as ColumnId));
+
+    const handleColumnsReorder = (targetColumnId: Id, columnIds: Id[]) => {
+        const to = columns.findIndex((column) => column.columnId === targetColumnId);
+        const columnIdxs = columnIds.map((columnId) => columns.findIndex((c) => c.columnId === columnId));
+        setColumns(prevColumns => reorderArray(prevColumns, columnIdxs, to));
     }
 
-    const handleColumnsReorder = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
-        const to = columns.findIndex((column: Column) => column.columnId === targetColumnId);
-        const columnIdxs = columnIds.map((id: Id, idx: number) => columns.findIndex((c: Column) => c.columnId === id));
-        setRows(rows.map(row => ({ ...row, cells: reorderArray(row.cells, columnIdxs, to) })));
-        setColumns(reorderArray(columns, columnIdxs, to));
-    }
-
-    const handleRowsReorder = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
-        setRows((prevRows) => {
-            const to = rows.findIndex(row => row.rowId === targetRowId);
-            const columnIdxs = rowIds.map(id => rows.findIndex(r => r.rowId === id));
-            return reorderArray(prevRows, columnIdxs, to);
+    const handleRowsReorder = (targetRowId: Id, rowIds: Id[]) => {
+        setPeople((prevPeople) => {
+            const to = people.findIndex(person => person.id === targetRowId);
+            const rowsIds = rowIds.map((id) => people.findIndex(person => person.id === id));
+            return reorderArray(prevPeople, rowsIds, to);
         });
     }
 
-    return (
-        <ReactGrid
-            rows={rows}
-            columns={columns}
-            onColumnsReordered={handleColumnsReorder}
-            onRowsReordered={handleRowsReorder}
-            enableRowSelection
-            enableColumnSelection
-        />
-    );
+    return <ReactGrid
+        rows={rows}
+        columns={columns}
+        onColumnsReordered={handleColumnsReorder}
+        onRowsReordered={handleRowsReorder}
+        canReorderRows={handleCanReorderRows}
+        enableRowSelection
+        enableColumnSelection
+    />;
 }

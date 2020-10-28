@@ -1,7 +1,7 @@
 import { Row, NumberCell, CellStyle } from "@silevis/reactgrid/lib";
 import { Excercise, Athlete, Result } from "./model";
 import { SampleCellTypes } from "./ExcercisesDataSample";
-import { noBorderCellStyle } from "./utils";
+import { excersisesStyle, noBorderCellStyle } from "./utils";
 import { DisabledCell, getDisabledCell } from "../../cell-templates/disabledCellTemplate/DisabledCellTemplate";
 import { parameters } from "../../data/excercisesData/initialValues";
 
@@ -9,7 +9,7 @@ import { parameters } from "../../data/excercisesData/initialValues";
 export const getExcerciseRows = (excercise: Excercise, athletes: Athlete[], results: Result[]): Row<SampleCellTypes>[] => {
     const style = noBorderCellStyle;
     const headerBorder = { color: 'rgba(0,0,0,0.4)', width: '1px' }
-    const lastRowStyle: CellStyle = { ...style, border: { ...style.border, bottom: headerBorder } }
+    const lastRowStyle: CellStyle = { ...style, border: { ...style.border, bottom: headerBorder }, paddingLeft: "20px" }
     const headerRowStyle = { ...excercise.hidden ? lastRowStyle : style, color: '#404040' };
     const headerRow: Row<SampleCellTypes> = {
         rowId: excercise.id,
@@ -28,8 +28,9 @@ export const getExcerciseRows = (excercise: Excercise, athletes: Athlete[], resu
         ]
     }
     const excerciseParams = parameters.filter(param => param.excerciseId === excercise.id);
+    const styleExcersises = excersisesStyle;
     const rows: Row<SampleCellTypes>[] = excerciseParams.map((param, idx) => {
-        const rowStyle = idx === excerciseParams.length - 1 ? lastRowStyle : style;
+        const rowStyle = idx === excerciseParams.length - 1 ? lastRowStyle : styleExcersises;
         return ({
             rowId: param.id,
             height: 30,
