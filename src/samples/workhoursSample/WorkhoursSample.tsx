@@ -7,7 +7,7 @@ const fontSizes = ['xx-small', 'x-small', 'small', 'smaller', 'medium', 'large',
 
 export const WorkhoursSample = () => {
     const [rowHeight, setRowHeight] = useState<number>(30);
-    const [color, setColor] = useState<HSLColor>({ h: 0, s: 1, l: 0.5 });
+    const [color, setColor] = useState<HSLColor>({ h: 209, s: 1, l: 0.5 });
     const [fontFamily, setFontFamily] = useState<string>('Helvetica');
     const [fontSizeIdx, setFontSizeIdx] = useState<number>(4);
 

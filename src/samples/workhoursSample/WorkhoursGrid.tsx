@@ -77,10 +77,11 @@ export const WorkhoursGrid: React.FC<GridProps> = ({ rowHeight, color }) => {
                 getBlankRow(addBlankLog, rowHeight, workLogs.length)
             ]}
             stickyBottomRows={1}
-
             stickyTopRows={1}
             columns={columns}
             enableRangeSelection
+            enableColumnSelection
+            enableRowSelection
             onColumnResized={(id, width) => {
                 setColumns(columns => columns.map(col => col.columnId === id ? { ...col, width } : col))
             }}
