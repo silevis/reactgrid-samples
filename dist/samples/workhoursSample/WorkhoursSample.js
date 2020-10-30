@@ -30,10 +30,10 @@ export var WorkhoursSample = function () {
         root.style.setProperty('--primary', hslColor);
         root.style.setProperty('--font', fontFamily);
     }, [hslColor, fontFamily]);
-    return (React.createElement("div", { className: "ms-Grid" },
-        React.createElement("div", { style: { fontFamily: fontFamily, fontSize: fontSizes[fontSizeIdx], display: 'inline-block' } },
+    return (React.createElement("div", null,
+        React.createElement("div", { className: "row", style: { fontFamily: fontFamily, fontSize: fontSizes[fontSizeIdx], display: 'inline-block' } },
             React.createElement(WorkhoursGrid, { rowHeight: rowHeight, color: "hsla(" + hslColor + ", 0.75)" })),
-        React.createElement("div", { className: "ms-Grid-row" },
+        React.createElement("div", { className: "row" },
             React.createElement("div", { className: "ms-Grid-col ms-u-sm6 ms-u-md4 ms-u-lg2", style: { padding: ' 0 2em' } },
                 React.createElement("p", null,
                     "Row height: ",
