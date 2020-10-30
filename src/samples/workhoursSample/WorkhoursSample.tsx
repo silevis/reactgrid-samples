@@ -19,9 +19,9 @@ export const WorkhoursSample = () => {
         root.style.setProperty('--font', fontFamily);
     }, [hslColor, fontFamily])
     return (
-        <div className="ms-Grid">
-            <div style={{ fontFamily, fontSize: fontSizes[fontSizeIdx], display: 'inline-block' }}><WorkhoursGrid rowHeight={rowHeight} color={`hsla(${hslColor}, 0.75)`} /></div>
-            <div className="ms-Grid-row">
+        <div>
+            <div className="row" style={{ fontFamily, fontSize: fontSizes[fontSizeIdx], display: 'inline-block' }}><WorkhoursGrid rowHeight={rowHeight} color={`hsla(${hslColor}, 0.75)`} /></div>
+            <div className="row">
                 <div className="ms-Grid-col ms-u-sm6 ms-u-md4 ms-u-lg2" style={{ padding: ' 0 2em' }}>
                     <p>Row height: {rowHeight}px</p>
                     <input type='range' min={20} max={100} value={rowHeight} onChange={e => setRowHeight(parseInt(e.target.value))} />
