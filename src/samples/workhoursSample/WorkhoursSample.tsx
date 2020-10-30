@@ -20,7 +20,7 @@ export const WorkhoursSample = () => {
     }, [hslColor, fontFamily])
     return (
         <div>
-            <div className="row" style={{ fontFamily, fontSize: fontSizes[fontSizeIdx], display: 'inline-block' }}><WorkhoursGrid rowHeight={rowHeight} color={`hsla(${hslColor}, 0.75)`} /></div>
+            <div style={{ fontFamily, fontSize: fontSizes[fontSizeIdx], display: 'inline-block' }}><WorkhoursGrid rowHeight={rowHeight} color={`hsla(${hslColor}, 0.75)`} /></div>
             <div className="row">
                 <div className="ms-Grid-col ms-u-sm6 ms-u-md4 ms-u-lg2" style={{ padding: ' 0 2em' }}>
                     <p>Row height: {rowHeight}px</p>
