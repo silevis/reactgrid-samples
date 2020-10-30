@@ -1,14 +1,3 @@
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __read = (this && this.__read) || function (o, n) {
     var m = typeof Symbol === "function" && o[Symbol.iterator];
     if (!m) return o;
@@ -32,82 +21,63 @@ var __spread = (this && this.__spread) || function () {
 import * as React from "react";
 import { ReactGrid, } from "@silevis/reactgrid";
 import "./styling.scss";
-export var AdvancedContextMenuHandlingSample = function () {
-    var _a = __read(React.useState(function () { return [
-        { columnId: "Name", width: 100 },
-        { columnId: "Surname", width: 100 }
-    ]; }), 2), columns = _a[0], setColumns = _a[1];
-    var _b = __read(React.useState(function () { return [
-        {
-            rowId: 0,
-            cells: [
-                { type: "header", text: "Name" },
-                { type: "header", text: "Surname" }
-            ]
-        },
-        {
-            rowId: 1,
-            cells: [
-                { type: "text", text: "Thomas" },
-                { type: "text", text: "Goldman" }
-            ]
-        },
-        {
-            rowId: 2,
-            cells: [
-                { type: "text", text: "Susie" },
-                { type: "text", text: "Spencer" }
-            ]
-        },
-        {
-            rowId: 3,
-            cells: [
-                { type: "text", text: "" },
-                { type: "text", text: "" }
-            ]
+var getPeople = function () { return [
+    { name: "Thomas", surname: "Goldman" },
+    { name: "Susie", surname: "Quattro" },
+    { name: "", surname: "" }
+]; };
+var getColumns = function () { return [
+    { columnId: "name", width: 150 },
+    { columnId: "surname", width: 150 }
+]; };
+var headerRow = {
+    rowId: "header",
+    cells: [
+        { type: "header", text: "Name" },
+        { type: "header", text: "Surname" }
+    ]
+};
+var getRows = function (people) { return __spread([
+    headerRow
+], people.map(function (person, idx) { return ({
+    rowId: idx,
+    cells: [
+        { type: "text", text: person.name },
+        { type: "text", text: person.surname }
+    ]
+}); })); };
+var applyChangesToPeople = function (changes, prevPeople) {
+    changes.forEach(function (change) {
+        if (change.newCell.type === 'text') {
+            var personIndex = change.rowId;
+            var fieldName = change.columnId;
+            prevPeople[personIndex][fieldName] = change.newCell.text;
         }
-    ]; }), 2), rows = _b[0], setRows = _b[1];
+    });
+    return __spread(prevPeople);
+};
+export var AdvancedContextMenuHandlingSample = function () {
+    var _a = __read(React.useState(getPeople()), 2), people = _a[0], setPeople = _a[1];
+    var _b = __read(React.useState(getColumns()), 1), columns = _b[0];
+    var rows = getRows(people);
     var handleChanges = function (changes) {
-        setRows(function (prevRows) {
-            changes.forEach(function (change) {
-                var changeRowIdx = prevRows.findIndex(function (el) { return el.rowId === change.rowId; });
-                var changeColumnIdx = columns.findIndex(function (el) { return el.columnId === change.columnId; });
-                prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
-            });
-            return __spread(prevRows);
-        });
+        setPeople(function (prevPeople) { return applyChangesToPeople(changes, prevPeople); });
     };
     var handleContextMenu = function (selectedRowIds, selectedColIds, selectionMode, menuOptions) {
         if (selectionMode === "row") {
             menuOptions = __spread(menuOptions, [
                 {
-                    id: "removeRow",
-                    label: "Remove row",
-                    handler: function () { return setRows(rows.filter(function (row) { return !selectedRowIds.includes(row.rowId); })); }
-                }
-            ]);
-        }
-        if (selectionMode === "column") {
-            menuOptions = __spread(menuOptions, [
-                {
-                    id: "removeColumn",
-                    label: "Remove column",
+                    id: "removePerson",
+                    label: "Remove person",
                     handler: function () {
-                        var cols = columns.filter(function (column) { return !selectedColIds.includes(column.columnId); });
-                        var columnsIdxs = columns
-                            .map(function (column, idx) {
-                            if (!cols.includes(column))
-                                return idx;
-                            return undefined;
-                        })
-                            .filter(function (idx) { return idx !== undefined; });
-                        setRows(rows.map(function (row) { return (__assign(__assign({}, row), { cells: row.cells.filter(function (_, idx) { return !columnsIdxs.includes(idx); }) })); }));
-                        setColumns(cols);
+                        setPeople(function (prevPeople) {
+                            return __spread(prevPeople.filter(function (person, idx) { return !selectedRowIds.includes(idx); }));
+                        });
                     }
                 }
             ]);
         }
         return menuOptions;
     };
-    return (React.createElement(ReactGrid, { rows: rows, columns: columns, onCellsChanged: handleChanges, onContextMenu: handleContextMenu, enableFillHandle: true, enableRangeSelection: true, enableColumnSelection: true, enableRowSelection: true }));
+    return (React.createElement(ReactGrid, { rows: rows, columns: columns, onCellsChanged: handleChanges, onContextMenu: handleContextMenu, enableFillHandle: true, enableRangeSelection: true, enableRowSelection: true }));
 };

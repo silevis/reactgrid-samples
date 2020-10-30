@@ -1,4 +1,4 @@
-import * as React from "react";
+/// <reference types="react" />
 import "./styling.scss";
 import "@silevis/reactgrid/styles.css";
-export declare const StickyPanesSample: React.FunctionComponent;
+export declare function StickyPanesSample(): JSX.Element;

@@ -82,7 +82,7 @@ export var WorkhoursGrid = function (_a) {
         });
     };
     var addBlankLog = function () { return setWorkLogs(function (logs) { return __spread(logs, [{ id: logs.length, hours: 0, employee: '', description: '', project: '' }]); }); };
-    return React.createElement("div", { ref: ref, style: { height: '400px', overflow: 'auto' } },
+    return React.createElement("div", { ref: ref, style: { height: '400px', width: '1200px', overflow: 'auto' } },
         React.createElement(ReactGrid, { customCellTemplates: {
                 'dropdown': DropdownCellTemplate,
                 'button': ButtonCellTemplate,
@@ -90,7 +90,7 @@ export var WorkhoursGrid = function (_a) {
                 headerRow
             ], rows.map(function (row, idx) { return idx % 2 === 0 ? __assign(__assign({}, row), { cells: row.cells.map(function (cell) { return (__assign(__assign({}, cell), { style: { background: 'rgba(0,0,0,0.02)' } })); }) }) : row; }), [
                 getBlankRow(addBlankLog, rowHeight, workLogs.length)
-            ]), stickyBottomRows: 1, stickyTopRows: 1, columns: columns, enableRangeSelection: true, onColumnResized: function (id, width) {
+            ]), stickyBottomRows: 1, stickyTopRows: 1, columns: columns, enableRangeSelection: true, enableColumnSelection: true, enableRowSelection: true, onColumnResized: function (id, width) {
                 setColumns(function (columns) { return columns.map(function (col) { return col.columnId === id ? __assign(__assign({}, col), { width: width }) : col; }); });
             } }));
 };

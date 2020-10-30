@@ -6,6 +6,7 @@
 .workhours-sample{
     @import '@silevis/reactgrid/styles.scss';
     display: inline-block;
+    
 }
 
 .workhours-sample .reactgrid-content .rg-pane .rg-cell-focus {
@@ -76,6 +77,7 @@
 .workhours-sample .configurator{
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-around;
 }
 
