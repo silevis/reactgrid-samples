@@ -61,7 +61,7 @@ export const WorkhoursGrid: React.FC<GridProps> = ({ rowHeight, color }) => {
 
     const addBlankLog = () => setWorkLogs(logs => [...logs, { id: logs.length, hours: 0, employee: '', description: '', project: '' }])
 
-    return <div ref={ref} style={{ height: '400px', overflow: 'auto' }}>
+    return <div ref={ref} style={{ height: '400px', width: '1200px', overflow: 'auto' }}>
         <ReactGrid
             customCellTemplates={{
                 'dropdown': DropdownCellTemplate,
@@ -77,10 +77,11 @@ export const WorkhoursGrid: React.FC<GridProps> = ({ rowHeight, color }) => {
                 getBlankRow(addBlankLog, rowHeight, workLogs.length)
             ]}
             stickyBottomRows={1}
-
             stickyTopRows={1}
             columns={columns}
             enableRangeSelection
+            enableColumnSelection
+            enableRowSelection
             onColumnResized={(id, width) => {
                 setColumns(columns => columns.map(col => col.columnId === id ? { ...col, width } : col))
             }}

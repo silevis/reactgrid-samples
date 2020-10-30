@@ -10,55 +10,63 @@ import {
 } from "@silevis/reactgrid";
 import "./styling.scss";
 
-export const AdvancedContextMenuHandlingSample = () => {
-    const [columns, setColumns] = React.useState<Column[]>(() => [
-        { columnId: "Name", width: 100 },
-        { columnId: "Surname", width: 100 }
-    ]);
-    const [rows, setRows] = React.useState<Row[]>(() => [
-        {
-            rowId: 0,
-            cells: [
-                { type: "header", text: "Name" },
-                { type: "header", text: "Surname" }
-            ]
-        },
-        {
-            rowId: 1,
-            cells: [
-                { type: "text", text: "Thomas" },
-                { type: "text", text: "Goldman" }
-            ]
-        },
-        {
-            rowId: 2,
-            cells: [
-                { type: "text", text: "Susie" },
-                { type: "text", text: "Spencer" }
-            ]
-        },
-        {
-            rowId: 3,
-            cells: [
-                { type: "text", text: "" },
-                { type: "text", text: "" }
-            ]
+interface Person {
+    name: string;
+    surname: string;
+}
+
+const getPeople = (): Person[] => [
+    { name: "Thomas", surname: "Goldman" },
+    { name: "Susie", surname: "Quattro" },
+    { name: "", surname: "" }
+];
+
+const getColumns = (): Column[] => [
+    { columnId: "name", width: 150 },
+    { columnId: "surname", width: 150 }
+];
+
+const headerRow: Row = {
+    rowId: "header",
+    cells: [
+        { type: "header", text: "Name" },
+        { type: "header", text: "Surname" }
+    ]
+};
+
+const getRows = (people: Person[]): Row[] => [
+    headerRow,
+    ...people.map<Row>((person, idx) => ({
+        rowId: idx,
+        cells: [
+            { type: "text", text: person.name },
+            { type: "text", text: person.surname }
+        ]
+    }))
+];
+
+const applyChangesToPeople = (
+    changes: CellChange[],
+    prevPeople: Person[]
+): Person[] => {
+    changes.forEach((change) => {
+        if (change.newCell.type === 'text') {
+            const personIndex = change.rowId;
+            const fieldName = change.columnId;
+            prevPeople[personIndex][fieldName] = change.newCell.text;
         }
-    ]);
+    });
+    return [...prevPeople];
+};
+
+export const AdvancedContextMenuHandlingSample = () => {
+    const [people, setPeople] = React.useState<Person[]>(getPeople());
+    const [columns] = React.useState<Column[]>(getColumns());
+
+    const rows = getRows(people);
 
     const handleChanges = (changes: CellChange[]) => {
-        setRows((prevRows) => {
-            changes.forEach((change) => {
-                const changeRowIdx = prevRows.findIndex(
-                    (el) => el.rowId === change.rowId
-                );
-                const changeColumnIdx = columns.findIndex(
-                    (el) => el.columnId === change.columnId
-                );
-                prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
-            });
-            return [...prevRows];
-        });
+        setPeople((prevPeople) => applyChangesToPeople(changes, prevPeople));
     };
 
     const handleContextMenu = (
@@ -71,37 +79,18 @@ export const AdvancedContextMenuHandlingSample = () => {
             menuOptions = [
                 ...menuOptions,
                 {
-                    id: "removeRow",
-                    label: "Remove row",
-                    handler: () => setRows(rows.filter(row => !selectedRowIds.includes(row.rowId)))
-                }
-            ];
-        }
-        if (selectionMode === "column") {
-            menuOptions = [
-                ...menuOptions,
-                {
-                    id: "removeColumn",
-                    label: "Remove column",
+                    id: "removePerson",
+                    label: "Remove person",
                     handler: () => {
-                        const cols = columns.filter(column => !selectedColIds.includes(column.columnId));
-                        const columnsIdxs = columns
-                            .map((column, idx) => {
-                                if (!cols.includes(column)) return idx;
-                                return undefined;
-                            })
-                            .filter(idx => idx !== undefined);
-                        setRows(rows.map(row => ({
-                            ...row,
-                            cells: row.cells.filter((_, idx) => !columnsIdxs.includes(idx))
-                        })));
-                        setColumns(cols);
+                        setPeople(prevPeople => {
+                            return [...prevPeople.filter((person, idx) => !selectedRowIds.includes(idx))]
+                        })
                     }
                 }
             ];
         }
         return menuOptions;
-    };
+    }
 
     return (
         <ReactGrid
@@ -111,7 +100,6 @@ export const AdvancedContextMenuHandlingSample = () => {
             onContextMenu={handleContextMenu}
             enableFillHandle
             enableRangeSelection
-            enableColumnSelection
             enableRowSelection
         />
     );
