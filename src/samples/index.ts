@@ -1,8 +1,5 @@
 // export * from './budgetPlannerSample/BudgetPlannerSample';
-export * from './bp/BP';
-export * from './datagridSample/DatagridSample';
 export * from './stickySample/StickySample';
-export * from './datagridSample/DatagridSample';
 export * from './resizeColumnSample/ResizeColumnSample';
 export * from './columnReorderSample/ColumnReorderSample';
 export * from './cryptocurrencyMarketSample/CryptocurrencyMarketSample';
@@ -21,5 +18,3 @@ export * from './handlingChangesSample/HandlingChangesSample';
 export * from './limitedHeightByParentSample/LimitedHeightByParentSample';
 export * from './notLimitedHeightByParentSample/NotLimitedHeightByParentSample';
 export * from './groupIdSample/GroupIdSample';
-export * from './excercisesDataSample/ExcercisesDataSample';
-export * from './workhoursSample/WorkhoursSample';

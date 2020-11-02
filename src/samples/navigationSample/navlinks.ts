@@ -3,7 +3,6 @@ import {
   StickySample,
   ColumnReorderSample,
   ResizeColumnSample,
-  DatagridSample,
   CryptocurrencyMarketSample,
   ChevronCellSample,
   ContextMenuSample,
@@ -19,23 +18,14 @@ import {
   HandlingChangesSample,
   LimitedHeightByParentSample,
   NotLimitedHeightByParentSample,
-  BPSample,
   GroupIdSample,
-  WorkhoursSample,
 } from '../../samples';
-import { ExcercisesDataSample } from '../excercisesDataSample/ExcercisesDataSample';
 
 export interface ISampleNavLink extends INavLink {
   component?: any;
 }
 
 export const navLinks: ISampleNavLink[] = [
-  {
-    name: 'BP Sample',
-    key: '/BP',
-    url: '/BP',
-    component: BPSample,
-  },
   {
     name: 'Chevron Cell Sample',
     key: '/ChevronCellSample',
@@ -71,12 +61,6 @@ export const navLinks: ISampleNavLink[] = [
     key: '/ResizeColumnSample',
     url: '/ResizeColumnSample',
     component: ResizeColumnSample
-  },
-  {
-    name: 'Datagrid Sample',
-    key: '/DatagridSample',
-    url: '/DatagridSample',
-    component: DatagridSample
   },
   {
     name: 'Cryptocurrency Market Sample',
@@ -155,17 +139,5 @@ export const navLinks: ISampleNavLink[] = [
     key: '/NotLimitedHeightByParentSample',
     url: '/NotLimitedHeightByParentSample',
     component: NotLimitedHeightByParentSample
-  },
-  {
-    name: 'Excercises & Athletes Data Sample',
-    key: '/ExcercisesDataSample',
-    url: '/ExcercisesDataSample',
-    component: ExcercisesDataSample
-  },
-  {
-    name: 'Workhours Sample',
-    key: '/WorkhoursSample',
-    url: '/WorkhoursSample',
-    component: WorkhoursSample
   },
 ];
