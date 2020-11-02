@@ -36,7 +36,8 @@ export var getExcerciseRows = function (excercise, athletes, results) {
     var style = noBorderCellStyle;
     var headerBorder = { color: 'rgba(0,0,0,0.4)', width: '1px' };
     var lastRowStyle = __assign(__assign({}, style), { border: __assign(__assign({}, style.border), { bottom: headerBorder }), paddingLeft: "20px" });
-    var headerRowStyle = __assign(__assign({}, excercise.hidden ? lastRowStyle : style), { color: '#404040' });
+    var headerStyle = __assign(__assign({}, style), { border: __assign(__assign({}, style.border), { bottom: headerBorder }) });
+    var headerRowStyle = __assign(__assign({}, excercise.hidden ? headerStyle : style), { color: '#404040' });
     var headerRow = {
         rowId: excercise.id,
         height: 30,
