@@ -10,7 +10,8 @@ export const getExcerciseRows = (excercise: Excercise, athletes: Athlete[], resu
     const style = noBorderCellStyle;
     const headerBorder = { color: 'rgba(0,0,0,0.4)', width: '1px' }
     const lastRowStyle: CellStyle = { ...style, border: { ...style.border, bottom: headerBorder }, paddingLeft: "20px" }
-    const headerRowStyle = { ...excercise.hidden ? lastRowStyle : style, color: '#404040' };
+    const headerStyle: CellStyle = { ...style, border: { ...style.border, bottom: headerBorder } }
+    const headerRowStyle = { ...excercise.hidden ? headerStyle : style, color: '#404040' };
     const headerRow: Row<SampleCellTypes> = {
         rowId: excercise.id,
         height: 30,
